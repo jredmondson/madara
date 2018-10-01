@@ -20,86 +20,85 @@
 
 namespace madara
 {
-  namespace filters
-  {
-    /**
-     * @class AESBufferFilter
-     * @brief Encrypts a buffer with 256 bit AES via OpenSSL
-     */
-    class MADARA_EXPORT AESBufferFilter : public BufferFilter
-    {
-    public:
-      /**
-      * Constructor
-      **/
-      AESBufferFilter ();
+namespace filters
+{
+/**
+ * @class AESBufferFilter
+ * @brief Encrypts a buffer with 256 bit AES via OpenSSL
+ */
+class MADARA_EXPORT AESBufferFilter : public BufferFilter
+{
+public:
+  /**
+   * Constructor
+   **/
+  AESBufferFilter();
 
-      /**
-      * Copy constructor
-      * @param  input   the buffer filter to copy
-      **/
-      AESBufferFilter (const AESBufferFilter & input);
+  /**
+   * Copy constructor
+   * @param  input   the buffer filter to copy
+   **/
+  AESBufferFilter(const AESBufferFilter& input);
 
-      /**
-      * 256 bit key constructor
-      * @param  key         the key to use for encryption
-      * @param  key_length  the length of the key
-      **/
-      AESBufferFilter (unsigned char * key, int key_length);
+  /**
+   * 256 bit key constructor
+   * @param  key         the key to use for encryption
+   * @param  key_length  the length of the key
+   **/
+  AESBufferFilter(unsigned char* key, int key_length);
 
-      /**
-       * Destructor
-       **/
-      virtual ~AESBufferFilter ();
+  /**
+   * Destructor
+   **/
+  virtual ~AESBufferFilter();
 
-      /**
-      * Generates a 256 bit key from a password
-      * @param  password   a password to seed the key with
-      * @return  0 on success, -1 on error
-      **/
-      int generate_key (const std::string & password);
+  /**
+   * Generates a 256 bit key from a password
+   * @param  password   a password to seed the key with
+   * @return  0 on success, -1 on error
+   **/
+  int generate_key(const std::string& password);
 
-      /**
-       * Encodes the buffer in place using AES encryption
-       * @param   source           the source and destination buffer
-       * @param   size             the amount of data in the buffer in bytes
-       * @param   max_size         the amount of bytes the buffer can hold
-       * @return  the new size after encoding
-       **/
-      virtual int encode (char * source, int size, int max_size) const;
+  /**
+   * Encodes the buffer in place using AES encryption
+   * @param   source           the source and destination buffer
+   * @param   size             the amount of data in the buffer in bytes
+   * @param   max_size         the amount of bytes the buffer can hold
+   * @return  the new size after encoding
+   **/
+  virtual int encode(char* source, int size, int max_size) const;
 
-      /**
-       * Decodes the buffer in place using AES encryption
-       * @param   source           the source and destination buffer
-       * @param   size             the amount of data in the buffer in bytes
-       * @param   max_size         the amount of bytes the buffer can hold
-       * @return  the new size after decoding
-       **/
-      virtual int decode (char * source, int size, int max_size) const;
+  /**
+   * Decodes the buffer in place using AES encryption
+   * @param   source           the source and destination buffer
+   * @param   size             the amount of data in the buffer in bytes
+   * @param   max_size         the amount of bytes the buffer can hold
+   * @return  the new size after decoding
+   **/
+  virtual int decode(char* source, int size, int max_size) const;
 
-      /**
-       * Gets the id of the filter. This is used in the serialization process
-       * for transports and checkpoints to identify which filter is used.
-       **/
-      virtual std::string get_id (void);
+  /**
+   * Gets the id of the filter. This is used in the serialization process
+   * for transports and checkpoints to identify which filter is used.
+   **/
+  virtual std::string get_id(void);
 
-      /**
-       * Gets the version of the filter. @see madara::utility::get_uint_version
-       * for one way to get this from a string version
-       **/
-      virtual uint32_t get_version (void);
+  /**
+   * Gets the version of the filter. @see madara::utility::get_uint_version
+   * for one way to get this from a string version
+   **/
+  virtual uint32_t get_version(void);
 
-    private:
+private:
+  /// the user's cypher key
+  utility::ScopedArray<unsigned char> key_;
 
-      /// the user's cypher key
-      utility::ScopedArray <unsigned char> key_;
-
-      /// initialization vector
-      utility::ScopedArray <unsigned char> iv_;
-    };
-  }
+  /// initialization vector
+  utility::ScopedArray<unsigned char> iv_;
+};
+}
 }
 
-#endif // _USE_SSL_
+#endif  // _USE_SSL_
 
 #endif  // _MADARA_FILTERS_SSL_AES_H_

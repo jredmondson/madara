@@ -20,37 +20,33 @@ using Int = containers::Integer;
 
 int log_level = 2;
 
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
-  {
-    std::string arg1 (argv[i]);
-    if (arg1 == "-l" || arg1 == "--level")
-    {
-      if (i + 1 < argc)
-      {
-        std::stringstream buffer (argv[i + 1]);
+  for (int i = 1; i < argc; ++i) {
+    std::string arg1(argv[i]);
+    if (arg1 == "-l" || arg1 == "--level") {
+      if (i + 1 < argc) {
+        std::stringstream buffer(argv[i + 1]);
         buffer >> log_level;
       }
 
       ++i;
-    }
-    else
-    {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-        "\nProgram summary for %s:\n\n" \
-        "  Test the checkpointing functionality.\n\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        "\n",
-        argv[0]);
-      exit (0);
+    } else {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "  Test the checkpointing functionality.\n\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          "\n",
+          argv[0]);
+      exit(0);
     }
   }
 
-  logger::global_logger->set_level (log_level);
+  logger::global_logger->set_level(log_level);
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   handle_arguments(argc, argv);
 

@@ -13,57 +13,54 @@
 #include "madara/expression/LeafNode.h"
 #include "madara/expression/VariableNode.h"
 
-madara::expression::CompositePredecrementNode::CompositePredecrementNode (
-  logger::Logger & logger, ComponentNode *right)
-: CompositeUnaryNode (logger, right)
+madara::expression::CompositePredecrementNode::CompositePredecrementNode(
+    logger::Logger& logger, ComponentNode* right)
+  : CompositeUnaryNode(logger, right)
 {
-  var_ = dynamic_cast <VariableNode *> (right);
+  var_ = dynamic_cast<VariableNode*>(right);
 
   if (!var_)
-    array_ = dynamic_cast <CompositeArrayReference *> (right);
+    array_ = dynamic_cast<CompositeArrayReference*>(right);
 }
 
 // Dtor
-madara::expression::CompositePredecrementNode::~CompositePredecrementNode (void)
+madara::expression::CompositePredecrementNode::~CompositePredecrementNode(void)
 {
 }
 
 madara::knowledge::KnowledgeRecord
-madara::expression::CompositePredecrementNode::item (void) const
+madara::expression::CompositePredecrementNode::item(void) const
 {
   madara::knowledge::KnowledgeRecord record;
-  record.set_value ("--");
+  record.set_value("--");
   return record;
 }
 
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
 madara::knowledge::KnowledgeRecord
-madara::expression::CompositePredecrementNode::prune (bool & can_change)
+madara::expression::CompositePredecrementNode::prune(bool& can_change)
 {
   bool right_child_can_change = false;
   madara::knowledge::KnowledgeRecord right_value;
 
-  if (this->right_)
-  {
-    right_value = this->right_->prune (right_child_can_change);
-    if (!right_child_can_change && dynamic_cast <LeafNode *> (right_) == 0)
-    {
+  if (this->right_) {
+    right_value = this->right_->prune(right_child_can_change);
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0) {
       delete this->right_;
-      this->right_ = new LeafNode (*(this->logger_), right_value);
+      this->right_ = new LeafNode(*(this->logger_), right_value);
     }
-  }
-  else if (!var_ && !array_)
-  {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::CompositePredecrementNode: "
-      "KARL COMPILE ERROR:"
-      "Preincrement has no var, array, or expression\n");
+  } else if (!var_ && !array_) {
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::CompositePredecrementNode: "
+        "KARL COMPILE ERROR:"
+        "Preincrement has no var, array, or expression\n");
 
-    throw exceptions::KarlException ("madara::expression::CompositePreincrementNode: "
-      "KARL COMPILE ERROR: "
-      "Preincrement has no var, array, or expression\n"); 
+    throw exceptions::KarlException(
+        "madara::expression::CompositePreincrementNode: "
+        "KARL COMPILE ERROR: "
+        "Preincrement has no var, array, or expression\n");
   }
 
   can_change = right_child_can_change;
@@ -73,36 +70,36 @@ madara::expression::CompositePredecrementNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
-madara::expression::CompositePredecrementNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & settings)
+madara::knowledge::KnowledgeRecord
+madara::expression::CompositePredecrementNode::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
   if (var_)
-    return var_->dec (settings);
+    return var_->dec(settings);
   else if (array_)
-    return array_->dec (settings);
+    return array_->dec(settings);
   else if (right_)
-    return --(this->right_->evaluate (settings));
-  else
-  {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::CompositePredecrementNode: "
-      "KARL RUNTIME ERROR: "
-      "Predecrement has no var, array, or expression\n");
+    return --(this->right_->evaluate(settings));
+  else {
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::CompositePredecrementNode: "
+        "KARL RUNTIME ERROR: "
+        "Predecrement has no var, array, or expression\n");
 
-    throw exceptions::KarlException ("madara::expression::CompositePredecrementNode: "
-      "KARL RUNTIME ERROR: "
-      "Predecrement has no var, array, or expression\n"); 
+    throw exceptions::KarlException(
+        "madara::expression::CompositePredecrementNode: "
+        "KARL RUNTIME ERROR: "
+        "Predecrement has no var, array, or expression\n");
   }
 }
 
 // accept a visitor
-void 
-madara::expression::CompositePredecrementNode::accept (Visitor &visitor) const
+void madara::expression::CompositePredecrementNode::accept(
+    Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _COMPOSITE_PREDECREMENT_NODE_CPP_ */

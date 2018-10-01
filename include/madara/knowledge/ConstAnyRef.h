@@ -29,8 +29,10 @@
 #include "TypeHandlers.h"
 #include "CapnObject.h"
 
-namespace madara { namespace knowledge {
-
+namespace madara
+{
+namespace knowledge
+{
 template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 class BasicAny;
 /**
@@ -43,11 +45,19 @@ class BasicConstAny
 protected:
   BasicConstAny() = default;
 
-  BasicConstAny(const TypeHandlers *handler, void *data)
-    : handler_(handler), data_(data) {}
+  BasicConstAny(const TypeHandlers* handler, void* data)
+    : handler_(handler), data_(data)
+  {
+  }
 
-  Impl &impl() { return *static_cast<Impl*>(this); }
-  const Impl &impl() const { return *static_cast<const Impl*>(this); }
+  Impl& impl()
+  {
+    return *static_cast<Impl*>(this);
+  }
+  const Impl& impl() const
+  {
+    return *static_cast<const Impl*>(this);
+  }
 
 public:
   /**
@@ -108,7 +118,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  const T &ref(type<T> t) const
+  const T& ref(type<T> t) const
   {
     impl().check_type(t);
     return impl().ref_unsafe(t);
@@ -126,7 +136,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  const T &ref() const
+  const T& ref() const
   {
     return impl().ref(type<T>{});
   }
@@ -143,7 +153,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  const T &cref(type<T> t) const
+  const T& cref(type<T> t) const
   {
     return impl().ref(t);
   }
@@ -160,7 +170,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  const T &cref() const
+  const T& cref() const
   {
     return impl().ref(type<T>{});
   }
@@ -174,9 +184,9 @@ public:
    * @return a const reference of type T to the stored data
    **/
   template<typename T>
-  const T &ref_unsafe(type<T>) const
+  const T& ref_unsafe(type<T>) const
   {
-    return *reinterpret_cast<const T *>(data_);
+    return *reinterpret_cast<const T*>(data_);
   }
 
   /**
@@ -188,7 +198,7 @@ public:
    * @return a const reference of type T to the stored data
    **/
   template<typename T>
-  const T &ref_unsafe() const
+  const T& ref_unsafe() const
   {
     return ref_unsafe(type<T>{});
   }
@@ -205,7 +215,7 @@ public:
    * @return a pointer to the contained value
    **/
   template<typename T>
-  const T *ptr(type<T> t) const
+  const T* ptr(type<T> t) const
   {
     if (!impl().try_type(t)) {
       return nullptr;
@@ -225,7 +235,7 @@ public:
    * @return a pointer to the contained value
    **/
   template<typename T>
-  const T *ptr() const
+  const T* ptr() const
   {
     return ptr(type<T>{});
   }
@@ -242,7 +252,7 @@ public:
    * @return a pointer to the contained value
    **/
   template<typename T>
-  const T *cptr(type<T> t) const
+  const T* cptr(type<T> t) const
   {
     return ptr(t);
   }
@@ -259,7 +269,7 @@ public:
    * @return a pointer to the contained value
    **/
   template<typename T>
-  const T *cptr() const
+  const T* cptr() const
   {
     return ptr(type<T>{});
   }
@@ -341,12 +351,12 @@ public:
     if (!handler_->get_reader) {
       throw BadAnyAccess("Any does not contain a Cap'n Proto message");
     }
-    const char *data;
+    const char* data;
     size_t size;
     if (!handler_->get_reader(nullptr, nullptr, &data, &size, data_)) {
       throw BadAnyAccess("Unknown error getting Cap'n Proto object's buffer");
     }
-    return {(const capnp::word *)data, size / 8};
+    return {(const capnp::word*)data, size / 8};
   }
 
   /**
@@ -357,7 +367,7 @@ public:
    * @param size size of the buffer
    * @return the actual number of bytes used during serialization
    **/
-  size_t serialize(char *data, size_t size) const
+  size_t serialize(char* data, size_t size) const
   {
     namespace bio = boost::iostreams;
 
@@ -378,7 +388,7 @@ public:
    * @param vec the vector to serialize to, which will be cleared first
    * @return the actual number of bytes used during serialization
    **/
-  size_t serialize(std::vector<char> &vec) const
+  size_t serialize(std::vector<char>& vec) const
   {
     namespace bio = boost::iostreams;
 
@@ -396,11 +406,12 @@ public:
    *
    * @param stream the output stream to serialize to
    **/
-  void serialize(std::ostream &stream) const
+  void serialize(std::ostream& stream) const
   {
     if (!handler_->save) {
-      throw exceptions::BadAnyAccess(std::string("Type ") + tag() + "does not "
-          "support serialization");
+      throw exceptions::BadAnyAccess(std::string("Type ") + tag() +
+                                     "does not "
+                                     "support serialization");
     }
     handler_->save(stream, data_);
   }
@@ -414,7 +425,7 @@ public:
    * @param size size of the buffer
    * @return the actual number of bytes used during serialization
    **/
-  size_t tagged_serialize(char *data, size_t size) const
+  size_t tagged_serialize(char* data, size_t size) const
   {
     namespace bio = boost::iostreams;
 
@@ -438,7 +449,7 @@ public:
    * @param size size of the buffer
    * @return the actual number of bytes used during serialization
    **/
-  size_t tagged_serialize(const char *tag, char *data, size_t size) const
+  size_t tagged_serialize(const char* tag, char* data, size_t size) const
   {
     namespace bio = boost::iostreams;
 
@@ -460,7 +471,7 @@ public:
    * @param vec the vector to serialize to, which will be cleared first
    * @return the actual number of bytes used during serialization
    **/
-  size_t tagged_serialize(std::vector<char> &vec) const
+  size_t tagged_serialize(std::vector<char>& vec) const
   {
     namespace bio = boost::iostreams;
 
@@ -482,7 +493,7 @@ public:
    * @param vec the vector to serialize to, which will be cleared first
    * @return the actual number of bytes used during serialization
    **/
-  size_t tagged_serialize(const char *tag, std::vector<char> &vec) const
+  size_t tagged_serialize(const char* tag, std::vector<char>& vec) const
   {
     namespace bio = boost::iostreams;
 
@@ -501,14 +512,15 @@ public:
    *
    * @param stream the output archive to serialize to
    **/
-  void tagged_serialize(std::ostream &stream) const
+  void tagged_serialize(std::ostream& stream) const
   {
     using exceptions::BadAnyAccess;
 
     auto t = this->tag();
     if (t == nullptr) {
-      throw BadAnyAccess(std::string("tagged_serialize(): unregistered type: ")
-          + handler_->tindex.name());
+      throw BadAnyAccess(
+          std::string("tagged_serialize(): unregistered type: ") +
+          handler_->tindex.name());
     }
 
     tagged_serialize(t, stream);
@@ -521,7 +533,7 @@ public:
    * @param tag tag to use
    * @param stream the output archive to serialize to
    **/
-  void tagged_serialize(const char *tag, std::ostream &stream) const
+  void tagged_serialize(const char* tag, std::ostream& stream) const
   {
     madara_oarchive archive(stream);
     std::string stag(tag);
@@ -542,11 +554,12 @@ public:
    *
    * @param o the output stream to serialize to
    **/
-  void serialize_json(std::ostream &o) const
+  void serialize_json(std::ostream& o) const
   {
     if (!handler_->save_json) {
-      throw exceptions::BadAnyAccess(std::string("Type ") + tag() + "does not "
-          "support JSON serialization");
+      throw exceptions::BadAnyAccess(std::string("Type ") + tag() +
+                                     "does not "
+                                     "support JSON serialization");
     }
     handler_->save_json(o, data_);
   }
@@ -579,7 +592,7 @@ public:
    *
    * Returns empty fields list if type doesn't support fields.
    **/
-  const std::vector<AnyField> &list_fields() const
+  const std::vector<AnyField>& list_fields() const
   {
     if (!supports_fields()) {
       static std::vector<AnyField> empty;
@@ -594,7 +607,7 @@ public:
    *
    * throws BadAnyAccess if stored type doesn't have the named field.
    **/
-  AnyField find_field(const char *name) const
+  AnyField find_field(const char* name) const
   {
     using exceptions::BadAnyAccess;
 
@@ -602,12 +615,12 @@ public:
       throw BadAnyAccess("Null name pointer passed to find_field");
     }
 
-    const auto &fields = list_fields();
-    auto found = std::equal_range(fields.begin(), fields.end(), name,
-        compare_any_fields_by_name());
+    const auto& fields = list_fields();
+    auto found = std::equal_range(
+        fields.begin(), fields.end(), name, compare_any_fields_by_name());
     if (found.first == fields.end() || found.first == found.second) {
-      throw BadAnyAccess(std::string("Type in Any does not contain field \"") +
-          name + "\"");
+      throw BadAnyAccess(
+          std::string("Type in Any does not contain field \"") + name + "\"");
     }
 
     return *found.first;
@@ -617,13 +630,13 @@ public:
    * Verifies that the given field belongs to the stored type. Throws
    * BadAnyAccess if not. If it does belong, simply returns the given field.
    **/
-  AnyField find_field(const AnyField &field) const
+  AnyField find_field(const AnyField& field) const
   {
     using exceptions::BadAnyAccess;
 
     if (!handler_ || field.parent().tindex != handler_->tindex) {
       throw BadAnyAccess(std::string("Type in Any does not contain field \"") +
-          field.name() + "\"");
+                         field.name() + "\"");
     }
     return field;
   }
@@ -634,7 +647,7 @@ public:
    *
    * throws BadAnyAccess if stored type doesn't have the named field.
    **/
-  AnyField find_field(const std::string &name) const
+  AnyField find_field(const std::string& name) const
   {
     return find_field(name.c_str());
   }
@@ -644,26 +657,24 @@ public:
    *
    * Get the AnyField objects for a given type by calling list_fields()
    **/
-  RefImpl ref(const AnyField &field) const
+  RefImpl ref(const AnyField& field) const
   {
     using exceptions::BadAnyAccess;
 
-    if (!supports_fields())
-    {
+    if (!supports_fields()) {
       throw BadAnyAccess("Tried to access field in Any holding type "
-          "that doesn't support them");
+                         "that doesn't support them");
     }
-    if (field.parent().tindex != handler_->tindex)
-    {
+    if (field.parent().tindex != handler_->tindex) {
       throw BadAnyAccess("Tried to access field in Any from a "
-          "class not contained within");
+                         "class not contained within");
     }
     auto func = handler_->get_field;
     if (!func) {
       return {};
     }
-    const TypeHandlers *handler;
-    void *data;
+    const TypeHandlers* handler;
+    void* data;
     func(field, handler, data, data_);
     return {handler, data};
   }
@@ -673,7 +684,7 @@ public:
    *
    * Use the ref(AnyField) overload for better efficiency.
    **/
-  RefImpl ref(const char *name) const
+  RefImpl ref(const char* name) const
   {
     return ref(find_field(name));
   }
@@ -683,7 +694,7 @@ public:
    *
    * Use the ref(AnyField) overload for better efficiency.
    **/
-  RefImpl ref(const std::string &name) const
+  RefImpl ref(const std::string& name) const
   {
     return ref(find_field(name));
   }
@@ -693,7 +704,7 @@ public:
    *
    * Get the AnyField objects for a given type by calling list_fields()
    **/
-  RefImpl cref(const AnyField &field) const
+  RefImpl cref(const AnyField& field) const
   {
     return ref(field);
   }
@@ -703,7 +714,7 @@ public:
    *
    * Use the cref(AnyField) overload for better efficiency.
    **/
-  RefImpl cref(const char *name) const
+  RefImpl cref(const char* name) const
   {
     return ref(find_field(name));
   }
@@ -713,7 +724,7 @@ public:
    *
    * Use the cref(AnyField) overload for better efficiency.
    **/
-  RefImpl cref(const std::string &name) const
+  RefImpl cref(const std::string& name) const
   {
     return ref(find_field(name));
   }
@@ -735,7 +746,7 @@ public:
    * @return a reference to the contained value's member
    **/
   template<typename T, typename Class>
-  const T &ref(T Class::* ptm) const
+  const T& ref(T Class::*ptm) const
   {
     return cref(ptm);
   }
@@ -757,7 +768,7 @@ public:
    * @return a reference to the contained value's member
    **/
   template<typename T, typename Class>
-  const T &cref(T Class::* ptm) const
+  const T& cref(T Class::*ptm) const
   {
     return (&impl().ref(type<Class>{}))->*ptm;
   }
@@ -780,7 +791,7 @@ public:
    * @return result of the method called
    **/
   template<typename T, typename Class, typename... Params, typename... Args>
-  T ref(T (Class::* ptmf)(Params...) const, Args&&... args) const
+  T ref(T (Class::*ptmf)(Params...) const, Args&&... args) const
   {
     return cref(ptmf, std::forward<Args>(args)...);
   }
@@ -803,7 +814,7 @@ public:
    * @return result of the method called
    **/
   template<typename T, typename Class, typename... Params, typename... Args>
-  T cref(T (Class::* ptmf)(Params...) const, Args&&... args) const
+  T cref(T (Class::*ptmf)(Params...) const, Args&&... args) const
   {
     return ((&impl().ref(type<Class>{}))->*ptmf)(std::forward<Args>(args)...);
   }
@@ -816,7 +827,7 @@ public:
    * Get the AnyField objects for a given type by calling list_fields()
    **/
   template<typename T>
-  const T &ref(const AnyField &field) const
+  const T& ref(const AnyField& field) const
   {
     return ref(field).template ref<T>();
   }
@@ -829,7 +840,7 @@ public:
    * Use the ref<T>(AnyField) overload for better efficiency.
    **/
   template<typename T>
-  const T &ref(const char *name) const
+  const T& ref(const char* name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
@@ -842,7 +853,7 @@ public:
    * Use the ref<T>(AnyField) overload for better efficiency.
    **/
   template<typename T>
-  const T& ref(const std::string &name) const
+  const T& ref(const std::string& name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
@@ -855,7 +866,7 @@ public:
    * Get the AnyField objects for a given type by calling list_fields()
    **/
   template<typename T>
-  const T &cref(const AnyField &field) const
+  const T& cref(const AnyField& field) const
   {
     return cref(field).template cref<T>();
   }
@@ -868,7 +879,7 @@ public:
    * Use the cref<T>(AnyField) overload for better efficiency.
    **/
   template<typename T>
-  const T &cref(const char *name) const
+  const T& cref(const char* name) const
   {
     return cref(find_field(name)).template cref<T>();
   }
@@ -881,7 +892,7 @@ public:
    * Use the cref<T>(AnyField) overload for better efficiency.
    **/
   template<typename T>
-  const T& cref(const std::string &name) const
+  const T& cref(const std::string& name) const
   {
     return cref(find_field(name)).template cref<T>();
   }
@@ -896,8 +907,8 @@ public:
    * value by typed reference (see tags namespace)
    **/
   template<typename... Args>
-  auto operator()(Args&&... args) const ->
-    decltype(ref(std::forward<Args>(args)...))
+  auto operator()(Args&&... args) const
+      -> decltype(ref(std::forward<Args>(args)...))
   {
     return ref(std::forward<Args>(args)...);
   }
@@ -924,8 +935,8 @@ public:
     if (!supports_int_index()) {
       throw BadAnyAccess("Type in Any does not support indexing by integer");
     }
-    const TypeHandlers *handler = nullptr;
-    void *data = nullptr;
+    const TypeHandlers* handler = nullptr;
+    void* data = nullptr;
     handler_->index_int(i, handler, data, data_);
     return {handler, data};
   }
@@ -945,15 +956,15 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl at(const char *i) const
+  RefImpl at(const char* i) const
   {
     using exceptions::BadAnyAccess;
 
     if (!supports_string_index()) {
       throw BadAnyAccess("Type in Any does not support indexing by string");
     }
-    const TypeHandlers *handler = nullptr;
-    void *data = nullptr;
+    const TypeHandlers* handler = nullptr;
+    void* data = nullptr;
     handler_->index_str(i, handler, data, data_);
     return {handler, data};
   }
@@ -965,7 +976,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl at(const std::string &i) const
+  RefImpl at(const std::string& i) const
   {
     return at(i.c_str());
   }
@@ -990,7 +1001,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl operator[](const char *i) const
+  RefImpl operator[](const char* i) const
   {
     return at(i);
   }
@@ -1002,7 +1013,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl operator[](const std::string &i) const
+  RefImpl operator[](const std::string& i) const
   {
     return at(i);
   }
@@ -1070,7 +1081,10 @@ public:
    * `to_record()`, will return `knowledge_cast<T>(to_record())`
    **/
   template<typename T>
-  T to() const { return to(type<T>{}); }
+  T to() const
+  {
+    return to(type<T>{});
+  }
 
   /**
    * Access stored value, and return as integer (int64_t) value.
@@ -1078,7 +1092,10 @@ public:
    * If stored type is an int64_t, returns it directly. Otherwise, if stored
    * value supports `to_record()`, return `knowledge_cast<int64_t>(to_record())`
    **/
-  int64_t to_integer() const { return impl().template to<int64_t>(); }
+  int64_t to_integer() const
+  {
+    return impl().template to<int64_t>();
+  }
 
   /**
    * Access stored value, and return as double value.
@@ -1086,7 +1103,10 @@ public:
    * If stored type is an double, returns it directly. Otherwise, if stored
    * value supports `to_record()`, return `knowledge_cast<double>(to_record())`
    **/
-  double to_double() const { return impl().template to<double>(); }
+  double to_double() const
+  {
+    return impl().template to<double>();
+  }
 
   /**
    * Access stored value, and return as std::vector<int64_t> value.
@@ -1120,7 +1140,8 @@ public:
    * `std::stringstream`. Otherwise, if stored value supports `to_record()`,
    * return `knowledge_cast<std::string>(to_record())`
    **/
-  std::string to_string() const {
+  std::string to_string() const
+  {
     if (!handler_ && data_) {
       return impl().template ref<std::string>();
     }
@@ -1172,7 +1193,7 @@ public:
    * If not, falls back to calling `to_record()`, and writing that, and if not
    * that, calls `to_json()` and writes that.
    **/
-  std::ostream &stream(std::ostream &o) const
+  std::ostream& stream(std::ostream& o) const
   {
     if (supports_ostream()) {
       return handler_->to_ostream(o, data_);
@@ -1189,12 +1210,12 @@ public:
    * If not, falls back to calling `to_record()`, and writing that, and if not
    * that, calls `to_json()` and writes that.
    **/
-  friend std::ostream &operator<<(std::ostream &o, const BasicConstAny &self)
+  friend std::ostream& operator<<(std::ostream& o, const BasicConstAny& self)
   {
     return self.stream(o);
   }
 
-  const char *tag() const
+  const char* tag() const
   {
     if (!handler_) {
       return nullptr;
@@ -1202,14 +1223,14 @@ public:
     return handler_->tag(data_);
   }
 
-  std::pair<const TypeHandlers *, void *> get_pointers() const
+  std::pair<const TypeHandlers*, void*> get_pointers() const
   {
     return {handler_, data_};
   }
 
 protected:
-  const TypeHandlers *handler_ = nullptr;
-  void *data_ = nullptr;
+  const TypeHandlers* handler_ = nullptr;
+  void* data_ = nullptr;
 
   friend Impl;
   friend ValImpl;
@@ -1218,7 +1239,8 @@ protected:
   template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class BasicConstAny;
 
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2,
+      typename CRefImpl2>
   friend class BasicAny;
 };
 
@@ -1245,31 +1267,31 @@ public:
   /**
    * Create a const version of the given AnyRef
    **/
-  ConstAnyRef(const AnyRef &other);
+  ConstAnyRef(const AnyRef& other);
 
   /**
    * Construct as a reference to the given Any
    **/
-  ConstAnyRef(const Any &other);
+  ConstAnyRef(const Any& other);
 
   /**
    * Construct as a reference to the given Any
    **/
-  ConstAnyRef(const ConstAny &other);
+  ConstAnyRef(const ConstAny& other);
 
   /**
    * Change the object this ConstAnyRef refers to. It must be a type which could
    * be stored in an Any, but the object need actually be stored in an Any
    **/
   template<typename T>
-  void target(T &t)
+  void target(T& t)
   {
     handler_ = &get_type_handler<T>();
     data_ = (void*)&t;
   }
 
   static ConstAnyRef from_pointers_unsafe(
-      const TypeHandlers *handler, void *data)
+      const TypeHandlers* handler, void* data)
   {
     return {handler, data};
   }
@@ -1282,7 +1304,8 @@ public:
   template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class ::madara::knowledge::BasicConstAny;
 
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2,
+      typename CRefImpl2>
   friend class ::madara::knowledge::BasicAny;
 };
 
@@ -1292,8 +1315,8 @@ inline ValImpl BasicConstAny<Impl, ValImpl, RefImpl>::clone() const
   return this->impl();
 }
 
-} // namespace knowledge
+}  // namespace knowledge
 
-} // namespace madara
+}  // namespace madara
 
 #endif  // MADARA_KNOWLEDGE_CONST_ANY_REF_H_

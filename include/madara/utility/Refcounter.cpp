@@ -5,160 +5,141 @@
 #include "madara/utility/Refcounter.h"
 
 /// default Ctor
-template <typename T>
-madara::utility::Refcounter<T>::Refcounter (void)
-  : ptr_ (0)
+template<typename T>
+madara::utility::Refcounter<T>::Refcounter(void) : ptr_(0)
 {
 }
 
 /// Ctor with refcounting functionality
-template <typename T>
-madara::utility::Refcounter<T>::Refcounter (T *ptr, bool increase_count)
-  : ptr_ (new Shim (ptr))
+template<typename T>
+madara::utility::Refcounter<T>::Refcounter(T* ptr, bool increase_count)
+  : ptr_(new Shim(ptr))
 {
   if (increase_count)
-    increment ();
+    increment();
 }
 
-  /// copy Ctor
-template <typename T>
-madara::utility::Refcounter<T>::Refcounter (const Refcounter &rhs)
-  : ptr_ (rhs.ptr_)
+/// copy Ctor
+template<typename T>
+madara::utility::Refcounter<T>::Refcounter(const Refcounter& rhs)
+  : ptr_(rhs.ptr_)
 {
-  increment ();
+  increment();
 }
 
-  /// Dtor will delete pointer if refcount becomes 0
-template <typename T>
-madara::utility::Refcounter<T>::~Refcounter (void)
+/// Dtor will delete pointer if refcount becomes 0
+template<typename T>
+madara::utility::Refcounter<T>::~Refcounter(void)
 {
-  decrement ();
+  decrement();
 }
 
 /// assignment operator for times when you don't want the reference
 /// increased for incoming ptr.
-template <typename T>
-void 
-madara::utility::Refcounter<T>::operator= (T *ptr)
+template<typename T>
+void madara::utility::Refcounter<T>::operator=(T* ptr)
 {
-  decrement ();
-  ptr_ = new Shim (ptr);
+  decrement();
+  ptr_ = new Shim(ptr);
 }
 
-  /// assignment operator
-template <typename T>
-void
-madara::utility::Refcounter<T>::operator= (const Refcounter& rhs)
+/// assignment operator
+template<typename T>
+void madara::utility::Refcounter<T>::operator=(const Refcounter& rhs)
 {
-  if (this != &rhs)
-  {
-    decrement ();
+  if (this != &rhs) {
+    decrement();
     ptr_ = rhs.ptr_;
-    increment ();
+    increment();
   }
 }
 
 /// get the underlying pointer
-template <typename T>
-T * 
-madara::utility::Refcounter<T>::get_ptr (void)
+template<typename T>
+T* madara::utility::Refcounter<T>::get_ptr(void)
 {
   return ptr_->t_;
 }
 
 /// get the underlying pointer
-template <typename T>
-const T *
-madara::utility::Refcounter<T>::get_ptr (void) const
+template<typename T>
+const T* madara::utility::Refcounter<T>::get_ptr(void) const
 {
   return ptr_->t_;
 }
 
 /// get the underlying pointer
-template <typename T>
-T *
-madara::utility::Refcounter<T>::get (void)
+template<typename T>
+T* madara::utility::Refcounter<T>::get(void)
 {
   return ptr_->t_;
 }
 
 /// get the underlying pointer
-template <typename T>
-const T *
-madara::utility::Refcounter<T>::get (void) const
+template<typename T>
+const T* madara::utility::Refcounter<T>::get(void) const
 {
   return ptr_->t_;
 }
-
 
 /// dereference operator
-template <typename T>
-T & 
-madara::utility::Refcounter<T>::operator* (void)
+template<typename T>
+T& madara::utility::Refcounter<T>::operator*(void)
 {
   return *ptr_->t_;
 }
 
 /// dereference operator
-template <typename T>
-const 
-T &
-madara::utility::Refcounter<T>::operator* (void) const
+template<typename T>
+const T& madara::utility::Refcounter<T>::operator*(void)const
 {
   return *ptr_->t_;
 }
 
 /// mimic pointer dereferencing
-template <typename T>
-T *
-madara::utility::Refcounter<T>::operator-> (void)
+template<typename T>
+T* madara::utility::Refcounter<T>::operator->(void)
 {
   return ptr_->t_;
 }
 
 /// mimic pointer dereferencing
-template <typename T>
-const T *
-madara::utility::Refcounter<T>::operator-> (void) const
+template<typename T>
+const T* madara::utility::Refcounter<T>::operator->(void)const
 {
   return ptr_->t_;
 }
 
 /// implementation of the increment operation
-template <typename T>
-void 
-madara::utility::Refcounter<T>::increment (void)
+template<typename T>
+void madara::utility::Refcounter<T>::increment(void)
 {
   if (ptr_)
     ++ptr_->refcount_;
 }
 
-  /// implementation of the decrement operation
-template <typename T>
-void 
-madara::utility::Refcounter<T>::decrement (void)
+/// implementation of the decrement operation
+template<typename T>
+void madara::utility::Refcounter<T>::decrement(void)
 {
-  if (ptr_)
-    {
-      --ptr_->refcount_;
-      if (ptr_->refcount_ <= 0)
-        {
-          delete ptr_;
-          ptr_ = 0;
-        }
+  if (ptr_) {
+    --ptr_->refcount_;
+    if (ptr_->refcount_ <= 0) {
+      delete ptr_;
+      ptr_ = 0;
     }
+  }
 }
 
-template <typename T>
-madara::utility::Refcounter<T>::Shim::Shim (T *t)
-  : t_ (t), refcount_ (1) 
+template<typename T>
+madara::utility::Refcounter<T>::Shim::Shim(T* t) : t_(t), refcount_(1)
 {
 }
 
-template <typename T>
-madara::utility::Refcounter<T>::Shim::~Shim (void) 
-{ 
-  delete t_; 
+template<typename T>
+madara::utility::Refcounter<T>::Shim::~Shim(void)
+{
+  delete t_;
 }
 
 #endif /* _REFCOUNTER_CPP_ */

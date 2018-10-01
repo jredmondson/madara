@@ -20,8 +20,10 @@
  * to serialized temporal knowledge (STK) checkpoints.
  **/
 
-namespace madara { namespace knowledge {
-
+namespace madara
+{
+namespace knowledge
+{
 /**
  * Implementation of BaseStreamer which writes updates to a Madara checkpoint
  * file. Updates are kept in an in-memory buffer, and written to disk at the
@@ -40,13 +42,14 @@ public:
    *   will be locked for a short time each period.
    * @param write_hertz hertz rate for periodic write to disk.
    **/
-  CheckpointStreamer(
-      CheckpointSettings settings,
-      ThreadSafeContext &context,
+  CheckpointStreamer(CheckpointSettings settings, ThreadSafeContext& context,
       double write_hertz = 10)
-    : settings_(std::move(settings)), context_(&context),
+    : settings_(std::move(settings)),
+      context_(&context),
       write_hertz_(write_hertz),
-      thread_(thread_main, (keep_running_.test_and_set(), this)) {}
+      thread_(thread_main, (keep_running_.test_and_set(), this))
+  {
+  }
 
   /**
    * Constructor.
@@ -59,10 +62,10 @@ public:
    * @param write_hertz hertz rate for periodic write to disk.
    **/
   CheckpointStreamer(
-      CheckpointSettings settings,
-      KnowledgeBase &kb,
-      double write_hertz = 10)
-    : CheckpointStreamer(std::move(settings), kb.get_context(), write_hertz) {}
+      CheckpointSettings settings, KnowledgeBase& kb, double write_hertz = 10)
+    : CheckpointStreamer(std::move(settings), kb.get_context(), write_hertz)
+  {
+  }
 
   /**
    * Implementation of BaseStreamer::enqueue, which stores the given parameters
@@ -72,15 +75,15 @@ public:
 
   // This object spawns a thread which holds a pointer back to this object,
   // so it cannot be safely copied or moved.
-  CheckpointStreamer(const CheckpointStreamer &) = delete;
-  CheckpointStreamer(CheckpointStreamer &&) = delete;
-  CheckpointStreamer &operator=(const CheckpointStreamer &) = delete;
-  CheckpointStreamer &operator=(CheckpointStreamer &&) = delete;
+  CheckpointStreamer(const CheckpointStreamer&) = delete;
+  CheckpointStreamer(CheckpointStreamer&&) = delete;
+  CheckpointStreamer& operator=(const CheckpointStreamer&) = delete;
+  CheckpointStreamer& operator=(CheckpointStreamer&&) = delete;
 
   ~CheckpointStreamer() override;
 
 private:
-  static void thread_main(CheckpointStreamer *self);
+  static void thread_main(CheckpointStreamer* self);
 
   void terminate()
   {
@@ -91,7 +94,7 @@ private:
   }
 
   CheckpointSettings settings_;
-  ThreadSafeContext *context_;
+  ThreadSafeContext* context_;
 
   using pair_type = std::pair<std::string, KnowledgeRecord>;
 
@@ -103,7 +106,7 @@ private:
   std::atomic_flag keep_running_;
   std::thread thread_;
 };
+}
+}  // namespace madara::knowledge
 
-} } // namespace madara::knowledge
-
-#endif // MADARA_KNOWLEDGE_CHECKPOINT_STREAMER_H_
+#endif  // MADARA_KNOWLEDGE_CHECKPOINT_STREAMER_H_

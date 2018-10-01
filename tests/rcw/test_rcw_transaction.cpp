@@ -11,7 +11,7 @@
 using namespace madara::knowledge;
 using namespace madara::knowledge::rcw;
 
-int main(int, char **)
+int main(int, char**)
 {
   KnowledgeBase kb;
   Transaction tx(kb);
@@ -53,9 +53,14 @@ int main(int, char **)
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({4, 5, 6}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({7, 8, 9}));
 
-  x = -1; y = 0; z = 0;
-  a = ""; b = ""; c = "";
-  v.clear(); w.clear();
+  x = -1;
+  y = 0;
+  z = 0;
+  a = "";
+  b = "";
+  c = "";
+  v.clear();
+  w.clear();
 
   tx.pull();
 
@@ -71,8 +76,12 @@ int main(int, char **)
   test_eq(v, std::vector<int64_t>({4, 5, 6}));
   test_eq(w, std::vector<int64_t>({7, 8, 9}));
 
-  x = 42; y++; --z;
-  a += "X"; b += b; c[1] = 'q';
+  x = 42;
+  y++;
+  --z;
+  a += "X";
+  b += b;
+  c[1] = 'q';
   u.push_back(x);
   v.clear();
   w[1] = 13;
@@ -102,7 +111,7 @@ int main(int, char **)
   test_eq(kb.get("b").to_string(), "barbar");
   test_eq(kb.get("c").to_string(), "bqz");
 
-  test_eq(kb.get("u").to_integers(), std::vector < int64_t > {42});
+  test_eq(kb.get("u").to_integers(), std::vector<int64_t>{42});
   test_eq(kb.get("v").to_integers(), std::vector<int64_t>({}));
   test_eq(kb.get("w").to_integers(), std::vector<int64_t>({7, 13, 9}));
 

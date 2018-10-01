@@ -12,19 +12,19 @@
 
 namespace madara
 {
-  namespace exceptions
-  {
-    /**
-     * An exception for unrecoverable KaRL compilation issues
-     **/
-    class KarlException : public MadaraException
-    {
-    public:
-      using MadaraException::MadaraException;
-    };
-  }
+namespace exceptions
+{
+/**
+ * An exception for unrecoverable KaRL compilation issues
+ **/
+class KarlException : public MadaraException
+{
+public:
+  using MadaraException::MadaraException;
+};
+}
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _MADARA_EXPRESSION_KARLEXCEPTION_H_ */

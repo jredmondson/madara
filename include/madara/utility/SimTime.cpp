@@ -5,8 +5,10 @@
 #include <chrono>
 #include <cmath>
 
-namespace madara { namespace utility {
-
+namespace madara
+{
+namespace utility
+{
 const double minrate = 0.0000000001;
 
 std::mutex SimTime::mutex_{};
@@ -17,14 +19,16 @@ uint64_t SimTime::last_realtime_ = SimTime::realtime();
 uint64_t SimTime::last_simtime_ = -1;
 double SimTime::last_rate_ = 1.0;
 
-uint64_t SimTime::realtime() {
+uint64_t SimTime::realtime()
+{
   namespace sc = std::chrono;
   auto now = sc::steady_clock::now();
   auto dur = now.time_since_epoch();
   return sc::duration_cast<sc::nanoseconds>(dur).count();
 }
 
-uint64_t SimTime::time() {
+uint64_t SimTime::time()
+{
   uint64_t prt;
   uint64_t pst;
   double pr;
@@ -70,7 +74,8 @@ uint64_t SimTime::time() {
   return st;
 }
 
-double SimTime::rate() {
+double SimTime::rate()
+{
   double r;
   sim_time_callback_fn callback;
 
@@ -88,7 +93,8 @@ double SimTime::rate() {
   return r;
 }
 
-uint64_t SimTime::duration(uint64_t sim_duration) {
+uint64_t SimTime::duration(uint64_t sim_duration)
+{
   double r = rate();
 
   if (r < minrate) {
@@ -98,7 +104,8 @@ uint64_t SimTime::duration(uint64_t sim_duration) {
   return sim_duration / r;
 }
 
-uint64_t SimTime::future(uint64_t sim_offset) {
+uint64_t SimTime::future(uint64_t sim_offset)
+{
   uint64_t now = realtime();
   uint64_t offset = duration(sim_offset);
 
@@ -109,14 +116,16 @@ uint64_t SimTime::future(uint64_t sim_offset) {
   return now + offset;
 }
 
-sim_time_callback_fn set_sim_time_callback(sim_time_callback_fn fn) {
+sim_time_callback_fn set_sim_time_callback(sim_time_callback_fn fn)
+{
   std::lock_guard<std::mutex> guard{SimTime::mutex_};
   using std::swap;
-  swap (fn, SimTime::callback_);
+  swap(fn, SimTime::callback_);
   return fn;
 }
 
-void sim_time_notify(uint64_t time, double rate) {
+void sim_time_notify(uint64_t time, double rate)
+{
   bool update_time = time != (uint64_t)-1;
   bool update_rate = !std::isnan(rate);
 
@@ -139,7 +148,7 @@ void sim_time_notify(uint64_t time, double rate) {
     SimTime::last_rate_ = rate;
   }
 }
-
-} }
+}
+}
 
 #endif

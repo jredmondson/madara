@@ -15,49 +15,69 @@ namespace utility = madara::utility;
 namespace threads = madara::threads;
 namespace rcw = madara::knowledge::rcw;
 
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
-  {
-    std::string arg1 (argv[i]);
+  for (int i = 1; i < argc; ++i) {
+    std::string arg1(argv[i]);
 
     if (true) {
     } else {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-        "\nProgram summary for %s:\n\n" \
-        "  Test the timed executor, which executes periodic tasks.\n\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        " [-f|--logfile file]      log to a file\n" \
-        "\n",
-        argv[0]);
-      exit (0);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "  Test the timed executor, which executes periodic tasks.\n\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          " [-f|--logfile file]      log to a file\n"
+          "\n",
+          argv[0]);
+      exit(0);
     }
   }
 }
 
-struct my_type
-{
+struct my_type {
   int a;
   int b;
   int c;
 };
 
-std::vector<int64_t> get_value(const my_type &v) { return {v.a, v.b, v.c}; }
-void set_value(my_type &v, std::vector<int64_t> n) { v.a = n[0]; v.b = n[1]; v.c = n[2]; }
-
-struct my_tracked_type
+std::vector<int64_t> get_value(const my_type& v)
 {
+  return {v.a, v.b, v.c};
+}
+void set_value(my_type& v, std::vector<int64_t> n)
+{
+  v.a = n[0];
+  v.b = n[1];
+  v.c = n[2];
+}
+
+struct my_tracked_type {
   int a;
   int b;
   int c;
   bool dirty;
 };
 
-std::vector<int64_t> get_value(const my_tracked_type &v) { return {v.a, v.b, v.c}; }
-void set_value(my_tracked_type &v, std::vector<int64_t> n) { v.a = n[0]; v.b = n[1]; v.c = n[2]; }
+std::vector<int64_t> get_value(const my_tracked_type& v)
+{
+  return {v.a, v.b, v.c};
+}
+void set_value(my_tracked_type& v, std::vector<int64_t> n)
+{
+  v.a = n[0];
+  v.b = n[1];
+  v.c = n[2];
+}
 
-bool is_dirty(const my_tracked_type &v) { return v.dirty; }
-void clear_dirty(my_tracked_type &v) { v.dirty = false; }
+bool is_dirty(const my_tracked_type& v)
+{
+  return v.dirty;
+}
+void clear_dirty(my_tracked_type& v)
+{
+  v.dirty = false;
+}
 
 class MyRCW : public threads::RCWThread
 {
@@ -77,7 +97,7 @@ public:
   my_type m;
   my_tracked_type d;
 
-  void setup (rcw::Transaction &tx) override
+  void setup(rcw::Transaction& tx) override
   {
     tx.add("x", x);
     tx.add("y", y);
@@ -99,16 +119,18 @@ public:
     m.b = 5;
     m.c = 6;
     tx.add_init("m", m);
-    std::cout << "m: {" << m.a << ", " << m.b << ", " << m.c << "}" << std::endl;
+    std::cout << "m: {" << m.a << ", " << m.b << ", " << m.c << "}"
+              << std::endl;
 
     d.a = 7;
     d.b = 8;
     d.c = 9;
     tx.add_init("d", d);
-    std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}" << std::endl;
+    std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}"
+              << std::endl;
   }
 
-  void compute (const rcw::Transaction &tx) override
+  void compute(const rcw::Transaction& tx) override
   {
     std::cout << "x: " << x << std::endl;
     std::cout << "y: " << y << std::endl;
@@ -119,36 +141,38 @@ public:
 
     std::cout << "tvec.size(): " << tvec.size() << std::endl;
     std::cout << "   ";
-    for (auto &cur : tvec) {
+    for (auto& cur : tvec) {
       std::cout << cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "uvec.size(): " << uvec.size() << std::endl;
     std::cout << "   ";
-    for (auto &cur : uvec) {
+    for (auto& cur : uvec) {
       std::cout << *cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "pvec.size(): " << pvec.size() << std::endl;
     std::cout << "   ";
-    for (auto &cur : pvec) {
+    for (auto& cur : pvec) {
       std::cout << cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "strvec.size(): " << strvec.size() << std::endl;
     std::cout << "   ";
-    for (auto &cur : strvec) {
+    for (auto& cur : strvec) {
       std::cout << cur << " ";
     }
     std::cout << std::endl;
 
     std::cout << "s: " << s << "  [" << s.size() << "]" << std::endl;
     std::cout << "t: " << *t << "  [" << t.size() << "]" << std::endl;
-    std::cout << "m: {" << m.a << ", " << m.b << ", " << m.c << "}" << std::endl;
-    std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}" << std::endl;
+    std::cout << "m: {" << m.a << ", " << m.b << ", " << m.c << "}"
+              << std::endl;
+    std::cout << "d: {" << d.a << ", " << d.b << ", " << d.c << "}"
+              << std::endl;
 
     ++x;
     y--;
@@ -182,12 +206,12 @@ public:
   }
 };
 
-void test_rcwthread (void)
+void test_rcwthread(void)
 {
   knowledge::KnowledgeBase knowledge;
   MyRCW my_thread;
 
-  threads::BaseThread *thread = &my_thread;
+  threads::BaseThread* thread = &my_thread;
   thread->init(knowledge);
   for (int x = 0; x < 10; ++x) {
     thread->run();
@@ -200,11 +224,11 @@ void test_rcwthread (void)
   thread->cleanup();
 }
 
-int main (int argc, char ** argv)
+int main(int argc, char** argv)
 {
-  handle_arguments (argc, argv);
+  handle_arguments(argc, argv);
 
-  test_rcwthread ();
+  test_rcwthread();
 
   return 0;
 }

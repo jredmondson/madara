@@ -15,10 +15,10 @@
 
 namespace madara
 {
-  namespace knowledge
-  {
-    typedef  std::vector <KnowledgeRecord>   FunctionArguments;
-  }
+namespace knowledge
+{
+typedef std::vector<KnowledgeRecord> FunctionArguments;
+}
 }
 
-#endif // _MADARA_KE_FUNCTION_ARGUMENTS_H_
+#endif  // _MADARA_KE_FUNCTION_ARGUMENTS_H_

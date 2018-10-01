@@ -10,57 +10,51 @@
 #include "madara/expression/Visitor.h"
 #include "madara/expression/LeafNode.h"
 
-
-
 // Ctor
-madara::expression::LeafNode::LeafNode (
-  logger::Logger & logger, const knowledge::KnowledgeRecord & item)
-: ComponentNode (logger), item_ (item)
+madara::expression::LeafNode::LeafNode(
+    logger::Logger& logger, const knowledge::KnowledgeRecord& item)
+  : ComponentNode(logger), item_(item)
 {
 }
 
 // Ctor
-madara::expression::LeafNode::LeafNode (
-  logger::Logger & logger, madara::knowledge::KnowledgeRecord::Integer item)
-: ComponentNode (logger)
+madara::expression::LeafNode::LeafNode(
+    logger::Logger& logger, madara::knowledge::KnowledgeRecord::Integer item)
+  : ComponentNode(logger)
 {
-  item_.set_value (item);
+  item_.set_value(item);
 }
 
 // Ctor
-madara::expression::LeafNode::LeafNode (
-  logger::Logger & logger, const std::string &item)
-: ComponentNode (logger)
+madara::expression::LeafNode::LeafNode(
+    logger::Logger& logger, const std::string& item)
+  : ComponentNode(logger)
 {
-  item_.set_value (item);
+  item_.set_value(item);
 }
 
 // Ctor
-madara::expression::LeafNode::LeafNode (
-  logger::Logger & logger, double item)
-: ComponentNode (logger)
+madara::expression::LeafNode::LeafNode(logger::Logger& logger, double item)
+  : ComponentNode(logger)
 {
-  item_.set_value (item);
+  item_.set_value(item);
 }
 
 // Dtor
-madara::expression::LeafNode::~LeafNode (void)
-{
-}
+madara::expression::LeafNode::~LeafNode(void) {}
 
 // return the item
-madara::knowledge::KnowledgeRecord
-madara::expression::LeafNode::item (void) const
+madara::knowledge::KnowledgeRecord madara::expression::LeafNode::item(
+    void) const
 {
   return item_;
 }
 
-
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::knowledge::KnowledgeRecord
-madara::expression::LeafNode::prune (bool & can_change)
+madara::knowledge::KnowledgeRecord madara::expression::LeafNode::prune(
+    bool& can_change)
 {
   can_change = false;
 
@@ -71,22 +65,19 @@ madara::expression::LeafNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
-madara::expression::LeafNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & /*settings*/)
+madara::knowledge::KnowledgeRecord madara::expression::LeafNode::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& /*settings*/)
 {
   // we could call item(), but since it is virtual, it incurs unnecessary
   // overhead.
   return item_;
 }
 
-
-void 
-madara::expression::LeafNode::accept (Visitor &visitor) const
+void madara::expression::LeafNode::accept(Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _LEAF_NODE_CPP_ */

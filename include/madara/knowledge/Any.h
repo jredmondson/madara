@@ -28,11 +28,15 @@
 #include "ConstAnyRef.h"
 #include "AnyRef.h"
 
-namespace madara { namespace knowledge {
-
-namespace tags {
-  struct from_tag_t {};
-  constexpr from_tag_t from_tag;
+namespace madara
+{
+namespace knowledge
+{
+namespace tags
+{
+struct from_tag_t {
+};
+constexpr from_tag_t from_tag;
 }
 
 /**
@@ -56,32 +60,36 @@ public:
   /**
    * Copy constructor. Will clone any data stored inside.
    **/
-  BasicOwningAny(const BasicOwningAny &other)
-    : Base(other.handler_,
-        other.data_ && other.handler_ ?
-          other.handler_->clone(other.data_) : nullptr) {}
+  BasicOwningAny(const BasicOwningAny& other)
+    : Base(other.handler_, other.data_ && other.handler_
+                               ? other.handler_->clone(other.data_)
+                               : nullptr)
+  {
+  }
 
   /**
    * Construct from a ConstAnyRef. Will clone the data it refers to.
    **/
-  BasicOwningAny(const ConstAnyRef &other)
-    : Base(other.handler_,
-        other.data_ && other.handler_ ?
-          other.handler_->clone(other.data_) : nullptr) {}
+  BasicOwningAny(const ConstAnyRef& other)
+    : Base(other.handler_, other.data_ && other.handler_
+                               ? other.handler_->clone(other.data_)
+                               : nullptr)
+  {
+  }
 
   /**
    * Construct from a AnyRef. Will clone the data it refers to.
    **/
-  BasicOwningAny(const AnyRef &other)
-    : BasicOwningAny(ConstAnyRef(other)) {}
+  BasicOwningAny(const AnyRef& other) : BasicOwningAny(ConstAnyRef(other)) {}
 
   /**
    * Copy assignment operator. Will clone any data stored inside.
    **/
-  BasicOwningAny &operator=(const BasicOwningAny &other)
+  BasicOwningAny& operator=(const BasicOwningAny& other)
   {
-    void *data = other.handler_ && other.data_ ?
-        other.handler_->clone(other.data_) : nullptr;
+    void* data = other.handler_ && other.data_
+                     ? other.handler_->clone(other.data_)
+                     : nullptr;
 
     clear();
     this->handler_ = other.handler_;
@@ -92,14 +100,15 @@ public:
   /**
    * Move constructor. Other Any will be left empty.
    **/
-  BasicOwningAny(BasicOwningAny &&other) noexcept :
-    Base(take_ptr(other.handler_),
-      take_ptr(other.data_)) {}
+  BasicOwningAny(BasicOwningAny&& other) noexcept
+    : Base(take_ptr(other.handler_), take_ptr(other.data_))
+  {
+  }
 
   /**
    * Move assignment operator. Other Any will be left empty.
    **/
-  BasicOwningAny &operator=(BasicOwningAny &&other) noexcept
+  BasicOwningAny& operator=(BasicOwningAny&& other) noexcept
   {
     if (this != &other) {
       using std::swap;
@@ -125,12 +134,11 @@ public:
     if (!this->data_) {
       return;
     }
-    if (this->handler_)
-    {
+    if (this->handler_) {
       this->handler_->destruct((void*)this->data_);
       this->handler_ = nullptr;
     } else {
-      delete [] (char*)this->data_;
+      delete[](char*) this->data_;
     }
     this->data_ = nullptr;
   }
@@ -141,14 +149,14 @@ public:
    * Otherwise, it will be copied.
    **/
   template<typename T,
-    typename std::enable_if<
-      !is_type_tag<T>() &&
-      !is_convertible<T, ConstAnyRef>(), int>::type = 0>
-  explicit BasicOwningAny(T &&t)
+      typename std::enable_if<
+          !is_type_tag<T>() && !is_convertible<T, ConstAnyRef>(), int>::type =
+          0>
+  explicit BasicOwningAny(T&& t)
     : Base(&get_type_handler(type<decay_<T>>{}),
-        reinterpret_cast<void*>(
-            new decay_<T>(std::forward<T>(t))))
-  {}
+          reinterpret_cast<void*>(new decay_<T>(std::forward<T>(t))))
+  {
+  }
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -167,7 +175,9 @@ public:
   template<typename T, typename... Args>
   explicit BasicOwningAny(type<T> t, Args&&... args)
     : Base(&get_type_handler(t),
-        reinterpret_cast<void*>(new T(std::forward<Args>(args)...))) {}
+          reinterpret_cast<void*>(new T(std::forward<Args>(args)...)))
+  {
+  }
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -185,11 +195,13 @@ public:
    **/
   template<typename T, typename I>
   explicit BasicOwningAny(type<T> t, std::initializer_list<I> init)
-    : BasicOwningAny(t, init.begin(), init.end()) {}
+    : BasicOwningAny(t, init.begin(), init.end())
+  {
+  }
 
-  BasicOwningAny(tags::from_tag_t, const char *tag);
+  BasicOwningAny(tags::from_tag_t, const char* tag);
 
-  BasicOwningAny(tags::from_tag_t, const std::string &tag);
+  BasicOwningAny(tags::from_tag_t, const std::string& tag);
 
   /**
    * Construct any compatible type in-place. The first argument is a
@@ -207,15 +219,15 @@ public:
    * @endcode
    **/
   template<typename T, typename... Args>
-  T &emplace(type<T>, Args&&... args)
+  T& emplace(type<T>, Args&&... args)
   {
     std::unique_ptr<T> ptr(new T(std::forward<Args>(args)...));
-    const auto &handler = get_type_handler(type<decay_<T>>{});
+    const auto& handler = get_type_handler(type<decay_<T>>{});
 
     clear();
 
     this->handler_ = &handler;
-    T *ret = ptr.release();
+    T* ret = ptr.release();
     this->data_ = reinterpret_cast<void*>(ret);
     return *ret;
   }
@@ -236,7 +248,7 @@ public:
    * @endcode
    **/
   template<typename T, typename I>
-  T &emplace(type<T> t, std::initializer_list<I> init)
+  T& emplace(type<T> t, std::initializer_list<I> init)
   {
     return emplace(t, init.begin(), init.end());
   }
@@ -255,7 +267,7 @@ public:
    * @endcode
    **/
   template<typename T, typename... Args>
-  T &emplace(Args&&... args)
+  T& emplace(Args&&... args)
   {
     return emplace(type<T>{}, std::forward<Args>(args)...);
   }
@@ -276,13 +288,13 @@ public:
    * @endcode
    **/
   template<typename T, typename I>
-  T &emplace(std::initializer_list<I> init)
+  T& emplace(std::initializer_list<I> init)
   {
     return emplace(type<T>{}, init);
   }
 
-  void emplace(const char *tag);
-  void emplace(const std::string &tag);
+  void emplace(const char* tag);
+  void emplace(const std::string& tag);
 
   /**
    * Set from any compatible type. The argument will be moved into
@@ -290,10 +302,9 @@ public:
    * Otherwise, it will be copied.
    **/
   template<typename T>
-  T &set(T &&t)
+  T& set(T&& t)
   {
-    return emplace(type<decay_<T>>{},
-           std::forward<T>(t));
+    return emplace(type<decay_<T>>{}, std::forward<T>(t));
   }
 
   /**
@@ -302,9 +313,9 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  size_t unserialize(type<T> t, const char *data, size_t size)
+  size_t unserialize(type<T> t, const char* data, size_t size)
   {
-    const TypeHandlers &handler = get_type_handler(t);
+    const TypeHandlers& handler = get_type_handler(t);
     std::unique_ptr<T> ptr(new T{});
 
     handler.load(data, size, (void*)ptr.get(), AnyRegistry::get_type_name<T>());
@@ -322,7 +333,7 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  size_t unserialize(const char *data, size_t size)
+  size_t unserialize(const char* data, size_t size)
   {
     return unserialize(type<T>{}, data, size);
   }
@@ -358,7 +369,7 @@ public:
   }
 #endif
 
-  void unserialize(const char *type, const char *data, size_t size);
+  void unserialize(const char* type, const char* data, size_t size);
 
   /**
    * Unserialize the given type from the given character array, and store into
@@ -368,7 +379,7 @@ public:
    *
    * Use with data serialized by tagged_serialize()
    **/
-  size_t tagged_unserialize(const char *data, size_t size)
+  size_t tagged_unserialize(const char* data, size_t size)
   {
     namespace bio = boost::iostreams;
 
@@ -410,14 +421,15 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  void unserialize_json(type<T> t, std::istream &i)
+  void unserialize_json(type<T> t, std::istream& i)
   {
-    const TypeHandlers &handler = get_type_handler(t);
+    const TypeHandlers& handler = get_type_handler(t);
 
     using exceptions::BadAnyAccess;
     if (!handler.load_json) {
-      throw BadAnyAccess(std::string("Type ") + AnyRegistry::get_type_name<T>()
-          + " does not support unserialize_json");
+      throw BadAnyAccess(std::string("Type ") +
+                         AnyRegistry::get_type_name<T>() +
+                         " does not support unserialize_json");
     }
 
     std::unique_ptr<T> ptr(new T{});
@@ -435,7 +447,7 @@ public:
    * exception is throw during unserialization, this Any will not be modified.
    **/
   template<typename T>
-  void unserialize_json(std::istream &i)
+  void unserialize_json(std::istream& i)
   {
     unserialize(type<T>{}, i);
   }
@@ -445,9 +457,9 @@ public:
    * this Any. This operation provides the strong exception-guarantee: if an
    * exception is throw during unserialization, this Any will not be modified.
    **/
-  void unserialize_json(const char *type, std::istream &i);
+  void unserialize_json(const char* type, std::istream& i);
 
-  void unserialize_json(const char *type, const char *json, size_t size)
+  void unserialize_json(const char* type, const char* json, size_t size)
   {
     namespace bio = boost::iostreams;
 
@@ -457,29 +469,29 @@ public:
     unserialize_json(type, input_stream);
   }
 
-  void unserialize_json(const char *type, const char *json)
+  void unserialize_json(const char* type, const char* json)
   {
     unserialize_json(type, json, std::strlen(json));
   }
 
-  void unserialize_json(const char *type, const std::string &json)
+  void unserialize_json(const char* type, const std::string& json)
   {
     unserialize_json(type, json.c_str(), json.size());
   }
 
 protected:
   template<typename T>
-  static T *take_ptr(T *&in)
+  static T* take_ptr(T*& in)
   {
-    T *ret = in;
+    T* ret = in;
     in = nullptr;
     return ret;
   }
 
   template<typename T>
-  static const T *take_ptr(const T *&in)
+  static const T* take_ptr(const T*& in)
   {
-    const T *ret = in;
+    const T* ret = in;
     in = nullptr;
     return ret;
   }
@@ -508,22 +520,23 @@ protected:
  * A `const ConstAny` cannot change at all once constructed, until the
  * `const ConstAny` itself is destructed.
  **/
-class ConstAny : public BasicOwningAny<ConstAny,
-  BasicConstAny<ConstAny, Any, ConstAnyRef>>
+class ConstAny
+  : public BasicOwningAny<ConstAny, BasicConstAny<ConstAny, Any, ConstAnyRef>>
 {
-  using Base = BasicOwningAny<ConstAny,
-    BasicConstAny<ConstAny, Any, ConstAnyRef>>;
+  using Base =
+      BasicOwningAny<ConstAny, BasicConstAny<ConstAny, Any, ConstAnyRef>>;
 
 public:
   using Base::Base;
 
-  static ConstAny construct(const char *name) {
+  static ConstAny construct(const char* name)
+  {
     return construct_const(name);
   }
 
   ConstAny() = default;
-  ConstAny(const Any &other);
-  ConstAny(Any &&other) noexcept;
+  ConstAny(const Any& other);
+  ConstAny(Any&& other) noexcept;
 
   friend class Any;
 };
@@ -548,27 +561,25 @@ public:
  * object which cannot be modifid, and `const ConstAny` to hold a const
  * object that will not be destructed until the `const ConstAny` is destructed.
  **/
-class Any : public BasicOwningAny<Any,
-  BasicAny<Any, Any, AnyRef, ConstAnyRef>>
+class Any : public BasicOwningAny<Any, BasicAny<Any, Any, AnyRef, ConstAnyRef>>
 {
-  using Base = BasicOwningAny<Any,
-    BasicAny<Any, Any, AnyRef, ConstAnyRef>>;
+  using Base = BasicOwningAny<Any, BasicAny<Any, Any, AnyRef, ConstAnyRef>>;
 
 public:
   using Base::Base;
 
   Any() = default;
-  Any(const ConstAny &other);
-  Any(ConstAny &&other) noexcept;
+  Any(const ConstAny& other);
+  Any(ConstAny&& other) noexcept;
 
   friend class ConstAny;
   friend class AnyRegistry;
 };
 
 template<typename T>
-inline bool AnyRegistry::register_type(const char *name)
+inline bool AnyRegistry::register_type(const char* name)
 {
-  auto &ptr = *get_type_name_ptr<T>();
+  auto& ptr = *get_type_name_ptr<T>();
   if (ptr == nullptr) {
     ptr = name;
   }
@@ -578,7 +589,7 @@ inline bool AnyRegistry::register_type(const char *name)
 
 template<typename Impl, typename Base>
 inline void BasicOwningAny<Impl, Base>::unserialize(
-    const char *type, const char *data, size_t size)
+    const char* type, const char* data, size_t size)
 {
   Any any(construct(type));
 
@@ -591,14 +602,14 @@ inline void BasicOwningAny<Impl, Base>::unserialize(
 
 template<typename Impl, typename Base>
 inline void BasicOwningAny<Impl, Base>::unserialize_json(
-    const char *type, std::istream &i)
+    const char* type, std::istream& i)
 {
   Any any(construct(type));
 
   using exceptions::BadAnyAccess;
   if (!any.handler_->load_json) {
-    throw BadAnyAccess(std::string("Type ") + type +
-        " does not support unserialize_json");
+    throw BadAnyAccess(
+        std::string("Type ") + type + " does not support unserialize_json");
   }
 
   any.handler_->load_json(i, any.data_, type);
@@ -608,54 +619,61 @@ inline void BasicOwningAny<Impl, Base>::unserialize_json(
   swap(this->data_, any.data_);
 }
 
-inline ConstAnyRef::ConstAnyRef(const Any &other)
-  : Base(other.handler_, other.data_) {}
+inline ConstAnyRef::ConstAnyRef(const Any& other)
+  : Base(other.handler_, other.data_)
+{
+}
 
-inline AnyRef::AnyRef(const Any &other)
-  : Base(other.handler_, other.data_) {}
+inline AnyRef::AnyRef(const Any& other) : Base(other.handler_, other.data_) {}
 
-inline ConstAnyRef::ConstAnyRef(const ConstAny &other)
-  : Base(other.handler_, other.data_) {}
+inline ConstAnyRef::ConstAnyRef(const ConstAny& other)
+  : Base(other.handler_, other.data_)
+{
+}
 
-inline ConstAny::ConstAny(const Any &other)
-  : ConstAny(other.cref()) {}
+inline ConstAny::ConstAny(const Any& other) : ConstAny(other.cref()) {}
 
-inline ConstAny::ConstAny(Any &&other) noexcept
-  : Base(take_ptr(other.handler_),
-         take_ptr(other.data_)) {}
+inline ConstAny::ConstAny(Any&& other) noexcept
+  : Base(take_ptr(other.handler_), take_ptr(other.data_))
+{
+}
 
-inline Any::Any(const ConstAny &other)
-  : Any(other.cref()) {}
+inline Any::Any(const ConstAny& other) : Any(other.cref()) {}
 
-inline Any::Any(ConstAny &&other) noexcept
-  : Base(take_ptr(other.handler_),
-         take_ptr(other.data_)) {}
-
-template<typename Impl, typename Base>
-inline BasicOwningAny<Impl, Base>::BasicOwningAny(
-    tags::from_tag_t, const char *tag)
-  : BasicOwningAny(construct(tag)) {}
+inline Any::Any(ConstAny&& other) noexcept
+  : Base(take_ptr(other.handler_), take_ptr(other.data_))
+{
+}
 
 template<typename Impl, typename Base>
 inline BasicOwningAny<Impl, Base>::BasicOwningAny(
-    tags::from_tag_t, const std::string &tag)
-  : BasicOwningAny(tag.c_str()) {}
+    tags::from_tag_t, const char* tag)
+  : BasicOwningAny(construct(tag))
+{
+}
 
 template<typename Impl, typename Base>
-inline void BasicOwningAny<Impl, Base>::emplace(const char *tag)
+inline BasicOwningAny<Impl, Base>::BasicOwningAny(
+    tags::from_tag_t, const std::string& tag)
+  : BasicOwningAny(tag.c_str())
+{
+}
+
+template<typename Impl, typename Base>
+inline void BasicOwningAny<Impl, Base>::emplace(const char* tag)
 {
   *this = construct(tag);
 }
 
 template<typename Impl, typename Base>
-inline void BasicOwningAny<Impl, Base>::emplace(const std::string &tag)
+inline void BasicOwningAny<Impl, Base>::emplace(const std::string& tag)
 {
   emplace(tag.c_str());
 }
 
-} // namespace knowledge
+}  // namespace knowledge
 
-} // namespace madara
+}  // namespace madara
 
 #include "DefaultTypeHandlers.h"
 

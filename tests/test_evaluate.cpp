@@ -11,25 +11,23 @@
 #include <iostream>
 #include <string>
 
-int main (int argc, char * argv[])
+int main(int argc, char* argv[])
 {
   madara::knowledge::KnowledgeBase knowledge;
-  
-  if (argc != 2)
-  {
-    knowledge.print ("To use this program, you must provide 1 argument.\n");
-    knowledge.print ("  test_evaluate 'some expression to evaluate'\n");
+
+  if (argc != 2) {
+    knowledge.print("To use this program, you must provide 1 argument.\n");
+    knowledge.print("  test_evaluate 'some expression to evaluate'\n");
 
     return -1;
   }
-  
-  
+
 #ifndef _MADARA_NO_KARL_
-  knowledge.evaluate (argv[1]);
-  knowledge.print ();
-  
+  knowledge.evaluate(argv[1]);
+  knowledge.print();
+
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
   return 0;
 }

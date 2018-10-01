@@ -5,54 +5,54 @@
 #include "madara/expression/VariableCompareNode.h"
 #include "madara/utility/Utility.h"
 
-typedef madara::knowledge::KnowledgeRecord  KnowledgeRecord;
+typedef madara::knowledge::KnowledgeRecord KnowledgeRecord;
 
 #include <string>
 #include <sstream>
 
-madara::expression::VariableCompareNode::VariableCompareNode (
-  ComponentNode * lhs, madara::knowledge::KnowledgeRecord value, int compare_type,
-  ComponentNode * rhs, madara::knowledge::ThreadSafeContext &context)
-: ComponentNode (context.get_logger ()), var_ (0), array_ (0),
-  value_ (value), rhs_ (rhs),
-  context_ (context),
-  compare_type_ (compare_type)
+madara::expression::VariableCompareNode::VariableCompareNode(ComponentNode* lhs,
+    madara::knowledge::KnowledgeRecord value, int compare_type,
+    ComponentNode* rhs, madara::knowledge::ThreadSafeContext& context)
+  : ComponentNode(context.get_logger()),
+    var_(0),
+    array_(0),
+    value_(value),
+    rhs_(rhs),
+    context_(context),
+    compare_type_(compare_type)
 {
-  var_ = dynamic_cast <VariableNode *> (lhs);
+  var_ = dynamic_cast<VariableNode*>(lhs);
 
   if (!var_)
-    array_ = dynamic_cast <CompositeArrayReference *> (lhs);
+    array_ = dynamic_cast<CompositeArrayReference*>(lhs);
 }
 
-madara::expression::VariableCompareNode::~VariableCompareNode ()
+madara::expression::VariableCompareNode::~VariableCompareNode()
 {
   // do not clean up record_. Let the context clean that up.
 }
 
-void
-madara::expression::VariableCompareNode::accept (Visitor &visitor) const
+void madara::expression::VariableCompareNode::accept(Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-KnowledgeRecord
-madara::expression::VariableCompareNode::item () const
+KnowledgeRecord madara::expression::VariableCompareNode::item() const
 {
   knowledge::KnowledgeRecord value;
 
   if (var_)
-    value = var_->item ();
+    value = var_->item();
   else if (array_)
-    value = array_->item ();
+    value = array_->item();
 
   return value;
 }
 
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-KnowledgeRecord
-madara::expression::VariableCompareNode::prune (bool & can_change)
+KnowledgeRecord madara::expression::VariableCompareNode::prune(bool& can_change)
 {
   bool left_child_can_change = false;
   bool right_child_can_change = false;
@@ -60,35 +60,30 @@ madara::expression::VariableCompareNode::prune (bool & can_change)
 
   if (this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
-  else
-  {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::VariableCompareNode: "
-      "KARL COMPILE ERROR: Compare has no variable\\n");
+  else {
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::VariableCompareNode: "
+        "KARL COMPILE ERROR: Compare has no variable\\n");
 
-    throw exceptions::KarlException ("madara::expression::VariableCompareNode: "
-      "KARL COMPILE ERROR: "
-      "Node has no variable left-hand side\n");  
+    throw exceptions::KarlException("madara::expression::VariableCompareNode: "
+                                    "KARL COMPILE ERROR: "
+                                    "Node has no variable left-hand side\n");
   }
 
-  if (this->rhs_)
-  {
-    right_value = this->rhs_->prune (right_child_can_change);
-    if (!right_child_can_change && dynamic_cast <LeafNode *> (rhs_) == 0)
-    {
+  if (this->rhs_) {
+    right_value = this->rhs_->prune(right_child_can_change);
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0) {
       delete this->rhs_;
-      this->rhs_ = new LeafNode (*(this->logger_), right_value);
+      this->rhs_ = new LeafNode(*(this->logger_), right_value);
     }
-  }
-  else
-  {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::VariableCompareNode: "
-      "KARL COMPILE ERROR: Compare has no right expression\n");
+  } else {
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::VariableCompareNode: "
+        "KARL COMPILE ERROR: Compare has no right expression\n");
 
-    throw exceptions::KarlException ("madara::expression::VariableCompareNode: "
-      "KARL COMPILE ERROR: "
-      "Node has no right expression\n"); 
+    throw exceptions::KarlException("madara::expression::VariableCompareNode: "
+                                    "KARL COMPILE ERROR: "
+                                    "Node has no right expression\n");
   }
 
   can_change = left_child_can_change || right_child_can_change;
@@ -98,66 +93,44 @@ madara::expression::VariableCompareNode::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-KnowledgeRecord 
-madara::expression::VariableCompareNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & settings)
+KnowledgeRecord madara::expression::VariableCompareNode::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
   KnowledgeRecord lhs;
-  KnowledgeRecord::Integer result (0);
+  KnowledgeRecord::Integer result(0);
 
   if (var_)
-    lhs = var_->evaluate (settings);
+    lhs = var_->evaluate(settings);
   else if (array_)
-    lhs = array_->evaluate (settings);
+    lhs = array_->evaluate(settings);
 
-  if (rhs_)
-  {
-    if (compare_type_ == LESS_THAN)
-    {
-      result = lhs < rhs_->evaluate (settings);
+  if (rhs_) {
+    if (compare_type_ == LESS_THAN) {
+      result = lhs < rhs_->evaluate(settings);
+    } else if (compare_type_ == LESS_THAN_EQUAL) {
+      result = lhs <= rhs_->evaluate(settings);
+    } else if (compare_type_ == EQUAL) {
+      result = lhs == rhs_->evaluate(settings);
+    } else if (compare_type_ == GREATER_THAN_EQUAL) {
+      result = lhs >= rhs_->evaluate(settings);
+    } else {
+      result = lhs > rhs_->evaluate(settings);
     }
-    else if (compare_type_ == LESS_THAN_EQUAL)
-    {
-      result = lhs <= rhs_->evaluate (settings);
-    }
-    else if (compare_type_ == EQUAL)
-    {
-      result = lhs == rhs_->evaluate (settings);
-    }
-    else if (compare_type_ == GREATER_THAN_EQUAL)
-    {
-      result = lhs >= rhs_->evaluate (settings);
-    }
-    else
-    {
-      result = lhs > rhs_->evaluate (settings);
-    }
-  }
-  else
-  {
-    if (compare_type_ == LESS_THAN)
-    {
+  } else {
+    if (compare_type_ == LESS_THAN) {
       result = lhs < value_;
-    }
-    else if (compare_type_ == LESS_THAN_EQUAL)
-    {
+    } else if (compare_type_ == LESS_THAN_EQUAL) {
       result = lhs <= value_;
-    }
-    else if (compare_type_ == EQUAL)
-    {
+    } else if (compare_type_ == EQUAL) {
       result = lhs == value_;
-    }
-    else if (compare_type_ == GREATER_THAN_EQUAL)
-    {
+    } else if (compare_type_ == GREATER_THAN_EQUAL) {
       result = lhs >= value_;
-    }
-    else
-    {
+    } else {
       result = lhs > value_;
     }
   }
 
-  return knowledge::KnowledgeRecord (result);
+  return knowledge::KnowledgeRecord(result);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_

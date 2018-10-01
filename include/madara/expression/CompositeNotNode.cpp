@@ -12,78 +12,69 @@
 #include "madara/expression/CompositeNotNode.h"
 #include "madara/expression/LeafNode.h"
 
-madara::expression::CompositeNotNode::CompositeNotNode (
-  logger::Logger & logger, ComponentNode *right)
-: CompositeUnaryNode (logger, right)
-{    
+madara::expression::CompositeNotNode::CompositeNotNode(
+    logger::Logger& logger, ComponentNode* right)
+  : CompositeUnaryNode(logger, right)
+{
 }
 
 // Dtor
-madara::expression::CompositeNotNode::~CompositeNotNode (void)
-{
-}
+madara::expression::CompositeNotNode::~CompositeNotNode(void) {}
 
-madara::knowledge::KnowledgeRecord
-madara::expression::CompositeNotNode::item (void) const
+madara::knowledge::KnowledgeRecord madara::expression::CompositeNotNode::item(
+    void) const
 {
   madara::knowledge::KnowledgeRecord record;
-  record.set_value ("!");
+  record.set_value("!");
   return record;
 }
 
-
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
-madara::knowledge::KnowledgeRecord
-madara::expression::CompositeNotNode::prune (bool & can_change)
+madara::knowledge::KnowledgeRecord madara::expression::CompositeNotNode::prune(
+    bool& can_change)
 {
   bool right_child_can_change = false;
   madara::knowledge::KnowledgeRecord right_value;
 
-  if (this->right_)
-  {
-    right_value = this->right_->prune (right_child_can_change);
-    if (!right_child_can_change && dynamic_cast <LeafNode *> (right_) == 0)
-    {
+  if (this->right_) {
+    right_value = this->right_->prune(right_child_can_change);
+    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0) {
       delete this->right_;
-      this->right_ = new LeafNode (*(this->logger_), right_value);
+      this->right_ = new LeafNode(*(this->logger_), right_value);
     }
-  }
-  else
-  {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::CompositeNotNode: "
-      "KARL COMPILE ERROR: "
-      "Logical-not has no right expression\n");
+  } else {
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::CompositeNotNode: "
+        "KARL COMPILE ERROR: "
+        "Logical-not has no right expression\n");
 
-    throw exceptions::KarlException ("madara::expression::CompositeNotNode: "
-      "KARL COMPILE ERROR: "
-      "Node has no right expression\n"); 
+    throw exceptions::KarlException("madara::expression::CompositeNotNode: "
+                                    "KARL COMPILE ERROR: "
+                                    "Node has no right expression\n");
   }
 
   can_change = right_child_can_change;
 
-  return knowledge::KnowledgeRecord (!right_value);
+  return knowledge::KnowledgeRecord(!right_value);
 }
-
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
-madara::expression::CompositeNotNode::evaluate (
-  const madara::knowledge::KnowledgeUpdateSettings & settings)
+madara::knowledge::KnowledgeRecord
+madara::expression::CompositeNotNode::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
-  return knowledge::KnowledgeRecord (!right_->evaluate (settings));
+  return knowledge::KnowledgeRecord(!right_->evaluate(settings));
 }
 
 // accept a visitor
-void 
-madara::expression::CompositeNotNode::accept (Visitor &visitor) const
+void madara::expression::CompositeNotNode::accept(Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _NOT_NODE_CPP_ */

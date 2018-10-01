@@ -28,12 +28,9 @@ int main()
 
   // test doesn't really check anything for success or failure
 
-  if (madara_fails > 0)
-  {
+  if (madara_fails > 0) {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
-  }
-  else
-  {
+  } else {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
 

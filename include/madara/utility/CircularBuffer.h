@@ -18,8 +18,10 @@
 #include "madara/utility/IntTypes.h"
 #include "madara/utility/SupportTest.h"
 
-namespace madara { namespace utility {
-
+namespace madara
+{
+namespace utility
+{
 /**
  * General purpose circular buffer container. Differs from some implementations
  * in that it tracks an always-growing index, enabling multiple independent
@@ -44,16 +46,18 @@ public:
   explicit CircularBuffer(size_t capacity, size_t initial_index = 0)
     : front_(initial_index),
       back_(initial_index),
-      data_((T *)operator new(sizeof(T) * capacity)),
-      cap_(capacity) {}
+      data_((T*)operator new(sizeof(T) * capacity)),
+      cap_(capacity)
+  {
+  }
 
   /**
    * Copy constructor. Abides by typical semantics.
    **/
-  CircularBuffer(const CircularBuffer &other)
+  CircularBuffer(const CircularBuffer& other)
     : CircularBuffer(other.size(), other.front_)
   {
-    for (const T &cur : other) {
+    for (const T& cur : other) {
       emplace_back(cur);
     }
   }
@@ -61,7 +65,7 @@ public:
   /**
    * Move constructor. Abides by typical semantics.
    **/
-  CircularBuffer(CircularBuffer &&other) noexcept
+  CircularBuffer(CircularBuffer&& other) noexcept
   {
     swap(other);
   }
@@ -69,7 +73,7 @@ public:
   /**
    * Copy assignment operator. Abides by typical semantics.
    **/
-  CircularBuffer &operator=(const CircularBuffer &other)
+  CircularBuffer& operator=(const CircularBuffer& other)
   {
     CircularBuffer tmp(other);
     *this = std::move(tmp);
@@ -79,7 +83,7 @@ public:
   /**
    * Move assignment operator. Abides by typical semantics.
    **/
-  CircularBuffer &operator=(CircularBuffer &&other) noexcept
+  CircularBuffer& operator=(CircularBuffer&& other) noexcept
   {
     swap(other);
     return *this;
@@ -97,7 +101,7 @@ public:
   /**
    * Swaps contents with another CircularBuffer, without copying elements.
    **/
-  void swap(CircularBuffer &other) noexcept
+  void swap(CircularBuffer& other) noexcept
   {
     using std::swap;
     swap(front_, other.front_);
@@ -121,31 +125,56 @@ public:
   }
 
   /// Is this CircularBuffer empty?
-  bool empty() const { return front_ == back_; }
+  bool empty() const
+  {
+    return front_ == back_;
+  }
 
   /// Number of elements this buffer can hold without dropping any
-  size_t capacity() const { return cap_; }
+  size_t capacity() const
+  {
+    return cap_;
+  }
 
   /// Number of elements this buffer currently holds, up to capacity
-  size_t size() const { return back_ - front_; }
+  size_t size() const
+  {
+    return back_ - front_;
+  }
 
   /// Index of front element
-  size_t front_index() const { return front_; }
+  size_t front_index() const
+  {
+    return front_;
+  }
 
   /// Index of back element
-  size_t back_index() const { return back_ - 1; }
+  size_t back_index() const
+  {
+    return back_ - 1;
+  }
 
   /// Convert an actual index, to the modulused actual index within buffer
-  size_t actual(size_t i) const { return i % capacity(); }
+  size_t actual(size_t i) const
+  {
+    return i % capacity();
+  }
 
   /// Actual index of front within the buffer
-  size_t front_actual() const { return actual(front_index()); }
+  size_t front_actual() const
+  {
+    return actual(front_index());
+  }
 
   /// Actual index of back within the buffer
-  size_t back_actual() const { return actual(back_index()); }
+  size_t back_actual() const
+  {
+    return actual(back_index());
+  }
 
   /// Empty the buffer, destructing all elements
-  void clear() {
+  void clear()
+  {
     while (!empty()) {
       discard_front();
     }
@@ -157,63 +186,102 @@ public:
   public:
     using value_type = const T;
     using difference_type = size_t;
-    using reference = const T &;
-    using pointer = const T *;
+    using reference = const T&;
+    using pointer = const T*;
     using iterator_category = std::random_access_iterator_tag;
 
-    reference operator*() const { return (*buf_)[idx_]; }
-    reference at() const { return buf_->at(idx_); }
-    pointer operator->() const { return &(*buf_)[idx_]; }
-    reference operator[](size_t i) const { return (*buf_)[idx_ + i]; }
-    reference at(size_t i) const { return buf_->at(idx_ + i); }
-    const_iterator &operator++() { ++idx_; return *this; }
-    const_iterator &operator--() { --idx_; return *this; }
-    const_iterator operator++(int) { auto ret = *this; ++idx_; return ret; }
-    const_iterator operator--(int) { auto ret = *this; --idx_; return ret; }
+    reference operator*() const
+    {
+      return (*buf_)[idx_];
+    }
+    reference at() const
+    {
+      return buf_->at(idx_);
+    }
+    pointer operator->() const
+    {
+      return &(*buf_)[idx_];
+    }
+    reference operator[](size_t i) const
+    {
+      return (*buf_)[idx_ + i];
+    }
+    reference at(size_t i) const
+    {
+      return buf_->at(idx_ + i);
+    }
+    const_iterator& operator++()
+    {
+      ++idx_;
+      return *this;
+    }
+    const_iterator& operator--()
+    {
+      --idx_;
+      return *this;
+    }
+    const_iterator operator++(int)
+    {
+      auto ret = *this;
+      ++idx_;
+      return ret;
+    }
+    const_iterator operator--(int)
+    {
+      auto ret = *this;
+      --idx_;
+      return ret;
+    }
 
     /// Index this iterator refers to
-    size_t index() const { return idx_; }
+    size_t index() const
+    {
+      return idx_;
+    }
 
     /// Actual index within buffer this iterator refers to
-    size_t index_actual() const { return buf_->actual(idx_); }
+    size_t index_actual() const
+    {
+      return buf_->actual(idx_);
+    }
 
-    bool operator==(const const_iterator &other) const
+    bool operator==(const const_iterator& other) const
     {
       return buf_ == other.buf_ && idx_ == other.idx_;
     }
 
-    bool operator!=(const const_iterator &other) const
+    bool operator!=(const const_iterator& other) const
     {
       return !operator==(other);
     }
 
-    bool operator<(const const_iterator &other) const
+    bool operator<(const const_iterator& other) const
     {
       return buf_ < other.buf_ && idx_ < other.idx_;
     }
 
-    bool operator>(const const_iterator &other) const
+    bool operator>(const const_iterator& other) const
     {
       return buf_ > other.buf_ && idx_ > other.idx_;
     }
 
-    bool operator<=(const const_iterator &other) const
+    bool operator<=(const const_iterator& other) const
     {
       return !operator>(other);
     }
 
-    bool operator>=(const const_iterator &other) const
+    bool operator>=(const const_iterator& other) const
     {
       return !operator<(other);
     }
 
-    const_iterator &operator+=(size_t n)
+    const_iterator& operator+=(size_t n)
     {
       idx_ += n;
       return *this;
     }
 
-    const_iterator &operator-=(size_t n)
+    const_iterator& operator-=(size_t n)
     {
       idx_ -= n;
       return *this;
@@ -226,7 +294,7 @@ public:
       return ret;
     }
 
-    friend const_iterator operator+(size_t n, const const_iterator &me)
+    friend const_iterator operator+(size_t n, const const_iterator& me)
     {
       const_iterator ret = me;
       ret += n;
@@ -240,20 +308,22 @@ public:
       return ret;
     }
 
-    size_t operator-(const const_iterator &other) const
+    size_t operator-(const const_iterator& other) const
     {
       if (buf_ != other.buf_) {
-        return (size_t) -1;
+        return (size_t)-1;
       }
 
       return idx_ - other.idx_;
     }
 
   private:
-    const_iterator(const CircularBuffer &buf, size_t idx)
-      : buf_(&buf), idx_(idx) {}
+    const_iterator(const CircularBuffer& buf, size_t idx)
+      : buf_(&buf), idx_(idx)
+    {
+    }
 
-    const CircularBuffer *buf_;
+    const CircularBuffer* buf_;
     size_t idx_;
 
     friend class CircularBuffer<T>;
@@ -265,62 +335,101 @@ public:
   public:
     using value_type = T;
     using difference_type = size_t;
-    using reference = T &;
-    using pointer = T *;
+    using reference = T&;
+    using pointer = T*;
     using iterator_category = std::random_access_iterator_tag;
 
-    reference operator *() const { return (*buf_)[idx_]; }
-    reference at() const { return buf_->at(idx_); }
-    pointer operator ->() const { return &(*buf_)[idx_]; }
-    reference operator [](size_t i) const { return (*buf_)[idx_ + i]; }
-    reference at(size_t i) const { return buf_->at(idx_ + i); }
-    iterator &operator++() { ++idx_; return *this; }
-    iterator &operator--() { --idx_; return *this; }
-    iterator operator++(int) { auto ret = *this; ++idx_; return ret; }
-    iterator operator--(int) { auto ret = *this; --idx_; return ret; }
+    reference operator*() const
+    {
+      return (*buf_)[idx_];
+    }
+    reference at() const
+    {
+      return buf_->at(idx_);
+    }
+    pointer operator->() const
+    {
+      return &(*buf_)[idx_];
+    }
+    reference operator[](size_t i) const
+    {
+      return (*buf_)[idx_ + i];
+    }
+    reference at(size_t i) const
+    {
+      return buf_->at(idx_ + i);
+    }
+    iterator& operator++()
+    {
+      ++idx_;
+      return *this;
+    }
+    iterator& operator--()
+    {
+      --idx_;
+      return *this;
+    }
+    iterator operator++(int)
+    {
+      auto ret = *this;
+      ++idx_;
+      return ret;
+    }
+    iterator operator--(int)
+    {
+      auto ret = *this;
+      --idx_;
+      return ret;
+    }
 
     /// Index this iterator refers to
-    size_t index() const { return idx_; }
+    size_t index() const
+    {
+      return idx_;
+    }
     /// Actual index within buffer this iterator refers to
-    size_t index_actual() const { return buf_->actual(idx_); }
+    size_t index_actual() const
+    {
+      return buf_->actual(idx_);
+    }
 
-    bool operator==(const iterator &other) const
+    bool operator==(const iterator& other) const
     {
       return buf_ == other.buf_ && idx_ == other.idx_;
     }
 
-    bool operator!=(const iterator &other) const
+    bool operator!=(const iterator& other) const
     {
       return !operator==(other);
     }
 
-    bool operator<(const iterator &other) const
+    bool operator<(const iterator& other) const
     {
       return buf_ < other.buf_ && idx_ < other.idx_;
     }
 
-    bool operator>(const iterator &other) const
+    bool operator>(const iterator& other) const
     {
       return buf_ > other.buf_ && idx_ > other.idx_;
     }
 
-    bool operator<=(const iterator &other) const
+    bool operator<=(const iterator& other) const
     {
       return !operator>(other);
     }
 
-    bool operator>=(const iterator &other) const
+    bool operator>=(const iterator& other) const
     {
       return !operator<(other);
     }
 
-    iterator &operator+=(size_t n)
+    iterator& operator+=(size_t n)
     {
       idx_ += n;
       return *this;
     }
 
-    iterator &operator-=(size_t n)
+    iterator& operator-=(size_t n)
     {
       idx_ -= n;
       return *this;
@@ -333,7 +442,7 @@ public:
       return ret;
     }
 
-    friend iterator operator+(size_t n, const iterator &me)
+    friend iterator operator+(size_t n, const iterator& me)
     {
       iterator ret = me;
       ret += n;
@@ -347,70 +456,111 @@ public:
       return ret;
     }
 
-    size_t operator-(const iterator &other) const
+    size_t operator-(const iterator& other) const
     {
       if (buf_ != other.buf_) {
-        return (size_t) -1;
+        return (size_t)-1;
       }
 
       return idx_ - other.idx_;
     }
 
   private:
-    iterator(CircularBuffer &buf, size_t idx)
-      : buf_(&buf), idx_(idx) {}
+    iterator(CircularBuffer& buf, size_t idx) : buf_(&buf), idx_(idx) {}
 
-    CircularBuffer *buf_;
+    CircularBuffer* buf_;
     size_t idx_;
 
     friend class CircularBuffer<T>;
   };
 
   /// Create a mutable iterator to the front of the buffer
-  iterator begin() { return {*this, front_}; }
+  iterator begin()
+  {
+    return {*this, front_};
+  }
 
   /// Create a mutable iterator to the back of the buffer
-  iterator end() { return {*this, back_}; }
+  iterator end()
+  {
+    return {*this, back_};
+  }
 
   /// Create a const iterator to the front of the buffer
-  const_iterator begin() const { return {*this, front_}; }
+  const_iterator begin() const
+  {
+    return {*this, front_};
+  }
 
   /// Create a const iterator to the back of the buffer
-  const_iterator end() const { return {*this, back_}; }
+  const_iterator end() const
+  {
+    return {*this, back_};
+  }
 
   /// Create a const iterator to the back of the buffer
-  const_iterator cbegin() const { return {*this, front_}; }
+  const_iterator cbegin() const
+  {
+    return {*this, front_};
+  }
 
   /// Create a const iterator to the back of the buffer
-  const_iterator cend() const { return {*this, back_}; }
+  const_iterator cend() const
+  {
+    return {*this, back_};
+  }
 
   /// Get a reference to the ith element. Undefined behavior if empty, or if
   /// index is outside front_index() and back_index().
-  T &operator[](size_t i) { return data_[actual(i)]; }
+  T& operator[](size_t i)
+  {
+    return data_[actual(i)];
+  }
 
   /// Get a const reference to the ith element. Undefined behavior if empty,
   /// or if index is outside front_index() and back_index().
-  const T &operator[](size_t i) const { return data_[actual(i)]; }
+  const T& operator[](size_t i) const
+  {
+    return data_[actual(i)];
+  }
 
   /// Get a reference to the front element. Undefined behavior if empty.
-  T &front() { return (*this)[front_index()]; }
+  T& front()
+  {
+    return (*this)[front_index()];
+  }
 
   /// Get a const reference to the front element. Undefined behavior if empty.
-  const T &front() const { return (*this)[front_index()]; }
+  const T& front() const
+  {
+    return (*this)[front_index()];
+  }
 
   /// Get a reference to the back element. Undefined behavior if empty.
-  T &back() { return (*this)[back_index()]; }
+  T& back()
+  {
+    return (*this)[back_index()];
+  }
 
   /// Get a const reference to the back element. Undefined behavior if empty.
-  const T &back() const { return (*this)[back_index()]; }
+  const T& back() const
+  {
+    return (*this)[back_index()];
+  }
 
   /// Get a copy of the front element, or a default constructed value if
   /// the buffer is empty.
-  T get_front() { return empty() ? T() : front(); }
+  T get_front()
+  {
+    return empty() ? T() : front();
+  }
 
   /// Get a copy of the front element, or a default constructed value if
   /// the buffer is empty.
-  T get_back() { return empty() ? T() : back(); }
+  T get_back()
+  {
+    return empty() ? T() : back();
+  }
 
   /**
    * Compares given index @a i relative to existing range of elements
@@ -434,21 +584,19 @@ public:
   }
 
 private:
-  void throw_out_of_range(const char *func, size_t i) const
+  void throw_out_of_range(const char* func, size_t i) const
   {
-    if (i < front_)
-    {
+    if (i < front_) {
       std::stringstream ss;
-      ss << "CircularBuffer::" << func << ": index " << i <<
-            " is before oldest index " << front_;
+      ss << "CircularBuffer::" << func << ": index " << i
+         << " is before oldest index " << front_;
       throw std::out_of_range(ss.str());
     }
 
-    if (i >= back_)
-    {
+    if (i >= back_) {
       std::stringstream ss;
-      ss << "CircularBuffer::" << func << ": index " << i <<
-            " passes newest index " << back_;
+      ss << "CircularBuffer::" << func << ": index " << i
+         << " passes newest index " << back_;
       throw std::out_of_range(ss.str());
     }
   }
@@ -458,7 +606,7 @@ public:
    * Get a reference to ith element. Throws std::out_of_range if this index
    * does not currently exist.
    **/
-  T &at(size_t i)
+  T& at(size_t i)
   {
     throw_out_of_range(__func__, i);
     return (*this)[i];
@@ -468,7 +616,7 @@ public:
    * Get a const reference to ith element. Throws std::out_of_range if this
    * index does not currently exist.
    **/
-  const T &at(size_t i) const
+  const T& at(size_t i) const
   {
     throw_out_of_range(__func__, i);
     return (*this)[i];
@@ -525,13 +673,13 @@ public:
    * @return a reference to the new element
    **/
   template<typename... Args>
-  T &emplace_back(Args&&... args)
+  T& emplace_back(Args&&... args)
   {
     if (size() >= capacity()) {
       discard_front();
     }
     ++back_;
-    T &ret = *new(&(back())) T(std::forward<Args>(args)...);
+    T& ret = *new (&(back())) T(std::forward<Args>(args)...);
     return ret;
   }
 
@@ -541,7 +689,7 @@ public:
    *
    * @return a reference to the new element
    **/
-  T &push_back(const T &val)
+  T& push_back(const T& val)
   {
     return emplace_back(val);
   }
@@ -552,7 +700,7 @@ public:
    *
    * @return a reference to the new element
    **/
-  T &push_back(T &&val)
+  T& push_back(T&& val)
   {
     return emplace_back(std::move(val));
   }
@@ -561,14 +709,14 @@ private:
   size_t front_ = 0;
   size_t back_ = 0;
 
-  T *data_ = nullptr;
+  T* data_ = nullptr;
 
   size_t cap_ = 0;
 
   friend class iterator;
   friend class const_iterator;
 };
-
-} }
+}
+}
 
 #endif  // _MADARA_KNOWLEDGE_CIRCULAR_BUFFER_H_

@@ -43,551 +43,457 @@
 #include "madara/expression/EvaluationVisitor.h"
 
 /// Evaluate a LeafNode (holds a static value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::LeafNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::LeafNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a VariableNode (holds a dynamic value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::VariableNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::VariableNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a VariableDecrementNode (holds a dynamic value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::VariableDecrementNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::VariableDecrementNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a VariableDivideNode (holds a dynamic value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::VariableDivideNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::VariableDivideNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a VariableIncrementNode (holds a dynamic value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::VariableIncrementNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::VariableIncrementNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a VariableMultiplyNode (holds a dynamic value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::VariableMultiplyNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::VariableMultiplyNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a VariableCompareNode (holds a dynamic value)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::VariableCompareNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::VariableCompareNode& node)
 {
-  stack_.push (node.item ());
+  stack_.push(node.item());
 }
 
 /// Evaluate a ListNode (holds a dynamic list)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::ListNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::ListNode& node)
 {
 }
 
 /// evaluation of a negation (CompositeNegateNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeNegateNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeNegateNode&)
 {
-  if (stack_.size () >= 1)
-    stack_.push (-stack_.pop ());
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Negate" \
-      " requires a right expression"));
-      
-    throw exceptions::KarlException ("madara::expression::CompositeNegateNode: "
-      "KARL COMPILE ERROR: "
-      "Node has no right expression\n"); 
+  if (stack_.size() >= 1)
+    stack_.push(-stack_.pop());
+  else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Negate"
+                          " requires a right expression"));
+
+    throw exceptions::KarlException("madara::expression::CompositeNegateNode: "
+                                    "KARL COMPILE ERROR: "
+                                    "Node has no right expression\n");
   }
 }
 
 /// evaluation of a decrement (CompositePredecrementNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositePredecrementNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositePredecrementNode& node)
 {
-  if (stack_.size () >= 1)
-  {
-    madara::knowledge::KnowledgeRecord old_value = stack_.pop ();
-    try
-    {
-      VariableNode * right = dynamic_cast <VariableNode *> (node.right ());
+  if (stack_.size() >= 1) {
+    madara::knowledge::KnowledgeRecord old_value = stack_.pop();
+    try {
+      VariableNode* right = dynamic_cast<VariableNode*>(node.right());
 
       madara::knowledge::KnowledgeRecord new_value = --old_value;
-      if (right)
-      {
-        new_value = right->dec ();
+      if (right) {
+        new_value = right->dec();
       }
-      stack_.push (new_value);
+      stack_.push(new_value);
+    } catch (::std::bad_cast&) {
+      stack_.push(--old_value);
     }
-    catch (::std::bad_cast &)
-    {
-      stack_.push (--old_value);
-    }
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Predecrement" \
-      " requires a right expression"));
-    exit (-1);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Predecrement"
+                          " requires a right expression"));
+    exit(-1);
   }
 }
 
 /// evaluation of a increment (CompositePreincrementNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositePreincrementNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositePreincrementNode& node)
 {
-  if (stack_.size () >= 1)
-  {
-    madara::knowledge::KnowledgeRecord old_value = stack_.pop ();
-    try
-    {
-      VariableNode * right = dynamic_cast <VariableNode *> (node.right ());
+  if (stack_.size() >= 1) {
+    madara::knowledge::KnowledgeRecord old_value = stack_.pop();
+    try {
+      VariableNode* right = dynamic_cast<VariableNode*>(node.right());
 
       madara::knowledge::KnowledgeRecord new_value = ++old_value;
-      if (right)
-      {
-        new_value = right->inc ();
+      if (right) {
+        new_value = right->inc();
       }
-      stack_.push (new_value);
+      stack_.push(new_value);
+    } catch (::std::bad_cast&) {
+      stack_.push(++old_value);
     }
-    catch (::std::bad_cast &)
-    {
-      stack_.push (++old_value);
-    }
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Preincrement" \
-      " requires a right expression"));
-    exit (-1);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Preincrement"
+                          " requires a right expression"));
+    exit(-1);
   }
 }
 
 /// evaluation of a negation (CompositeNotNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeNotNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeNotNode&)
 {
-  if (stack_.size () >= 1)
-    stack_.push (!stack_.pop ());
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Not" \
-      " requires a right expression"));
-    exit (-1);
+  if (stack_.size() >= 1)
+    stack_.push(!stack_.pop());
+  else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Not"
+                          " requires a right expression"));
+    exit(-1);
   }
 }
 
 /// evaluation of an addition (CompositeAddNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeAddNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeAddNode&)
 {
-  if (stack_.size () >= 2)
-    stack_.push (stack_.pop () + stack_.pop ());
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Add" \
-      " requires both a left and right expression"));
-    exit (-1);
+  if (stack_.size() >= 2)
+    stack_.push(stack_.pop() + stack_.pop());
+  else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Add"
+                          " requires both a left and right expression"));
+    exit(-1);
   }
 }
 
 /// evaluation of an assignment (CompositeAssignmentNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeAssignmentNode &node)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeAssignmentNode& node)
 {
-  if (stack_.size () >= 2)
-  {
+  if (stack_.size() >= 2) {
     // for an assignment to be valid, we need a variable to the left
-    // and an expression tree to the right. 
-    try
-    {
-      // this is really backwards logic, but it was the only way I could think of
-      // to allow for a = b = c with this type of tree and post-order flow
-      madara::knowledge::KnowledgeRecord right = stack_.pop ();
-      stack_.pop ();
-      VariableNode * left = dynamic_cast <VariableNode *> (node.left ());
-      left->set (right.to_integer ());
-      stack_.push (right);
-    }
-    catch (::std::bad_cast &)
-    {
-      MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-        "\nKARL EVAL ERROR: Assignment" \
-        " must have a variable as the left expression\n"));
-      exit (-1);
+    // and an expression tree to the right.
+    try {
+      // this is really backwards logic, but it was the only way I could think
+      // of to allow for a = b = c with this type of tree and post-order flow
+      madara::knowledge::KnowledgeRecord right = stack_.pop();
+      stack_.pop();
+      VariableNode* left = dynamic_cast<VariableNode*>(node.left());
+      left->set(right.to_integer());
+      stack_.push(right);
+    } catch (::std::bad_cast&) {
+      MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+          (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Assignment"
+                            " must have a variable as the left expression\n"));
+      exit(-1);
     }
   }
   // ::std::cout << "add current top: " << stack_.top () << ::std::endl;
 }
 
 /// evaluation of a logical and comparison (CompositeAndNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeAndNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeAndNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left && right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: And" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left && right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: And"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of a logical or comparison (CompositeOrNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeOrNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeOrNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left || right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Or" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left || right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Or"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of both left and right (CompositeBothNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeBothNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeBothNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right_v = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left_v = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right_v = stack_.pop();
+    madara::knowledge::KnowledgeRecord left_v = stack_.pop();
 
     // I was trying to use std::max, but it was giving me
     // some grief, so I just implemented it as is
-    stack_.push (left_v > right_v ? left_v : right_v);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: And" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left_v > right_v ? left_v : right_v);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: And"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of both left and right (CompositeSequentialNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeSequentialNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeSequentialNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right_v = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left_v = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right_v = stack_.pop();
+    madara::knowledge::KnowledgeRecord left_v = stack_.pop();
 
     // I was trying to use std::max, but it was giving me
     // some grief, so I just implemented it as is
-    stack_.push (left_v > right_v ? right_v : left_v);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: And" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left_v > right_v ? right_v : left_v);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: And"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of function (CompositeFunctionNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeFunctionNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeFunctionNode&)
 {
 }
 
 /// evaluation of function (CompositeFunctionNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeForLoop &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeForLoop&)
 {
 }
 
 /// evaluation of an equality comparison (CompositeEqualityNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeEqualityNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeEqualityNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left == right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Equality" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left == right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Equality"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of an inequality comparison (CompositeInequalityNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeInequalityNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeInequalityNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left != right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Inequality" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left != right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Inequality"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
-/// evaluation of a greater than equal to comparison (CompositeGreaterThanEqualNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeGreaterThanEqualNode &)
+/// evaluation of a greater than equal to comparison
+/// (CompositeGreaterThanEqualNode)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeGreaterThanEqualNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left >= right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Greater-than-equal" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left >= right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Greater-than-equal"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of a greater than comparison (CompositeGreaterThanNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeGreaterThanNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeGreaterThanNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left > right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Greater-than" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left > right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Greater-than"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of a less than equal to comparison (CompositeLessThanEqualNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeLessThanEqualNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeLessThanEqualNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left <= right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Less-than-equal" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left <= right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Less-than-equal"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of a less than comparison (CompositeLessThanNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeLessThanNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeLessThanNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord right = stack_.pop ();
-    madara::knowledge::KnowledgeRecord left = stack_.pop ();
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord right = stack_.pop();
+    madara::knowledge::KnowledgeRecord left = stack_.pop();
 
-    stack_.push (left < right);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Less-than" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+    stack_.push(left < right);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Less-than"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluation of an addition (CompositeSubtractNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeSubtractNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeSubtractNode&)
 {
-  if (stack_.size () >= 2)
-  {
-    madara::knowledge::KnowledgeRecord rhs = stack_.pop ();
-    stack_.push (stack_.pop () - rhs);
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Subtract" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+  if (stack_.size() >= 2) {
+    madara::knowledge::KnowledgeRecord rhs = stack_.pop();
+    stack_.push(stack_.pop() - rhs);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Subtract"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluations of a division (CompositeDivideNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeDivideNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeDivideNode&)
 {
-  if (stack_.size () >= 2 && stack_.top ())
-  {
-    madara::knowledge::KnowledgeRecord rhs = stack_.pop ();
-    stack_.push (stack_.pop () / rhs );
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Division" \
-      " requires both a left and right expression" \
-      " (and right must not be 0)\n"));
-    exit (-1);
+  if (stack_.size() >= 2 && stack_.top()) {
+    madara::knowledge::KnowledgeRecord rhs = stack_.pop();
+    stack_.push(stack_.pop() / rhs);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Division"
+                          " requires both a left and right expression"
+                          " (and right must not be 0)\n"));
+    exit(-1);
   }
 }
 
 /// evaluations of a division (CompositeMultiplyNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeMultiplyNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeMultiplyNode&)
 {
-  if (stack_.size () >= 2)
-    stack_.push (stack_.pop () * stack_.pop ());
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Multiply" \
-      " requires both a left and right expression\n"));
-    exit (-1);
+  if (stack_.size() >= 2)
+    stack_.push(stack_.pop() * stack_.pop());
+  else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Multiply"
+                          " requires both a left and right expression\n"));
+    exit(-1);
   }
 }
 
 /// evaluations of a division (CompositeModulusNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeModulusNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeModulusNode&)
 {
-  if (stack_.size () >= 2 && stack_.top ())
-  {
-    madara::knowledge::KnowledgeRecord rhs = stack_.pop ();
-    stack_.push (stack_.pop () / rhs );
-  }
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Modulus" \
-      " requires both a left and right expression" \
-      " (and right must not be 0)\n"));
-    exit (-1);
+  if (stack_.size() >= 2 && stack_.top()) {
+    madara::knowledge::KnowledgeRecord rhs = stack_.pop();
+    stack_.push(stack_.pop() / rhs);
+  } else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Modulus"
+                          " requires both a left and right expression"
+                          " (and right must not be 0)\n"));
+    exit(-1);
   }
 }
 
 /// evaluations of a division (CompositeModulusNode)
-void 
-madara::expression::EvaluationVisitor::visit (
-  const madara::expression::CompositeImpliesNode &)
+void madara::expression::EvaluationVisitor::visit(
+    const madara::expression::CompositeImpliesNode&)
 {
-  if (stack_.size () >= 2)
-    stack_.push (stack_.pop () ? stack_.pop () : 0);
-  else
-  {
-    MADARA_ERROR (MADARA_LOG_TERMINAL_ERROR, (LM_ERROR, DLINFO
-      "\nKARL EVAL ERROR: Implies" \
-      " requires both a left and right expression"));
-    exit (-1);
+  if (stack_.size() >= 2)
+    stack_.push(stack_.pop() ? stack_.pop() : 0);
+  else {
+    MADARA_ERROR(MADARA_LOG_TERMINAL_ERROR,
+        (LM_ERROR, DLINFO "\nKARL EVAL ERROR: Implies"
+                          " requires both a left and right expression"));
+    exit(-1);
   }
 }
 
 /// print a total for the evaluation
-int64_t 
-madara::expression::EvaluationVisitor::total (void)
+int64_t madara::expression::EvaluationVisitor::total(void)
 {
-  if (!stack_.is_empty ())
-    return stack_.top ();
+  if (!stack_.is_empty())
+    return stack_.top();
   else
     return 0;
 }
 
 /// reset the evaluation
-void 
-madara::expression::EvaluationVisitor::reset (void)
+void madara::expression::EvaluationVisitor::reset(void)
 {
-  stack_.erase ();
+  stack_.erase();
 }
 
-#endif // _USE_VISITORS_
+#endif  // _USE_VISITORS_
 
 #endif /* _EVALUATION_VISITOR_CPP_ */
