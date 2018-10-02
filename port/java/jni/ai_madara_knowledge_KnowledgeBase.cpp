@@ -1102,9 +1102,9 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImageSettings(
       env->ReleaseByteArrayElements(value, source, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
-    madara::utility::java::throw_dead_obj_exception(
-        env, "KnowledgeBase::setImageSettings: KB or settings objects are "
-             "released already");
+    madara::utility::java::throw_dead_obj_exception(env,
+        "KnowledgeBase::setImageSettings: KB or settings objects are "
+        "released already");
   }
 
   delete[] dest;

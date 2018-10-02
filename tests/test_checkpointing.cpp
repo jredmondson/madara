@@ -1010,6 +1010,21 @@ void test_filter_header(void)
   std::cerr << (char*)(buffer) << "\n";
 }
 
+template<typename I = int, typename Iter>
+bool is_sequential(Iter first, Iter last, I counter = 0)
+{
+  while (first != last)
+  {
+    if (*first != counter)
+    {
+      return false;
+    }
+    ++counter;
+    ++first;
+  }
+  return true;
+}
+
 void test_streaming()
 {
   std::cerr << "\n*********** TESTING STREAMING *************.\n";
@@ -1042,18 +1057,52 @@ void test_streaming()
   builder.setZ(9);
   kb.emplace_any(".any0", madara::type<CapnObject<geo_capn::Point>>{}, msg);
 
+  kb.set_history_capacity("hist", 10);
+  kb.set("hist", 1);
+  kb.set("hist", 2);
+  kb.set("hist", 3);
+
   utility::sleep(0.5);
 
   kb.set("glob1", 4);
   kb.set("glob2", "bar");
+  kb.set("hist", 4);
+  kb.set("hist", 5);
+  kb.set("hist", 6);
 
   utility::sleep(0.5);
 
   kb.attach_streamer(nullptr);
 
+  auto prehist = kb.get_history("hist");
+  if (kb.get(".loc1") == 2 && kb.get(".loc2") == "foo" &&
+      kb.get("glob1") == 4 && kb.get("glob2") == "bar" && prehist.size() == 6 &&
+      is_sequential(prehist.begin(), prehist.end(), 1))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::string dump;
+    kb.to_string(dump);
+    std::cerr << "FAIL before load:\n" << dump << "\n";
+    std::cerr << "    hist:";
+    for (const auto& cur : prehist)
+    {
+      std::cerr << " " << cur;
+    }
+    std::cerr << std::endl;
+    madara_fails++;
+    // return;
+  }
+
   knowledge::KnowledgeBase kb2;
+
+  kb2.set_history_capacity("hist", 10);
+
   kb2.load_context(settings);
 
+  auto hist = kb2.get_history("hist");
   if (kb2.get(".loc1") == 2 && kb2.get(".loc2") == "foo" &&
       kb2.get("glob1") == 4 && kb2.get("glob2") == "bar")
   {
@@ -1065,12 +1114,27 @@ void test_streaming()
     kb2.to_string(dump);
     std::cerr << "FAIL :\n" << dump << "\n";
     madara_fails++;
-    return;
   }
 
   knowledge::KnowledgeBase kb3;
 
+  kb3.set_history_capacity("hist", 10);
+
   settings.playback_simtime = true;
+
+  {
+    knowledge::CheckpointReader reader(settings);
+    for (;;)
+    {
+      auto next = reader.next();
+      if (next.first == "")
+      {
+        break;
+      }
+
+      std::cerr << next.first << ": " << next.second << std::endl;
+    }
+  }
 
   knowledge::CheckpointReader reader(settings);
   reader.start();  // Load checkpoint metadata
@@ -1110,6 +1174,28 @@ void test_streaming()
     kb3.to_string(dump);
     std::cerr << utility::get_time() << ": " << dump << std::endl;
     std::this_thread::sleep_for(std::chrono::milliseconds{100});
+  }
+
+  auto posthist = kb3.get_history("hist");
+  if (kb3.get(".loc1") == 2 && kb3.get(".loc2") == "foo" &&
+      kb3.get("glob1") == 4 && kb3.get("glob2") == "bar" &&
+      posthist.size() == 6 &&
+      is_sequential(posthist.begin(), posthist.end(), 1))
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::string dump;
+    kb3.to_string(dump);
+    std::cerr << "FAIL after playback:\n" << dump << "\n";
+    std::cerr << "    hist:";
+    for (const auto& cur : posthist)
+    {
+      std::cerr << " " << cur;
+    }
+    std::cerr << std::endl;
+    madara_fails++;
   }
 }
 

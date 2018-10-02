@@ -927,7 +927,13 @@ inline void ThreadSafeContext::mark_and_signal(
 
   if (settings.stream_changes && streamer_ != nullptr)
   {
-    streamer_->enqueue(ref.get_name(), *ref.get_record_unsafe());
+    auto rec_ptr = ref.get_record_unsafe();
+    if (rec_ptr->has_history())
+    {
+      rec_ptr = &rec_ptr->ref_newest();
+    }
+
+    streamer_->enqueue(ref.get_name(), *rec_ptr);
   }
 
   if (settings.signal_changes)
