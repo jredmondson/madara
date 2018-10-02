@@ -20,7 +20,7 @@ settings = transport.QoSTransportSettings()
 #settings.hosts.append("239.255.0.1:4150")
 #settings.type = transport.TransportTypes.MULTICAST
 settings.type = transport.TransportTypes.UDP
-settings.hosts.append("127.0.0.1:40002")
+#settings.hosts.append("127.0.0.1:40002")
 settings.hosts.append("127.0.0.1:40001")
 settings.hosts.append("127.0.0.1:40000")
 #settings.type = transport.TransportTypes.ZMQ
@@ -36,7 +36,7 @@ settings.add_receive_filter(filter)
 kb = engine.KnowledgeBase("agent1", settings)
 
 sleep_time = 180
-filename = "samples/chapter16.mp3"
+filename = "ros2gams_bigbag.sbz"
 
 if len(sys.argv) > 1:
   filename = sys.argv[1]
@@ -48,16 +48,18 @@ if len(sys.argv) > 2:
 
 print ("keys will be read from ", "agent.0.sandbox.files.file.", filename)
 
-for i in range (18):
-  crc = kb.get ("agent.0.sandbox.files.file." + filename + ".crc").to_integer ()
-  file_size = kb.get ("agent.0.sandbox.files.file." + filename + ".size").to_integer ()
-  percentage = 0
-  print ("CRC is ", crc, " and file size is ", file_size)
+requester = madara.knowledge.FileRequester ()
+requester.init ("agent.0.sandbox.files.file." + filename,
+  "agent.0.sync.sandbox.files.file." + filename, "files/" + filename, kb, 500)
 
-  if (crc):
-    received_bytes = madara.utility.get_file_progress ("files/" + filename, crc, file_size)
-    percentage = float (received_bytes / file_size)
+print ("Beginning requests for ", filename)
 
-  print ("Percentage is ", percentage)
-  time.sleep(sleep_time)
+print ("Fragments are currently: ", madara.to_pylongs (requester.build_fragment_request ()))
 
+requester.needs_request ()
+time.sleep (3)
+
+while requester.needs_request ():
+  print ("Percent complete is ", requester.get_percent_complete (), "Frag list is ", madara.to_pylongs (requester.build_fragment_request ()))
+  kb.send_modifieds ()
+  time.sleep (1)

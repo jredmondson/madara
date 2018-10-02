@@ -103,6 +103,9 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_read_file_1_of_2,
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_read_file_2_of_3,
   read_file, 2, 3)
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS (m_init_4_of_5,
+  init, 4, 5)
+
 /********************************************************
  * Static functions (standalone functions)
  ********************************************************/

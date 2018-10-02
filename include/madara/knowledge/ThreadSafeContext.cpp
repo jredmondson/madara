@@ -1504,7 +1504,7 @@ ThreadSafeContext::to_map (
     iters(get_prefix_range(prefix));
 
   // RVO should avoid copying this map
-  return KnowledgeMap(deep_iterate(iters.first), deep_iterate(iters.second));
+  return KnowledgeMap(iters.first, iters.second);
 }
 
 KnowledgeMap

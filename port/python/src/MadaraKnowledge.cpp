@@ -10,6 +10,7 @@
 
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/FileFragmenter.h"
+#include "madara/knowledge/FileRequester.h"
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/AnyRegistry.h"
 #include "madara/filters/GenericFilters.h"
@@ -547,7 +548,13 @@ void define_knowledge (void)
 
     // increments an index of an array
     .def ("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
-      "Increments an array element at a particular index")        
+      "Increments an array element at a particular index")  
+
+    // checks if record is any type
+    .def ("is_any_type",
+      static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const> (
+      &madara::knowledge::KnowledgeRecord::is_any_type),
+      "returns if the record is Any type")     
 
     // checks if record is a binary file type
     .def ("is_binary_file_type",
@@ -705,6 +712,112 @@ void define_knowledge (void)
     .def ("set_scientific", &madara::knowledge::KnowledgeRecord::set_scientific,
       "Sets the output format for doubles to std::scientific")
 
+    // sets the value and meta data from another knowledge record
+    .def ("set_full",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const madara::knowledge::KnowledgeRecord &)
+      > (&madara::knowledge::KnowledgeRecord::set_full),
+      "Sets the value and meta data from another KnowledgeRecord")
+
+    // sets value to an array of ints
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const madara::knowledge::KnowledgeRecord::Integer * new_value,
+      uint32_t)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to an array of integers")
+
+    // sets value to an array of ints, no copying
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::vector <madara::knowledge::KnowledgeRecord::Integer> & )
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to an array of integers, without copying")
+
+    // sets value to a string
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const char * new_value, 
+      uint32_t)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to a string, from a buffer")  
+
+    // sets value to a string
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::string &)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value to a string")
+
+
+    // sets value from another knowledge record
+    .def ("set_value",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const madara::knowledge::KnowledgeRecord &)
+      > (&madara::knowledge::KnowledgeRecord::set_value),
+      "Sets the value from another KnowledgeRecord,"
+      "does not copy toi, clock, and write_quality")
+
+    // sets value to xml string
+    .def ("set_xml",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const char * new_value, 
+      size_t)
+      > (&madara::knowledge::KnowledgeRecord::set_xml),
+      "sets the value to an xml string")  
+
+    // sets value to xml string
+    .def ("set_xml",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::string &)
+      > (&madara::knowledge::KnowledgeRecord::set_xml),
+      "sets the value to an xml string") 
+
+    // sets the value to a plaintext string
+    .def ("set_text",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const char * new_value, 
+      size_t)
+      > (&madara::knowledge::KnowledgeRecord::set_text),
+      "sets the value to a plaintext string")  
+
+    // sets the value to a plaintext string
+    .def ("set_text",
+      static_cast<
+      void (madara::knowledge::KnowledgeRecord::*)(
+      const std::string &)
+      > (&madara::knowledge::KnowledgeRecord::set_text),
+      "sets the value to a plaintext string") 
+
+    // share binary
+    .def ("share_binary", &madara::knowledge::KnowledgeRecord::share_binary,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not a binary file value, returns NULL shared_ptr")
+
+    // share doubles
+    .def ("share_doubles", &madara::knowledge::KnowledgeRecord::share_doubles,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not a doubles array, returns NULL shared_ptr")
+
+    // share strings
+    .def ("share_string", &madara::knowledge::KnowledgeRecord::share_string,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not a string, returns NULL shared_ptr")
+
+    // share integers
+    .def ("share_integers", &madara::knowledge::KnowledgeRecord::share_integers,
+      "@return a shared_ptr, sharing with the internal one."
+      "If this record is not an int array, returns NULL shared_ptr")
+
     // sets the contents of the record to a jpeg
     .def ("size", &madara::knowledge::KnowledgeRecord::size,
       "Returns the size of the value")
@@ -742,6 +855,11 @@ void define_knowledge (void)
     // gets the type of the record
     .def ("type", &madara::knowledge::KnowledgeRecord::type,
       "Returns the value type")
+
+    // unshare knowledge record pointer
+    .def ("unshare", &madara::knowledge::KnowledgeRecord::unshare,
+      "If this record holds a shared_ptr, make a copy of the underlying"
+      "value so it has an exclusive copy")
 
     // overloaded operators
     .def (self < self)
@@ -1298,6 +1416,78 @@ void define_knowledge (void)
         "FunctionArguments", "List of arguments to a function")
   ;
     
+  class_<madara::knowledge::FileRequester> ("FileRequester",
+    "Reconstructs files and requests fragments if incomplete",
+    init <> ())
+      
+    // builds a fragment request vector
+    .def ("build_fragment_request",
+      &madara::knowledge::FileRequester::build_fragment_request,
+      "Builds an arry of the request that is necessary under "
+      "the current max_fragments")
+
+    // clears the fragments on the file system
+    .def ("clear_fragments",
+      &madara::knowledge::FileRequester::clear_fragments,
+      "Clears any lingering fragments on the file system.")
+
+    // gets the crc
+    .def ("get_crc",
+      &madara::knowledge::FileRequester::get_crc,
+      "Retrieves the file CRC from the KB")
+
+    // gets the filename
+    .def ("get_filename",
+      &madara::knowledge::FileRequester::get_filename,
+      "Returns the name of the file being reconstructed")
+
+    // gets the percentage of completion
+    .def ("get_percent_complete",
+      &madara::knowledge::FileRequester::get_percent_complete,
+      "Returns the percentage of completion")
+
+    // gets the size
+    .def ("get_size",
+      &madara::knowledge::FileRequester::get_size,
+      "Retrieves the file size from the KB")
+
+    // initializes the object
+    // .def ("init",
+    //   &madara::knowledge::FileRequester::init,
+    //   m_init_4_of_5 (
+    //     args("prefix", "sync_key", "filename", "kb", "max_fragment_requests"), 
+    //     "Initialize the requester object"))
+
+    .def( "init",
+      static_cast<
+        void (madara::knowledge::FileRequester::*)(
+          const std::string &,
+          const std::string &,
+          const std::string &,
+          madara::knowledge::KnowledgeBase,
+          int) 
+      > (&madara::knowledge::FileRequester::init),
+      m_init_4_of_5 (
+        args("prefix", "sync_key", "filename", "kb", "max_fragment_requests"), 
+        "Initialize the requester object"))
+
+    // modifies the file sync key
+    .def ("modify",
+      &madara::knowledge::FileRequester::modify,
+      "Modifies the current sync key to mark the request ready to resend")
+
+    // checks if a request is needed and builds the request
+    .def ("needs_request",
+      &madara::knowledge::FileRequester::needs_request,
+      "Checks if a new request is necessary and builds the sync request. "
+      "Note that the caller must call kb.send_modifieds to send the request.")
+
+    .def_readwrite("max_fragments",
+      &madara::knowledge::FileRequester::max_fragments,
+      "the maximum fragments to attempt in a resend request")
+
+  ;
+
   class_<madara::knowledge::KnowledgeBase> ("KnowledgeBase",
     "Network-enabled, thread-safe knowledge context", init <> ())
       
