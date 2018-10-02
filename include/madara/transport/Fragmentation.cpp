@@ -571,7 +571,7 @@ void madara::transport::frag(
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_DETAILED,
           "transport::frag:"
-          " regular message header detected\n");
+          " reduced message header detected\n");
 
       ReducedMessageHeader contents_header;
       int64_t buffer_remaining = contents_header.encoded_size();

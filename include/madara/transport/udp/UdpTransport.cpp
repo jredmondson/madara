@@ -189,7 +189,7 @@ long UdpTransport::send_message(const char* buf, size_t packet_size)
     frag(buf, settings_.max_fragment_size, map);
 
     int j(0);
-    for (FragmentMap::iterator i = map.begin(); i != map.end(); ++i)
+    for (FragmentMap::iterator i = map.begin(); i != map.end(); ++i, ++j)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
           "%s:"
