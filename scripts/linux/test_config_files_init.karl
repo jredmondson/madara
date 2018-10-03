@@ -1,0 +1,7 @@
+// setup test_result (=0 for fail, >=1 for pass)
+test_result = 0;
+
+// simple increment
+test_result += 1
+
+
