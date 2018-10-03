@@ -41,6 +41,9 @@ namespace containers
  * This class provides a subset of the capabilities of CircularBufferConsumer,
  * as KnowledgeRecord itself provides equivalents of the rest. Use get_record()
  * to access the KnowledgeRecord backing a NativeCircularBufferConsumer.
+ *
+ * This class should only be used with records which have history capacity of
+ * at least 1. Most methods will throw IndexException if not.
  */
 class MADARA_EXPORT NativeCircularBufferConsumer
 {
@@ -122,6 +125,7 @@ public:
    * Consumes the record at the local index (not the producer index)
    * @return the last added record. exists() will return false if the
    *         record is invalid
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   inline madara::knowledge::KnowledgeRecord consume(void) const;
 
@@ -133,6 +137,7 @@ public:
    *                 occur when the producer produces faster than the
    *                 consumer can consume. This value is essentially
    *                 index_ - local_index - size ().
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   KnowledgeRecord consume(size_t& dropped) const;
 
@@ -143,6 +148,7 @@ public:
    *                occur when the producer produces faster than the
    *                consumer can consume. This value is essentially
    *                index_ - local_index - size ().
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void consume(T& value, size_t& dropped) const;
@@ -152,6 +158,7 @@ public:
    * index (not the producer index).
    * @param  count   the maximum number of records to return
    * @param  values  the latest records
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void peek_latest(size_t count, std::vector<T>& values) const;
@@ -161,6 +168,7 @@ public:
    * index (not the producer index).
    * @param  count   the maximum number of records to return
    * @return the latest peeked (not consumed) count elements
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   inline std::vector<KnowledgeRecord> peek_latest(size_t count) const;
 
@@ -168,6 +176,7 @@ public:
    * Peeks, but does not consume, the latest the record at the local
    * index (not the producer index).
    * @return the latest element
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   inline madara::knowledge::KnowledgeRecord peek_latest(void) const;
 
@@ -176,6 +185,7 @@ public:
    * (not the producer index).
    * @param  count   the maximum number of records to return
    * @return the latest count consumed elements
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   inline std::vector<KnowledgeRecord> consume_latest(size_t count) const;
 
@@ -183,6 +193,7 @@ public:
    * Consumes the latest the record at the local index
    * (not the producer index).
    * @return the latest element (singular)
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   inline madara::knowledge::KnowledgeRecord consume_latest(void) const;
 
@@ -192,6 +203,7 @@ public:
    * @param  count   the maximum number of records to return
    * @param  dropped  the number of dropped records
    * @return the latest count elements and number of elements dropped.
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   std::vector<KnowledgeRecord> consume_latest(
       size_t count, size_t& dropped) const;
@@ -201,6 +213,7 @@ public:
    * (not the producer index).
    * @param  count   the maximum number of records to return
    * @param  values  the latest records
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void consume_latest(size_t count, std::vector<T>& values) const;
@@ -211,6 +224,7 @@ public:
    * @param  count   the maximum number of records to return
    * @param  values  the latest records
    * @param  dropped  the number of dropped records
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void consume_latest(
@@ -219,6 +233,7 @@ public:
   /**
    * Returns the number of known drops since last consume
    * @return the number of drops
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   size_t get_dropped(void) const;
 
@@ -228,6 +243,7 @@ public:
    * @return the number of records remaining for consume
    * @throw exceptions::ContextException  if name or context haven't
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   size_t remaining(void) const;
 
@@ -236,6 +252,7 @@ public:
    * @return the number of records in the NativeCircularBufferConsumer
    * @throw exceptions::ContextException  if name or context haven't
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   size_t count(void) const;
 
@@ -272,6 +289,7 @@ public:
    * Consumes (earliest) records from the local index
    * @param  count   the maximum number of records to return
    * @param  values  the last added records
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void consume_many(size_t count, std::vector<T>& values) const;
@@ -282,6 +300,7 @@ public:
    * @return the last added records
    * @throw exceptions::ContextException if name or context have not
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   std::vector<KnowledgeRecord> consume_many(size_t count) const;
 
@@ -294,6 +313,7 @@ public:
    * @return the last added records
    * @throw exceptions::ContextException if name or context have not
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   std::vector<KnowledgeRecord> consume_many(
       size_t count, size_t& dropped) const;
@@ -306,6 +326,7 @@ public:
    *                  NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void inspect(KnowledgeRecord::Integer position, T& value) const;
@@ -318,6 +339,7 @@ public:
    * @return  the values at the position in the NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   std::vector<KnowledgeRecord> inspect(
       KnowledgeRecord::Integer position, size_t count) const;
@@ -331,6 +353,7 @@ public:
    *                 NativeCircularBufferConsumer
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   template<typename T>
   void inspect(KnowledgeRecord::Integer position, size_t count,
@@ -345,6 +368,7 @@ public:
    *                      been set appropriately
    * @throw exceptions::ContextException if name or context haven't
    *                      been set appropriately
+   * @throw exceptions::IndexException if target has no history capacity set
    **/
   madara::knowledge::KnowledgeRecord inspect(
       KnowledgeRecord::Integer position) const;

@@ -304,6 +304,28 @@ void test_container()
 
   kb.set(key, 123);
   TEST_EQ(buf2.consume(), 123);
+
+  key = "nobuf";
+  NativeCircularBufferConsumer buf3(key, kb);
+
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume(););
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume_many(10););
+
+  kb.set_history_capacity(key, 0);
+
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume(););
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume_many(10););
+
+  key = "buf1";
+  NativeCircularBufferConsumer buf4(key, kb);
+  kb.set_history_capacity(key, 1);
+
+  TEST_EQ(buf4.consume().exists(), false);
+
+  kb.set(key, 12);
+
+  TEST_EQ(buf4.consume(), 12);
+  TEST_EQ(buf4.consume().exists(), false);
 }
 
 int main(int, char**)

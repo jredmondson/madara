@@ -22,7 +22,8 @@
 #include "madara/utility/IntTypes.h"
 #include "madara/utility/SupportTest.h"
 #include "madara/utility/CircularBuffer.h"
-#include "Any.h"
+#include "madara/exceptions/IndexException.h"
+#include "madara/knowledge/Any.h"
 
 namespace madara
 {
@@ -1640,7 +1641,7 @@ public:
     }
     else
     {
-      return 1;
+      return 0;
     }
   }
 
@@ -1649,12 +1650,16 @@ public:
    * modification to this record will write a new entry in this history.
    * Once the capacity is met, the oldest entry will be discarded as new
    * entries are added.
+   *
+   * Note that this capacity includes current value of the record. A capacity
+   * of zero indicates that this record holds no buffer, whereas one indicates
+   * that this record has a buffer of size 1.
    **/
   void set_history_capacity(size_t size)
   {
     if (type_ == BUFFER)
     {
-      if (size <= 1)
+      if (size == 0)
       {
         if (!buf_->empty())
         {
@@ -1670,19 +1675,16 @@ public:
         buf_->reserve(size);
       }
     }
-    else
+    else if (size > 0)
     {
-      if (size > 1)
+      KnowledgeRecord tmp = *this;
+
+      new (&buf_) std::shared_ptr<CircBuf>(std::make_shared<CircBuf>(size));
+      type_ = BUFFER;
+
+      if (tmp.exists())
       {
-        KnowledgeRecord tmp = *this;
-
-        new (&buf_) std::shared_ptr<CircBuf>(std::make_shared<CircBuf>(size));
-        type_ = BUFFER;
-
-        if (tmp.exists())
-        {
-          buf_->push_back(std::move(tmp));
-        }
+        buf_->push_back(std::move(tmp));
       }
     }
   }
@@ -1994,26 +1996,30 @@ public:
 
   /**
    * Gets the absolute index of the newest element in stored history.
-   * If this record doesn't have history capacity, returns 0.
+   * If this record doesn't have history capacity, throws IndexException
    **/
   size_t get_history_newest_index() const
   {
     if (!has_history())
     {
-      return 0;
+      throw exceptions::IndexException(
+          "KnowledgeRecord::get_history_newest_index: "
+          "record has zero capacity");
     }
     return buf_->back_index();
   }
 
   /**
    * Gets the absolute index of the oldest element in stored history.
-   * If this record doesn't have history capacity, returns 0.
+   * If this record doesn't have history capacity, throws IndexException
    **/
   size_t get_history_oldest_index() const
   {
     if (!has_history())
     {
-      return 0;
+      throw exceptions::IndexException(
+          "KnowledgeRecord::get_history_oldest_index: "
+          "record has zero capacity");
     }
     return buf_->front_index();
   }
