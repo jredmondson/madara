@@ -336,6 +336,36 @@ public:
   }
 
   /**
+   * Gets the contents of a record as a shared pointer to the given type.
+   * @tparam T type requested
+   * @return a shared_ptr, sharing with the internal one.
+   * @throw BadAnyAccess if this record is not an Any holding the given type
+   **/
+  template<typename T>
+  std::shared_ptr<const T> share_any(
+      const std::string& key, const KnowledgeReferenceSettings& settings =
+                                  KnowledgeReferenceSettings()) const
+  {
+    return get_shared<const T, &KnowledgeRecord::share_any>(
+        key, settings);
+  }
+
+  /**
+   * Gets the contents of a record as a shared pointer to the given type.
+   * @tparam T type requested
+   * @return a shared_ptr, sharing with the internal one.
+   * @throw BadAnyAccess if this record is not an Any holding the given type
+   **/
+  template<typename T>
+  std::shared_ptr<const T> share_any(
+      const VariableReference& key, const KnowledgeReferenceSettings& settings =
+                                        KnowledgeReferenceSettings()) const
+  {
+    return get_shared<const T, &KnowledgeRecord::share_any>(
+        key, settings);
+  }
+
+  /**
    * Atomically returns a reference to the variable. Variable references are
    * efficient mechanisms for reference variables individually--similar to
    * speedups seen from CompiledExpression.

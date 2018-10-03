@@ -288,6 +288,9 @@ void test_map(T& kb)
   auto a0 = kb.share_any("asdf");
   TEST_EQ(a0->template ref<std::vector<std::string>>()[2], "c");
 
+  auto sv0 = kb.template share_any<std::vector<std::string>>("asdf");
+  TEST_EQ(sv0->at(1), "b");
+
   kb.set_any("B", ns::B{3, 3.5, 4.25});
 
   std::string kb_dump;

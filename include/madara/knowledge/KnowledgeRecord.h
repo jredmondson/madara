@@ -1131,6 +1131,15 @@ public:
   std::shared_ptr<const ConstAny> share_any() const;
 
   /**
+   * Gets the contents of this record as a shared pointer to the given type.
+   * @tparam T type requested
+   * @return a shared_ptr, sharing with the internal one.
+   * @throw BadAnyAccess if this record is not an Any holding the given type
+   **/
+  template<typename T>
+  std::shared_ptr<const T> share_any() const;
+
+  /**
    * Creates a deep copy of the knowledge record. Because each
    * Knowledge Record may contain non-thread-safe ref counted values,
    * user threads that reference knowledge records will want to use
