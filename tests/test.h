@@ -63,4 +63,33 @@ static inline void madara_tests_reset_count()
 #define TEST_GT(lhs, rhs) TEST_OP(lhs, >, rhs)
 #define TEST_GE(lhs, rhs) TEST_OP(lhs, >=, rhs)
 
+#define EXPECT_EXCEPTION(EXCEPTION__, ...)                                    \
+  do                                                                          \
+  {                                                                           \
+    try                                                                       \
+    {                                                                         \
+      do                                                                      \
+      {                                                                       \
+        __VA_ARGS__                                                           \
+      } while (0);                                                            \
+      log("FAIL    : no exception thrown; expected " #EXCEPTION__ "\n");      \
+      ++madara_tests_fail_count;                                              \
+    }                                                                         \
+    catch (EXCEPTION__ e)                                                     \
+    {                                                                         \
+      log("SUCCESS : caught exception " #EXCEPTION__ ": %s\n", e.what());     \
+    }                                                                         \
+    catch (std::exception e)                                                  \
+    {                                                                         \
+      log("FAIL    : expected thrown " #EXCEPTION__ ", got: %s\n", e.what()); \
+      ++madara_tests_fail_count;                                              \
+    }                                                                         \
+    catch (...)                                                               \
+    {                                                                         \
+      log("FAIL    : expected thrown " #EXCEPTION__                           \
+          ", got unknown excpetion\n");                                       \
+      ++madara_tests_fail_count;                                              \
+    }                                                                         \
+  } while (0)
+
 #endif

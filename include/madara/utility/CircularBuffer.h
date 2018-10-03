@@ -118,6 +118,12 @@ public:
    **/
   void reserve(size_t size)
   {
+    if (size == cap_)
+    {
+      // Nothing to do
+      return;
+    }
+
     CircularBuffer tmp(size, front_);
     while (!empty())
     {
