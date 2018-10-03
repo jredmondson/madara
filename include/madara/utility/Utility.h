@@ -360,6 +360,16 @@ MADARA_EXPORT ssize_t write_file(
     const std::string& filename, void* buffer, size_t size);
 
 /**
+ * Splits a string into a vector of strings by delimiter.
+ * @see utility::tokenizer, which does the tokenization.
+ * @param  input            the text to parse
+ * @param  delimiter        the delimiter to use as a splitter
+ * @param  strip_whitespace if true, remove whitespace around tokens
+ **/
+std::vector <std::string> string_to_vector (const std::string & input,
+  const std::string delimiter = "\n", bool strip_whitespace = true);
+
+/**
  * Returns a time of day in nanoseconds
  * If simtime feature is enabled, this may be simulation time instead of
  * real rtime.
@@ -388,6 +398,12 @@ TimeValue add_seconds(const TimeValue& start, double seconds);
  * @return  duration for usage with TimeValues
  **/
 Duration seconds_to_duration(double seconds);
+
+/**
+ * Returns seconds in nanoseconds
+ * @return  nanoseconds that can be added to another timestamp
+ **/
+int64_t seconds_to_nanoseconds(double seconds);
 
 /**
  * Returns seconds in double format as seconds duration
