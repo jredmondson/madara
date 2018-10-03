@@ -14,6 +14,7 @@
 
 #include "madara/utility/Utility.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/knowledge/containers/FlexMap.h"
 
 #ifdef _USE_SSL_
 #include "madara/filters/ssl/AESBufferFilter.h"
@@ -34,6 +35,7 @@ namespace utility = madara::utility;
 namespace filters = madara::filters;
 namespace logger = madara::logger;
 namespace threads = madara::threads;
+namespace containers = knowledge::containers;
 
 typedef knowledge::KnowledgeRecord::Integer Integer;
 typedef std::vector<std::string> StringVector;
@@ -59,6 +61,20 @@ bool summary = true;
 std::string checkfile;
 std::string check;
 
+uint64_t first_toi = 0;
+uint64_t last_toi = 0;
+
+/**
+ * Class for keeping track of batch requests
+ **/
+class TimeEvaluation
+{
+  utility::TimeValue trigger;
+  std::string logic = "";
+  int64_t result = 0;
+  bool did_fire = false;
+};
+
 /**
  * Class for keeping track of updates on a variable
  **/
@@ -69,7 +85,7 @@ public:
 
   std::ostream& print(std::ostream& output)
   {
-    uint64_t total_ns = last - first;
+    uint64_t total_ns = last_toi - first_toi;
     uint64_t total_s = total_ns / 1000000000;
     double hertz = (double)updates / total_s;
     double kbs = (double)bytes / 1000 / total_s;
@@ -84,7 +100,7 @@ public:
 
   void save(knowledge::KnowledgeBase kb)
   {
-    uint64_t total_ns = last - first;
+    uint64_t total_ns = last_toi - first_toi;
     uint64_t total_s = total_ns / 1000000000;
     double hertz = (double)updates / total_s;
     double kbs = (double)bytes / 1000 / total_s;
@@ -428,6 +444,17 @@ int main(int argc, char** argv)
   std::cout << "done\n";
 
   VariableUpdates variables;
+  containers::FlexMap stats_tois("STK_INSPECT.TOI", stats);
+  containers::FlexMap stats_ooo = stats_tois["OUT_OF_ORDER"];
+  containers::FlexMap stats_ooo_max = stats_ooo["MAX"];
+
+  int out_of_orders = 0;
+  uint64_t max_out_of_order = 0;
+  uint64_t zeros = 0;
+  uint64_t consecutive_toi_ooo = 0;
+  std::string last_variable = "";
+  std::string last_max_toi = "";
+
 
   std::cout << "Iterating through updates... " << std::flush;
   while (true)
@@ -455,6 +482,12 @@ int main(int argc, char** argv)
       variable.first = cur.second.toi();
       variable.min_size = size;
       variable.max_size = size;
+
+      // update the first toi if it has not be set
+      if (first_toi == 0)
+      {
+        first_toi = variable.first;
+      }
     }
     else
     {
@@ -471,8 +504,52 @@ int main(int argc, char** argv)
     variable.last = cur.second.toi();
     variable.bytes += size;
     ++variable.updates;
+
+    if (last_toi > variable.last)
+    {
+      ++out_of_orders;
+      ++consecutive_toi_ooo;
+      if (max_out_of_order < last_toi - variable.last)
+      {
+        max_out_of_order = last_toi - variable.last;
+        stats_ooo_max["name"] = last_max_toi;
+        stats_ooo_max["diff"] = (int64_t)max_out_of_order;
+        stats_ooo_max["toi"] = (int64_t)last_toi;
+        stats_ooo_max["consecutive_violations"] = (int64_t)consecutive_toi_ooo;
+      }
+
+      if (variable.last == 0)
+      {
+        ++zeros;
+      }
+
+      // keep track of the out-of-orders per variable
+      containers::FlexMap var_entry = stats_ooo[cur.first];
+      containers::FlexMap after_entry = var_entry["after"][last_variable];
+
+      var_entry = var_entry.to_integer() + 1;
+      after_entry = after_entry.to_integer() + 1;
+    }
+    else
+    {
+      last_toi = variable.last;
+      last_max_toi = cur.first;
+      consecutive_toi_ooo = 0;
+    }
+
+    // save for usage in out-of-order info
+    last_variable = cur.first;
   }
   std::cout << "done\n";
+
+  if (out_of_orders > 0)
+  {
+    std::cout << "Out of order tois=" << out_of_orders << 
+      ": max time ooo=" << max_out_of_order << ": zeros=" << zeros << "\n";
+  }
+
+  stats_ooo = (int64_t)out_of_orders;
+
 
   if (print_stats || summary || checkfile != "" || check != "")
   {
