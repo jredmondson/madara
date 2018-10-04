@@ -273,8 +273,7 @@ void test_record()
   }
 }
 
-template<typename T>
-void test_map(T& kb)
+void test_kb(KnowledgeBase& kb)
 {
   kb.set("hello_str", "world");
   kb.set_any("hello", std::string("world"));
@@ -287,6 +286,27 @@ void test_map(T& kb)
 
   auto a0 = kb.share_any("asdf");
   TEST_EQ(a0->template ref<std::vector<std::string>>()[2], "c");
+
+  auto sv0 = kb.template share_any<std::vector<std::string>>("asdf");
+  TEST_EQ(sv0->at(1), "b");
+}
+
+void test_map(ThreadSafeContext& kb)
+{
+  kb.set("hello_str", "world");
+  kb.set_any("hello", std::string("world"));
+  TEST_EQ(kb.get("hello").template get_any_cref<std::string>(), "world");
+
+  kb.emplace_any(
+      "asdf", type<std::vector<std::string>>{}, mk_init({"a", "b", "c"}));
+  TEST_EQ(
+      kb.get("asdf").template get_any_cref<std::vector<std::string>>()[1], "b");
+
+  auto a0 = kb.share_any("asdf");
+  TEST_EQ(a0->template ref<std::vector<std::string>>()[2], "c");
+
+  auto sv0 = kb.template share_any<std::vector<std::string>>("asdf");
+  TEST_EQ(sv0->at(1), "b");
 
   kb.set_any("B", ns::B{3, 3.5, 4.25});
 
@@ -777,8 +797,8 @@ int main(int, char**)
     test_map(kb.get_context());
   }
   {
-    // KnowledgeBase kb;
-    // test_map(kb);
+    KnowledgeBase kb;
+    test_kb(kb);
   }
 
   test_geo();

@@ -392,6 +392,52 @@ public:
   }
 
   /**
+   * Gets the contents of a record as a shared pointer to the given type.
+   * @tparam T type requested
+   * @return a shared_ptr, sharing with the internal one.
+   * @throw BadAnyAccess if this record is not an Any holding the given type
+   **/
+  template<typename T>
+  std::shared_ptr<const T> share_any(
+      const VariableReference& key, const KnowledgeReferenceSettings& settings =
+                                        KnowledgeReferenceSettings()) const
+  {
+    if (impl_)
+    {
+      return impl_->share_any<T>(key, settings);
+    }
+    else if (context_)
+    {
+      return context_->share_any<T>(key, settings);
+    }
+
+    return nullptr;
+  }
+
+  /**
+   * Gets the contents of a record as a shared pointer to the given type.
+   * @tparam T type requested
+   * @return a shared_ptr, sharing with the internal one.
+   * @throw BadAnyAccess if this record is not an Any holding the given type
+   **/
+  template<typename T>
+  std::shared_ptr<const T> share_any(
+      const std::string& key, const KnowledgeReferenceSettings& settings =
+                                  KnowledgeReferenceSettings()) const
+  {
+    if (impl_)
+    {
+      return impl_->share_any<T>(key, settings);
+    }
+    else if (context_)
+    {
+      return context_->share_any<T>(key, settings);
+    }
+
+    return nullptr;
+  }
+
+  /**
    * Marks the variable reference as updated
    * @param   variable  reference to a variable (@see get_ref)
    * @param   settings  settings for applying the update

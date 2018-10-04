@@ -1646,6 +1646,19 @@ inline std::shared_ptr<const ConstAny> KnowledgeRecord::share_any() const
   return nullptr;
 }
 
+template<typename T>
+inline std::shared_ptr<const T> KnowledgeRecord::share_any() const
+{
+  auto any_ptr = share_any();
+  if (!any_ptr)
+  {
+    throw exceptions::BadAnyAccess("KnowledgeRecord::share_any<T>: "
+        "value in record is not an Any");
+  }
+  const T &ref = any_ptr->template ref<T>();
+  return {any_ptr, &ref};
+}
+
 inline std::shared_ptr<KnowledgeRecord::CircBuf>
 KnowledgeRecord::share_circular_buffer() const
 {

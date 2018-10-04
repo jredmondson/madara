@@ -228,6 +228,20 @@ public:
   }
 
   /**
+   * Gets the contents of a record as a shared pointer to the given type.
+   * @tparam T type requested
+   * @return a shared_ptr, sharing with the internal one.
+   * @throw BadAnyAccess if this record is not an Any holding the given type
+   **/
+  template<typename T, typename K>
+  std::shared_ptr<const T> share_any(
+      K&& key, const KnowledgeReferenceSettings& settings =
+                   KnowledgeReferenceSettings()) const
+  {
+    return map_.share_any<T>(std::forward<K>(key), settings);
+  }
+
+  /**
    * Marks the variable reference as updated
    * @param   variable  reference to a variable (@see get_ref)
    * @param   settings  settings for applying the update

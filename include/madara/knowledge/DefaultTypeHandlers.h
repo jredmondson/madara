@@ -181,8 +181,16 @@ constexpr auto get_type_handler_save_json(type<T>, overload_priority<12>)
     {
       knowledge::json_oarchive archive(o);
       const char* tag = knowledge::AnyRegistry::get_type_name<T>();
-      archive.setNextName(tag ? (std::string("Any<") + tag + ">").c_str()
-                              : "Any<UKNOWN_ANY_TYPE>");
+      std::string name;
+      if (tag)
+      {
+        name = std::string("Any<") + tag + ">";
+        archive.setNextName(name.c_str());
+      }
+      else
+      {
+        archive.setNextName("Any<UKNOWN_ANY_TYPE>");
+      }
       archive << val;
     }
   };
