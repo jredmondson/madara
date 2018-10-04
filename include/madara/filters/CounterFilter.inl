@@ -4,15 +4,15 @@
 #include "CounterFilter.h"
 
 madara::knowledge::KnowledgeRecord::Integer
-madara::filters::CounterFilter::get_count ()
+madara::filters::CounterFilter::get_count()
 {
   return packets_;
 }
 
 madara::knowledge::KnowledgeRecord::Integer
-madara::filters::CounterFilter::get_elapsed ()
+madara::filters::CounterFilter::get_elapsed()
 {
-  madara::knowledge::KnowledgeRecord::Integer result (0);
+  madara::knowledge::KnowledgeRecord::Integer result(0);
 
   if (initialized_)
   {
@@ -22,15 +22,15 @@ madara::filters::CounterFilter::get_elapsed ()
   return result;
 }
 
-double madara::filters::CounterFilter::get_throughput ()
+double madara::filters::CounterFilter::get_throughput()
 {
-  double result (0);
+  double result(0);
 
   if (initialized_)
   {
     // convert elapsed time into seconds
     double elapsed = (double)(last_message_ - first_message_);
-    //elapsed *= 0.000000001;
+    // elapsed *= 0.000000001;
 
     // divide packets by time elapsed in seconds
     result = packets_ / elapsed;

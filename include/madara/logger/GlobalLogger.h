@@ -8,10 +8,10 @@
 
 namespace madara
 {
-  namespace logger
-  {
-    extern MADARA_EXPORT utility::Refcounter <logger::Logger> global_logger;
-  }
+namespace logger
+{
+extern MADARA_EXPORT utility::Refcounter<logger::Logger> global_logger;
+}
 }
 
-#endif // _MADARA_LOGGER_GLOBAL_LOGGER_H_
+#endif  // _MADARA_LOGGER_GLOBAL_LOGGER_H_

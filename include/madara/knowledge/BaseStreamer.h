@@ -11,8 +11,10 @@
  * streamers.
  **/
 
-namespace madara { namespace knowledge {
-
+namespace madara
+{
+namespace knowledge
+{
 /**
  * Interface for knowledge update streaming. Objects which implement this
  * interface can be attachecd to a KnowledgeBase with the attach_streamer
@@ -32,7 +34,7 @@ public:
    **/
   virtual void enqueue(std::string name, KnowledgeRecord record) = 0;
 };
+}
+}  // namespace madara::knowledge
 
-} } // namespace madara::knowledge
-
-#endif // MADARA_KNOWLEDGE_BASE_STREAMER_H_
+#endif  // MADARA_KNOWLEDGE_BASE_STREAMER_H_

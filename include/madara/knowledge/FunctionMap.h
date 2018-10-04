@@ -8,14 +8,14 @@
 
 namespace madara
 {
-  namespace knowledge
-  {    
-    /**
-     * @class FunctionMap
-     * @brief This class stores external functions
-     */
-    typedef     std::map <std::string, Function>   FunctionMap;
-  }
+namespace knowledge
+{
+/**
+ * @class FunctionMap
+ * @brief This class stores external functions
+ */
+typedef std::map<std::string, Function> FunctionMap;
+}
 }
 
-#endif // _MADARA_FUNCTION_MAP_H_
+#endif  // _MADARA_FUNCTION_MAP_H_

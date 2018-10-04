@@ -13,26 +13,25 @@
 
 /// Copy ctor - needed for reference counting.
 
-madara::expression::ExpressionTreeIterator::ExpressionTreeIterator (
-  const ExpressionTreeIterator &ts)
-  : impl_ (ts.impl_)
+madara::expression::ExpressionTreeIterator::ExpressionTreeIterator(
+    const ExpressionTreeIterator& ts)
+  : impl_(ts.impl_)
 {
-
 }
-  
+
 /// Copy ctor for impl *.
 
-madara::expression::ExpressionTreeIterator::ExpressionTreeIterator (
-  ExpressionTreeIteratorImpl *impl)
-  : impl_ (impl)
+madara::expression::ExpressionTreeIterator::ExpressionTreeIterator(
+    ExpressionTreeIteratorImpl* impl)
+  : impl_(impl)
 {
 }
 
 /// Dereference operator returns a reference to the item contained at
 /// the current position.
 
-madara::expression::ExpressionTree 
-madara::expression::ExpressionTreeIterator::operator* (void)
+madara::expression::ExpressionTree madara::expression::ExpressionTreeIterator::
+operator*(void)
 {
   // return impl_->operator* ();
   return *(*impl_);
@@ -40,8 +39,8 @@ madara::expression::ExpressionTreeIterator::operator* (void)
 
 /// Returns a const reference to the item contained at the current position
 
-const madara::expression::ExpressionTree 
-madara::expression::ExpressionTreeIterator::operator* (void) const
+const madara::expression::ExpressionTree
+    madara::expression::ExpressionTreeIterator::operator*(void)const
 {
   // return impl_->operator* ();
   return *(*impl_);
@@ -49,8 +48,8 @@ madara::expression::ExpressionTreeIterator::operator* (void) const
 
 /// Pre-increment operator
 
-madara::expression::ExpressionTreeIterator &
-madara::expression::ExpressionTreeIterator::operator++ (void)
+madara::expression::ExpressionTreeIterator&
+    madara::expression::ExpressionTreeIterator::operator++(void)
 {
   // return impl_->operator++ ();
   ++(*impl_);
@@ -59,10 +58,10 @@ madara::expression::ExpressionTreeIterator::operator++ (void)
 
 /// Post-increment operator
 
-madara::expression::ExpressionTreeIterator 
-madara::expression::ExpressionTreeIterator::operator++ (int)
+madara::expression::ExpressionTreeIterator
+    madara::expression::ExpressionTreeIterator::operator++(int)
 {
-  ExpressionTreeIterator temp (impl_->clone ());
+  ExpressionTreeIterator temp(impl_->clone());
   // return impl_->operator++ ();
   ++(*impl_);
   return temp;
@@ -70,9 +69,8 @@ madara::expression::ExpressionTreeIterator::operator++ (int)
 
 /// Equality operator
 
-bool 
-madara::expression::ExpressionTreeIterator::operator== (
-  const ExpressionTreeIterator &rhs)
+bool madara::expression::ExpressionTreeIterator::operator==(
+    const ExpressionTreeIterator& rhs)
 {
   // return impl_->operator () == rhs.impl_->operator ();
   return *impl_ == *rhs.impl_;
@@ -80,41 +78,40 @@ madara::expression::ExpressionTreeIterator::operator== (
 
 /// Nonequality operator
 
-bool 
-madara::expression::ExpressionTreeIterator::operator!= (
-  const ExpressionTreeIterator &rhs)
+bool madara::expression::ExpressionTreeIterator::operator!=(
+    const ExpressionTreeIterator& rhs)
 {
   return !(*this == rhs);
 }
 
 /// Copy ctor - needed for reference counting.
 
-madara::expression::ExpressionTreeConstIterator::ExpressionTreeConstIterator (
-  const ExpressionTreeConstIterator &ts)
-  : impl_ (ts.impl_)
+madara::expression::ExpressionTreeConstIterator::ExpressionTreeConstIterator(
+    const ExpressionTreeConstIterator& ts)
+  : impl_(ts.impl_)
 {
 }
-  
+
 /// Copy ctor for impl *.
 
-madara::expression::ExpressionTreeConstIterator::ExpressionTreeConstIterator (
-  ExpressionTreeIteratorImpl * impl)
-  : impl_ (impl)
+madara::expression::ExpressionTreeConstIterator::ExpressionTreeConstIterator(
+    ExpressionTreeIteratorImpl* impl)
+  : impl_(impl)
 {
 }
 
 /// Returns a const reference to the item contained at the current position
 
-const madara::expression::ExpressionTree 
-madara::expression::ExpressionTreeConstIterator::operator* (void) const
+const madara::expression::ExpressionTree
+    madara::expression::ExpressionTreeConstIterator::operator*(void)const
 {
   return *(*impl_);
 }
 
 /// Preincrement operator
 
-madara::expression::ExpressionTreeConstIterator &
-madara::expression::ExpressionTreeConstIterator::operator++ (void)
+madara::expression::ExpressionTreeConstIterator&
+    madara::expression::ExpressionTreeConstIterator::operator++(void)
 {
   ++(*impl_);
   return *this;
@@ -122,32 +119,30 @@ madara::expression::ExpressionTreeConstIterator::operator++ (void)
 
 /// Preincrement operator
 
-madara::expression::ExpressionTreeConstIterator 
-madara::expression::ExpressionTreeConstIterator::operator++ (int)
+madara::expression::ExpressionTreeConstIterator
+    madara::expression::ExpressionTreeConstIterator::operator++(int)
 {
-  ExpressionTreeConstIterator temp (impl_.get_ptr ()->clone ());
+  ExpressionTreeConstIterator temp(impl_.get_ptr()->clone());
   ++(*impl_);
   return *this;
 }
 
 /// Equality operator
 
-bool 
-madara::expression::ExpressionTreeConstIterator::operator== (
-  const ExpressionTreeConstIterator &rhs)
+bool madara::expression::ExpressionTreeConstIterator::operator==(
+    const ExpressionTreeConstIterator& rhs)
 {
-  return impl_->operator == (*rhs.impl_);
+  return impl_->operator==(*rhs.impl_);
 }
 
 /// Nonequality operator
 
-bool 
-madara::expression::ExpressionTreeConstIterator::operator!= (
-  const ExpressionTreeConstIterator &rhs)
+bool madara::expression::ExpressionTreeConstIterator::operator!=(
+    const ExpressionTreeConstIterator& rhs)
 {
   return !(*this == rhs);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _TREE_ITERATOR_CPP */

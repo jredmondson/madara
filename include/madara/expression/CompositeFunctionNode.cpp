@@ -13,14 +13,13 @@
 #include "madara/expression/CompositeFunctionNode.h"
 #include "madara/expression/LeafNode.h"
 
-
 #include "madara/knowledge/Functions.h"
 #include "madara/knowledge/Variables.h"
 #include "madara/exceptions/KarlException.h"
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
-  #include <boost/python/call.hpp> 
+#include <boost/python/call.hpp>
 
 #endif
 
@@ -34,57 +33,53 @@
 
 // Ctor
 
-madara::expression::CompositeFunctionNode::CompositeFunctionNode (
-        const std::string & name, 
-        madara::knowledge::ThreadSafeContext & context,
-        const ComponentNodes & nodes)
-: CompositeTernaryNode (context.get_logger (), nodes),
-  name_ (name), context_ (context),
-  function_ (context.retrieve_function (name))
+madara::expression::CompositeFunctionNode::CompositeFunctionNode(
+    const std::string& name, madara::knowledge::ThreadSafeContext& context,
+    const ComponentNodes& nodes)
+  : CompositeTernaryNode(context.get_logger(), nodes),
+    name_(name),
+    context_(context),
+    function_(context.retrieve_function(name))
 {
-  
 }
 
 // Dtor
-madara::expression::CompositeFunctionNode::~CompositeFunctionNode (void)
-{
-}
+madara::expression::CompositeFunctionNode::~CompositeFunctionNode(void) {}
 
 madara::knowledge::KnowledgeRecord
-madara::expression::CompositeFunctionNode::item (void) const
+madara::expression::CompositeFunctionNode::item(void) const
 {
   madara::knowledge::KnowledgeRecord record;
-  record.set_value (name_ + "()");
+  record.set_value(name_ + "()");
   return record;
 }
 
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
 madara::knowledge::KnowledgeRecord
-madara::expression::CompositeFunctionNode::prune (bool & can_change)
+madara::expression::CompositeFunctionNode::prune(bool& can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
-  
+
   madara::knowledge::KnowledgeRecord result;
 
   // setup array of record pointers that point to .1, .2, .3, etc.
-  if (nodes_.size () > 0)
-    compiled_args_.resize (nodes_.size ());
-  
+  if (nodes_.size() > 0)
+    compiled_args_.resize(nodes_.size());
 
-  for (ComponentNodes::size_type i = 0; i < nodes_.size (); ++i)
+  for (ComponentNodes::size_type i = 0; i < nodes_.size(); ++i)
   {
     bool arg_can_change = false;
-    result = nodes_[i]->prune (arg_can_change);
-    
-    if (!arg_can_change && dynamic_cast <LeafNode *> (nodes_[i]) == 0)
+    result = nodes_[i]->prune(arg_can_change);
+
+    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[i]) == 0)
     {
       delete nodes_[i];
-      nodes_[i] = new LeafNode (*(this->logger_), result);
+      nodes_[i] = new LeafNode(*(this->logger_), result);
     }
 
     {
@@ -92,7 +87,7 @@ madara::expression::CompositeFunctionNode::prune (bool & can_change)
       std::stringstream buffer;
       buffer << ".";
       buffer << i;
-      compiled_args_[i] = context_.get_record (buffer.str ());
+      compiled_args_[i] = context_.get_record(buffer.str());
     }
   }
 
@@ -102,140 +97,136 @@ madara::expression::CompositeFunctionNode::prune (bool & can_change)
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
 madara::knowledge::KnowledgeRecord
-madara::expression::CompositeFunctionNode::evaluate (
-const madara::knowledge::KnowledgeUpdateSettings & settings)
+madara::expression::CompositeFunctionNode::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
   madara::knowledge::FunctionArguments args;
   madara::knowledge::KnowledgeRecord result;
 
-  args.resize (nodes_.size ());
+  args.resize(nodes_.size());
 
   int j = 0;
 
-  for (ComponentNodes::iterator i = nodes_.begin (); i != nodes_.end ();
-       ++i, ++j)
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
   {
-    args[j] = (*i)->evaluate (settings);
+    args[j] = (*i)->evaluate(settings);
     *(compiled_args_[j]) = args[j];
   }
-
 
   madara::knowledge::Variables variables;
   variables.context_ = &context_;
 
-  madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-    "Function %s is being called with %d args.\n",
-    this->name_.c_str (), args.size ());
+  madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+      "Function %s is being called with %d args.\n", this->name_.c_str(),
+      args.size());
 
   // if the user has defined a named function, return that
-  if (function_->is_extern_named ())
-    result = function_->extern_named (name_.c_str (), args, variables);
+  if (function_->is_extern_named())
+    result = function_->extern_named(name_.c_str(), args, variables);
 
   // if the user has defined an unnamed function, return that
-  else if (function_->is_extern_unnamed ())
-    result = function_->extern_unnamed (args, variables);
+  else if (function_->is_extern_unnamed())
+    result = function_->extern_unnamed(args, variables);
 
 #ifdef _MADARA_JAVA_
   else if (function_->is_java_callable())
   {
     madara::utility::java::Acquire_VM jvm;
-    JNIEnv * env = jvm.env;
+    JNIEnv* env = jvm.env;
 
     /**
-      * Create the variables java object
-      **/
+     * Create the variables java object
+     **/
 
-    jclass jvarClass = madara::utility::java::find_class (
-      env, "ai/madara/knowledge/Variables");
-    jclass jlistClass = madara::utility::java::find_class (
-      env, "ai/madara/knowledge/KnowledgeList");
+    jclass jvarClass =
+        madara::utility::java::find_class(env, "ai/madara/knowledge/Variables");
+    jclass jlistClass = madara::utility::java::find_class(
+        env, "ai/madara/knowledge/KnowledgeList");
 
-    jmethodID fromPointerCall = env->GetStaticMethodID (jvarClass,
-      "fromPointer", "(J)Lai/madara/knowledge/Variables;");
-    jobject jvariables = env->CallStaticObjectMethod (jvarClass,
-      fromPointerCall, (jlong) &variables);
+    jmethodID fromPointerCall = env->GetStaticMethodID(
+        jvarClass, "fromPointer", "(J)Lai/madara/knowledge/Variables;");
+    jobject jvariables = env->CallStaticObjectMethod(
+        jvarClass, fromPointerCall, (jlong)&variables);
 
     // prep to create the KnowledgeList
-    jmethodID listConstructor = env->GetMethodID(jlistClass,
-      "<init>", "([J)V");
+    jmethodID listConstructor = env->GetMethodID(jlistClass, "<init>", "([J)V");
 
     jlongArray ret = env->NewLongArray((jsize)args.size());
-    jlong * tmp = new jlong [(jsize)args.size()];
+    jlong* tmp = new jlong[(jsize)args.size()];
 
     for (unsigned int x = 0; x < args.size(); x++)
     {
-      tmp[x] = (jlong) args[x].clone ();
+      tmp[x] = (jlong)args[x].clone();
     }
 
     env->SetLongArrayRegion(ret, 0, (jsize)args.size(), tmp);
-    delete [] tmp;
+    delete[] tmp;
 
     // create the KnowledgeList
-    jobject jlist = env->NewObject (jlistClass, listConstructor, ret);
+    jobject jlist = env->NewObject(jlistClass, listConstructor, ret);
 
     // get the filter's class
     jclass filterClass = env->GetObjectClass(function_->java_object);
 
     // get the filter method
-    jmethodID filterMethod = env->GetMethodID (filterClass,
-      "filter",
-      "(Lai/madara/knowledge/KnowledgeList;"
-      "Lai/madara/knowledge/Variables;)Lai/madara/knowledge/KnowledgeRecord;");
+    jmethodID filterMethod = env->GetMethodID(filterClass, "filter",
+        "(Lai/madara/knowledge/KnowledgeList;"
+        "Lai/madara/knowledge/Variables;)Lai/madara/knowledge/"
+        "KnowledgeRecord;");
 
     // call the filter and hold the result
-    jobject jresult = env->CallObjectMethod (function_->java_object,
-      filterMethod, jlist, jvariables);
+    jobject jresult = env->CallObjectMethod(
+        function_->java_object, filterMethod, jlist, jvariables);
 
-    jmethodID getPtrMethod = env->GetMethodID (
-      env->GetObjectClass(jresult), "getCPtr", "()J");
-    jlong cptr = env->CallLongMethod (jresult, getPtrMethod);
+    jmethodID getPtrMethod =
+        env->GetMethodID(env->GetObjectClass(jresult), "getCPtr", "()J");
+    jlong cptr = env->CallLongMethod(jresult, getPtrMethod);
 
-    result.deep_copy(*(madara::knowledge::KnowledgeRecord *)cptr);
+    result.deep_copy(*(madara::knowledge::KnowledgeRecord*)cptr);
 
-    jvm.env->DeleteLocalRef (jresult);
-    jvm.env->DeleteLocalRef (filterClass);
-    jvm.env->DeleteLocalRef (jlist);
-    jvm.env->DeleteLocalRef (ret);
-    jvm.env->DeleteLocalRef (jvariables);
-    jvm.env->DeleteWeakGlobalRef (jlistClass);
-    jvm.env->DeleteWeakGlobalRef (jvarClass);
+    jvm.env->DeleteLocalRef(jresult);
+    jvm.env->DeleteLocalRef(filterClass);
+    jvm.env->DeleteLocalRef(jlist);
+    jvm.env->DeleteLocalRef(ret);
+    jvm.env->DeleteLocalRef(jvariables);
+    jvm.env->DeleteWeakGlobalRef(jlistClass);
+    jvm.env->DeleteWeakGlobalRef(jvarClass);
   }
 #endif
-  
+
 #ifdef _MADARA_PYTHON_CALLBACKS_
-  else if (function_->is_python_callable ())
-    return boost::python::call <madara::knowledge::KnowledgeRecord> (
-          function_->python_function.ptr (),
-          boost::ref (args), boost::ref (variables));
+  else if (function_->is_python_callable())
+    return boost::python::call<madara::knowledge::KnowledgeRecord>(
+        function_->python_function.ptr(), boost::ref(args),
+        boost::ref(variables));
 #endif
 
-  else if (function_->is_uninitialized ())
+  else if (function_->is_uninitialized())
   {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "CompositeFunctionNode:"
-      "KARL RUNTIME EXCEPTION: "
-      "Attempt at calling an undefined function\n");
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "CompositeFunctionNode:"
+        "KARL RUNTIME EXCEPTION: "
+        "Attempt at calling an undefined function\n");
 
-    throw exceptions::KarlException ("CompositeFunctionNode:"
-      "KARL RUNTIME EXCEPTION: "
-      "Attempt at calling an undefined function");
+    throw exceptions::KarlException("CompositeFunctionNode:"
+                                    "KARL RUNTIME EXCEPTION: "
+                                    "Attempt at calling an undefined function");
   }
   // otherwise, assume it is a MADARA function
   else
   {
-    result = function_->function_contents.evaluate ();
+    result = function_->function_contents.evaluate();
   }
 
   return result;
 }
 
 // accept a visitor
-void 
-madara::expression::CompositeFunctionNode::accept (Visitor &visitor) const
+void madara::expression::CompositeFunctionNode::accept(Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _FUNCTION_NODE_CPP_ */

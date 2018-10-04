@@ -14,8 +14,7 @@ extern "C" {
  * Signature: ()J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_filters_EndpointClear_jni_1EndpointClear
-  (JNIEnv *, jobject);
+Java_ai_madara_filters_EndpointClear_jni_1EndpointClear(JNIEnv*, jobject);
 
 /*
  * Class:     ai_madara_filters_EndpointClear
@@ -23,8 +22,8 @@ Java_ai_madara_filters_EndpointClear_jni_1EndpointClear
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_EndpointClear_jni_1addReceiveFilterTo
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_filters_EndpointClear_jni_1addReceiveFilterTo(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_filters_EndpointClear
@@ -32,8 +31,8 @@ Java_ai_madara_filters_EndpointClear_jni_1addReceiveFilterTo
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_EndpointClear_jni_1addSendFilterTo
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_filters_EndpointClear_jni_1addSendFilterTo(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_filters_EndpointClear
@@ -41,17 +40,16 @@ Java_ai_madara_filters_EndpointClear_jni_1addSendFilterTo
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_filters_EndpointClear
  * Method:    jni_setPrefix
  * Signature: (JLjava/lang/String;)V
  */
-MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_EndpointClear_jni_1setPrefix
-  (JNIEnv *, jobject, jlong, jstring);
+MADARA_EXPORT void JNICALL Java_ai_madara_filters_EndpointClear_jni_1setPrefix(
+    JNIEnv*, jobject, jlong, jstring);
 
 /*
  * Class:     ai_madara_filters_EndpointClear
@@ -59,8 +57,8 @@ Java_ai_madara_filters_EndpointClear_jni_1setPrefix
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_filters_EndpointClear_jni_1freeEndpointClear
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_filters_EndpointClear_jni_1freeEndpointClear(
+    JNIEnv*, jclass, jlong);
 
 #ifdef __cplusplus
 }

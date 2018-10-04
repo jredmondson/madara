@@ -12,7 +12,7 @@ namespace logger = madara::logger;
 using namespace madara;
 using namespace knowledge;
 
-int main (int, char **)
+int main(int, char**)
 {
   Any any = Any::construct("Point");
   std::cerr << any << std::endl;
@@ -25,8 +25,8 @@ int main (int, char **)
 
   if (madara_tests_fail_count > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
-      " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
+              << " tests failed.\n";
   }
   else
   {

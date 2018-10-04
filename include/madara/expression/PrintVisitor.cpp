@@ -2,7 +2,7 @@
 #ifndef _PRINT_VISITOR_CPP_
 #define _PRINT_VISITOR_CPP_
 
-#ifdef  _USE_VISITORS_
+#ifdef _USE_VISITORS_
 
 #include <iostream>
 
@@ -43,207 +43,129 @@
 
 /// visit function - prints LeafNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const LeafNode &node)
-{
-}
+void madara::expression::PrintVisitor::visit(const LeafNode& node) {}
 
 /// visit function - prints VariableNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const VariableNode &node)
-{
-}
+void madara::expression::PrintVisitor::visit(const VariableNode& node) {}
 
 /// visit function - prints VariableDecrementNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const VariableDecrementNode &node)
+void madara::expression::PrintVisitor::visit(const VariableDecrementNode& node)
 {
 }
 
 /// visit function - prints VariableDivideNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const VariableDivideNode &node)
-{
-}
+void madara::expression::PrintVisitor::visit(const VariableDivideNode& node) {}
 
 /// visit function - prints VariableIncrementNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const VariableIncrementNode &node)
+void madara::expression::PrintVisitor::visit(const VariableIncrementNode& node)
 {
 }
 
 /// visit function - prints VariableMultiplyNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const VariableMultiplyNode &node)
+void madara::expression::PrintVisitor::visit(const VariableMultiplyNode& node)
 {
 }
 
 /// visit function - prints VariableCompareNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const VariableCompareNode &node)
-{
-}
+void madara::expression::PrintVisitor::visit(const VariableCompareNode& node) {}
 
 /// visit function - prints ListNode value to std::cout
-void 
-madara::expression::PrintVisitor::visit (const ListNode &node)
-{
-}
+void madara::expression::PrintVisitor::visit(const ListNode& node) {}
 
 /// visit function - prints CompositeNegateNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeNegateNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeNegateNode&) {}
 
 /// visit function - prints CompositeNegateNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositePredecrementNode &)
+void madara::expression::PrintVisitor::visit(const CompositePredecrementNode&)
 {
 }
 
 /// visit function - prints CompositeNegateNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositePreincrementNode &)
+void madara::expression::PrintVisitor::visit(const CompositePreincrementNode&)
 {
 }
 
 /// visit function - prints CompositeNotNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeNotNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeNotNode&) {}
 
 /// visit function - prints CompositeAddNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeAddNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeAddNode&) {}
 
 /// visit function - prints CompositeAndNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeAndNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeAndNode&) {}
 
 /// visit function - prints CompositeOrNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeOrNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeOrNode&) {}
 
 /// visit function - prints CompositeEqualityNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeEqualityNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeEqualityNode&) {}
 
 /// visit function - prints CompositeInequalityNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeInequalityNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeInequalityNode&) {}
 
 /// visit function - prints CompositeGreaterThanEqualNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeGreaterThanEqualNode &)
+void madara::expression::PrintVisitor::visit(
+    const CompositeGreaterThanEqualNode&)
 {
 }
 
 /// visit function - prints CompositeGreaterThanNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeGreaterThanNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeGreaterThanNode&) {}
 
 /// visit function - prints CompositeLessThanEqualNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeLessThanEqualNode &)
+void madara::expression::PrintVisitor::visit(const CompositeLessThanEqualNode&)
 {
 }
 
 /// visit function - prints CompositeLessThanNode contents to std::cout
-void 
-madara::expression::PrintVisitor::visit (const CompositeLessThanNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeLessThanNode&) {}
 
 /// visit function - prints CompositeAssignmentNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeAssignmentNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeAssignmentNode&) {}
 
 /// visit function - prints CompositeSubtractNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeSubtractNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeSubtractNode&) {}
 
 /// visit function - prints CompositeDivideNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeDivideNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeDivideNode&) {}
 
 /// visit function - prints CompositeMultiplyNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeMultiplyNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeMultiplyNode&) {}
 
 /// visit function - prints CompositeModulusNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeModulusNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeModulusNode&) {}
 
 /// visit function - prints CompositeBothNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeBothNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeBothNode&) {}
 
 /// visit function - prints CompositeSequentialNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeSequentialNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeSequentialNode&) {}
 
 /// visit function - prints CompositeFunctionNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeFunctionNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeFunctionNode&) {}
 
 /// visit function - prints CompositeForLoop contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeForLoop &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeForLoop&) {}
 
 /// visit function - prints CompositeImpliesNode contents to std::cout
 
-void 
-madara::expression::PrintVisitor::visit (const CompositeImpliesNode &)
-{
-}
+void madara::expression::PrintVisitor::visit(const CompositeImpliesNode&) {}
 
-#endif // _USE_VISITORS_
+#endif  // _USE_VISITORS_
 
 #endif /* _PRINT_VISITOR_CPP_ */

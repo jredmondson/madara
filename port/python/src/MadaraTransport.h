@@ -8,7 +8,6 @@
  * This file contains Boost.Python mappings for madara.transport module
  **/
 
-void define_transport (void);
+void define_transport(void);
 
-#endif // _MADARA_PYTHON_PORT_MADARA_TRANSPORT_H_
-
+#endif  // _MADARA_PYTHON_PORT_MADARA_TRANSPORT_H_

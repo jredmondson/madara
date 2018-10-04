@@ -26,97 +26,96 @@
 
 namespace madara
 {
-  namespace transport
-  {
-    /**
-     * @class ZMQTransport
-     * @brief ZMQ-based transport for knowledge. This transport currently
-     * supports the following transport settings:<br />
-     *        1) a single host:port pairing<br />
-     *        2) the reduced message header<br />
-     *        3) the normal message header<br />
-     *        4) domain differentiation<br />
-     *        5) on data received logic<br />
-     *        6) multi-assignment of records<br />
-     *        7) rebroadcasting<br />
-     **/
-    class MADARA_EXPORT ZMQTransport : public Base
-    {
-    public:
-      /**
-       * Constructor
-       * @param   id   unique identifer - usually a combination of host:port
-       * @param   context  knowledge context
-       * @param   config   transport configuration settings
-       * @param   launch_transport  whether or not to launch this transport
-       **/
-      ZMQTransport (const std::string & id, 
-        madara::knowledge::ThreadSafeContext & context, 
-        TransportSettings & config, bool launch_transport);
+namespace transport
+{
+/**
+ * @class ZMQTransport
+ * @brief ZMQ-based transport for knowledge. This transport currently
+ * supports the following transport settings:<br />
+ *        1) a single host:port pairing<br />
+ *        2) the reduced message header<br />
+ *        3) the normal message header<br />
+ *        4) domain differentiation<br />
+ *        5) on data received logic<br />
+ *        6) multi-assignment of records<br />
+ *        7) rebroadcasting<br />
+ **/
+class MADARA_EXPORT ZMQTransport : public Base
+{
+public:
+  /**
+   * Constructor
+   * @param   id   unique identifer - usually a combination of host:port
+   * @param   context  knowledge context
+   * @param   config   transport configuration settings
+   * @param   launch_transport  whether or not to launch this transport
+   **/
+  ZMQTransport(const std::string& id,
+      madara::knowledge::ThreadSafeContext& context, TransportSettings& config,
+      bool launch_transport);
 
-      /**
-       * Destructor
-       **/
-      virtual ~ZMQTransport ();
-      
-      /**
-       * Sends a list of knowledge updates to listeners
-       * @param   updates listing of all updates that must be sent
-       * @return  result of write operation or -1 if we are shutting down
-       **/
-      long send_data (const madara::knowledge::VariableReferenceMap & updates) override;
-    
-      /**
-       * Closes the transport
-       **/
-      virtual void close (void) override;
-      
-      /**
-       * Accesses reliability setting
-       * @return  whether we are using reliable dissemination or not
-       **/
-      int reliability (void) const;
-      
-      /**
-       * Sets the reliability setting
-       * @return  the changed setting
-       **/
-      int reliability (const int & setting);
+  /**
+   * Destructor
+   **/
+  virtual ~ZMQTransport();
 
-      /**
-       * Initializes the transport
-       * @return  0 if success
-       **/
-      virtual int setup (void) override;
+  /**
+   * Sends a list of knowledge updates to listeners
+   * @param   updates listing of all updates that must be sent
+   * @return  result of write operation or -1 if we are shutting down
+   **/
+  long send_data(
+      const madara::knowledge::VariableReferenceMap& updates) override;
 
-    private:
-      
-      /// knowledge base for threads to use
-      knowledge::KnowledgeBase         knowledge_;
-      
-      /// threads for reading knowledge updates
-      threads::Threader                        read_threads_;
+  /**
+   * Closes the transport
+   **/
+  virtual void close(void) override;
 
-      /// underlying socket for sending
-      void * write_socket_;
-      
-      /// sent packets
-      knowledge::containers::Integer sent_packets_;
+  /**
+   * Accesses reliability setting
+   * @return  whether we are using reliable dissemination or not
+   **/
+  int reliability(void) const;
 
-      /// failed sends
-      knowledge::containers::Integer failed_sends_;
+  /**
+   * Sets the reliability setting
+   * @return  the changed setting
+   **/
+  int reliability(const int& setting);
 
-      /// sent data
-      knowledge::containers::Integer sent_data_;
+  /**
+   * Initializes the transport
+   * @return  0 if success
+   **/
+  virtual int setup(void) override;
 
-      /// max data sent
-      knowledge::containers::Integer sent_data_max_;
+private:
+  /// knowledge base for threads to use
+  knowledge::KnowledgeBase knowledge_;
 
-      /// min data sent
-      knowledge::containers::Integer sent_data_min_;
+  /// threads for reading knowledge updates
+  threads::Threader read_threads_;
 
-    };
-  }
+  /// underlying socket for sending
+  void* write_socket_;
+
+  /// sent packets
+  knowledge::containers::Integer sent_packets_;
+
+  /// failed sends
+  knowledge::containers::Integer failed_sends_;
+
+  /// sent data
+  knowledge::containers::Integer sent_data_;
+
+  /// max data sent
+  knowledge::containers::Integer sent_data_max_;
+
+  /// min data sent
+  knowledge::containers::Integer sent_data_min_;
+};
+}
 }
 
-#endif // _MADARA_ZEROMQ_TRANSPORT_H_
+#endif  // _MADARA_ZEROMQ_TRANSPORT_H_

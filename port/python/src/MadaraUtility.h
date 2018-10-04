@@ -7,7 +7,6 @@
  * This file contains Boost.Python mappings for utility functions in MADARA
  **/
 
-void define_utility (void);
+void define_utility(void);
 
-#endif // _MADARA_PYTHON_PORT_MADARA_UTILITY_H_
-
+#endif  // _MADARA_PYTHON_PORT_MADARA_UTILITY_H_

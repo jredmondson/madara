@@ -16,9 +16,10 @@ using namespace utility;
 using namespace containers;
 
 template<typename T>
-std::ostream &operator<<(std::ostream &o, const CircularBuffer<T> &buf)
+std::ostream& operator<<(std::ostream& o, const CircularBuffer<T>& buf)
 {
-  for (const auto &cur : buf) {
+  for (const auto& cur : buf)
+  {
     o << cur << " ";
   }
   return o;
@@ -30,14 +31,16 @@ void test_circular_int_buffer()
 
   VAL(b.capacity());
 
-  for (int i = 0; i < 5; ++i) {
+  for (int i = 0; i < 5; ++i)
+  {
     VAL(b.size());
     b.push_back(i);
   }
 
   std::cout << b << std::endl;
 
-  for (int i = 5; i < 10; ++i) {
+  for (int i = 5; i < 10; ++i)
+  {
     VAL(b.size());
     b.push_back(i);
   }
@@ -78,8 +81,12 @@ void test_circular_int_buffer()
 
   std::cout << b << std::endl;
 
-  for (auto iter = std::reverse_iterator<typename CircularBuffer<int>::iterator>(b.end());
-      iter != std::reverse_iterator<typename CircularBuffer<int>::iterator>(b.begin()); ++iter)
+  for (auto iter =
+           std::reverse_iterator<typename CircularBuffer<int>::iterator>(
+               b.end());
+       iter !=
+       std::reverse_iterator<typename CircularBuffer<int>::iterator>(b.begin());
+       ++iter)
   {
     std::cout << *iter << std::endl;
   }
@@ -91,19 +98,21 @@ void test_circular_int_buffer()
 }
 
 template<typename T, typename R>
-void test_history_vector(const std::vector<R> &hist,
+void test_history_vector(const std::vector<R>& hist,
     std::initializer_list<std::pair<size_t, T>> vals)
 {
-  for (const auto &cur : vals) {
+  for (const auto& cur : vals)
+  {
     TEST_EQ(hist[cur.first], cur.second);
   }
 }
 
 template<typename T, typename R>
-void test_consume_earliest(const std::vector<R> &ce,
-    std::initializer_list<std::pair<size_t, T>> vals)
+void test_consume_earliest(
+    const std::vector<R>& ce, std::initializer_list<std::pair<size_t, T>> vals)
 {
-  for (const auto &cur : vals) {
+  for (const auto& cur : vals)
+  {
     TEST_EQ(ce[cur.first], cur.second);
   }
 }
@@ -113,14 +122,16 @@ void test_record_buffer()
   KnowledgeRecord rec;
 
   rec.set_history_capacity(10);
-  for (int i = 1; i < 5; ++i) {
+  for (int i = 1; i < 5; ++i)
+  {
     rec.set_value(i);
   }
 
   TEST_EQ(rec.get_newest(), 4);
   TEST_EQ(rec.get_oldest().exists(), true);
 
-  for (int i = 7; i < 27; ++i) {
+  for (int i = 7; i < 27; ++i)
+  {
     rec.set_value(i);
   }
 
@@ -132,44 +143,41 @@ void test_record_buffer()
   auto hist = rec.get_history();
   TEST_EQ(hist.size(), 10UL);
 
-  test_history_vector<int>(rec.get_history(),
-      {{7, 24}, {2, 19}, {4, 21}, {5, 22}});
-  test_history_vector<int>(rec.get_newest(4),
-      {{0, 23}, {3, 26}});
+  test_history_vector<int>(
+      rec.get_history(), {{7, 24}, {2, 19}, {4, 21}, {5, 22}});
+  test_history_vector<int>(rec.get_newest(4), {{0, 23}, {3, 26}});
   test_history_vector<std::string>(rec.get_newest<std::string>(4),
       {{0, std::string("23")}, {3, std::string("26")}});
-  test_history_vector<const char *>(rec.get_oldest(6),
-      {{0, "17"}, {3, "20"}, {5, "22"}});
-  test_history_vector<double>(rec.get_oldest<double>(6),
-      {{0, 17}, {3, 20}, {5, 22}});
-  test_history_vector<int>(rec.get_history(3, 4),
-      {{0, 20}, {2, 22}});
-  test_history_vector<int>(rec.get_history(-5, 4),
-      {{0, 22}, {2, 24}});
+  test_history_vector<const char*>(
+      rec.get_oldest(6), {{0, "17"}, {3, "20"}, {5, "22"}});
+  test_history_vector<double>(
+      rec.get_oldest<double>(6), {{0, 17}, {3, 20}, {5, 22}});
+  test_history_vector<int>(rec.get_history(3, 4), {{0, 20}, {2, 22}});
+  test_history_vector<int>(rec.get_history(-5, 4), {{0, 22}, {2, 24}});
 
   LOG("Resized buffer to 6");
   rec.set_history_capacity(6);
-  test_history_vector<int>(rec.get_history(),
-      {{3, 24}, {0, 21}, {1, 22}});
+  test_history_vector<int>(rec.get_history(), {{3, 24}, {0, 21}, {1, 22}});
 
   LOG("Resized buffer to 10");
   rec.set_history_capacity(10);
-  test_history_vector<int>(rec.get_history(),
-      {{3, 24}, {0, 21}, {1, 22}});
+  test_history_vector<int>(rec.get_history(), {{3, 24}, {0, 21}, {1, 22}});
 }
 
 template<typename Key>
-void test_kb(KnowledgeBase &kb, Key key)
+void test_kb(KnowledgeBase& kb, Key key)
 {
   kb.set_history_capacity(key, 10);
-  for (int i = 1; i < 5; ++i) {
+  for (int i = 1; i < 5; ++i)
+  {
     kb.set(key, i);
   }
 
   TEST_EQ(kb.get_newest(key), 4);
   TEST_EQ(kb.get_oldest(key).exists(), true);
 
-  for (int i = 7; i < 27; ++i) {
+  for (int i = 7; i < 27; ++i)
+  {
     kb.set(key, i);
   }
 
@@ -178,20 +186,17 @@ void test_kb(KnowledgeBase &kb, Key key)
   TEST_EQ(kb.get_history(key, -2), 25);
   TEST_EQ(kb.get_history(key, 2), 19);
 
-  test_history_vector<int>(kb.get_history(key),
-      {{7, 24}, {2, 19}, {4, 21}, {5, 22}});
-  test_history_vector<int>(kb.get_newest(key, 4),
-      {{0, 23}, {3, 26}});
+  test_history_vector<int>(
+      kb.get_history(key), {{7, 24}, {2, 19}, {4, 21}, {5, 22}});
+  test_history_vector<int>(kb.get_newest(key, 4), {{0, 23}, {3, 26}});
   test_history_vector<std::string>(kb.get_newest<std::string>(key, 4),
       {{0, std::string("23")}, {3, std::string("26")}});
-  test_history_vector<const char *>(kb.get_oldest(key, 6),
-      {{0, "17"}, {3, "20"}, {5, "22"}});
-  test_history_vector<double>(kb.get_oldest<double>(key, 6),
-      {{0, 17}, {3, 20}, {5, 22}});
-  test_history_vector<int>(kb.get_history(key, 3, 4),
-      {{0, 20}, {2, 22}});
-  test_history_vector<int>(kb.get_history(key, -5, 4),
-      {{0, 22}, {2, 24}});
+  test_history_vector<const char*>(
+      kb.get_oldest(key, 6), {{0, "17"}, {3, "20"}, {5, "22"}});
+  test_history_vector<double>(
+      kb.get_oldest<double>(key, 6), {{0, 17}, {3, 20}, {5, 22}});
+  test_history_vector<int>(kb.get_history(key, 3, 4), {{0, 20}, {2, 22}});
+  test_history_vector<int>(kb.get_history(key, -5, 4), {{0, 22}, {2, 24}});
 }
 
 void test_container()
@@ -210,7 +215,8 @@ void test_container()
   TEST_EQ(buf.consume(), 42);
   TEST_EQ(buf.consume(), 53);
 
-  for (int i = 1; i < 6; ++i) {
+  for (int i = 1; i < 6; ++i)
+  {
     kb.set(key, i);
   }
 
@@ -226,7 +232,8 @@ void test_container()
   TEST_EQ(buf.remaining(), 0UL);
   TEST_EQ(buf.count(), 7UL);
 
-  for (int i = 6; i < 31; ++i) {
+  for (int i = 6; i < 31; ++i)
+  {
     kb.set(key, i);
   }
 
@@ -243,7 +250,8 @@ void test_container()
   TEST_EQ(buf.count(), 10UL);
 
   int c = buf.get_record().get_history_oldest_index();
-  for (const auto &cur : buf.get_record().get_history()) {
+  for (const auto& cur : buf.get_record().get_history())
+  {
     std::cerr << c << ": " << cur << std::endl;
     ++c;
   }
@@ -254,32 +262,33 @@ void test_container()
   TEST_EQ(rec = buf.inspect(3), 26);
 
   std::vector<KnowledgeRecord> v;
-  v = buf.inspect(2,3);
-  test_consume_earliest<int>(v,{ {0,25},{1,26},{2,27} });
+  v = buf.inspect(2, 3);
+  test_consume_earliest<int>(v, {{0, 25}, {1, 26}, {2, 27}});
 
   kb.set_history_capacity(key, 5);
 
-  v = buf.inspect(2,3);
-  test_consume_earliest<int>(v,{ {0,28},{1,29},{2,30} });
+  v = buf.inspect(2, 3);
+  test_consume_earliest<int>(v, {{0, 28}, {1, 29}, {2, 30}});
 
   kb.set_history_capacity(key, 10);
 
   v = buf.consume_many(1);
-  test_consume_earliest<int>(v,{ {0,26} });
+  test_consume_earliest<int>(v, {{0, 26}});
 
-  for (int i = 32; i < 45; ++i) {
+  for (int i = 32; i < 45; ++i)
+  {
     kb.set(key, i);
   }
 
   size_t mydropped;
-  v = buf.consume_many(2,mydropped);
+  v = buf.consume_many(2, mydropped);
 
   TEST_EQ(mydropped, 7UL);
-  test_consume_earliest<int>(v,{ {0,35}, {1,36} });
+  test_consume_earliest<int>(v, {{0, 35}, {1, 36}});
 
   std::vector<KnowledgeRecord> krvec;
-  buf.consume_many(3,krvec);
-  test_consume_earliest<int>(krvec,{ {0,37}, {1,38}, {2,39} });
+  buf.consume_many(3, krvec);
+  test_consume_earliest<int>(krvec, {{0, 37}, {1, 38}, {2, 39}});
 
   auto all = kb.to_map("");
   TEST_EQ(all.size(), 1UL);
@@ -295,9 +304,31 @@ void test_container()
 
   kb.set(key, 123);
   TEST_EQ(buf2.consume(), 123);
+
+  key = "nobuf";
+  NativeCircularBufferConsumer buf3(key, kb);
+
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume(););
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume_many(10););
+
+  kb.set_history_capacity(key, 0);
+
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume(););
+  EXPECT_EXCEPTION(exceptions::IndexException, buf3.consume_many(10););
+
+  key = "buf1";
+  NativeCircularBufferConsumer buf4(key, kb);
+  kb.set_history_capacity(key, 1);
+
+  TEST_EQ(buf4.consume().exists(), false);
+
+  kb.set(key, 12);
+
+  TEST_EQ(buf4.consume(), 12);
+  TEST_EQ(buf4.consume().exists(), false);
 }
 
-int main (int, char **)
+int main(int, char**)
 {
   madara::logger::global_logger->set_level(2);
 
@@ -329,8 +360,8 @@ int main (int, char **)
 
   if (madara_tests_fail_count > 0)
   {
-    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count <<
-      " tests failed.\n";
+    std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
+              << " tests failed.\n";
   }
   else
   {

@@ -3,4 +3,4 @@
 
 #include "madara/knowledge/AggregateFilter.h"
 
-#endif // _MADARA_AGGREGATE_FILTERS_CPP_
+#endif  // _MADARA_AGGREGATE_FILTERS_CPP_

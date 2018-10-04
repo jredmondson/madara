@@ -13,26 +13,26 @@ namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
 
 // default transport settings
-std::string host ("");
-const std::string default_multicast ("239.255.0.1:4150");
+std::string host("");
+const std::string default_multicast("239.255.0.1:4150");
 madara::transport::QoSTransportSettings settings;
-double test_time (60);
-size_t data_size (128);
-double send_hertz (-1);
-size_t num_vars (1);
+double test_time(60);
+size_t data_size(128);
+double send_hertz(-1);
+size_t num_vars(1);
 
 // handle command line arguments
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
   for (int i = 1; i < argc; ++i)
   {
-    std::string arg1 (argv[i]);
+    std::string arg1(argv[i]);
 
     if (arg1 == "-m" || arg1 == "--multicast")
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
@@ -41,7 +41,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
@@ -50,7 +50,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
@@ -73,7 +73,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_threads;
       }
 
@@ -83,7 +83,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        logger::global_logger->add_file (argv[i + 1]);
+        logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
@@ -92,7 +92,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
@@ -103,10 +103,10 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         int level;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> level;
 
-        logger::global_logger->set_level (level);
+        logger::global_logger->set_level(level);
       }
 
       ++i;
@@ -115,7 +115,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> num_vars;
       }
 
@@ -126,11 +126,11 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         double drop_rate;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
-        
-        settings.update_drop_rate (drop_rate,
-          madara::transport::PACKET_DROP_DETERMINISTIC);
+
+        settings.update_drop_rate(
+            drop_rate, madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -139,7 +139,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
       }
 
@@ -153,7 +153,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> data_size;
       }
 
@@ -163,7 +163,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> send_hertz;
       }
 
@@ -173,7 +173,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> test_time;
       }
 
@@ -183,7 +183,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
       }
 
@@ -193,68 +193,73 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
       }
       ++i;
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-        "\nProgram summary for %s:\n\n" \
-        "  Profiles a network transport. Requires 2 processes. The result of\n" \
-        "  running these processes should be that each process reports\n" \
-        "  latency and throughput statistics.\n\n" \
-        " [-a|--no-latency]        do not test for latency (throughput only)\n" \
-        " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n" \
-        " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        " [-e|--threads threads]   number of read threads\n" \
-        " [-f|--logfile file]      log to a file\n" \
-        " [-i|--id id]             the id of this agent (should be non-negative)\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        " [--num-vars vars]        the number of vars to split size up into\n" \
-        " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-q|--queue-length len   the buffer size to use for the test\n" \
-        " [-r|--reduced]           use the reduced message header\n" \
-        " [-s|--size size]         size of data packet to send in bytes\n" \
-        " [--send-hz hertz]        hertz to send at\n" \
-        " [-t|--time time]         time to burst messages for throughput test\n" \
-        " [-u|--udp ip:port]       the udp ips to send to (first is self to bind to)\n" \
-        " [-z|--read-hertz hertz]  read thread hertz speed\n" \
-        " [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n" \
-        "                          examples include tcp://127.0.0.1:30000\n" \
-        "                          or any of the other endpoint types like\n" \
-        "                          pgm://. For tcp, remember that the first\n" \
-        "                          endpoint defined must be your own, the\n" \
-        "                          one you are binding to, and all other\n" \
-        "                          agent endpoints must also be defined or\n" \
-        "                          no messages will ever be sent to them.\n" \
-        "                          Similarly, all agents will have to have\n" \
-        "                          this endpoint added to their list or\n" \
-        "                          this karl agent will not see them.\n" \
-        "\n",
-        argv[0]);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "  Profiles a network transport. Requires 2 processes. The result "
+          "of\n"
+          "  running these processes should be that each process reports\n"
+          "  latency and throughput statistics.\n\n"
+          " [-a|--no-latency]        do not test for latency (throughput "
+          "only)\n"
+          " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n"
+          " [-d|--domain domain]     the knowledge domain to send and listen "
+          "to\n"
+          " [-e|--threads threads]   number of read threads\n"
+          " [-f|--logfile file]      log to a file\n"
+          " [-i|--id id]             the id of this agent (should be "
+          "non-negative)\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          " [-m|--multicast ip:port] the multicast ip to send and listen to\n"
+          " [--num-vars vars]        the number of vars to split size up into\n"
+          " [-o|--host hostname]     the hostname of this process "
+          "(def:localhost)\n"
+          " [-q|--queue-length len   the buffer size to use for the test\n"
+          " [-r|--reduced]           use the reduced message header\n"
+          " [-s|--size size]         size of data packet to send in bytes\n"
+          " [--send-hz hertz]        hertz to send at\n"
+          " [-t|--time time]         time to burst messages for throughput "
+          "test\n"
+          " [-u|--udp ip:port]       the udp ips to send to (first is self to "
+          "bind to)\n"
+          " [-z|--read-hertz hertz]  read thread hertz speed\n"
+          " [--zmq|--0mq proto://ip:port] a ZeroMQ endpoint to connect to.\n"
+          "                          examples include tcp://127.0.0.1:30000\n"
+          "                          or any of the other endpoint types like\n"
+          "                          pgm://. For tcp, remember that the first\n"
+          "                          endpoint defined must be your own, the\n"
+          "                          one you are binding to, and all other\n"
+          "                          agent endpoints must also be defined or\n"
+          "                          no messages will ever be sent to them.\n"
+          "                          Similarly, all agents will have to have\n"
+          "                          this endpoint added to their list or\n"
+          "                          this karl agent will not see them.\n"
+          "\n",
+          argv[0]);
 
-      exit (0);
+      exit(0);
     }
   }
 }
 
 class Profiler : public madara::filters::AggregateFilter
 {
-  public:
-    Profiler ()
-    : total_latency (0), received (0), min_latency (0), max_latency (0)
-    {
-    }
+public:
+  Profiler() : total_latency(0), received(0), min_latency(0), max_latency(0) {}
 
-  void filter (knowledge::KnowledgeMap &,
-    const transport::TransportContext &transport_context,
-    knowledge::Variables &)
+  void filter(knowledge::KnowledgeMap&,
+      const transport::TransportContext& transport_context,
+      knowledge::Variables&)
   {
-    uint64_t current =
-      transport_context.get_current_time () - transport_context.get_message_time ();
+    uint64_t current = transport_context.get_current_time() -
+                       transport_context.get_message_time();
     total_latency += current;
 
     // there are race conditions here with multiple read threads but meh
@@ -275,25 +280,25 @@ class Profiler : public madara::filters::AggregateFilter
     ++received;
   }
 
-  std::atomic <uint64_t> total_latency;
-  std::atomic <uint64_t> received;
-  std::atomic <uint64_t> min_latency;
-  std::atomic <uint64_t> max_latency;
+  std::atomic<uint64_t> total_latency;
+  std::atomic<uint64_t> received;
+  std::atomic<uint64_t> min_latency;
+  std::atomic<uint64_t> max_latency;
 };
 
-int main (int argc, char ** argv)
+int main(int argc, char** argv)
 {
   // initialize settings
   settings.type = transport::MULTICAST;
   settings.queue_length = 1000000;
 
   // parse the user command line arguments
-  handle_arguments (argc, argv);
+  handle_arguments(argc, argv);
 
   // setup default transport as multicast
-  if (settings.hosts.size () == 0)
+  if (settings.hosts.size() == 0)
   {
-    settings.hosts.push_back (default_multicast);
+    settings.hosts.push_back(default_multicast);
   }
 
   // id == 0 ? "publisher" : "subscriber"
@@ -309,10 +314,10 @@ int main (int argc, char ** argv)
     }
 
     // setup a knowledge base
-    knowledge::KnowledgeBase kb (host, settings);
-    unsigned char * data = new unsigned char [data_size]; 
-    std::vector <knowledge::VariableReference> vars;
-    knowledge::VariableReference num_vars_ref = kb.get_ref ("num_vars");
+    knowledge::KnowledgeBase kb(host, settings);
+    unsigned char* data = new unsigned char[data_size];
+    std::vector<knowledge::VariableReference> vars;
+    knowledge::VariableReference num_vars_ref = kb.get_ref("num_vars");
 
     // get a handle to the data
 
@@ -321,63 +326,63 @@ int main (int argc, char ** argv)
       std::stringstream buffer;
       buffer << "data";
       buffer << i;
-      vars.push_back (kb.get_ref (buffer.str ()));
-      kb.set_file (vars[i], data, data_size, knowledge::EvalSettings::DELAY_NO_EXPAND);
+      vars.push_back(kb.get_ref(buffer.str()));
+      kb.set_file(
+          vars[i], data, data_size, knowledge::EvalSettings::DELAY_NO_EXPAND);
     }
 
-    kb.set (num_vars_ref, num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
-
+    kb.set(num_vars_ref, num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
 
     std::cerr << "Publishing " << data_size << " B packets in " << num_vars
-      << " variables @" << send_hertz << " hz for "
-      << test_time << " s on " << transport::types_to_string (settings.type)
-      << " transport\n";
+              << " variables @" << send_hertz << " hz for " << test_time
+              << " s on " << transport::types_to_string(settings.type)
+              << " transport\n";
 
     // use epoch enforcer"
 
-    utility::EpochEnforcer<utility::Clock> enforcer (1/send_hertz, test_time);
+    utility::EpochEnforcer<utility::Clock> enforcer(1 / send_hertz, test_time);
 
-    while (!enforcer.is_done ())
+    while (!enforcer.is_done())
     {
       for (auto var : vars)
       {
-        kb.mark_modified (var);
+        kb.mark_modified(var);
       }
 
-      kb.mark_modified (num_vars_ref);
-      kb.send_modifieds ();
+      kb.mark_modified(num_vars_ref);
+      kb.send_modifieds();
 
       if (send_hertz > 0.0)
       {
-        enforcer.sleep_until_next ();
+        enforcer.sleep_until_next();
       }
     }
 
-    kb.set ("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    kb.set("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
 
-    kb.set ("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    kb.set("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
 
-    delete [] data;
+    delete[] data;
 
     std::cerr << "Publisher is done. Check results on subscriber.\n";
-  } // end publisher
+  }  // end publisher
   else
   {
     // add a receive filter to keep track of latency
     Profiler profiler;
-    settings.add_receive_filter (&profiler);
+    settings.add_receive_filter(&profiler);
 
     // setup a knowledge base
-    knowledge::KnowledgeBase kb (host, settings);
+    knowledge::KnowledgeBase kb(host, settings);
 
-    std::cerr << "Receiving for " << test_time << " s on " <<
-      transport::types_to_string (settings.type) << " transport\n";
+    std::cerr << "Receiving for " << test_time << " s on "
+              << transport::types_to_string(settings.type) << " transport\n";
 
     // subscriber lives the hard life (TM)
-    utility::sleep (test_time);
+    utility::sleep(test_time);
 
     // stop the knowledge base from receiving anything else
-    kb.close_transport ();
+    kb.close_transport();
 
     // print stats
     if (profiler.received > 0)
@@ -386,16 +391,17 @@ int main (int argc, char ** argv)
       uint64_t avg_latency = profiler.total_latency / received;
       uint64_t min_latency = profiler.min_latency;
       uint64_t max_latency = profiler.max_latency;
-      data_size = (size_t) kb.get ("data0").size ();
-      num_vars = (size_t)kb.get ("num_vars").to_integer ();
-      uint64_t data_transfered = (uint64_t) data_size * received * (uint64_t)num_vars;
+      data_size = (size_t)kb.get("data0").size();
+      num_vars = (size_t)kb.get("num_vars").to_integer();
+      uint64_t data_transfered =
+          (uint64_t)data_size * received * (uint64_t)num_vars;
       double data_rate = (double)data_transfered / test_time;
       double msg_rate = (double)received / test_time;
 
       std::cerr << "Test: SUCCESS\n";
       std::cerr << "Settings:\n";
-      std::cerr << "  Transport type: " <<
-        transport::types_to_string (settings.type) << "\n";
+      std::cerr << "  Transport type: "
+                << transport::types_to_string(settings.type) << "\n";
       std::cerr << "  Buffer size: " << settings.queue_length << " B\n";
 
       std::cerr << "  Hosts: \n";
@@ -415,7 +421,8 @@ int main (int argc, char ** argv)
       std::cerr << "Throughput:\n";
       std::cerr << "  Messages received: " << received << "\n";
       std::cerr << "  Message rate: " << msg_rate << " packets/s\n";
-      std::cerr << "  Data received: " << (data_transfered * (uint64_t)num_vars) << " B\n";
+      std::cerr << "  Data received: " << (data_transfered * (uint64_t)num_vars)
+                << " B\n";
       std::cerr << "  Data rate: " << data_rate << " B/s\n";
     }
     else

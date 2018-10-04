@@ -11,24 +11,22 @@
 
 namespace madara
 {
-  namespace filters
-  {
-    enum
-    {
-      RECORD = 0,
-      RECORD_NAME = 1,
-      OPERATION_TYPE = 2,
-      SEND_BANDWIDTH = 3,
-      RECEIVED_BANDWIDTH = 4,
-      UPDATE_TIME = 5,
-      CURRENT_TIME = 6,
-      KNOWLEDGE_DOMAIN = 7,
-      ORIGINATOR = 8,
-      TOTAL_ARGUMENTS = 9
-    };
-  }
+namespace filters
+{
+enum
+{
+  RECORD = 0,
+  RECORD_NAME = 1,
+  OPERATION_TYPE = 2,
+  SEND_BANDWIDTH = 3,
+  RECEIVED_BANDWIDTH = 4,
+  UPDATE_TIME = 5,
+  CURRENT_TIME = 6,
+  KNOWLEDGE_DOMAIN = 7,
+  ORIGINATOR = 8,
+  TOTAL_ARGUMENTS = 9
+};
+}
 }
 
-
-
-#endif // _MADARA_FILTER_ARGUMENTS_
+#endif  // _MADARA_FILTER_ARGUMENTS_

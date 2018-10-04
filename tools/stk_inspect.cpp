@@ -14,13 +14,14 @@
 
 #include "madara/utility/Utility.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/knowledge/containers/FlexMap.h"
 
 #ifdef _USE_SSL_
-  #include "madara/filters/ssl/AESBufferFilter.h"
+#include "madara/filters/ssl/AESBufferFilter.h"
 #endif
 
 #ifdef _USE_LZ4_
-  #include "madara/filters/lz4/LZ4BufferFilter.h"
+#include "madara/filters/lz4/LZ4BufferFilter.h"
 #endif
 
 #include "capnp/schema-parser.h"
@@ -34,9 +35,10 @@ namespace utility = madara::utility;
 namespace filters = madara::filters;
 namespace logger = madara::logger;
 namespace threads = madara::threads;
+namespace containers = knowledge::containers;
 
-typedef knowledge::KnowledgeRecord::Integer  Integer;
-typedef std::vector <std::string>            StringVector;
+typedef knowledge::KnowledgeRecord::Integer Integer;
+typedef std::vector<std::string> StringVector;
 
 // checkpoint settings
 knowledge::CheckpointSettings load_checkpoint_settings;
@@ -44,7 +46,7 @@ knowledge::CheckpointSettings load_checkpoint_settings;
 // options for analysis
 bool print_knowledge = false;
 bool print_stats = false;
-std::vector <std::string> print_prefixes;
+std::vector<std::string> print_prefixes;
 std::string save_file;
 
 // Capnp types and globals
@@ -59,49 +61,49 @@ bool summary = true;
 std::string checkfile;
 std::string check;
 
+// keep track of first and last observed time of insertion
+uint64_t first_toi = 0;
+uint64_t last_toi = 0;
+
 /**
  * Class for keeping track of updates on a variable
  **/
 class VariableStats
 {
 public:
-  VariableStats ()
-  : name (""), first (0), last (0), updates (0), bytes (0)
-  {
+  VariableStats() : name(""), first(0), last(0), updates(0), bytes(0) {}
 
-  }
-
-  std::ostream & print (std::ostream & output)
+  std::ostream& print(std::ostream& output) const
   {
-    uint64_t total_ns = last - first;
+    uint64_t total_ns = last_toi - first_toi;
     uint64_t total_s = total_ns / 1000000000;
-    double hertz = (double)updates / total_s;
-    double kbs = (double)bytes / 1000 / total_s;
+    double hertz =(double)updates / total_s;
+    double kbs =(double)bytes / 1000 / total_s;
 
-    output << std::fixed << std::setprecision (2);
+    output << std::fixed << std::setprecision(2);
     output << name << ": " << updates << " updates ";
-    output << " (@" << hertz << "hz) (@" << kbs << "KB/s) (Size: Min ";
+    output << "(@" << hertz << "hz)(@" << kbs << "KB/s)(Size: Min ";
     output << min_size << " B, Max: " << max_size << " B)\n";
 
     return output;
   }
 
-  void save (knowledge::KnowledgeBase kb)
+  void save(knowledge::KnowledgeBase kb) const
   {
-    uint64_t total_ns = last - first;
+    uint64_t total_ns = last_toi - first_toi;
     uint64_t total_s = total_ns / 1000000000;
-    double hertz = (double)updates / total_s;
-    double kbs = (double)bytes / 1000 / total_s;
+    double hertz =(double)updates / total_s;
+    double kbs =(double)bytes / 1000 / total_s;
 
-    kb.set (name + ".first", (int64_t)first);
-    kb.set (name + ".last", (int64_t)last);
-    kb.set (name + ".updates", (int64_t)updates);
-    kb.set (name + ".bytes", (int64_t)bytes);
-    kb.set (name + ".max_size", (int64_t)max_size);
-    kb.set (name + ".min_size", (int64_t)min_size);
-    kb.set (name + ".duration", (int64_t)total_ns);
-    kb.set (name + ".hz", hertz);
-    kb.set (name + ".kbs", kbs);
+    kb.set(name + ".first",(int64_t)first);
+    kb.set(name + ".last",(int64_t)last);
+    kb.set(name + ".updates",(int64_t)updates);
+    kb.set(name + ".bytes",(int64_t)bytes);
+    kb.set(name + ".max_size",(int64_t)max_size);
+    kb.set(name + ".min_size",(int64_t)min_size);
+    kb.set(name + ".duration",(int64_t)total_ns);
+    kb.set(name + ".hz", hertz);
+    kb.set(name + ".kbs", kbs);
   }
 
   std::string name;
@@ -111,32 +113,431 @@ public:
   uint64_t bytes;
   uint64_t max_size;
   uint64_t min_size;
+  knowledge::KnowledgeRecord value;
 };
 
 /// convenience typedef for Variable updates
-typedef std::map <std::string, VariableStats> VariableUpdates;
+typedef std::map<std::string, VariableStats> VariableUpdates;
+
+// print variables to a specified output stream
+void print_variables(const VariableUpdates & variables, 
+  std::ostream & output, bool print_value,
+  bool print, bool save_stats,
+  knowledge::KnowledgeBase stats)
+{
+  for(auto variable : variables)
+  {
+    bool prefix_match = print_prefixes.size() == 0;
+
+    if(!prefix_match)
+    {
+      for(auto prefix : print_prefixes)
+      {
+        if(utility::begins_with(variable.first, prefix))
+        {
+          prefix_match = true;
+          break;
+        }
+      }
+    }
+
+    if(prefix_match)
+    {
+      // if user wants to print a value
+      if(print_value)
+      {
+        output << variable.first << "=" << variable.second.value << "\n";
+      }
+
+      // if(summary)
+      if(print)
+      {
+        variable.second.print(output);
+      }
+
+      // if(print_stats || check != "" || checkfile != "")
+      if(save_stats)
+      {
+        variable.second.save(stats);
+      }
+    }
+  }
+}
+
+int64_t process_command (const std::string & command,
+    knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+    const VariableUpdates & variables)
+{
+  int64_t result = 0;
+  std::string logic = command;
+  bool shell_mode = false;
+
+  utility::strip_extra_white_space(logic);
+
+  for (size_t execs = 0; execs < 1 || shell_mode; ++execs)
+  {
+    if(utility::begins_with(logic, "add_prefix"))
+    {
+      // format: add_prefix first second third fourth
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: adding var prefixes ";
+      std::cout << logic.substr (11) << "\n";
+
+      // split by space and discard first token (add_prefix)
+      std::vector<std::string> splitters, tokens, pivot_list;
+      splitters.push_back (" ");
+
+      utility::tokenizer (logic, splitters, tokens, pivot_list);
+
+      for (size_t i = 1; i < tokens.size(); ++i)
+      {
+        print_prefixes.push_back (tokens[i]);
+        ++result;
+      }
+    }
+    else if(utility::begins_with(logic, "clear_prefixes"))
+    {
+      // format: clear_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: clearing var prefixes\n";
+
+      print_prefixes.clear();
+
+      ++result;
+    }
+    // note that there is a really good reason to have this before eval
+    else if(utility::begins_with(logic, "eval_stats"))
+    {
+      // format: clear_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: evaluating stats logic\n";
+
+      result += stats.evaluate (
+        logic.substr (11), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+
+      ++result;
+    }
+    else if(utility::begins_with(logic, "eval"))
+    {
+      // format: clear_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: evaluating kb logic\n";
+
+      result += kb.evaluate (
+        logic.substr (5), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+
+      ++result;
+    }
+    else if(utility::begins_with(logic, "exit"))
+    {
+      // split by space and discard first token (add_prefix)
+      std::vector<std::string> splitters, tokens, pivot_list;
+      splitters.push_back (" ");
+
+      utility::tokenizer (logic, splitters, tokens, pivot_list);
+      int exit_code = 0;
+
+      if (tokens.size () == 2)
+      {
+        std::stringstream buffer (tokens[1]);
+        buffer >> exit_code;
+      }
+
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: exiting app with code ";
+      std::cout << exit_code << "\n";
+
+      std::cout << "\n";
+      exit (exit_code);
+    }
+    else if(utility::begins_with(logic, "help"))
+    {
+      // format: print
+      std::cout << "\n";
+      std::cout << last_toi << ": Executing help... commands available:\n\n";
+      
+      std::cout << "  add_prefix arg: add a prefix limiter to prints\n";
+      std::cout << "  clear_prefixes: clears all prefix limiters\n";
+      std::cout << "        eval arg: evaluates logic in current state\n";
+      std::cout << "  eval_stats arg: evaluates logic in current stats\n";
+      std::cout << "       exit code: exit the application with a code\n";
+      std::cout << "            help: print this menu\n";
+      std::cout << "   list_prefixes: lists all prefix limiters\n";
+      std::cout << "           print: print current knowledge\n";
+      std::cout << "     print_stats: print current var stats\n";
+      std::cout << "       print_all: print current knowledge & var stats\n";
+      std::cout << "            quit: leave interactive shell\n";
+      std::cout << "           shell: enter and interactive shell\n\n";
+
+      ++result;
+    }
+    else if(utility::begins_with(logic, "list_prefixes"))
+    {
+      // format: list_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: list all prefixes\n\n";
+
+      for (auto prefix: print_prefixes)
+      {
+        std::cout << "  " << prefix << "\n";
+      }
+
+      std::cout << "\n";
+      ++result;
+    }
+    // note that there is a really good reason to have this before print
+    else if(utility::begins_with(logic, "print_stats"))
+    {
+      // format: print_stats
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: printing stats\n";
+
+      print_variables(variables, std::cout, false, true, false, stats);
+
+      std::cout << "\n";
+      ++result;
+    }
+    // note that there is a really good reason to have this before print
+    else if(utility::begins_with(logic, "print_all"))
+    {
+      // format: print_all
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: printing all info\n";
+
+      print_variables(variables, std::cout, true, true, false, stats);
+
+      std::cout << "\n";
+      ++result;
+    }
+    else if(utility::begins_with(logic, "print"))
+    {
+      // format: print
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: printing knowledge\n";
+
+      print_variables(variables, std::cout, true, false, false, stats);
+
+      std::cout << "\n";
+      ++result;
+    }
+    else if(utility::begins_with(logic, "shell"))
+    {
+      // format: shell
+      if (!shell_mode)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: entering interactive mode\n";
+
+        shell_mode = true;
+      }
+      else
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": You're already in interactive mode\n";
+      }
+
+      std::cout << "\n";
+      ++result;
+    }
+    else if(utility::begins_with(logic, "quit"))
+    {
+      // format: quit
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: quitting shell mode\n";
+
+      shell_mode = false;
+
+      std::cout << "\n";
+      ++result;
+    }
+    else
+    {
+      std::cout << "\n";
+      std::cout << last_toi <<
+        ": Event trigger: unknown event " << logic << "\n";
+      std::cout << "\n";
+    }
+
+    // if we are in shell mode, ask the user what to do
+    if (shell_mode)
+    {
+      std::cout << "What would you like to do? (help for usage info): ";
+      std::getline (std::cin, logic);
+    }
+  }
+  return result;
+}
+
+/**
+ * Class for keeping track of batch requests
+ **/
+class Event
+{
+  public:
+  uint64_t trigger = 0;
+  std::vector <std::string> logics;
+  int64_t result = 0;
+  bool fired = false;
+  uint64_t triggered_toi = 0;
+
+  // read an event from a string
+  inline void read(const std::string & input)
+  {
+    std::vector <std::string> splitters, tokens, pivot_list;
+    splitters.push_back(":");
+    splitters.push_back(";");
+    splitters.push_back(",");
+
+    utility::tokenizer(input, splitters, tokens, pivot_list);
+
+    // if tokens are 2+, then we have a timestamp:event
+    if(tokens.size() > 1)
+    {
+      double offset;
+      std::stringstream buffer(tokens[0]);
+      buffer >> offset;
+
+      // save the timestamp as an offset from first_toi(we have to fix later)
+      trigger = utility::seconds_to_nanoseconds(offset);
+
+      // the rest of the tokens are logics
+      logics.insert(logics.end(), tokens.begin() + 1, tokens.end());
+    }
+  }
+
+  // evaluate the logics
+  inline void evaluate(
+    knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+    const VariableUpdates & variables)
+  {
+    fired = true;
+    triggered_toi = last_toi;
+    
+    for(size_t i = 0; i < logics.size(); ++i)
+    {
+      result += process_command(logics[i], kb, stats, variables);;
+    }
+  }
+
+  // evaluate logic if appropriate time
+  inline bool evaluate_if_ready(uint64_t current,
+    knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+    const VariableUpdates & variables)
+  {
+    if(!fired && current >= trigger)
+    {
+      evaluate(kb, stats, variables);
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  inline void print(std::ostream & output)
+  {
+    if (logics.size() > 0)
+    {
+      output << "  ";
+      if (trigger == 0)
+      {
+        output << trigger << " ns: ";
+      }
+      else
+      {
+        output << (trigger - first_toi) << " ns: ";
+      }
+
+      output << logics[0];
+      for (size_t i = 1; i < logics.size(); ++i)
+      {
+        output << ";" << logics[i]; 
+      }
+
+      output << ": ";
+
+      if (fired)
+      {
+        output << "fired_at=" << triggered_toi << ", ";
+        output << "result=" << result << "\n";
+      }
+      else
+      {
+        output << "not fired yet\n";
+      }
+    }
+    else
+    {
+      output << "ERROR: empty event\n";
+    } 
+  }
+
+  inline void update_from_first(void)
+  {
+    trigger += first_toi;
+  }
+};
+
+bool operator<(const Event & lhs, const Event & rhs)
+{
+  return lhs.trigger < rhs.trigger;
+}
+
+// batch evaluations
+std::string batchfile;
+std::string batch;
+std::vector <Event> events;
 
 // handle command line arguments
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
-    std::string arg1 (argv[i]);
+    std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--check")
+    if(arg1 == "-b" || arg1 == "--batch")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        check = argv[i + 1];
-        std::cout <<
-          "  Loading stats check from command line " << check << "\n";
+        if (batch != "")
+        {
+          batch += "\n";
+          batch += argv[i + 1];
+        }
+        else
+        {
+          batch = argv[i + 1];
+        }
+        std::cout << "  Loading batch events " << batch << "\n";
       }
 
       ++i;
     }
-    else if (arg1 == "-cf" || arg1 == "--check-file")
+    else if(arg1 == "-bf" || arg1 == "--batch-file")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
+      {
+        batchfile = argv[i + 1];
+        std::cout << "  Loading batch events from file " << batchfile << "\n";
+      }
+
+      ++i;
+    }
+    else if(arg1 == "-c" || arg1 == "--check")
+    {
+      if(i + 1 < argc)
+      {
+        check = argv[i + 1];
+        std::cout << "  Loading stats check from command line " << check
+                  << "\n";
+      }
+
+      ++i;
+    }
+    else if(arg1 == "-cf" || arg1 == "--check-file")
+    {
+      if(i + 1 < argc)
       {
         checkfile = argv[i + 1];
         std::cout << "  Loading stats check from file " << checkfile << "\n";
@@ -144,9 +545,9 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         load_checkpoint_settings.filename = argv[i + 1];
 
@@ -155,146 +556,144 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-k" || arg1 == "--print-knowledge")
+    else if(arg1 == "-k" || arg1 == "--print-knowledge")
     {
       print_knowledge = true;
     }
-    else if (arg1 == "-kp" || arg1 == "--print-prefixes")
+    else if(arg1 == "-kp" || arg1 == "--print-prefixes")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        for (int j = i + 1;
-             j < argc && strlen (argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
+        for(int j = i + 1;
+             j < argc && strlen(argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
         {
           std::cout << "  Limiting results to prefix " << argv[j] << "\n";
-          print_prefixes.push_back (argv[j]);
+          print_prefixes.push_back(argv[j]);
         }
       }
     }
-    else if (arg1 == "-ks" || arg1 == "--print-stats")
+    else if(arg1 == "-ks" || arg1 == "--print-stats")
     {
       print_stats = true;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> level;
-        logger::global_logger->set_level (level);
+        logger::global_logger->set_level(level);
         std::cout << "  Setting log level to " << level << "\n";
       }
 
       ++i;
     }
-    else if (arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix")
+    else if(arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        load_checkpoint_settings.prefixes.push_back (argv[i + 1]);
+        load_checkpoint_settings.prefixes.push_back(argv[i + 1]);
         std::cout << "  Limiting load to prefix " << argv[i + 1] << "\n";
       }
 
       ++i;
     }
-    else if (arg1 == "-ls" || arg1 == "--load-size")
+    else if(arg1 == "-ls" || arg1 == "--load-size")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> load_checkpoint_settings.buffer_size;
         std::cout << "  Setting load size to " << argv[i + 1] << "\n";
       }
 
       ++i;
     }
-    else if (arg1 == "-ni" )
+    else if(arg1 == "-ni")
     {
-      if (i + 1 < argc)
-      { 
+      if(i + 1 < argc)
+      {
         std::string dirnames = argv[i + 1];
 
         std::vector<std::string> splitters, tokens, pivot_list;
-        splitters.push_back (":");
-      
-        utility::tokenizer (dirnames, splitters, tokens, pivot_list);
+        splitters.push_back(":");
 
-        for (auto token : tokens)
+        utility::tokenizer(dirnames, splitters, tokens, pivot_list);
+
+        for(auto token : tokens)
         {
-          capnp_import_dirs.add (token);
+          capnp_import_dirs.add(token);
         }
 
         capnp_import_dirs_flag = true;
       }
       else
       {
-        //print out error log
-        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-          "ERROR: parameter -ni dir1[:dir2:dir3]\n");
-        exit (-1);
+        // print out error log
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+            "ERROR: parameter -ni dir1[:dir2:dir3]\n");
+        exit(-1);
       }
 
       ++i;
     }
-    else if (arg1 == "-n")
+    else if(arg1 == "-n")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::string msgtype_pair = argv[i + 1];
 
         std::vector<std::string> splitters, tokens, pivot_list;
-        splitters.push_back (":");
-      
-        utility::tokenizer (msgtype_pair, splitters, tokens, pivot_list);
+        splitters.push_back(":");
 
-        if (tokens.size () == 2)
+        utility::tokenizer(msgtype_pair, splitters, tokens, pivot_list);
+
+        if(tokens.size() == 2)
         {
-          capnp_msg.push_back (tokens[0]);
-          capnp_type.push_back (tokens[1]);
+          capnp_msg.push_back(tokens[0]);
+          capnp_type.push_back(tokens[1]);
         }
         else
         {
-          //print out error log
-          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-            "ERROR: parameter -n requires two tokens, "
-            "in the form 'msg:type'\n");
-          exit (-1);
+          // print out error log
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+              "ERROR: parameter -n requires two tokens, "
+              "in the form 'msg:type'\n");
+          exit(-1);
         }
 
         capnp_msg_type_param_flag = true;
       }
       else
       {
-        //print out error log
-        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-          "ERROR: parameter [-n|] msg:type\n");
-        exit (-1);
+        // print out error log
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+            "ERROR: parameter [-n|] msg:type\n");
+        exit(-1);
       }
 
       ++i;
     }
-    else if (arg1 == "-nf" || arg1 == "--capnp")
+    else if(arg1 == "-nf" || arg1 == "--capnp")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        //capnp_import_dirs_flag && capnp_msg_type_param_flag
-        if (!capnp_import_dirs_flag)
+        // capnp_import_dirs_flag && capnp_msg_type_param_flag
+        if(!capnp_import_dirs_flag)
         {
-          //write loggercode and continue
-          madara_logger_ptr_log (
-            logger::global_logger.get (), logger::LOG_ERROR,
-            "ERROR: parameter -ni is missing or must precede -nf param\n");
+          // write loggercode and continue
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+              "ERROR: parameter -ni is missing or must precede -nf param\n");
           ++i;
           continue;
         }
-        
-        if (!capnp_msg_type_param_flag)
+
+        if(!capnp_msg_type_param_flag)
         {
-          //write loggercode and continue
-          madara_logger_ptr_log (
-            logger::global_logger.get (), logger::LOG_ERROR,
-            "ERROR: parameter -n is missing or must precede -nf param\n");
+          // write loggercode and continue
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+              "ERROR: parameter -n is missing or must precede -nf param\n");
           ++i;
           continue;
         }
@@ -305,52 +704,50 @@ void handle_arguments (int argc, char ** argv)
 
         static capnp::SchemaParser schparser;
         capnp::ParsedSchema ps;
-        ps = schparser.parseDiskFile (
-          utility::extract_filename (filename), filename, capnp_import_dirs.asPtr ());
+        ps = schparser.parseDiskFile(utility::extract_filename(filename),
+            filename, capnp_import_dirs.asPtr());
 
         std::string msg;
         std::string typestr;
         capnp::ParsedSchema ps_type;
         size_t idx = 0;
 
-        for (idx = 0; idx < capnp_msg.size (); ++idx)
+        for(idx = 0; idx < capnp_msg.size(); ++idx)
         {
           msg = capnp_msg[idx];
           typestr = capnp_type[idx];
-          ps_type = ps.getNested (typestr);
+          ps_type = ps.getNested(typestr);
 
-          if (!madara::knowledge::AnyRegistry::register_schema (
-            capnp_msg[idx].c_str (), ps_type.asStruct ()))
+          if(!madara::knowledge::AnyRegistry::register_schema(
+                  capnp_msg[idx].c_str(), ps_type.asStruct()))
           {
-            madara_logger_ptr_log (
-              logger::global_logger.get (), logger::LOG_ERROR,
-              "CAPNP Failed on file  %s ",
-                utility::extract_filename (filename).c_str ());
+            madara_logger_ptr_log(logger::global_logger.get(),
+                logger::LOG_ERROR, "CAPNP Failed on file  %s ",
+                utility::extract_filename(filename).c_str());
           }
           else
           {
-            madara_logger_ptr_log (
-              logger::global_logger.get (), logger::LOG_TRACE,
-                 "CAPNP Loaded file  %s ",
-                 utility::extract_filename (filename).c_str ());
+            madara_logger_ptr_log(logger::global_logger.get(),
+                logger::LOG_TRACE, "CAPNP Loaded file  %s ",
+                utility::extract_filename(filename).c_str());
           }
         }
       }
       else
       {
-        madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ERROR,
-          "ERROR: parameter [-nf|--capnp] filename\n");
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+            "ERROR: parameter [-nf|--capnp] filename\n");
       }
 
       ++i;
     }
-    else if (arg1 == "-ns" || arg1 == "--no-summary")
+    else if(arg1 == "-ns" || arg1 == "--no-summary")
     {
       summary = false;
     }
-    else if (arg1 == "-s" || arg1 == "--save")
+    else if(arg1 == "-s" || arg1 == "--save")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         save_file = argv[i + 1];
         std::cout << "  Saving results to " << argv[i + 1] << "\n";
@@ -358,241 +755,353 @@ void handle_arguments (int argc, char ** argv)
 
       ++i;
     }
-    else if (arg1 == "-v" || arg1 == "--version")
+    else if(arg1 == "-v" || arg1 == "--version")
     {
-      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-        "MADARA version: %s\n",
-        utility::get_version ().c_str ());
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "MADARA version: %s\n", utility::get_version().c_str());
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-"\nOption %s:\n" \
-"\nProgram summary for %s [options] [Logic]:\n\n" \
-"Inspects STK for summary info on knowledge updates.\n\noptions:\n" \
-"  [-f|--stk-file file]     STK file to load and analyze\n" \
-"  [-h|--help]              print help menu (i.e., this menu)\n" \
-"  [-c|--check logic]       logic to evaluate to check contents.\n" \
-"                           a check is a KaRL expression that can\n" \
-"                           be a combination of variable stats.\n" \
-"                           Each variable has the following stats:.\n" \
-"                             {var}.bytes: total bytes\n" \
-"                             {var}.duration: ns between first and last\n" \
-"                             {var}.first: ns timestamp of first update\n" \
-"                             {var}.hz: frequency of updates in duration\n" \
-"                             {var}.kbs: KB/s of updates within duration\n" \
-"                             {var}.last: ns timestamp of first update\n" \
-"                             {var}.max_size: max size of update\n" \
-"                             {var}.min_size: min size of update\n" \
-"                             {var}.updates: total num updates\n" \
-"  [-cf|--check-file file]  KaRL file with check. See -c for options\n" \
-"  [-k|--print-knowledge]   print final knowledge\n" \
-"  [-kp|--print-prefix pfx] filter prints by prefix. Can be multiple.\n" \
-"  [-ks|--print-stats]      print stats knowledge base contents\n" \
-"  [-ky]                    print knowledge after frequent evaluations\n" \
-"  [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-"  [-lcp|--load-checkpoint-prefix prfx]\n" \
-"                           prefix of knowledge to load from checkpoint\n" \
-"  [-ls|--load-size bytes]  size of buffer needed for file load\n" \
-"  [-n|--capnp tag:msg_type] register tag with given message schema.\n" \
-"                            See also -nf and -ni.\n"\
-"  [-nf|--capnp-file]       load capnp file. Must appear after -n and -ni.\n" \
-"  [-ni|--capnp-import ]    add directory to capnp directory imports. "\
-"                           Must appear before all -n and -nf.\n" \
-"  [-ns|--no-summary ]      do not print or save summary stats per var" \
-"                           Must appear before all -n and -nf.\n" \
-"  [-s|--save file]         save the results to a file\n" \
-"\n",
-        arg1.c_str (), argv[0]);
-      exit (0);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nOption %s:\n"
+          "\nProgram summary for %s [options] [Logic]:\n\n"
+          "Inspects STK for summary info on knowledge updates.\n\noptions:\n"
+          "  [-b|--batch commands]    load batch events in the format of\n"
+          "                           time: event; event; event \n"
+          "                           where time is in seconds and event \n"
+          "                           can be any arbitrary karl expression \n"
+          "                           or the following specialized calls \n"
+          "\n"
+          "                           add_prefix: add prefixes to print list\n"
+          "                             prefixes are separated by spaces\n"
+          "                           clear_prefixes: clear print prefixes\n"
+          "                           eval: evaluates karl logic in kb\n"
+          "                           eval_stats: evaluates karl in stats\n"
+          "                           exit: exits this program immediately\n"
+          "                           help: print all commands\n"
+          "                           list_prefixes: list print prefixes\n"
+          "                           print: print var=value \n"
+          "                           print_stats: print var stats \n"
+          "                           print_all: print var value & stats\n"
+          "                           shell: enter shell mode (interactive)\n"
+          "                           quit: leaves shell mode\n"
+          "\n"
+          "  [-bf|--batch-file file]  load batch events from file. See\n"
+          "                           -b for format \n"
+          "  [-f|--stk-file file]     STK file to load and analyze\n"
+          "  [-h|--help]              print help menu(i.e., this menu)\n"
+          "  [-c|--check logic]       logic to evaluate to check contents.\n"
+          "                           a check is a KaRL expression that can\n"
+          "                           be a combination of variable stats.\n"
+          "                           Each variable has the following stats:.\n"
+          "                             {var}.bytes: total bytes\n"
+          "                             {var}.duration: ns between first and "
+          "last\n"
+          "                             {var}.first: ns timestamp of first "
+          "update\n"
+          "                             {var}.hz: frequency of updates in "
+          "duration\n"
+          "                             {var}.kbs: KB/s of updates within "
+          "duration\n"
+          "                             {var}.last: ns timestamp of first "
+          "update\n"
+          "                             {var}.max_size: max size of update\n"
+          "                             {var}.min_size: min size of update\n"
+          "                             {var}.updates: total num updates\n"
+          "  [-cf|--check-file file]  KaRL file with check. See -c for "
+          "options\n"
+          "  [-k|--print-knowledge]   print final knowledge\n"
+          "  [-kp|--print-prefix pfx] filter prints by prefix. Can be "
+          "multiple.\n"
+          "  [-ks|--print-stats]      print stats knowledge base contents\n"
+          "  [-ky]                    print knowledge after frequent "
+          "evaluations\n"
+          "  [-l|--level level]       the logger level(0+, higher is higher "
+          "detail)\n"
+          "  [-lcp|--load-checkpoint-prefix prfx]\n"
+          "                           prefix of knowledge to load from "
+          "checkpoint\n"
+          "  [-ls|--load-size bytes]  size of buffer needed for file load\n"
+          "  [-n|--capnp tag:msg_type] register tag with given message "
+          "schema.\n"
+          "                            See also -nf and -ni.\n"
+          "  [-nf|--capnp-file]       load capnp file. Must appear after -n "
+          "and -ni.\n"
+          "  [-ni|--capnp-import ]    add directory to capnp directory "
+          "imports. "
+          "                           Must appear before all -n and -nf.\n"
+          "  [-ns|--no-summary ]      do not print or save summary stats per "
+          "var"
+          "                           Must appear before all -n and -nf.\n"
+          "  [-s|--save file]         save the results to a file\n"
+          "\n",
+          arg1.c_str(), argv[0]);
+      exit(0);
     }
   }
 }
 
-int main (int argc, char ** argv)
+void iterate_stk(
+  knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+  VariableUpdates & variables)
 {
-  std::cout << "Inspection settings:\n" << std::flush;
-
-  // handle all user arguments
-  handle_arguments (argc, argv);
-
-  knowledge::KnowledgeBase kb;
-  knowledge::KnowledgeBase stats;
-  std::cout << "Creating CheckpointReader with file contents... " <<
-    std::flush;
-  knowledge::CheckpointReader reader (load_checkpoint_settings);
+  std::cout << "Creating CheckpointReader with file contents... " << std::flush;
+  knowledge::CheckpointReader reader(load_checkpoint_settings);
   std::cout << "done\n";
 
-  VariableUpdates variables;
+  containers::FlexMap stats_tois("STK_INSPECT.TOI", stats);
+  containers::FlexMap stats_ooo = stats_tois["OUT_OF_ORDER"];
+  containers::FlexMap stats_ooo_max = stats_ooo["MAX"];
+
+  int out_of_orders = 0;
+  uint64_t max_out_of_order = 0;
+  uint64_t zeros = 0;
+  uint64_t consecutive_toi_ooo = 0;
+  std::string last_variable = "";
+  std::string last_max_toi = "";
+
+  size_t cur_event = 0;
 
   std::cout << "Iterating through updates... " << std::flush;
-  while (true)
+  while(true)
   {
-    auto cur = reader.next ();
-    if (cur.first == "")
+    // iterate through events and evaluate if they are ready
+    for (; cur_event < events.size () &&
+      events[cur_event].evaluate_if_ready (
+        last_toi, kb, stats, variables); ++cur_event)
+    {
+      std::cout << "Event " << cur_event << ": Triggered\n";
+    }
+
+    auto cur = reader.next();
+    if(cur.first == "")
       break;
 
-    VariableStats & variable = variables[cur.first];
+    VariableStats& variable = variables[cur.first];
 
-    uint64_t size = cur.second.size ();
+    uint64_t size = cur.second.size();
 
-    if (cur.second.is_integer_type ())
+    if(cur.second.is_integer_type())
     {
-      size *= sizeof (int64_t);
+      size *= sizeof(int64_t);
     }
-    else if (cur.second.is_double_type ())
+    else if(cur.second.is_double_type())
     {
-      size *= sizeof (double);
+      size *= sizeof(double);
     }
 
-    if (variable.name == "")
+    // first update? initialize the variable
+    if(variable.name == "")
     {
       variable.name = cur.first;
-      variable.first = cur.second.toi ();
+      variable.first = cur.second.toi();
       variable.min_size = size;
       variable.max_size = size;
+
+      // update the first toi if it has not be set
+      if(first_toi == 0)
+      {
+        first_toi = variable.first;
+
+        // update events to 
+        for (size_t i = 0; i < events.size(); ++i)
+        {
+          events[i].update_from_first();
+        }
+      }
     }
+    // update min/max for a variable that has already been initialized
     else
     {
-      if (variable.min_size > size)
+      if(variable.min_size > size)
       {
         variable.min_size = size;
       }
-      if (variable.max_size < size)
+      if(variable.max_size < size)
       {
         variable.max_size = size;
       }
     }
 
-    variable.last = cur.second.toi ();
+    // common updates to each variable
+    variable.last = cur.second.toi();
     variable.bytes += size;
     ++variable.updates;
+    variable.value = cur.second;
+
+    // we normally don't save the value into the KB, but if we're in
+    // batch mode, people can evaluate arbitrary commands that would
+    // depend on the KB having values in it
+    if(events.size() > 0)
+    {
+      kb.set(
+        cur.first, cur.second, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    }
+
+    // error checking: bad tois
+    if(last_toi > variable.last)
+    {
+      ++out_of_orders;
+      ++consecutive_toi_ooo;
+      if(max_out_of_order < last_toi - variable.last)
+      {
+        max_out_of_order = last_toi - variable.last;
+        stats_ooo_max["name"] = last_max_toi;
+        stats_ooo_max["diff"] =(int64_t)max_out_of_order;
+        stats_ooo_max["toi"] =(int64_t)last_toi;
+        stats_ooo_max["consecutive_violations"] =(int64_t)consecutive_toi_ooo;
+      }
+
+      if(variable.last == 0)
+      {
+        ++zeros;
+      }
+
+      // keep track of the out-of-orders per variable
+      containers::FlexMap var_entry = stats_ooo[cur.first];
+      containers::FlexMap after_entry = var_entry["after"][last_variable];
+
+      var_entry = var_entry.to_integer() + 1;
+      after_entry = after_entry.to_integer() + 1;
+    }
+    else
+    {
+      last_toi = variable.last;
+      last_max_toi = cur.first;
+      consecutive_toi_ooo = 0;
+    }
+
+    // save for usage in out-of-order info
+    last_variable = cur.first;
   }
   std::cout << "done\n";
 
-  if (print_stats || summary || checkfile != "" || check != "")
+  if(out_of_orders > 0)
   {
-    if (save_file != "")
+    std::cout << "Out of order tois=" << out_of_orders << 
+      ": max time ooo=" << max_out_of_order << ": zeros=" << zeros << "\n";
+  }
+
+  stats_ooo =(int64_t)out_of_orders;
+}
+
+void create_events (void)
+{
+  std::vector<std::string> batch_lines = utility::string_to_vector(
+    utility::file_to_string (batchfile));
+  
+  std::vector<std::string> extra_lines = utility::string_to_vector(batch);
+
+  batch_lines.insert (
+    batch_lines.end(), extra_lines.begin(), extra_lines.end());
+  
+  for (auto line : batch_lines)
+  {
+    Event event;
+    event.read (line);
+    events.push_back (event);
+  }
+
+  std::sort (events.begin (), events.end ());
+
+  std::cout << "Batch events:\n";
+  for (auto event : events)
+  {
+    event.print (std::cout);
+  }
+}
+
+int main(int argc, char** argv)
+{
+  std::cout << "Inspection settings:\n" << std::flush;
+
+  // handle all user arguments
+  handle_arguments(argc, argv);
+
+  knowledge::KnowledgeBase kb;
+  knowledge::KnowledgeBase stats;
+  VariableUpdates variables;
+
+  create_events();
+  iterate_stk(kb, stats, variables);
+
+  if(print_stats || summary || checkfile != "" || check != "")
+  {
+    if(save_file != "")
     {
       std::cout << "Saving results to " << save_file << "..." << std::flush;
-      std::ofstream output (save_file);
+      std::ofstream output(save_file);
 
-      if (output)
+      if(output)
       {
-        for (auto variable : variables)
-        {
-          bool prefix_match = print_prefixes.size () == 0;
-
-          if (!prefix_match)
-          {
-            for (auto prefix : print_prefixes)
-            {
-              if (utility::begins_with (variable.first, prefix))
-              {
-                prefix_match = true;
-                break;
-              }
-            }
-          }
-
-          if (prefix_match)
-          {
-            if (summary)
-            {
-              variable.second.print (output);
-            }
-
-            if (print_stats || check != "" || checkfile != "")
-            {
-              variable.second.save (stats);
-            }
-          }
-        }
+        print_variables(variables, output, false, summary,
+          print_stats || check != "" || checkfile != "", stats);
       }
 
-      output.close ();
+      output.close();
       std::cout << " done\n";
     }
     else
     {
       // user has specified prefixes that must be matched
-      if (summary)
+      if(summary)
       {
         std::cout << "Printing results to stdout...\n" << std::flush;
       }
-      
-      if (print_stats || check != "" || checkfile != "")
+
+      if(print_stats || check != "" || checkfile != "")
       {
         std::cout << "Calculating stats...\n" << std::flush;
       }
 
       // iterate through all variables and check prefixes
-      for (auto variable : variables)
-      {
-        bool prefix_match = print_prefixes.size () == 0;
-
-        if (!prefix_match)
-        {
-          for (auto prefix : print_prefixes)
-          {
-            if (utility::begins_with (variable.first, prefix))
-            {
-              prefix_match = true;
-              break;
-            }
-          }
-        }
-
-        if (prefix_match)
-        {
-          // if user wants a summary, print it
-          if (summary)
-          {
-            variable.second.print (std::cout);
-          }
-
-          // if we have a stats logic check, then save the stats
-          if (print_stats || check != "" || checkfile != "")
-          {
-            variable.second.save (stats);
-          }
-        }
-      }
+      print_variables(variables, std::cout, false, summary,
+        print_stats || check != "" || checkfile != "", stats);
     }
   }
 
   // see if the user wants to check for variable stats
-  if (checkfile != "")
+  if(checkfile != "")
   {
-    if (check == "")
+    if(check == "")
     {
-      check = utility::file_to_string (checkfile);
+      check = utility::file_to_string(checkfile);
     }
     else
     {
-      check += "&& (";
-      check += utility::file_to_string (checkfile);
+      check += "&&(";
+      check += utility::file_to_string(checkfile);
       check += ")";
     }
   }
 
-  if (print_stats)
+  if(print_stats)
   {
     std::cout << "Printing stats:\n";
-    stats.print ();
+    stats.print();
   }
 
-  if (print_knowledge)
+  if(print_knowledge)
   {
-    kb.load_context (load_checkpoint_settings);
+    kb.load_context(load_checkpoint_settings);
     std::cout << "Printing final KB:\n";
-    kb.print ();
+    kb.print();
+  }
+
+  if (events.size () > 0)
+  {
+    std::cout << "\nPrinting batch events:\n";
+    for (auto event: events)
+    {
+      event.print (std::cout);
+    }
+    std::cout << "\n";
   }
 
   // return value is always 0 unless check is specified
-  if (check == "" || stats.evaluate (check).is_true ())
+  if(check == "" || stats.evaluate(check).is_true())
   {
-    if (check != "")
+    if(check != "")
     {
       std::cout << "Result: SUCCESS\n";
     }
