@@ -63,7 +63,7 @@ TESTLINE=""
 
 # test simple load of one config file which also points to a karl logic file
 echo "Test simple load of one config file which also points to a karl logic file"
-'../../bin/karl' -cf ../../tests/settings/karl1.cfg &> log1 
+'$MADARA_ROOT/bin/karl' -cf $MADARA_ROOT/tests/settings/karl1.cfg &> log1 
 
 input="log1"
 while IFS= read -r line
@@ -73,7 +73,7 @@ do
 done < "$input"
 
 if [ "$TESTLINE" != "test_result=2" ] ; then
-  echo "Fail Type 1"
+  echo "Test 1: Fail"
   ((MADARA_FAILS++))    
 else
     echo "Test 1: Pass"
@@ -81,7 +81,7 @@ fi
 
 # recursion limit test, should fail
 echo "Recursion limit test, fallout at 10"
-'../../bin/karl' -cf ../../tests/settings/karl.cfg &> log2 
+'$MADARA_ROOT/bin/karl' -cf $MADARA_ROOT/tests/settings/karl.cfg &> log2 
 
 TESTLINE=""
 input="log2"
@@ -92,7 +92,7 @@ do
 done < "$input"
 
 if [ "$TESTLINE" == "test_result=1" ] ; then
-  echo "test 3:Fail"
+  echo "Test 2: Fail"
   ((MADARA_FAILS++))
 else
     echo "Test 2: Pass"
@@ -100,7 +100,7 @@ fi
 
 # test one karl config loading another karl config
 echo "Test one karl config loading another karl config"
-'../../bin/karl' -cf ../../tests/settings/karl2.cfg &> log3 
+'$MADARA_ROOT/bin/karl' -cf $MADARA_ROOT/tests/settings/karl2.cfg &> log3 
 
 TESTLINE=""
 input="log3"
@@ -110,11 +110,30 @@ do
   TESTLINE=$line
 done < "$input"
 
-if [ "$TESTLINE" != "test_result=1" ] ; then
-  echo "Fail Type 1"
+if [ "$TESTLINE" == "test_result=2" ] ; then
+  echo "Test 3: Fail"
   ((MADARA_FAILS++))    
 else
     echo "Test 3: Pass"
+fi
+
+# test one karl config loading a karl logic file which contains commands to tripper an exception
+echo "Test one karl config loading a karl logic file which contains commands to tripper an exception"
+'$MADARA_ROOT/bin/karl' -cf $MADARA_ROOT/tests/settings/karl4.cfg &> log4 
+
+TESTLINE=""
+input="log4"
+while IFS= read -r line
+do
+  #echo "line: $line endline"
+  TESTLINE=$line
+done < "$input"
+
+if [ "$TESTLINE" != "test_result=1" ] ; then
+  echo "Test 4: Fail"
+  ((MADARA_FAILS++))    
+else
+    echo "Test 4: Pass"
 fi
 
 # echo test result information

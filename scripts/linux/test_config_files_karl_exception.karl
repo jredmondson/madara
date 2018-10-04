@@ -1,5 +1,5 @@
 // this will cause an exception
-wait(test_result += 1);
+bullcrap(test_result += 1);
 
 // return result
 test_result
