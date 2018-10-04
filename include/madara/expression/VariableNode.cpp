@@ -4,6 +4,7 @@
 #include "madara/expression/VariableNode.h"
 #include "madara/utility/Utility.h"
 #include "VariableExpander.h"
+#include "madara/exceptions/UninitializedException.h"
 
 #include <string>
 #include <sstream>
@@ -252,10 +253,30 @@ madara::knowledge::KnowledgeRecord madara::expression::VariableNode::prune(
 madara::knowledge::KnowledgeRecord madara::expression::VariableNode::evaluate(
     const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
+  madara_logger_ptr_log(logger_, logger::LOG_TRACE,
+      "madara::expression::VariableNode::evaluate: "
+      "Returning variable %s.\n",
+      key_.c_str());
+
   if (ref_.is_valid())
-    return *ref_.get_record_unsafe();
+  {
+    auto ret = ref_.get_record_unsafe();
+
+    if (settings.exception_on_unitialized && !ret->exists ())
+    {
+      std::stringstream buffer;
+      buffer << "madara::expression::VariableNode::evaluate: ";
+      buffer << "ERROR: settings do not allow reads of unset vars and ";
+      buffer << ref_.get_name() << " is uninitialized";
+      throw exceptions::UninitializedException (buffer.str ());
+    }
+
+    return *ret;
+  }
   else
+  {
     return context_.get(expand_key(), settings);
+  }
 }
 
 const std::string& madara::expression::VariableNode::key() const

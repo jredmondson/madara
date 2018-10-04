@@ -97,6 +97,9 @@ struct MADARA_EXPORT EvalSettings : public KnowledgeUpdateSettings
    * @param  t_treat_locals_as_globals true if local variable changes should
    *                                   be sent over the network (dangerous).
    *                                   @see treat_locals_as_globals
+   * @param  t_stream_changes          true if changes must be streamed
+   * @param  t_exceptions_on_unitialized true if exceptions must be thrown
+   *                                   when reading uninitialized variables
    **/
   explicit EvalSettings(bool t_delay_sending_modifieds,
       bool t_treat_globals_as_locals = false, bool t_signal_updates = true,
@@ -104,10 +107,14 @@ struct MADARA_EXPORT EvalSettings : public KnowledgeUpdateSettings
       bool t_track_local_changes = false,
       std::string t_pre_print_statement = "",
       std::string t_post_print_statement = "", uint64_t t_clock_increment = 1,
-      bool t_treat_locals_as_globals = false)
+      bool t_treat_locals_as_globals = false,
+      bool t_stream_changes = true,
+      bool t_exceptions_on_unitialized = false)
     : KnowledgeUpdateSettings(t_treat_globals_as_locals, t_signal_updates,
           t_always_overwrite, t_always_expand, t_track_local_changes,
-          t_clock_increment, t_treat_locals_as_globals),
+          t_clock_increment, t_treat_locals_as_globals,
+          t_stream_changes,
+          t_exceptions_on_unitialized),
       delay_sending_modifieds(t_delay_sending_modifieds),
       pre_print_statement(t_pre_print_statement),
       post_print_statement(t_post_print_statement)

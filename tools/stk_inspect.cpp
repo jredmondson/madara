@@ -252,7 +252,7 @@ int64_t process_command (const std::string & command,
     }
     else if(utility::begins_with(logic, "help"))
     {
-      // format: print
+      // format: help
       std::cout << "\n";
       std::cout << last_toi << ": Executing help... commands available:\n\n";
       
@@ -267,7 +267,7 @@ int64_t process_command (const std::string & command,
       std::cout << "     print_stats: print current var stats\n";
       std::cout << "       print_all: print current knowledge & var stats\n";
       std::cout << "            quit: leave interactive shell\n";
-      std::cout << "           shell: enter and interactive shell\n\n";
+      std::cout << "           shell: enter interactive shell\n\n";
 
       ++result;
     }
@@ -814,8 +814,6 @@ void handle_arguments(int argc, char** argv)
           "  [-kp|--print-prefix pfx] filter prints by prefix. Can be "
           "multiple.\n"
           "  [-ks|--print-stats]      print stats knowledge base contents\n"
-          "  [-ky]                    print knowledge after frequent "
-          "evaluations\n"
           "  [-l|--level level]       the logger level(0+, higher is higher "
           "detail)\n"
           "  [-lcp|--load-checkpoint-prefix prfx]\n"
