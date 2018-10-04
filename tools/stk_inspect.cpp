@@ -61,19 +61,9 @@ bool summary = true;
 std::string checkfile;
 std::string check;
 
+// keep track of first and last observed time of insertion
 uint64_t first_toi = 0;
 uint64_t last_toi = 0;
-
-/**
- * Class for keeping track of batch requests
- **/
-class TimeEvaluation
-{
-  utility::TimeValue trigger;
-  std::string logic = "";
-  int64_t result = 0;
-  bool did_fire = false;
-};
 
 /**
  * Class for keeping track of updates on a variable
@@ -83,35 +73,35 @@ class VariableStats
 public:
   VariableStats() : name(""), first(0), last(0), updates(0), bytes(0) {}
 
-  std::ostream& print(std::ostream& output)
+  std::ostream& print(std::ostream& output) const
   {
     uint64_t total_ns = last_toi - first_toi;
     uint64_t total_s = total_ns / 1000000000;
-    double hertz = (double)updates / total_s;
-    double kbs = (double)bytes / 1000 / total_s;
+    double hertz =(double)updates / total_s;
+    double kbs =(double)bytes / 1000 / total_s;
 
     output << std::fixed << std::setprecision(2);
     output << name << ": " << updates << " updates ";
-    output << " (@" << hertz << "hz) (@" << kbs << "KB/s) (Size: Min ";
+    output << "(@" << hertz << "hz)(@" << kbs << "KB/s)(Size: Min ";
     output << min_size << " B, Max: " << max_size << " B)\n";
 
     return output;
   }
 
-  void save(knowledge::KnowledgeBase kb)
+  void save(knowledge::KnowledgeBase kb) const
   {
     uint64_t total_ns = last_toi - first_toi;
     uint64_t total_s = total_ns / 1000000000;
-    double hertz = (double)updates / total_s;
-    double kbs = (double)bytes / 1000 / total_s;
+    double hertz =(double)updates / total_s;
+    double kbs =(double)bytes / 1000 / total_s;
 
-    kb.set(name + ".first", (int64_t)first);
-    kb.set(name + ".last", (int64_t)last);
-    kb.set(name + ".updates", (int64_t)updates);
-    kb.set(name + ".bytes", (int64_t)bytes);
-    kb.set(name + ".max_size", (int64_t)max_size);
-    kb.set(name + ".min_size", (int64_t)min_size);
-    kb.set(name + ".duration", (int64_t)total_ns);
+    kb.set(name + ".first",(int64_t)first);
+    kb.set(name + ".last",(int64_t)last);
+    kb.set(name + ".updates",(int64_t)updates);
+    kb.set(name + ".bytes",(int64_t)bytes);
+    kb.set(name + ".max_size",(int64_t)max_size);
+    kb.set(name + ".min_size",(int64_t)min_size);
+    kb.set(name + ".duration",(int64_t)total_ns);
     kb.set(name + ".hz", hertz);
     kb.set(name + ".kbs", kbs);
   }
@@ -123,21 +113,224 @@ public:
   uint64_t bytes;
   uint64_t max_size;
   uint64_t min_size;
+  knowledge::KnowledgeRecord value;
 };
 
 /// convenience typedef for Variable updates
 typedef std::map<std::string, VariableStats> VariableUpdates;
 
+// print variables to a specified output stream
+void print_variables(const VariableUpdates & variables, 
+  std::ostream & output, bool print_value,
+  bool print, bool save_stats,
+  knowledge::KnowledgeBase stats)
+{
+  for(auto variable : variables)
+  {
+    bool prefix_match = print_prefixes.size() == 0;
+
+    if(!prefix_match)
+    {
+      for(auto prefix : print_prefixes)
+      {
+        if(utility::begins_with(variable.first, prefix))
+        {
+          prefix_match = true;
+          break;
+        }
+      }
+    }
+
+    if(prefix_match)
+    {
+      // if user wants to print a value
+      if(print_value)
+      {
+        output << variable.first << "=" << variable.second.value << "\n";
+      }
+
+      // if(summary)
+      if(print)
+      {
+        variable.second.print(output);
+      }
+
+      // if(print_stats || check != "" || checkfile != "")
+      if(save_stats)
+      {
+        variable.second.save(stats);
+      }
+    }
+  }
+}
+
+/**
+ * Class for keeping track of batch requests
+ **/
+class Event
+{
+  public:
+  uint64_t trigger = 0;
+  std::vector <std::string> logics;
+  int64_t result = 0;
+  bool fired = false;
+  uint64_t triggered_toi = 0;
+
+  // read an event from a string
+  inline void read(const std::string & input)
+  {
+    std::vector <std::string> splitters, tokens, pivot_list;
+    splitters.push_back(":");
+    splitters.push_back(";");
+    splitters.push_back(",");
+
+    utility::tokenizer(input, splitters, tokens, pivot_list);
+
+    // if tokens are 2+, then we have a timestamp:event
+    if(tokens.size() > 1)
+    {
+      double offset;
+      std::stringstream buffer(tokens[0]);
+      buffer >> offset;
+
+      // save the timestamp as an offset from first_toi(we have to fix later)
+      trigger = utility::seconds_to_nanoseconds(offset);
+
+      // the rest of the tokens are logics
+      logics.insert(logics.end(), tokens.begin() + 1, tokens.end());
+    }
+  }
+
+  // evaluate the logics
+  inline void evaluate(
+    knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+    const VariableUpdates & variables)
+  {
+    fired = true;
+    triggered_toi = last_toi;
+    
+    for(size_t i = 0; i < logics.size(); ++i)
+    {
+      utility::strip_extra_white_space(logics[i]);
+
+      if(logics[i] == "print()")
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: printing knowledge\n";
+        print_variables(variables, std::cout, true, false, false, stats);
+        ++result;
+      }
+      else if(logics[i] == "print_stats()")
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: printing stats\n";
+        print_variables(variables, std::cout, false, true, false, stats);
+        ++result;
+      }
+      else if(logics[i] == "print_all()")
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: printing all info\n";
+        print_variables(variables, std::cout, true, true, false, stats);
+        ++result;
+      }
+      else
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: evaluating logic\n";
+        result += kb.evaluate(logics[i]).is_true ();
+      }
+    }
+  }
+
+  // evaluate logic if appropriate time
+  inline bool evaluate_if_ready(uint64_t current,
+    knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+    const VariableUpdates & variables)
+  {
+    if(!fired && current >= trigger)
+    {
+      evaluate(kb, stats, variables);
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  inline void print(std::ostream & output)
+  {
+    if (logics.size() > 0)
+    {
+      if (trigger == 0)
+      {
+        output << trigger << " ns: ";
+      }
+      else
+      {
+        output << (trigger - first_toi) << " ns: ";
+      }
+
+      output << logics[0];
+      for (size_t i = 1; i < logics.size(); ++i)
+      {
+        output << ";" << logics[i]; 
+      }
+
+      output << ": ";
+
+      if (fired)
+      {
+        output << "fired_at=" << triggered_toi << ", ";
+        output << "result=" << result << "\n";
+      }
+      else
+      {
+        output << "not fired yet\n";
+      }
+    }
+    else
+    {
+      output << "ERROR: empty event\n";
+    } 
+  }
+
+  inline void update_from_first(void)
+  {
+    trigger += first_toi;
+  }
+};
+
+bool operator<(const Event & lhs, const Event & rhs)
+{
+  return lhs.trigger < rhs.trigger;
+}
+
+// batch evaluations
+std::string batchfile;
+std::vector <Event> events;
+
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--check")
+    if(arg1 == "-b" || arg1 == "--batch")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
+      {
+        batchfile = argv[i + 1];
+        std::cout << "  Loading batch events from file " << batchfile << "\n";
+      }
+
+      ++i;
+    }
+    else if(arg1 == "-c" || arg1 == "--check")
+    {
+      if(i + 1 < argc)
       {
         check = argv[i + 1];
         std::cout << "  Loading stats check from command line " << check
@@ -146,9 +339,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-cf" || arg1 == "--check-file")
+    else if(arg1 == "-cf" || arg1 == "--check-file")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         checkfile = argv[i + 1];
         std::cout << "  Loading stats check from file " << checkfile << "\n";
@@ -156,9 +349,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         load_checkpoint_settings.filename = argv[i + 1];
 
@@ -167,15 +360,15 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-k" || arg1 == "--print-knowledge")
+    else if(arg1 == "-k" || arg1 == "--print-knowledge")
     {
       print_knowledge = true;
     }
-    else if (arg1 == "-kp" || arg1 == "--print-prefixes")
+    else if(arg1 == "-kp" || arg1 == "--print-prefixes")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        for (int j = i + 1;
+        for(int j = i + 1;
              j < argc && strlen(argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
         {
           std::cout << "  Limiting results to prefix " << argv[j] << "\n";
@@ -183,13 +376,13 @@ void handle_arguments(int argc, char** argv)
         }
       }
     }
-    else if (arg1 == "-ks" || arg1 == "--print-stats")
+    else if(arg1 == "-ks" || arg1 == "--print-stats")
     {
       print_stats = true;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -200,9 +393,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix")
+    else if(arg1 == "-lcp" || arg1 == "--load-checkpoint-prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         load_checkpoint_settings.prefixes.push_back(argv[i + 1]);
         std::cout << "  Limiting load to prefix " << argv[i + 1] << "\n";
@@ -210,9 +403,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-ls" || arg1 == "--load-size")
+    else if(arg1 == "-ls" || arg1 == "--load-size")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> load_checkpoint_settings.buffer_size;
@@ -221,9 +414,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-ni")
+    else if(arg1 == "-ni")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::string dirnames = argv[i + 1];
 
@@ -232,7 +425,7 @@ void handle_arguments(int argc, char** argv)
 
         utility::tokenizer(dirnames, splitters, tokens, pivot_list);
 
-        for (auto token : tokens)
+        for(auto token : tokens)
         {
           capnp_import_dirs.add(token);
         }
@@ -249,9 +442,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-n")
+    else if(arg1 == "-n")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::string msgtype_pair = argv[i + 1];
 
@@ -260,7 +453,7 @@ void handle_arguments(int argc, char** argv)
 
         utility::tokenizer(msgtype_pair, splitters, tokens, pivot_list);
 
-        if (tokens.size() == 2)
+        if(tokens.size() == 2)
         {
           capnp_msg.push_back(tokens[0]);
           capnp_type.push_back(tokens[1]);
@@ -286,12 +479,12 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-nf" || arg1 == "--capnp")
+    else if(arg1 == "-nf" || arg1 == "--capnp")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         // capnp_import_dirs_flag && capnp_msg_type_param_flag
-        if (!capnp_import_dirs_flag)
+        if(!capnp_import_dirs_flag)
         {
           // write loggercode and continue
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
@@ -300,7 +493,7 @@ void handle_arguments(int argc, char** argv)
           continue;
         }
 
-        if (!capnp_msg_type_param_flag)
+        if(!capnp_msg_type_param_flag)
         {
           // write loggercode and continue
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
@@ -323,13 +516,13 @@ void handle_arguments(int argc, char** argv)
         capnp::ParsedSchema ps_type;
         size_t idx = 0;
 
-        for (idx = 0; idx < capnp_msg.size(); ++idx)
+        for(idx = 0; idx < capnp_msg.size(); ++idx)
         {
           msg = capnp_msg[idx];
           typestr = capnp_type[idx];
           ps_type = ps.getNested(typestr);
 
-          if (!madara::knowledge::AnyRegistry::register_schema(
+          if(!madara::knowledge::AnyRegistry::register_schema(
                   capnp_msg[idx].c_str(), ps_type.asStruct()))
           {
             madara_logger_ptr_log(logger::global_logger.get(),
@@ -352,13 +545,13 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-ns" || arg1 == "--no-summary")
+    else if(arg1 == "-ns" || arg1 == "--no-summary")
     {
       summary = false;
     }
-    else if (arg1 == "-s" || arg1 == "--save")
+    else if(arg1 == "-s" || arg1 == "--save")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         save_file = argv[i + 1];
         std::cout << "  Saving results to " << argv[i + 1] << "\n";
@@ -366,7 +559,7 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-v" || arg1 == "--version")
+    else if(arg1 == "-v" || arg1 == "--version")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "MADARA version: %s\n", utility::get_version().c_str());
@@ -377,8 +570,16 @@ void handle_arguments(int argc, char** argv)
           "\nOption %s:\n"
           "\nProgram summary for %s [options] [Logic]:\n\n"
           "Inspects STK for summary info on knowledge updates.\n\noptions:\n"
+          "  [-b|--batch file]        load batch events in the format of\n"
+          "                           time: event; event; event \n"
+          "                           where time is in seconds and event \n"
+          "                           can be any arbitrary karl expression \n"
+          "                           or the following specialized calls \n"
+          "                           print(): print var=value \n"
+          "                           print_stats(): print var stats \n"
+          "                           print_all(): print var value & stats\n"
           "  [-f|--stk-file file]     STK file to load and analyze\n"
-          "  [-h|--help]              print help menu (i.e., this menu)\n"
+          "  [-h|--help]              print help menu(i.e., this menu)\n"
           "  [-c|--check logic]       logic to evaluate to check contents.\n"
           "                           a check is a KaRL expression that can\n"
           "                           be a combination of variable stats.\n"
@@ -405,7 +606,7 @@ void handle_arguments(int argc, char** argv)
           "  [-ks|--print-stats]      print stats knowledge base contents\n"
           "  [-ky]                    print knowledge after frequent "
           "evaluations\n"
-          "  [-l|--level level]       the logger level (0+, higher is higher "
+          "  [-l|--level level]       the logger level(0+, higher is higher "
           "detail)\n"
           "  [-lcp|--load-checkpoint-prefix prfx]\n"
           "                           prefix of knowledge to load from "
@@ -430,20 +631,14 @@ void handle_arguments(int argc, char** argv)
   }
 }
 
-int main(int argc, char** argv)
+void iterate_stk(
+  knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+  VariableUpdates & variables)
 {
-  std::cout << "Inspection settings:\n" << std::flush;
-
-  // handle all user arguments
-  handle_arguments(argc, argv);
-
-  knowledge::KnowledgeBase kb;
-  knowledge::KnowledgeBase stats;
   std::cout << "Creating CheckpointReader with file contents... " << std::flush;
   knowledge::CheckpointReader reader(load_checkpoint_settings);
   std::cout << "done\n";
 
-  VariableUpdates variables;
   containers::FlexMap stats_tois("STK_INSPECT.TOI", stats);
   containers::FlexMap stats_ooo = stats_tois["OUT_OF_ORDER"];
   containers::FlexMap stats_ooo_max = stats_ooo["MAX"];
@@ -455,28 +650,38 @@ int main(int argc, char** argv)
   std::string last_variable = "";
   std::string last_max_toi = "";
 
+  size_t cur_event = 0;
 
   std::cout << "Iterating through updates... " << std::flush;
-  while (true)
+  while(true)
   {
+    // iterate through events and evaluate if they are ready
+    for (; cur_event < events.size () &&
+      events[cur_event].evaluate_if_ready (
+        last_toi, kb, stats, variables); ++cur_event)
+    {
+      std::cout << "Event " << cur_event << ": Triggered\n";
+    }
+
     auto cur = reader.next();
-    if (cur.first == "")
+    if(cur.first == "")
       break;
 
     VariableStats& variable = variables[cur.first];
 
     uint64_t size = cur.second.size();
 
-    if (cur.second.is_integer_type())
+    if(cur.second.is_integer_type())
     {
       size *= sizeof(int64_t);
     }
-    else if (cur.second.is_double_type())
+    else if(cur.second.is_double_type())
     {
       size *= sizeof(double);
     }
 
-    if (variable.name == "")
+    // first update? initialize the variable
+    if(variable.name == "")
     {
       variable.name = cur.first;
       variable.first = cur.second.toi();
@@ -484,41 +689,60 @@ int main(int argc, char** argv)
       variable.max_size = size;
 
       // update the first toi if it has not be set
-      if (first_toi == 0)
+      if(first_toi == 0)
       {
         first_toi = variable.first;
+
+        // update events to 
+        for (size_t i = 0; i < events.size(); ++i)
+        {
+          events[i].update_from_first();
+        }
       }
     }
+    // update min/max for a variable that has already been initialized
     else
     {
-      if (variable.min_size > size)
+      if(variable.min_size > size)
       {
         variable.min_size = size;
       }
-      if (variable.max_size < size)
+      if(variable.max_size < size)
       {
         variable.max_size = size;
       }
     }
 
+    // common updates to each variable
     variable.last = cur.second.toi();
     variable.bytes += size;
     ++variable.updates;
+    variable.value = cur.second;
 
-    if (last_toi > variable.last)
+    // we normally don't save the value into the KB, but if we're in
+    // batch mode, people can evaluate arbitrary commands that would
+    // depend on the KB having values in it
+    if(events.size() > 0)
+    {
+      kb.set(
+        cur.first, cur.second, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    }
+
+    // error checking: bad tois
+    if(last_toi > variable.last)
     {
       ++out_of_orders;
       ++consecutive_toi_ooo;
-      if (max_out_of_order < last_toi - variable.last)
+      if(max_out_of_order < last_toi - variable.last)
       {
         max_out_of_order = last_toi - variable.last;
         stats_ooo_max["name"] = last_max_toi;
-        stats_ooo_max["diff"] = (int64_t)max_out_of_order;
-        stats_ooo_max["toi"] = (int64_t)last_toi;
-        stats_ooo_max["consecutive_violations"] = (int64_t)consecutive_toi_ooo;
+        stats_ooo_max["diff"] =(int64_t)max_out_of_order;
+        stats_ooo_max["toi"] =(int64_t)last_toi;
+        stats_ooo_max["consecutive_violations"] =(int64_t)consecutive_toi_ooo;
       }
 
-      if (variable.last == 0)
+      if(variable.last == 0)
       {
         ++zeros;
       }
@@ -542,53 +766,67 @@ int main(int argc, char** argv)
   }
   std::cout << "done\n";
 
-  if (out_of_orders > 0)
+  if(out_of_orders > 0)
   {
     std::cout << "Out of order tois=" << out_of_orders << 
       ": max time ooo=" << max_out_of_order << ": zeros=" << zeros << "\n";
   }
 
-  stats_ooo = (int64_t)out_of_orders;
+  stats_ooo =(int64_t)out_of_orders;
+}
 
-
-  if (print_stats || summary || checkfile != "" || check != "")
+void create_events (void)
+{
+  std::vector<std::string> batch_lines = utility::string_to_vector (
+    utility::file_to_string (batchfile));
+  
+  for (auto line : batch_lines)
   {
-    if (save_file != "")
+    Event event;
+    event.read (line);
+    events.push_back (event);
+  }
+
+  std::cout << "Batch events before sort\n";
+  for (auto event : events)
+  {
+    event.print (std::cout);
+  }
+
+  std::sort (events.begin (), events.end ());
+
+  std::cout << "Batch events after sort\n";
+  for (auto event : events)
+  {
+    event.print (std::cout);
+  }
+}
+
+int main(int argc, char** argv)
+{
+  std::cout << "Inspection settings:\n" << std::flush;
+
+  // handle all user arguments
+  handle_arguments(argc, argv);
+
+  knowledge::KnowledgeBase kb;
+  knowledge::KnowledgeBase stats;
+  VariableUpdates variables;
+
+  create_events();
+  iterate_stk(kb, stats, variables);
+
+  if(print_stats || summary || checkfile != "" || check != "")
+  {
+    if(save_file != "")
     {
       std::cout << "Saving results to " << save_file << "..." << std::flush;
       std::ofstream output(save_file);
 
-      if (output)
+      if(output)
       {
-        for (auto variable : variables)
-        {
-          bool prefix_match = print_prefixes.size() == 0;
-
-          if (!prefix_match)
-          {
-            for (auto prefix : print_prefixes)
-            {
-              if (utility::begins_with(variable.first, prefix))
-              {
-                prefix_match = true;
-                break;
-              }
-            }
-          }
-
-          if (prefix_match)
-          {
-            if (summary)
-            {
-              variable.second.print(output);
-            }
-
-            if (print_stats || check != "" || checkfile != "")
-            {
-              variable.second.save(stats);
-            }
-          }
-        }
+        print_variables(variables, output, false, summary,
+          print_stats || check != "" || checkfile != "", stats);
       }
 
       output.close();
@@ -597,83 +835,64 @@ int main(int argc, char** argv)
     else
     {
       // user has specified prefixes that must be matched
-      if (summary)
+      if(summary)
       {
         std::cout << "Printing results to stdout...\n" << std::flush;
       }
 
-      if (print_stats || check != "" || checkfile != "")
+      if(print_stats || check != "" || checkfile != "")
       {
         std::cout << "Calculating stats...\n" << std::flush;
       }
 
       // iterate through all variables and check prefixes
-      for (auto variable : variables)
-      {
-        bool prefix_match = print_prefixes.size() == 0;
-
-        if (!prefix_match)
-        {
-          for (auto prefix : print_prefixes)
-          {
-            if (utility::begins_with(variable.first, prefix))
-            {
-              prefix_match = true;
-              break;
-            }
-          }
-        }
-
-        if (prefix_match)
-        {
-          // if user wants a summary, print it
-          if (summary)
-          {
-            variable.second.print(std::cout);
-          }
-
-          // if we have a stats logic check, then save the stats
-          if (print_stats || check != "" || checkfile != "")
-          {
-            variable.second.save(stats);
-          }
-        }
-      }
+      print_variables(variables, std::cout, false, summary,
+        print_stats || check != "" || checkfile != "", stats);
     }
   }
 
   // see if the user wants to check for variable stats
-  if (checkfile != "")
+  if(checkfile != "")
   {
-    if (check == "")
+    if(check == "")
     {
       check = utility::file_to_string(checkfile);
     }
     else
     {
-      check += "&& (";
+      check += "&&(";
       check += utility::file_to_string(checkfile);
       check += ")";
     }
   }
 
-  if (print_stats)
+  if(print_stats)
   {
     std::cout << "Printing stats:\n";
     stats.print();
   }
 
-  if (print_knowledge)
+  if(print_knowledge)
   {
     kb.load_context(load_checkpoint_settings);
     std::cout << "Printing final KB:\n";
     kb.print();
   }
 
-  // return value is always 0 unless check is specified
-  if (check == "" || stats.evaluate(check).is_true())
+  if (events.size () > 0)
   {
-    if (check != "")
+    std::cout << "\nPrinting batch events:\n";
+    for (auto event: events)
+    {
+      event.print (std::cout);
+    }
+    std::cout << "\n";
+  }
+
+  // return value is always 0 unless check is specified
+  if(check == "" || stats.evaluate(check).is_true())
+  {
+    if(check != "")
     {
       std::cout << "Result: SUCCESS\n";
     }

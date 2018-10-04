@@ -109,6 +109,26 @@ inline bool endian_is_little()
   return ret;
 }
 
+inline std::vector <std::string> string_to_vector (const std::string & input,
+  const std::string delimiter, bool strip_whitespace)
+{
+  // split by the delimiter
+  std::vector <std::string> splitters, tokens, pivot_list;
+  splitters.push_back (delimiter);
+
+  tokenizer (input, splitters, tokens, pivot_list);
+
+  if (strip_whitespace)
+  {
+    for (size_t i = 0; i < tokens.size (); ++i)
+    {
+      strip_extra_white_space (tokens[i]);
+    }
+  }
+
+  return tokens;
+}
+
 /**
  * Converts a host format uint64_t into big endian
  **/
@@ -269,6 +289,12 @@ inline SecondsDuration seconds_to_seconds_duration(double seconds)
 inline TimeValue seconds_to_time(double seconds)
 {
   return TimeValue(seconds_to_duration(seconds));
+}
+
+
+inline int64_t seconds_to_nanoseconds(double seconds)
+{
+  return seconds_to_duration (seconds).count ();
 }
 
 inline bool approx_equal(double value1, double value2, double epsilon)
