@@ -164,6 +164,210 @@ void print_variables(const VariableUpdates & variables,
   }
 }
 
+int64_t process_command (const std::string & command,
+    knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
+    const VariableUpdates & variables)
+{
+  int64_t result = 0;
+  std::string logic = command;
+  bool shell_mode = false;
+
+  utility::strip_extra_white_space(logic);
+
+  for (size_t execs = 0; execs < 1 || shell_mode; ++execs)
+  {
+    if(utility::begins_with(logic, "add_prefix"))
+    {
+      // format: add_prefix first second third fourth
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: adding var prefixes ";
+      std::cout << logic.substr (11) << "\n";
+
+      // split by space and discard first token (add_prefix)
+      std::vector<std::string> splitters, tokens, pivot_list;
+      splitters.push_back (" ");
+
+      utility::tokenizer (logic, splitters, tokens, pivot_list);
+
+      for (size_t i = 1; i < tokens.size(); ++i)
+      {
+        print_prefixes.push_back (tokens[i]);
+        ++result;
+      }
+    }
+    else if(utility::begins_with(logic, "clear_prefixes"))
+    {
+      // format: clear_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: clearing var prefixes\n";
+
+      print_prefixes.clear();
+
+      ++result;
+    }
+    // note that there is a really good reason to have this before eval
+    else if(utility::begins_with(logic, "eval_stats"))
+    {
+      // format: clear_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: evaluating stats logic\n";
+
+      result += stats.evaluate (
+        logic.substr (11), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+
+      ++result;
+    }
+    else if(utility::begins_with(logic, "eval"))
+    {
+      // format: clear_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: evaluating kb logic\n";
+
+      result += kb.evaluate (
+        logic.substr (5), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+
+      ++result;
+    }
+    else if(utility::begins_with(logic, "exit"))
+    {
+      // split by space and discard first token (add_prefix)
+      std::vector<std::string> splitters, tokens, pivot_list;
+      splitters.push_back (" ");
+
+      utility::tokenizer (logic, splitters, tokens, pivot_list);
+      int exit_code = 0;
+
+      if (tokens.size () == 2)
+      {
+        std::stringstream buffer (tokens[1]);
+        buffer >> exit_code;
+      }
+
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: exiting app with code ";
+      std::cout << exit_code << "\n";
+
+      std::cout << "\n";
+      exit (exit_code);
+    }
+    else if(utility::begins_with(logic, "help"))
+    {
+      // format: print
+      std::cout << "\n";
+      std::cout << last_toi << ": Executing help... commands available:\n\n";
+      
+      std::cout << "  add_prefix arg: add a prefix limiter to prints\n";
+      std::cout << "  clear_prefixes: clears all prefix limiters\n";
+      std::cout << "        eval arg: evaluates logic in current state\n";
+      std::cout << "  eval_stats arg: evaluates logic in current stats\n";
+      std::cout << "       exit code: exit the application with a code\n";
+      std::cout << "            help: print this menu\n";
+      std::cout << "   list_prefixes: lists all prefix limiters\n";
+      std::cout << "           print: print current knowledge\n";
+      std::cout << "     print_stats: print current var stats\n";
+      std::cout << "       print_all: print current knowledge & var stats\n";
+      std::cout << "            quit: leave interactive shell\n";
+      std::cout << "           shell: enter and interactive shell\n\n";
+
+      ++result;
+    }
+    else if(utility::begins_with(logic, "list_prefixes"))
+    {
+      // format: list_prefixes
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: list all prefixes\n\n";
+
+      for (auto prefix: print_prefixes)
+      {
+        std::cout << "  " << prefix << "\n";
+      }
+
+      std::cout << "\n";
+      ++result;
+    }
+    // note that there is a really good reason to have this before print
+    else if(utility::begins_with(logic, "print_stats"))
+    {
+      // format: print_stats
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: printing stats\n";
+
+      print_variables(variables, std::cout, false, true, false, stats);
+
+      std::cout << "\n";
+      ++result;
+    }
+    // note that there is a really good reason to have this before print
+    else if(utility::begins_with(logic, "print_all"))
+    {
+      // format: print_all
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: printing all info\n";
+
+      print_variables(variables, std::cout, true, true, false, stats);
+
+      std::cout << "\n";
+      ++result;
+    }
+    else if(utility::begins_with(logic, "print"))
+    {
+      // format: print
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: printing knowledge\n";
+
+      print_variables(variables, std::cout, true, false, false, stats);
+
+      std::cout << "\n";
+      ++result;
+    }
+    else if(utility::begins_with(logic, "shell"))
+    {
+      // format: shell
+      if (!shell_mode)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: entering interactive mode\n";
+
+        shell_mode = true;
+      }
+      else
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": You're already in interactive mode\n";
+      }
+
+      std::cout << "\n";
+      ++result;
+    }
+    else if(utility::begins_with(logic, "quit"))
+    {
+      // format: quit
+      std::cout << "\n";
+      std::cout << last_toi << ": Event trigger: quitting shell mode\n";
+
+      shell_mode = false;
+
+      std::cout << "\n";
+      ++result;
+    }
+    else
+    {
+      std::cout << "\n";
+      std::cout << last_toi <<
+        ": Event trigger: unknown event " << logic << "\n";
+      std::cout << "\n";
+    }
+
+    // if we are in shell mode, ask the user what to do
+    if (shell_mode)
+    {
+      std::cout << "What would you like to do? (help for usage info): ";
+      std::getline (std::cin, logic);
+    }
+  }
+  return result;
+}
+
 /**
  * Class for keeping track of batch requests
  **/
@@ -211,35 +415,7 @@ class Event
     
     for(size_t i = 0; i < logics.size(); ++i)
     {
-      utility::strip_extra_white_space(logics[i]);
-
-      if(logics[i] == "print()")
-      {
-        std::cout << "\n";
-        std::cout << last_toi << ": Event trigger: printing knowledge\n";
-        print_variables(variables, std::cout, true, false, false, stats);
-        ++result;
-      }
-      else if(logics[i] == "print_stats()")
-      {
-        std::cout << "\n";
-        std::cout << last_toi << ": Event trigger: printing stats\n";
-        print_variables(variables, std::cout, false, true, false, stats);
-        ++result;
-      }
-      else if(logics[i] == "print_all()")
-      {
-        std::cout << "\n";
-        std::cout << last_toi << ": Event trigger: printing all info\n";
-        print_variables(variables, std::cout, true, true, false, stats);
-        ++result;
-      }
-      else
-      {
-        std::cout << "\n";
-        std::cout << last_toi << ": Event trigger: evaluating logic\n";
-        result += kb.evaluate(logics[i]).is_true ();
-      }
+      result += process_command(logics[i], kb, stats, variables);;
     }
   }
 
@@ -263,6 +439,7 @@ class Event
   {
     if (logics.size() > 0)
     {
+      output << "  ";
       if (trigger == 0)
       {
         output << trigger << " ns: ";
@@ -309,6 +486,7 @@ bool operator<(const Event & lhs, const Event & rhs)
 
 // batch evaluations
 std::string batchfile;
+std::string batch;
 std::vector <Event> events;
 
 // handle command line arguments
@@ -319,6 +497,24 @@ void handle_arguments(int argc, char** argv)
     std::string arg1(argv[i]);
 
     if(arg1 == "-b" || arg1 == "--batch")
+    {
+      if(i + 1 < argc)
+      {
+        if (batch != "")
+        {
+          batch += "\n";
+          batch += argv[i + 1];
+        }
+        else
+        {
+          batch = argv[i + 1];
+        }
+        std::cout << "  Loading batch events " << batch << "\n";
+      }
+
+      ++i;
+    }
+    else if(arg1 == "-bf" || arg1 == "--batch-file")
     {
       if(i + 1 < argc)
       {
@@ -570,14 +766,28 @@ void handle_arguments(int argc, char** argv)
           "\nOption %s:\n"
           "\nProgram summary for %s [options] [Logic]:\n\n"
           "Inspects STK for summary info on knowledge updates.\n\noptions:\n"
-          "  [-b|--batch file]        load batch events in the format of\n"
+          "  [-b|--batch commands]    load batch events in the format of\n"
           "                           time: event; event; event \n"
           "                           where time is in seconds and event \n"
           "                           can be any arbitrary karl expression \n"
           "                           or the following specialized calls \n"
-          "                           print(): print var=value \n"
-          "                           print_stats(): print var stats \n"
-          "                           print_all(): print var value & stats\n"
+          "\n"
+          "                           add_prefix: add prefixes to print list\n"
+          "                             prefixes are separated by spaces\n"
+          "                           clear_prefixes: clear print prefixes\n"
+          "                           eval: evaluates karl logic in kb\n"
+          "                           eval_stats: evaluates karl in stats\n"
+          "                           exit: exits this program immediately\n"
+          "                           help: print all commands\n"
+          "                           list_prefixes: list print prefixes\n"
+          "                           print: print var=value \n"
+          "                           print_stats: print var stats \n"
+          "                           print_all: print var value & stats\n"
+          "                           shell: enter shell mode (interactive)\n"
+          "                           quit: leaves shell mode\n"
+          "\n"
+          "  [-bf|--batch-file file]  load batch events from file. See\n"
+          "                           -b for format \n"
           "  [-f|--stk-file file]     STK file to load and analyze\n"
           "  [-h|--help]              print help menu(i.e., this menu)\n"
           "  [-c|--check logic]       logic to evaluate to check contents.\n"
@@ -777,8 +987,13 @@ void iterate_stk(
 
 void create_events (void)
 {
-  std::vector<std::string> batch_lines = utility::string_to_vector (
+  std::vector<std::string> batch_lines = utility::string_to_vector(
     utility::file_to_string (batchfile));
+  
+  std::vector<std::string> extra_lines = utility::string_to_vector(batch);
+
+  batch_lines.insert (
+    batch_lines.end(), extra_lines.begin(), extra_lines.end());
   
   for (auto line : batch_lines)
   {
@@ -787,15 +1002,9 @@ void create_events (void)
     events.push_back (event);
   }
 
-  std::cout << "Batch events before sort\n";
-  for (auto event : events)
-  {
-    event.print (std::cout);
-  }
-
   std::sort (events.begin (), events.end ());
 
-  std::cout << "Batch events after sort\n";
+  std::cout << "Batch events:\n";
   for (auto event : events)
   {
     event.print (std::cout);
