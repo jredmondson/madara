@@ -65,7 +65,7 @@ public:
    * @return  result of write operation or -1 if we are shutting down
    **/
   long send_data(
-      const madara::knowledge::VariableReferenceMap& updates) override;
+      const madara::knowledge::KnowledgeMap& updates) override;
 
   /**
    * Closes the transport

@@ -210,7 +210,7 @@ inline int KnowledgeBaseImpl::read_file(const VariableReference& variable,
 
 inline void KnowledgeBaseImpl::activate_transport(void)
 {
-  MADARA_GUARD_TYPE guard(map_.mutex_);
+  MADARA_GUARD_TYPE guard(transport_mutex_);
 
   if (transports_.size() == 0)
   {
@@ -392,7 +392,7 @@ inline KnowledgeRecord KnowledgeBaseImpl::evaluate(
 
 inline size_t KnowledgeBaseImpl::attach_transport(transport::Base* transport)
 {
-  MADARA_GUARD_TYPE guard(map_.mutex_);
+  MADARA_GUARD_TYPE guard(transport_mutex_);
 
   transports_.emplace_back(transport);
   return transports_.size();
@@ -400,7 +400,7 @@ inline size_t KnowledgeBaseImpl::attach_transport(transport::Base* transport)
 
 inline size_t KnowledgeBaseImpl::get_num_transports(void)
 {
-  MADARA_GUARD_TYPE guard(map_.mutex_);
+  MADARA_GUARD_TYPE guard(transport_mutex_);
 
   return transports_.size();
 }
@@ -410,7 +410,8 @@ inline size_t KnowledgeBaseImpl::remove_transport(size_t index)
   std::unique_ptr<transport::Base> transport;
   size_t size = 0;
   {
-    MADARA_GUARD_TYPE guard(map_.mutex_);
+    MADARA_GUARD_TYPE guard(transport_mutex_);
+
     size = transports_.size();
     if (index < size)
     {

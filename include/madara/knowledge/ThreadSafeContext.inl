@@ -1014,6 +1014,20 @@ inline const VariableReferenceMap& ThreadSafeContext::get_modifieds(void) const
   return changed_map_;
 }
 
+inline KnowledgeMap ThreadSafeContext::get_modifieds_current(void) const
+{
+  MADARA_GUARD_TYPE guard(mutex_);
+
+  KnowledgeMap map;
+
+  for (auto entry: changed_map_)
+  {
+    map[entry.first] = *entry.second.get_record_unsafe ();
+  }
+
+  return map;
+}
+
 inline VariableReferences ThreadSafeContext::save_modifieds(void) const
 {
   MADARA_GUARD_TYPE guard(mutex_);

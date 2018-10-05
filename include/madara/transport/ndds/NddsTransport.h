@@ -42,7 +42,7 @@ public:
    * @param   updates listing of all updates that must be sent
    * @return  result of write operation or -1 if we are shutting down
    **/
-  long send_data(const knowledge::VariableReferenceMap& updates) override;
+  long send_data(const knowledge::KnowledgeMap& updates) override;
 
   /**
    * Accesses reliability setting

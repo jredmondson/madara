@@ -809,7 +809,7 @@ int prep_rebroadcast(knowledge::ThreadSafeContext& context, char* buffer,
   return result;
 }
 
-long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
+long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
     const char* print_prefix)
 {
   // check to see if we are shutting down
@@ -883,16 +883,16 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
             " Calling filter chain of %s.\n",
             print_prefix, e.first);
 
-        const auto* record = e.second.get_record_unsafe();
+        const auto record = e.second;
 
-        if (record->toi() > latest_toi)
+        if (record.toi() > latest_toi)
         {
-          latest_toi = record->toi();
+          latest_toi = record.toi();
         }
 
         // filter the record according to the send filter chain
         knowledge::KnowledgeRecord result =
-            settings_.filter_send(*record, e.first, transport_context);
+            settings_.filter_send(record, e.first, transport_context);
 
         madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
             "%s:"
@@ -940,11 +940,11 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
     {
       for (auto e : orig_updates)
       {
-        const auto* record = e.second.get_record_unsafe();
+        const auto record = e.second;
 
-        if (record->toi() > latest_toi)
+        if (record.toi() > latest_toi)
         {
-          latest_toi = record->toi();
+          latest_toi = record.toi();
         }
 
         if (record)
@@ -954,7 +954,7 @@ long Base::prep_send(const knowledge::VariableReferenceMap& orig_updates,
               " Adding record %s to update list.\n",
               print_prefix, e.first);
 
-          filtered_updates.emplace(std::make_pair(e.first, *record));
+          filtered_updates.emplace(std::make_pair(e.first, record));
         }
         else
         {

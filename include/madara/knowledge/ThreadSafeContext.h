@@ -884,6 +884,12 @@ public:
   const VariableReferenceMap& get_modifieds(void) const;
 
   /**
+   * Retrieves the current modifieds map
+   * @return  the modified knowledge records
+   **/
+  KnowledgeMap get_modifieds_current(void) const;
+
+  /**
    * Adds a list of VariableReferences to the current modified list.
    * @param  modifieds  a list of variables to add to modified list
    **/

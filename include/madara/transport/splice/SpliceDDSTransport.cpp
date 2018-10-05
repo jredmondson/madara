@@ -396,7 +396,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
 }
 
 long madara::transport::SpliceDDSTransport::send_data(
-    const knowledge::VariableReferenceMap& updates)
+    const knowledge::KnowledgeMap& updates)
 {
   long result = 0;
 
