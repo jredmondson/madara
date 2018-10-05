@@ -275,7 +275,18 @@ madara::knowledge::KnowledgeRecord madara::expression::VariableNode::evaluate(
   }
   else
   {
-    return context_.get(expand_key(), settings);
+    auto ret = context_.get(expand_key(), settings);
+
+    if (settings.exception_on_unitialized && !ret.exists ())
+    {
+      std::stringstream buffer;
+      buffer << "madara::expression::VariableNode::evaluate: ";
+      buffer << "ERROR: settings do not allow reads of unset vars and ";
+      buffer << ref_.get_name() << " is uninitialized";
+      throw exceptions::UninitializedException (buffer.str ());
+    }
+
+    return ret;
   }
 }
 

@@ -398,6 +398,7 @@ void test_unitialized(void)
 {
   knowledge::KnowledgeBase kb;
   knowledge::EvalSettings settings;
+  settings.exception_on_unitialized = true;
 
   std::cerr << "##########################\n";
   std::cerr << "TESTING UNINITIALIZED VARS\n";
@@ -418,7 +419,7 @@ void test_unitialized(void)
   
   kb.clear();
 
-  logger::global_logger->set_level (6);
+  // logger::global_logger->set_level (6);
 
   // Attempting to set kb with exception eval settings
   std::cerr << "Testing evaluate with exception settings: ";
@@ -485,6 +486,21 @@ void test_unitialized(void)
   try
   {
     kb.get("var1");
+    std::cerr << "SUCCESS\n";
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+  kb.clear();
+
+  // Attempting to get uninitialized with exception eval settings
+  std::cerr << "Testing get with exception settings: ";
+  try
+  {
+    kb.get("var1", settings);
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
@@ -496,10 +512,25 @@ void test_unitialized(void)
   kb.clear();
 
   // Attempting to get uninitialized with exception eval settings
-  std::cerr << "Testing get with exception settings: ";
+  std::cerr << "Testing retrieve_index with default settings: ";
   try
   {
-    kb.get("var1", settings);
+    kb.retrieve_index("var1", 1);
+    std::cerr << "SUCCESS\n";
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+  kb.clear();
+
+  // Attempting to get uninitialized with exception eval settings
+  std::cerr << "Testing retrieve_index with exception settings: ";
+  try
+  {
+    kb.retrieve_index("var1", 1, settings);
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
