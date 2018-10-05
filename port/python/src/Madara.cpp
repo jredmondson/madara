@@ -77,9 +77,13 @@ BOOST_PYTHON_MODULE(madara)
 
   def("to_pylongs", &stl_to_python<std::vector<int64_t>>);
 
+  def("to_pystrings", &stl_to_python<std::vector<std::string>>);
+
   def("from_pydoubles", &python_to_stl<std::vector<double>>);
 
   def("from_pylongs", &python_to_stl<std::vector<int64_t>>);
+
+  def("from_pystrings", &python_to_stl<std::vector<std::string>>);
 
   define_filters();
   define_transport();
