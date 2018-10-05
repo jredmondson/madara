@@ -53,13 +53,16 @@ public:
    * @param  t_treat_locals_as_globals true if local variable changes should
    *                                   be sent over the network (dangerous).
    *                                   @see treat_locals_as_globals
+   * @param  t_stream_changes          true if changes must be streamed
+   * @param  t_exceptions_on_unitialized true if exceptions must be thrown
+   *                                   when reading uninitialized variables
    **/
   KnowledgeUpdateSettings(bool t_treat_globals_as_locals,
       bool t_signal_changes = true, bool t_always_overwrite = false,
       bool t_always_expand = true, bool t_track_local_changes = true,
       uint64_t t_clock_increment = 1, bool t_treat_locals_as_globals = false,
-      bool t_stream_changes = true)
-    : KnowledgeReferenceSettings(t_always_expand),
+      bool t_stream_changes = true, bool t_exceptions_on_unitialized = false)
+    : KnowledgeReferenceSettings(t_always_expand, t_exceptions_on_unitialized),
       treat_globals_as_locals(t_treat_globals_as_locals),
       signal_changes(t_signal_changes),
       always_overwrite(t_always_overwrite),

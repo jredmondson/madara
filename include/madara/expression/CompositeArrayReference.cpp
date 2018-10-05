@@ -76,7 +76,9 @@ madara::expression::CompositeArrayReference::item() const
     return ref_.get_record_unsafe()->retrieve_index(index);
   }
   else
+  {
     return context_.get(expand_key()).retrieve_index(index);
+  }
 }
 
 /// Prune the tree of unnecessary nodes.
@@ -138,10 +140,34 @@ madara::expression::CompositeArrayReference::evaluate(
 
   if (ref_.is_valid())
   {
-    return ref_.get_record_unsafe()->retrieve_index(index);
+    auto ret = ref_.get_record_unsafe();
+
+    if (settings.exception_on_unitialized && !ret->exists ())
+    {
+      std::stringstream buffer;
+      buffer << "madara::expression::CompositeArrayReference::evaluate: ";
+      buffer << "ERROR: settings do not allow reads of unset vars and ";
+      buffer << ref_.get_name() << " is uninitialized";
+      throw exceptions::UninitializedException (buffer.str ());
+    }
+
+    return ret->retrieve_index(index);
   }
   else
-    return context_.get(expand_key()).retrieve_index(index);
+  {
+    auto ret = context_.get(expand_key()).retrieve_index(index);
+
+    if (settings.exception_on_unitialized && !ret.exists ())
+    {
+      std::stringstream buffer;
+      buffer << "madara::expression::CompositeArrayReference::evaluate: ";
+      buffer << "ERROR: settings do not allow reads of unset vars and ";
+      buffer << ref_.get_name() << " is uninitialized";
+      throw exceptions::UninitializedException (buffer.str ());
+    }
+
+    return ret;
+  }
 }
 
 const std::string& madara::expression::CompositeArrayReference::key() const
