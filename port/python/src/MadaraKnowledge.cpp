@@ -576,6 +576,12 @@ void define_knowledge(void)
               &madara::knowledge::KnowledgeRecord::is_any_type),
           "returns if the record is Any type")
 
+      // checks if record is any type
+      .def("is_array_type",
+          static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const>(
+              &madara::knowledge::KnowledgeRecord::is_array_type),
+          "returns if the record is array type")
+
       // checks if record is a binary file type
       .def("is_binary_file_type",
           static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const>(
