@@ -2057,6 +2057,26 @@ void define_knowledge(void)
           m_send_modifieds_0_of_2(args("prefix", "settings"),
               "Sends all modified variables through the attached transports."))
 
+      // sets a knowledge record to a specified value
+      .def("set",
+          static_cast<int (madara::knowledge::KnowledgeBase::*)(
+              const VariableReference &,
+              const KnowledgeRecord &,
+              const EvalSettings & )>(
+              &madara::knowledge::KnowledgeBase::set),
+          m_set_2_of_3(args("key", "value", "settings"),
+              "Atomically sets the value of a variable to a KnowledgeRecord."))
+
+      // sets a knowledge record to a specified value
+      .def("set",
+          static_cast<int (madara::knowledge::KnowledgeBase::*)(
+              const std::string &,
+              const KnowledgeRecord &,
+              const EvalSettings & )>(
+              &madara::knowledge::KnowledgeBase::set),
+          m_set_2_of_3(args("key", "value", "settings"),
+              "Atomically sets the value of a variable to a KnowledgeRecord."))
+
       // sets a knowledge record to a double
       .def("set",
           static_cast<int (madara::knowledge::KnowledgeBase::*)(
