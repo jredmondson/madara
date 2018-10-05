@@ -93,17 +93,23 @@ struct WaitSettings : public EvalSettings
    * @param  t_treat_locals_as_globals true if local variable changes should
    *                                   be sent over the network (dangerous).
    *                                   @see treat_locals_as_globals
+   * @param  t_stream_changes          true if changes must be streamed
+   * @param  t_exceptions_on_unitialized true if exceptions must be thrown
+   *                                   when reading uninitialized variables
    **/
   WaitSettings(bool t_delay_sending_modifieds, bool t_treat_globals_as_locals,
       bool t_signal_updates, bool t_always_overwrite, bool t_always_expand,
       bool t_track_local_changes, std::string t_pre_print_statement,
       std::string t_post_print_statement, double t_poll_frequency,
       double t_max_wait_time, uint64_t t_clock_increment = 1,
-      bool t_treat_locals_as_globals = false)
+      bool t_treat_locals_as_globals = false,
+      bool t_stream_changes = true,
+      bool t_exceptions_on_unitialized = false)
     : EvalSettings(t_delay_sending_modifieds, t_treat_globals_as_locals,
           t_signal_updates, t_always_overwrite, t_always_expand,
           t_track_local_changes, t_pre_print_statement, t_post_print_statement,
-          t_clock_increment, t_treat_locals_as_globals),
+          t_clock_increment, t_treat_locals_as_globals, t_stream_changes,
+          t_exceptions_on_unitialized),
       poll_frequency(t_poll_frequency),
       max_wait_time(t_max_wait_time)
   {
