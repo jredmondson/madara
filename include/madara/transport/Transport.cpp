@@ -881,7 +881,7 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
         madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
             "%s:"
             " Calling filter chain of %s.\n",
-            print_prefix, e.first);
+            print_prefix, e.first.c_str());
 
         const auto record = e.second;
 
@@ -897,7 +897,7 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
         madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
             "%s:"
             " Filter returned for %s.\n",
-            print_prefix, e.first);
+            print_prefix, e.first.c_str());
 
         if (result.exists())
         {
@@ -952,7 +952,7 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
           madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
               "%s:"
               " Adding record %s to update list.\n",
-              print_prefix, e.first);
+              print_prefix, e.first.c_str());
 
           filtered_updates.emplace(std::make_pair(e.first, record));
         }
