@@ -59,7 +59,7 @@ bool summary = true;
 
 // default KaRL config file
 std::string default_karl_config =
-    madara::utility::expand_envs("$(HOME)/.karl/karl.cfg");
+    madara::utility::expand_envs("$(HOME)/.madara/stk_inspect.cfg");
 
 // config file recursion limit
 const size_t default_recursion_limit = 10;
@@ -71,6 +71,9 @@ std::string check;
 // keep track of first and last observed time of insertion
 uint64_t first_toi = 0;
 uint64_t last_toi = 0;
+
+// debugging printouts
+bool debug = false;
 
 // recursively loads a config file(s) and processe with handle_arguments
 bool load_config_file(
@@ -175,7 +178,7 @@ void print_variables(const VariableUpdates & variables,
   }
 }
 
-int64_t process_command (const std::string & command,
+int64_t process_command(const std::string & command,
     knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
     const VariableUpdates & variables)
 {
@@ -185,32 +188,40 @@ int64_t process_command (const std::string & command,
 
   utility::strip_extra_white_space(logic);
 
-  for (size_t execs = 0; execs < 1 || shell_mode; ++execs)
+  for(size_t execs = 0; execs < 1 || shell_mode; ++execs)
   {
     if(utility::begins_with(logic, "add_prefix"))
     {
       // format: add_prefix first second third fourth
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: adding var prefixes ";
-      std::cout << logic.substr (11) << "\n";
-
-      // split by space and discard first token (add_prefix)
-      std::vector<std::string> splitters, tokens, pivot_list;
-      splitters.push_back (" ");
-
-      utility::tokenizer (logic, splitters, tokens, pivot_list);
-
-      for (size_t i = 1; i < tokens.size(); ++i)
+      if(debug)
       {
-        print_prefixes.push_back (tokens[i]);
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: adding var prefixes ";
+        std::cout << logic.substr(11) << "\n";
+        std::cout << "\n";
+      }
+
+      // split by space and discard first token(add_prefix)
+      std::vector<std::string> splitters, tokens, pivot_list;
+      splitters.push_back(" ");
+
+      utility::tokenizer(logic, splitters, tokens, pivot_list);
+
+      for(size_t i = 1; i < tokens.size(); ++i)
+      {
+        print_prefixes.push_back(tokens[i]);
         ++result;
       }
     }
     else if(utility::begins_with(logic, "clear_prefixes"))
     {
       // format: clear_prefixes
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: clearing var prefixes\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: clearing var prefixes\n";
+        std::cout << "\n";
+      }
 
       print_prefixes.clear();
 
@@ -220,46 +231,57 @@ int64_t process_command (const std::string & command,
     else if(utility::begins_with(logic, "eval_stats"))
     {
       // format: clear_prefixes
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: evaluating stats logic\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: evaluating stats logic\n";
+        std::cout << "\n";
+      }
 
-      result += stats.evaluate (
-        logic.substr (11), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+      result += stats.evaluate(
+        logic.substr(11), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
 
       ++result;
     }
     else if(utility::begins_with(logic, "eval"))
     {
       // format: clear_prefixes
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: evaluating kb logic\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: evaluating kb logic\n";
+        std::cout << "\n";
+      }
 
-      result += kb.evaluate (
-        logic.substr (5), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+      result += kb.evaluate(
+        logic.substr(5), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
 
       ++result;
     }
     else if(utility::begins_with(logic, "exit"))
     {
-      // split by space and discard first token (add_prefix)
+      // split by space and discard first token(add_prefix)
       std::vector<std::string> splitters, tokens, pivot_list;
-      splitters.push_back (" ");
+      splitters.push_back(" ");
 
-      utility::tokenizer (logic, splitters, tokens, pivot_list);
+      utility::tokenizer(logic, splitters, tokens, pivot_list);
       int exit_code = 0;
 
-      if (tokens.size () == 2)
+      if(tokens.size() == 2)
       {
-        std::stringstream buffer (tokens[1]);
+        std::stringstream buffer(tokens[1]);
         buffer >> exit_code;
       }
 
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: exiting app with code ";
-      std::cout << exit_code << "\n";
+      if(debug)
+      {   
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: exiting app with code ";
+        std::cout << exit_code << "\n";
+        std::cout << "\n";
+      }
 
-      std::cout << "\n";
-      exit (exit_code);
+      exit(exit_code);
     }
     else if(utility::begins_with(logic, "help"))
     {
@@ -285,80 +307,102 @@ int64_t process_command (const std::string & command,
     else if(utility::begins_with(logic, "list_prefixes"))
     {
       // format: list_prefixes
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: list all prefixes\n\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: list all prefixes\n\n";
+        std::cout << "\n";
+      }
 
-      for (auto prefix: print_prefixes)
+      for(auto prefix: print_prefixes)
       {
         std::cout << "  " << prefix << "\n";
       }
 
-      std::cout << "\n";
       ++result;
     }
     // note that there is a really good reason to have this before print
     else if(utility::begins_with(logic, "print_stats"))
     {
       // format: print_stats
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: printing stats\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: printing stats\n";
+        std::cout << "\n";
+      }
 
       print_variables(variables, std::cout, false, true, false, stats);
 
-      std::cout << "\n";
       ++result;
     }
     // note that there is a really good reason to have this before print
     else if(utility::begins_with(logic, "print_all"))
     {
       // format: print_all
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: printing all info\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: printing all info\n";
+        std::cout << "\n";
+      }
 
       print_variables(variables, std::cout, true, true, false, stats);
 
-      std::cout << "\n";
       ++result;
     }
     else if(utility::begins_with(logic, "print"))
     {
       // format: print
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: printing knowledge\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: printing knowledge\n";
+        std::cout << "\n";
+      }
 
       print_variables(variables, std::cout, true, false, false, stats);
 
-      std::cout << "\n";
       ++result;
     }
     else if(utility::begins_with(logic, "shell"))
     {
       // format: shell
-      if (!shell_mode)
+      if(!shell_mode)
       {
-        std::cout << "\n";
-        std::cout << last_toi << ": Event trigger: entering interactive mode\n";
+        if(debug)
+        {
+          std::cout << "\n";
+          std::cout << last_toi << ": Event trigger: entering interactive mode\n";
+          std::cout << "\n";
+        }
 
         shell_mode = true;
       }
       else
       {
-        std::cout << "\n";
-        std::cout << last_toi << ": You're already in interactive mode\n";
+        if(debug)
+        {
+          std::cout << "\n";
+          std::cout << last_toi << ": You're already in interactive mode\n";
+          std::cout << "\n";
+        }
       }
 
-      std::cout << "\n";
       ++result;
     }
     else if(utility::begins_with(logic, "quit"))
     {
       // format: quit
-      std::cout << "\n";
-      std::cout << last_toi << ": Event trigger: quitting shell mode\n";
+      if(debug)
+      {
+        std::cout << "\n";
+        std::cout << last_toi << ": Event trigger: quitting shell mode\n";
+        std::cout << "\n";
+      }
 
       shell_mode = false;
 
-      std::cout << "\n";
       ++result;
     }
     else
@@ -370,10 +414,10 @@ int64_t process_command (const std::string & command,
     }
 
     // if we are in shell mode, ask the user what to do
-    if (shell_mode)
+    if(shell_mode)
     {
-      std::cout << "What would you like to do? (help for usage info): ";
-      std::getline (std::cin, logic);
+      std::cout << "What would you like to do?(help for usage info): ";
+      std::getline(std::cin, logic);
     }
   }
   return result;
@@ -448,27 +492,27 @@ class Event
 
   inline void print(std::ostream & output)
   {
-    if (logics.size() > 0)
+    if(logics.size() > 0)
     {
       output << "  ";
-      if (trigger == 0)
+      if(trigger == 0)
       {
         output << trigger << " ns: ";
       }
       else
       {
-        output << (trigger - first_toi) << " ns: ";
+        output <<(trigger - first_toi) << " ns: ";
       }
 
       output << logics[0];
-      for (size_t i = 1; i < logics.size(); ++i)
+      for(size_t i = 1; i < logics.size(); ++i)
       {
         output << ";" << logics[i]; 
       }
 
       output << ": ";
 
-      if (fired)
+      if(fired)
       {
         output << "fired_at=" << triggered_toi << ", ";
         output << "result=" << result << "\n";
@@ -511,7 +555,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     {
       if(i + 1 < argc)
       {
-        if (batch != "")
+        if(batch != "")
         {
           batch += "\n";
           batch += argv[i + 1];
@@ -556,11 +600,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
-    if (arg1 == "-cf" || arg1 == "--config-file")
+    if(arg1 == "-cf" || arg1 == "--config-file")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found user karl config file flag, param: %s\n", argv[i + 1]);
-      if (recursion_limit > 0)
+      if(recursion_limit > 0)
       {
         load_config_file(argv[i + 1], recursion_limit);
       }
@@ -577,10 +621,17 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         load_checkpoint_settings.filename = argv[i + 1];
 
-        std::cout << "  Loading file " << argv[i + 1] << "\n";
+        if(debug)
+        {
+          std::cout << "  Loading file " << argv[i + 1] << "\n";
+        }
       }
 
       ++i;
+    }
+    else if(arg1 == "-g" || arg1 == "--debug")
+    {
+      debug = true;
     }
     else if(arg1 == "-k" || arg1 == "--print-knowledge")
     {
@@ -593,7 +644,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         for(int j = i + 1;
              j < argc && strlen(argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
         {
-          std::cout << "  Limiting results to prefix " << argv[j] << "\n";
+          if(debug)
+          {
+            std::cout << "  Limiting results to prefix " << argv[j] << "\n";
+          }
+
           print_prefixes.push_back(argv[j]);
         }
       }
@@ -610,7 +665,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
         logger::global_logger->set_level(level);
-        std::cout << "  Setting log level to " << level << "\n";
+
+        if(debug)
+        {
+          std::cout << "  Setting log level to " << level << "\n";
+        }
       }
 
       ++i;
@@ -620,7 +679,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       if(i + 1 < argc)
       {
         load_checkpoint_settings.prefixes.push_back(argv[i + 1]);
-        std::cout << "  Limiting load to prefix " << argv[i + 1] << "\n";
+
+        if(debug)
+        {
+          std::cout << "  Limiting load to prefix " << argv[i + 1] << "\n";
+        }
       }
 
       ++i;
@@ -631,7 +694,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> load_checkpoint_settings.buffer_size;
-        std::cout << "  Setting load size to " << argv[i + 1] << "\n";
+
+        if(debug)
+        {
+          std::cout << "  Setting load size to " << argv[i + 1] << "\n";
+        }
       }
 
       ++i;
@@ -776,7 +843,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       if(i + 1 < argc)
       {
         save_file = argv[i + 1];
-        std::cout << "  Saving results to " << argv[i + 1] << "\n";
+
+        if(debug)
+        {
+          std::cout << "  Saving results to " << argv[i + 1] << "\n";
+        }
       }
 
       ++i;
@@ -809,7 +880,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "                           print: print var=value \n"
           "                           print_stats: print var stats \n"
           "                           print_all: print var value & stats\n"
-          "                           shell: enter shell mode (interactive)\n"
+          "                           shell: enter shell mode(interactive)\n"
           "                           quit: leaves shell mode\n"
           "\n"
           "  [-bf|--batch-file file]  load batch events from file. See\n"
@@ -837,7 +908,10 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-chf|--check-file file] KaRL file with check. See -c for "
           "options\n"
           "  [-cf|--config-file]      Config file full path, file contains "
-          "karl cmd line flags, also uses default config file\n"
+          "karl cmd line\n"
+          "                           flags, also uses default config file\n"
+          "                           $(HOME)/.madara/stk_inspect.cfg\n"
+          "  [-g|--debug]             print debug information\n"
           "  [-k|--print-knowledge]   print final knowledge\n"
           "  [-kp|--print-prefix pfx] filter prints by prefix. Can be "
           "multiple.\n"
@@ -883,7 +957,7 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
 
   // load the a karl config file
   std::ifstream file(full_path.c_str());
-  if (!file)
+  if(!file)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
         "Unable to open karl config file: %s\n", full_path.c_str());
@@ -898,28 +972,30 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
 
   // read each line of the text formatted file in, each line contains
   // one flag followed by a space then the param if there is a parameter
-  while (std::getline(file, flag_param))
+  while(std::getline(file, flag_param))
   {
     flag = flag_param.substr(0, flag_param.find_first_of(" "));
-    if (flag_param.find_first_of(" ") == std::string::npos)
+    if(flag_param.find_first_of(" ") == std::string::npos)
     {
       param = "";
     }
     else
     {
       param = flag_param.substr(flag_param.find_first_of(" ") + 1,
-          flag_param.length() - (flag_param.find_first_of(" ") + 1));
+          flag_param.length() -(flag_param.find_first_of(" ") + 1));
     }
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
         "Flag: %s, Param: %s\n", flag.c_str(), param.c_str());
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
         "Found a flag saving now...\n");
+
     argv_config_files.push_back(flag);
 
-    if (param != "")
+    if(param != "")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found a param saving now...\n");
+          
       argv_config_files.push_back(param);
     }
   }
@@ -942,9 +1018,17 @@ void iterate_stk(
   knowledge::KnowledgeBase kb, knowledge::KnowledgeBase stats,
   VariableUpdates & variables)
 {
-  std::cout << "Creating CheckpointReader with file contents... " << std::flush;
+  if(debug)
+  {
+    std::cout << "Creating CheckpointReader with file contents... " << std::flush;
+  }
+
   knowledge::CheckpointReader reader(load_checkpoint_settings);
-  std::cout << "done\n";
+
+  if(debug)
+  {
+    std::cout << "done\n";
+  }
 
   containers::FlexMap stats_tois("STK_INSPECT.TOI", stats);
   containers::FlexMap stats_ooo = stats_tois["OUT_OF_ORDER"];
@@ -959,15 +1043,22 @@ void iterate_stk(
 
   size_t cur_event = 0;
 
-  std::cout << "Iterating through updates... " << std::flush;
+  if(debug)
+  {
+    std::cout << "Iterating through updates... " << std::flush;
+  }
+
   while(true)
   {
     // iterate through events and evaluate if they are ready
-    for (; cur_event < events.size () &&
-      events[cur_event].evaluate_if_ready (
+    for(; cur_event < events.size() &&
+      events[cur_event].evaluate_if_ready(
         last_toi, kb, stats, variables); ++cur_event)
     {
-      std::cout << "Event " << cur_event << ": Triggered\n";
+      if(debug)
+      {
+        std::cout << "Event " << cur_event << ": Triggered\n";
+      }
     }
 
     auto cur = reader.next();
@@ -1001,7 +1092,7 @@ void iterate_stk(
         first_toi = variable.first;
 
         // update events to 
-        for (size_t i = 0; i < events.size(); ++i)
+        for(size_t i = 0; i < events.size(); ++i)
         {
           events[i].update_from_first();
         }
@@ -1071,7 +1162,10 @@ void iterate_stk(
     // save for usage in out-of-order info
     last_variable = cur.first;
   }
-  std::cout << "done\n";
+  if(debug)
+  {
+    std::cout << "done\n";
+  }
 
   if(out_of_orders > 0)
   {
@@ -1082,29 +1176,33 @@ void iterate_stk(
   stats_ooo =(int64_t)out_of_orders;
 }
 
-void create_events (void)
+void create_events(void)
 {
   std::vector<std::string> batch_lines = utility::string_to_vector(
-    utility::file_to_string (batchfile));
+    utility::file_to_string(batchfile));
   
   std::vector<std::string> extra_lines = utility::string_to_vector(batch);
 
-  batch_lines.insert (
+  batch_lines.insert(
     batch_lines.end(), extra_lines.begin(), extra_lines.end());
   
-  for (auto line : batch_lines)
+  for(auto line : batch_lines)
   {
     Event event;
-    event.read (line);
-    events.push_back (event);
+    event.read(line);
+    events.push_back(event);
   }
 
-  std::sort (events.begin (), events.end ());
+  std::sort(events.begin(), events.end());
 
-  std::cout << "Batch events:\n";
-  for (auto event : events)
+  if(debug)
   {
-    event.print (std::cout);
+    std::cout << "Batch events:\n";
+  }
+
+  for(auto event : events)
+  {
+    event.print(std::cout);
   }
 }
 
@@ -1114,12 +1212,19 @@ int main(int argc, char** argv)
   // and first
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
       "Attempting to load default karl config...\n");
-  load_config_file(default_karl_config);
 
-  std::cout << "Inspection settings:\n" << std::flush;
+  if(utility::file_exists(default_karl_config))
+  {
+    load_config_file(default_karl_config);
+  }
+
+  if(debug)
+  {
+    std::cout << "Inspection settings:\n" << std::flush;
+  }
 
   // handle all user arguments
-  handle_arguments(argc, (const char**)argv);
+  handle_arguments(argc,(const char**)argv);
 
   knowledge::KnowledgeBase kb;
   knowledge::KnowledgeBase stats;
@@ -1132,7 +1237,10 @@ int main(int argc, char** argv)
   {
     if(save_file != "")
     {
-      std::cout << "Saving results to " << save_file << "..." << std::flush;
+      if(debug)
+      {
+        std::cout << "Saving results to " << save_file << "..." << std::flush;
+      }
       std::ofstream output(save_file);
 
       if(output)
@@ -1142,17 +1250,21 @@ int main(int argc, char** argv)
       }
 
       output.close();
-      std::cout << " done\n";
+
+      if(debug)
+      {
+        std::cout << " done\n";
+      }
     }
     else
     {
       // user has specified prefixes that must be matched
-      if(summary)
+      if(summary && debug)
       {
         std::cout << "Printing results to stdout...\n" << std::flush;
       }
 
-      if(print_stats || check != "" || checkfile != "")
+      if((print_stats || check != "" || checkfile != "") && debug)
       {
         std::cout << "Calculating stats...\n" << std::flush;
       }
@@ -1180,25 +1292,42 @@ int main(int argc, char** argv)
 
   if(print_stats)
   {
-    std::cout << "Printing stats:\n";
+    if(debug)
+    {
+      std::cout << "Printing stats:\n";
+    }
+
     stats.print();
   }
 
   if(print_knowledge)
   {
     kb.load_context(load_checkpoint_settings);
-    std::cout << "Printing final KB:\n";
+
+    if(debug)
+    {
+      std::cout << "Printing final KB:\n";
+    }
+
     kb.print();
   }
 
-  if (events.size () > 0)
+  if(events.size() > 0)
   {
-    std::cout << "\nPrinting batch events:\n";
-    for (auto event: events)
+    if(debug)
     {
-      event.print (std::cout);
+      std::cout << "\nPrinting batch events:\n";
     }
-    std::cout << "\n";
+
+    for(auto event: events)
+    {
+      event.print(std::cout);
+    }
+
+    if(debug)
+    {
+      std::cout << "\n";
+    }
   }
 
   // return value is always 0 unless check is specified
