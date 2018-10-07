@@ -1014,16 +1014,63 @@ inline const VariableReferenceMap& ThreadSafeContext::get_modifieds(void) const
   return changed_map_;
 }
 
-inline KnowledgeMap ThreadSafeContext::get_modifieds_current(void) const
+inline KnowledgeMap ThreadSafeContext::get_modifieds_current(
+  const std::map<std::string, bool> & send_list, bool reset)
 {
   MADARA_GUARD_TYPE guard(mutex_);
 
   KnowledgeMap map;
 
-  for (auto entry: changed_map_)
+  // if there are no limiting prefixes, iterate through and reset
+  if (send_list.size() == 0)
   {
-    map.emplace_hint (map.end(),
-      entry.first, *entry.second.get_record_unsafe ());
+    for (auto i = changed_map_.begin();
+         i != changed_map_.end(); )
+    {
+      map.emplace_hint (map.end(),
+        i->first, *i->second.get_record_unsafe());
+
+      if (reset)
+      {
+        i = changed_map_.erase(i);
+      }
+    }
+  }
+  // if there are limiting prefixes, only copy over the prefixes
+  else
+  {
+    // if the prefixes list is smaller than the changed_map_
+    if (send_list.size() < changed_map_.size())
+    {
+      for (auto var : send_list)
+      {
+        auto found = changed_map_.find(var.first.c_str());
+
+        if (found != changed_map_.end())
+        {
+          map.emplace_hint(
+            map.end(), found->first, *found->second.get_record_unsafe());
+          changed_map_.erase(found);
+        }
+      }
+    }
+    // else if the changed_map_ is smaller than the prefixes list
+    else
+    {
+      for (auto i = changed_map_.begin(); i != changed_map_.end();)
+      {
+        if (send_list.find (i->first) != send_list.end())
+        {
+          map.emplace_hint (map.end(),
+            i->first, *i->second.get_record_unsafe());
+
+          if (reset)
+          {
+            i = changed_map_.erase (i);
+          }
+        }
+      }
+    }
   }
 
   return map;

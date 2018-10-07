@@ -885,9 +885,12 @@ public:
 
   /**
    * Retrieves the current modifieds map
+   * @param   send_list map of variables that limit what will be sent
+   * @param   reset     reset modifieds atomically
    * @return  the modified knowledge records
    **/
-  KnowledgeMap get_modifieds_current(void) const;
+  KnowledgeMap get_modifieds_current(
+      const std::map<std::string, bool> & send_list = {}, bool reset = true);
 
   /**
    * Adds a list of VariableReferences to the current modified list.

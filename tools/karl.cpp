@@ -474,6 +474,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-v|--version]           print current MADARA version\n"
           "\n",
           argv[0]);
+
       exit(0);
     }
     else if (arg1 == "-i" || arg1 == "--input")

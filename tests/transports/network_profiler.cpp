@@ -342,6 +342,8 @@ int main(int argc, char** argv)
 
     utility::EpochEnforcer<utility::Clock> enforcer(1 / send_hertz, test_time);
 
+    kb.set(num_vars_ref, num_vars, knowledge::EvalSettings::SEND_NO_EXPAND);
+
     while (!enforcer.is_done())
     {
       for (auto var : vars)
@@ -350,6 +352,7 @@ int main(int argc, char** argv)
       }
 
       kb.mark_modified(num_vars_ref);
+
       kb.send_modifieds();
 
       if (send_hertz > 0.0)
@@ -358,9 +361,7 @@ int main(int argc, char** argv)
       }
     }
 
-    kb.set("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
-
-    kb.set("num_vars", num_vars, knowledge::EvalSettings::DELAY_NO_EXPAND);
+    kb.set(num_vars_ref, num_vars, knowledge::EvalSettings::SEND_NO_EXPAND);
 
     delete[] data;
 

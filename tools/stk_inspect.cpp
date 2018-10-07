@@ -57,6 +57,13 @@ bool capnp_msg_type_param_flag = false;
 bool capnp_import_dirs_flag = false;
 bool summary = true;
 
+// default KaRL config file
+std::string default_karl_config =
+    madara::utility::expand_envs("$(HOME)/.karl/karl.cfg");
+
+// config file recursion limit
+const size_t default_recursion_limit = 10;
+
 // check for stats
 std::string checkfile;
 std::string check;
@@ -64,6 +71,10 @@ std::string check;
 // keep track of first and last observed time of insertion
 uint64_t first_toi = 0;
 uint64_t last_toi = 0;
+
+// recursively loads a config file(s) and processe with handle_arguments
+bool load_config_file(
+    std::string full_path, size_t recursion_limit = default_recursion_limit);
 
 /**
  * Class for keeping track of updates on a variable
@@ -490,7 +501,7 @@ std::string batch;
 std::vector <Event> events;
 
 // handle command line arguments
-void handle_arguments(int argc, char** argv)
+void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 {
   for(int i = 1; i < argc; ++i)
   {
@@ -535,7 +546,7 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if(arg1 == "-cf" || arg1 == "--check-file")
+    else if(arg1 == "-chf" || arg1 == "--check-file")
     {
       if(i + 1 < argc)
       {
@@ -543,6 +554,21 @@ void handle_arguments(int argc, char** argv)
         std::cout << "  Loading stats check from file " << checkfile << "\n";
       }
 
+      ++i;
+    }
+    if (arg1 == "-cf" || arg1 == "--config-file")
+    {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
+          "Found user karl config file flag, param: %s\n", argv[i + 1]);
+      if (recursion_limit > 0)
+      {
+        load_config_file(argv[i + 1], recursion_limit);
+      }
+      else
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+            "Config file recursion limit exceeded with %s\n", argv[i + 1]);
+      }
       ++i;
     }
     else if(arg1 == "-f" || arg1 == "--logfile")
@@ -808,8 +834,10 @@ void handle_arguments(int argc, char** argv)
           "                             {var}.max_size: max size of update\n"
           "                             {var}.min_size: min size of update\n"
           "                             {var}.updates: total num updates\n"
-          "  [-cf|--check-file file]  KaRL file with check. See -c for "
+          "  [-chf|--check-file file] KaRL file with check. See -c for "
           "options\n"
+          "  [-cf|--config-file]      Config file full path, file contains "
+          "karl cmd line flags, also uses default config file\n"
           "  [-k|--print-knowledge]   print final knowledge\n"
           "  [-kp|--print-prefix pfx] filter prints by prefix. Can be "
           "multiple.\n"
@@ -828,17 +856,86 @@ void handle_arguments(int argc, char** argv)
           "  [-nf|--capnp-file]       load capnp file. Must appear after -n "
           "and -ni.\n"
           "  [-ni|--capnp-import ]    add directory to capnp directory "
-          "imports. "
+          "imports.\n"
           "                           Must appear before all -n and -nf.\n"
           "  [-ns|--no-summary ]      do not print or save summary stats per "
-          "var"
-          "                           Must appear before all -n and -nf.\n"
+          "var\n"
           "  [-s|--save file]         save the results to a file\n"
           "\n",
           arg1.c_str(), argv[0]);
       exit(0);
     }
   }
+}
+
+// loads a config file into a pased in string vector.
+// and then it calls handle_arguments() for processing
+bool load_config_file(std::string full_path, size_t recursion_limit)
+{
+  std::string flag;
+  std::string param;
+  std::string flag_param;
+  std::string config_file;
+
+  // storage for config file arguments
+  std::deque<std::string> argv_config_files;
+  std::vector<const char*> argvp_config_files;
+
+  // load the a karl config file
+  std::ifstream file(full_path.c_str());
+  if (!file)
+  {
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+        "Unable to open karl config file: %s\n", full_path.c_str());
+    return false;
+  }
+
+  // load progam path for first arg
+  argv_config_files.push_back("");
+
+  madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
+      "Found karl config file: %s\n", full_path.c_str());
+
+  // read each line of the text formatted file in, each line contains
+  // one flag followed by a space then the param if there is a parameter
+  while (std::getline(file, flag_param))
+  {
+    flag = flag_param.substr(0, flag_param.find_first_of(" "));
+    if (flag_param.find_first_of(" ") == std::string::npos)
+    {
+      param = "";
+    }
+    else
+    {
+      param = flag_param.substr(flag_param.find_first_of(" ") + 1,
+          flag_param.length() - (flag_param.find_first_of(" ") + 1));
+    }
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
+        "Flag: %s, Param: %s\n", flag.c_str(), param.c_str());
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
+        "Found a flag saving now...\n");
+    argv_config_files.push_back(flag);
+
+    if (param != "")
+    {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
+          "Found a param saving now...\n");
+      argv_config_files.push_back(param);
+    }
+  }
+  file.close();
+
+  argvp_config_files.reserve(argv_config_files.size() + 1);
+  argvp_config_files.push_back("");
+
+  std::transform(argv_config_files.begin(), argv_config_files.end(),
+      std::back_inserter(argvp_config_files),
+      std::mem_fun_ref(&std::string::c_str));
+
+  handle_arguments(argvp_config_files.size(), argvp_config_files.data(),
+      recursion_limit - 1);
+
+  return true;
 }
 
 void iterate_stk(
@@ -1013,10 +1110,16 @@ void create_events (void)
 
 int main(int argc, char** argv)
 {
+  // load and incorporate the defaul karl config file arguments, but only once
+  // and first
+  madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
+      "Attempting to load default karl config...\n");
+  load_config_file(default_karl_config);
+
   std::cout << "Inspection settings:\n" << std::flush;
 
   // handle all user arguments
-  handle_arguments(argc, argv);
+  handle_arguments(argc, (const char**)argv);
 
   knowledge::KnowledgeBase kb;
   knowledge::KnowledgeBase stats;

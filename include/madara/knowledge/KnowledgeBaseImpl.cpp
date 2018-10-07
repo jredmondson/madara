@@ -403,56 +403,15 @@ int KnowledgeBaseImpl::send_modifieds(
     // get the modifieds and reset those that will be sent, atomically
     {
       MADARA_GUARD_TYPE guard(map_.mutex_);
-      modified = map_.get_modifieds_current();
-      
-      // reset the modifieds according to what is in the send_list
-      if (settings.send_list.size () > 0)
-      {
-        for (const auto& entry : settings.send_list)
-        {
-          auto found = modified.find(entry.first);
-          if (found != modified.end())
-          {
-            map_.reset_modified (found->first);
-          }
-          else
-          {
-            modified.erase (found);
-          }
-        }
-      }
-      else
-      {
-        map_.reset_modified();
-      }
+      modified = map_.get_modifieds_current(settings.send_list, true);
     }
 
     if (modified.size() > 0)
     {
-      // if there is not an allowed send_list list
-      if (settings.send_list.size() == 0)
+      // send across each transport
+      for (auto& transport : transports_)
       {
-        // send across each transport
-        for (auto& transport : transports_)
-        {
-          transport->send_data(modified);
-        }
-
-      }
-      // if there is a send_list
-      else
-      {
-        KnowledgeMap& allowed_modifieds = modified;
-
-        // if the subset was greater than zero, we send the subset
-        if (allowed_modifieds.size() > 0)
-        {
-          // send across each transport
-          for (auto& transport : transports_)
-          {
-            transport->send_data(allowed_modifieds);
-          }
-        }
+        transport->send_data(modified);
       }
 
       map_.inc_clock(settings);
