@@ -58,7 +58,7 @@ bool capnp_import_dirs_flag = false;
 bool summary = true;
 
 // default KaRL config file
-std::string default_karl_config =
+std::string default_config_file =
     madara::utility::expand_envs("$(HOME)/.madara/stk_inspect.cfg");
 
 // config file recursion limit
@@ -603,7 +603,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     if(arg1 == "-cf" || arg1 == "--config-file")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
-          "Found user karl config file flag, param: %s\n", argv[i + 1]);
+          "Found user config file flag, param: %s\n", argv[i + 1]);
       if(recursion_limit > 0)
       {
         load_config_file(argv[i + 1], recursion_limit);
@@ -908,7 +908,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-chf|--check-file file] KaRL file with check. See -c for "
           "options\n"
           "  [-cf|--config-file]      Config file full path, file contains "
-          "karl cmd line\n"
+          "cmd line\n"
           "                           flags, also uses default config file\n"
           "                           $(HOME)/.madara/stk_inspect.cfg\n"
           "  [-g|--debug]             print debug information\n"
@@ -955,12 +955,12 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
   std::deque<std::string> argv_config_files;
   std::vector<const char*> argvp_config_files;
 
-  // load the a karl config file
+  // load the a config file
   std::ifstream file(full_path.c_str());
   if(!file)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-        "Unable to open karl config file: %s\n", full_path.c_str());
+        "Unable to open config file: %s\n", full_path.c_str());
     return false;
   }
 
@@ -968,7 +968,7 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
   argv_config_files.push_back("");
 
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
-      "Found karl config file: %s\n", full_path.c_str());
+      "Found config file: %s\n", full_path.c_str());
 
   // read each line of the text formatted file in, each line contains
   // one flag followed by a space then the param if there is a parameter
@@ -995,14 +995,14 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found a param saving now...\n");
-          
+
       argv_config_files.push_back(param);
     }
   }
   file.close();
 
   argvp_config_files.reserve(argv_config_files.size() + 1);
-  argvp_config_files.push_back("");
+//  argvp_config_files.push_back("");
 
   std::transform(argv_config_files.begin(), argv_config_files.end(),
       std::back_inserter(argvp_config_files),
@@ -1208,14 +1208,14 @@ void create_events(void)
 
 int main(int argc, char** argv)
 {
-  // load and incorporate the defaul karl config file arguments, but only once
+  // load and incorporate the defaul config file arguments, but only once
   // and first
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
-      "Attempting to load default karl config...\n");
+      "Attempting to load default config...\n");
 
-  if(utility::file_exists(default_karl_config))
+  if(utility::file_exists(default_config_file))
   {
-    load_config_file(default_karl_config);
+    load_config_file(default_config_file);
   }
 
   if(debug)
