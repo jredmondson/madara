@@ -1022,7 +1022,8 @@ inline KnowledgeMap ThreadSafeContext::get_modifieds_current(void) const
 
   for (auto entry: changed_map_)
   {
-    map[entry.first] = *entry.second.get_record_unsafe ();
+    map.emplace_hint (map.end(),
+      entry.first, *entry.second.get_record_unsafe ());
   }
 
   return map;

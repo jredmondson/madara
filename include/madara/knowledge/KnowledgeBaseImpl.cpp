@@ -398,7 +398,34 @@ int KnowledgeBaseImpl::send_modifieds(
 
   if (transports_.size() > 0 && !settings.delay_sending_modifieds)
   {
-    KnowledgeMap modified = map_.get_modifieds_current();
+    KnowledgeMap modified;
+    
+    // get the modifieds and reset those that will be sent, atomically
+    {
+      MADARA_GUARD_TYPE guard(map_.mutex_);
+      modified = map_.get_modifieds_current();
+      
+      // reset the modifieds according to what is in the send_list
+      if (settings.send_list.size () > 0)
+      {
+        for (const auto& entry : settings.send_list)
+        {
+          auto found = modified.find(entry.first);
+          if (found != modified.end())
+          {
+            map_.reset_modified (found->first);
+          }
+          else
+          {
+            modified.erase (found);
+          }
+        }
+      }
+      else
+      {
+        map_.reset_modified();
+      }
+    }
 
     if (modified.size() > 0)
     {
@@ -411,21 +438,11 @@ int KnowledgeBaseImpl::send_modifieds(
           transport->send_data(modified);
         }
 
-        // reset the modified map
-        map_.reset_modified();
       }
       // if there is a send_list
       else
       {
-        KnowledgeMap allowed_modifieds;
-        // otherwise, we are only allowed to send a subset of modifieds
-        for (const auto& entry : modified)
-        {
-          if (settings.send_list.find(entry.first) != settings.send_list.end())
-          {
-            allowed_modifieds.emplace_hint(allowed_modifieds.end(), entry);
-          }
-        }
+        KnowledgeMap& allowed_modifieds = modified;
 
         // if the subset was greater than zero, we send the subset
         if (allowed_modifieds.size() > 0)
@@ -434,12 +451,6 @@ int KnowledgeBaseImpl::send_modifieds(
           for (auto& transport : transports_)
           {
             transport->send_data(allowed_modifieds);
-          }
-
-          // reset modified list for the allowed modifications
-          for (const auto& entry : allowed_modifieds)
-          {
-            map_.reset_modified(entry.first);
           }
         }
       }
