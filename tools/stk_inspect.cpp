@@ -600,7 +600,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
-    if(arg1 == "-cf" || arg1 == "--config-file")
+    else if(arg1 == "-cf" || arg1 == "--config-file")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found user config file flag, param: %s\n", argv[i + 1]);
