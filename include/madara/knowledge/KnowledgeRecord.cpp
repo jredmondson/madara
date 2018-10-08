@@ -12,91 +12,90 @@
 #include <iostream>
 #include "madara/utility/IntTypes.h"
 
-namespace {
-  int madara_double_precision (-1);
+namespace
+{
+int madara_double_precision(-1);
 
-  bool madara_use_scientific (false);
+bool madara_use_scientific(false);
 }
 
-namespace madara { namespace knowledge {
-
-int
-KnowledgeRecord::get_precision (void)
+namespace madara
+{
+namespace knowledge
+{
+int KnowledgeRecord::get_precision(void)
 {
   return madara_double_precision;
 }
 
-void
-KnowledgeRecord::set_precision (int new_precision)
+void KnowledgeRecord::set_precision(int new_precision)
 {
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_MINOR,
-    "KnowledgeRecord::set_precision:" \
-    " setting precision to %d\n", madara_double_precision);
+  madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
+      "KnowledgeRecord::set_precision:"
+      " setting precision to %d\n",
+      madara_double_precision);
 
   madara_double_precision = new_precision;
 }
 
-void
-KnowledgeRecord::set_fixed (void)
+void KnowledgeRecord::set_fixed(void)
 {
-  madara_logger_ptr_log (logger::global_logger.get_ptr (), logger::LOG_MINOR,
-    "KnowledgeRecord::set_fixed:" \
-    " setting output format to std::fixed\n");
+  madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_MINOR,
+      "KnowledgeRecord::set_fixed:"
+      " setting output format to std::fixed\n");
 
   madara_use_scientific = false;
 }
 
-void
-KnowledgeRecord::set_scientific (void)
+void KnowledgeRecord::set_scientific(void)
 {
-  madara_logger_ptr_log (logger::global_logger.get_ptr (), logger::LOG_MINOR,
-    "KnowledgeRecord::set_scientific:" \
-    " setting output format to std::scientific\n");
+  madara_logger_ptr_log(logger::global_logger.get_ptr(), logger::LOG_MINOR,
+      "KnowledgeRecord::set_scientific:"
+      " setting output format to std::scientific\n");
 
   madara_use_scientific = true;
 }
 
-int
-KnowledgeRecord::read_file (
-  const std::string & filename, uint32_t read_as_type)
+int KnowledgeRecord::read_file(
+    const std::string& filename, uint32_t read_as_type)
 {
-  void * buffer;
+  void* buffer;
   size_t size;
   bool add_zero_char = false;
 
-  if (has_history ()) {
+  if (has_history())
+  {
     KnowledgeRecord tmp;
-    int ret = tmp.read_file (filename, read_as_type);
-    set_value (std::move(tmp));
+    int ret = tmp.read_file(filename, read_as_type);
+    set_value(std::move(tmp));
     return ret;
   }
 
   // clear the old value
-  clear_value ();
+  clear_value();
 
-  std::string::size_type position = filename.rfind ('.');
-  std::string extension = filename.substr (position,
-    filename.size () - position);
-  madara::utility::lower (extension);
+  std::string::size_type position = filename.rfind('.');
+  std::string extension = filename.substr(position, filename.size() - position);
+  madara::utility::lower(extension);
 
   // do we have a text-based file
-  if (is_string_type (read_as_type) || 
-    extension == ".txt" || extension == ".xml")
+  if (is_string_type(read_as_type) || extension == ".txt" ||
+      extension == ".xml")
   {
     add_zero_char = false;
   }
 
   // read the file into the temporary buffer
-  if (madara::utility::read_file (filename, buffer, size, add_zero_char) == 0)
+  if (madara::utility::read_file(filename, buffer, size, add_zero_char) == 0)
   {
     // do we have a text-based file
-    if (is_string_type (read_as_type)
-           || extension == ".txt" || extension == ".xml")
+    if (is_string_type(read_as_type) || extension == ".txt" ||
+        extension == ".xml")
     {
       // change the string value and size to appropriate values
-      emplace_string ((char *)buffer, size);
+      emplace_string((char*)buffer, size);
 
-      if (is_string_type (read_as_type))
+      if (is_string_type(read_as_type))
         type_ = read_as_type;
       else if (extension == ".xml")
         type_ = XML;
@@ -105,8 +104,8 @@ KnowledgeRecord::read_file (
     }
     else
     {
-      unsigned char *ucbuf = (unsigned char *)buffer;
-      emplace_file (ucbuf, ucbuf + size);
+      unsigned char* ucbuf = (unsigned char*)buffer;
+      emplace_file(ucbuf, ucbuf + size);
 
       if (extension == ".jpg" || read_as_type == IMAGE_JPEG)
         type_ = IMAGE_JPEG;
@@ -121,47 +120,53 @@ KnowledgeRecord::read_file (
 }
 
 /**
-  * writes the value to a file
-  **/
-ssize_t
-KnowledgeRecord::to_file (const std::string & filename) const
+ * writes the value to a file
+ **/
+ssize_t KnowledgeRecord::to_file(const std::string& filename) const
 {
-  if (is_string_type (type_))
+  if (is_string_type(type_))
   {
-    return madara::utility::write_file (filename,
-      (void *)str_value_->c_str (), str_value_->size ());
+    return madara::utility::write_file(
+        filename, (void*)str_value_->c_str(), str_value_->size());
   }
-  else if (is_binary_file_type (type_))
+  else if (is_binary_file_type(type_))
   {
-    return madara::utility::write_file (filename,
-      (void *)&file_value_->at(0), file_value_->size ());
+    return madara::utility::write_file(
+        filename, (void*)&file_value_->at(0), file_value_->size());
   }
-  else if (has_history ())
+  else if (has_history())
   {
-    return ref_newest ().to_file (filename);
+    if (buf_->empty())
+    {
+      buf_->emplace_back();
+    }
+    return ref_newest().to_file(filename);
   }
   else
   {
-    std::string buffer (to_string ());
+    std::string buffer(to_string());
 
-    return madara::utility::write_file (filename,
-      (void *)buffer.c_str (), buffer.size ());
+    return madara::utility::write_file(
+        filename, (void*)buffer.c_str(), buffer.size());
   }
 }
 
-
-double
-KnowledgeRecord::to_double (void) const
+double KnowledgeRecord::to_double(void) const
 {
   double value = 0;
+
+  if (!exists())
+  {
+    return value;
+  }
 
   if (type_ == DOUBLE)
     value = double_value_;
   else if (type_ == DOUBLE_ARRAY)
-    value = double_array_->size () == 0 ? 0 : double_array_->at(0);
+    value = double_array_->size() == 0 ? 0 : double_array_->at(0);
   else if (has_history())
-    return ref_newest ().to_double ();
-  else if (type_ != EMPTY)
+    value = ref_newest().to_double();
+  else
   {
     std::stringstream buffer;
 
@@ -169,37 +174,8 @@ KnowledgeRecord::to_double (void) const
     if (type_ == INTEGER)
       buffer << int_value_;
     else if (type_ == INTEGER_ARRAY)
-      buffer << (int_array_->size () == 0 ? 0 : int_array_->at(0));
-    else if (is_string_type (type_))
-      buffer << str_value_->c_str ();
-
-    buffer >> value;
-  }
-
-  return value;
-}
-
-KnowledgeRecord::Integer
-KnowledgeRecord::to_integer (void) const
-{
-  Integer value (0);
-
-  if (type_ == INTEGER)
-    value = int_value_;
-  else if (type_ == INTEGER_ARRAY)
-    value = int_array_->size () == 0 ? 0 : int_array_->at(0);
-  else if (has_history())
-    return ref_newest ().to_integer ();
-  else if (type_ != EMPTY)
-  {
-    std::stringstream buffer;
-
-    // read the value_ into a stringstream and then convert it to double
-    if (type_ == DOUBLE)
-      buffer << double_value_;
-    else if (type_ == DOUBLE_ARRAY)
-      buffer << (double_array_->size () == 0 ? 0 : double_array_->at(0));
-    else if (is_string_type (type_))
+      buffer << (int_array_->size() == 0 ? 0 : int_array_->at(0));
+    else if (is_string_type(type_))
       buffer << str_value_->c_str();
 
     buffer >> value;
@@ -208,21 +184,55 @@ KnowledgeRecord::to_integer (void) const
   return value;
 }
 
-std::vector <KnowledgeRecord::Integer>
-KnowledgeRecord::to_integers (void) const
+KnowledgeRecord::Integer KnowledgeRecord::to_integer(void) const
 {
-  std::vector <Integer> integers;
+  Integer value(0);
 
-  if (type_ == EMPTY) {
+  if (!exists())
+  {
+    return value;
+  }
+
+  if (type_ == INTEGER)
+    value = int_value_;
+  else if (type_ == INTEGER_ARRAY)
+    value = int_array_->size() == 0 ? 0 : int_array_->at(0);
+  else if (has_history())
+    value = ref_newest().to_integer();
+  else
+  {
+    std::stringstream buffer;
+
+    // read the value_ into a stringstream and then convert it to double
+    if (type_ == DOUBLE)
+      buffer << double_value_;
+    else if (type_ == DOUBLE_ARRAY)
+      buffer << (double_array_->size() == 0 ? 0 : double_array_->at(0));
+    else if (is_string_type(type_))
+      buffer << str_value_->c_str();
+
+    buffer >> value;
+  }
+
+  return value;
+}
+
+std::vector<KnowledgeRecord::Integer> KnowledgeRecord::to_integers(void) const
+{
+  std::vector<Integer> integers;
+
+  if (!exists())
+  {
     return integers;
   }
 
-  if (has_history()) {
-    return ref_newest ().to_integers ();
+  if (has_history())
+  {
+    return ref_newest().to_integers();
   }
 
-  unsigned int size = (unsigned int)this->size ();
-  integers.resize (size);
+  unsigned int size = (unsigned int)this->size();
+  integers.resize(size);
 
   if (type_ == INTEGER)
   {
@@ -230,119 +240,124 @@ KnowledgeRecord::to_integers (void) const
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    const Integer * ptr_temp = &(*int_array_)[0];
+    const Integer* ptr_temp = &(*int_array_)[0];
 
     for (unsigned int i = 0; i < size; ++i)
       integers[i] = ptr_temp[i];
   }
   else if (type_ == DOUBLE)
-    integers[0] = Integer (double_value_);
+    integers[0] = Integer(double_value_);
   else if (type_ == DOUBLE_ARRAY)
   {
-    const double * ptr_temp = &(*double_array_)[0];
+    const double* ptr_temp = &(*double_array_)[0];
 
     for (unsigned int i = 0; i < size; ++i)
-      integers[i] = Integer (ptr_temp[i]);
+      integers[i] = Integer(ptr_temp[i]);
   }
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
-    const char * ptr_temp = str_value_->c_str ();
+    const char* ptr_temp = str_value_->c_str();
 
     for (unsigned int i = 0; i < size; ++i)
-      integers[i] = Integer (ptr_temp[i]);
+      integers[i] = Integer(ptr_temp[i]);
   }
-  else if (is_binary_file_type (type_))
+  else if (is_binary_file_type(type_))
   {
-    const unsigned char * ptr_temp = &(*file_value_)[0];
+    const unsigned char* ptr_temp = &(*file_value_)[0];
 
     for (unsigned int i = 0; i < size; ++i)
-      integers[i] = Integer (ptr_temp[i]);
+      integers[i] = Integer(ptr_temp[i]);
   }
 
   return integers;
 }
 
-std::vector <double>
-KnowledgeRecord::to_doubles (void) const
+std::vector<double> KnowledgeRecord::to_doubles(void) const
 {
-  std::vector <double> doubles;
+  std::vector<double> doubles;
 
-  if (type_ == EMPTY) {
+  if (!exists())
+  {
     return doubles;
   }
 
-  if (has_history()) {
-    return ref_newest ().to_doubles ();
+  if (has_history())
+  {
+    return ref_newest().to_doubles();
   }
 
-  unsigned int size = (unsigned int)this->size ();
-  doubles.resize (size);
+  unsigned int size = (unsigned int)this->size();
+  doubles.resize(size);
 
-  if      (type_ == INTEGER)
-    doubles[0] = double (int_value_);
+  if (type_ == INTEGER)
+    doubles[0] = double(int_value_);
   else if (type_ == INTEGER_ARRAY)
   {
-    const Integer * ptr_temp = &(*int_array_)[0];
+    const Integer* ptr_temp = &(*int_array_)[0];
 
     for (unsigned int i = 0; i < size; ++i)
-      doubles[i] = double (ptr_temp[i]);
+      doubles[i] = double(ptr_temp[i]);
   }
   else if (type_ == DOUBLE)
     doubles[0] = double_value_;
   else if (type_ == DOUBLE_ARRAY)
   {
-    const double * ptr_temp = &(*double_array_)[0];
+    const double* ptr_temp = &(*double_array_)[0];
 
     for (unsigned int i = 0; i < size; ++i)
       doubles[i] = ptr_temp[i];
   }
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
-    const char * ptr_temp = str_value_->c_str ();
+    const char* ptr_temp = str_value_->c_str();
 
     for (unsigned int i = 0; i < size; ++i)
-      doubles[i] = double (ptr_temp[i]);
+      doubles[i] = double(ptr_temp[i]);
   }
-  else if (is_binary_file_type (type_))
+  else if (is_binary_file_type(type_))
   {
-    const unsigned char * ptr_temp = &(*file_value_)[0];
+    const unsigned char* ptr_temp = &(*file_value_)[0];
 
     for (unsigned int i = 0; i < size; ++i)
-      doubles[i] = double (ptr_temp[i]);
+      doubles[i] = double(ptr_temp[i]);
   }
 
   return doubles;
 }
 
 // read the value_ in a string format
-std::string
-KnowledgeRecord::to_string (const std::string & delimiter) const
+std::string KnowledgeRecord::to_string(const std::string& delimiter) const
 {
-  if (type_ == EMPTY) {
+  if (!exists())
+  {
     return "";
   }
 
-  if (has_history()) {
-    return ref_newest ().to_string ();
+  if (has_history())
+  {
+    return ref_newest().to_string();
   }
 
-  if (type_ == ANY) {
+  if (type_ == ANY)
+  {
     return any_value_->to_json();
   }
 
-  if (!is_string_type (type_))
+  if (!is_string_type(type_))
   {
-    madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-      " type_ is %d\n", type_);
+    madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+        "KnowledgeRecord::to_string:"
+        " type_ is %d\n",
+        type_);
 
     std::stringstream buffer;
 
-    if      (type_ == INTEGER)
+    if (type_ == INTEGER)
       buffer << int_value_;
     else if (type_ == INTEGER_ARRAY)
     {
-      const Integer * ptr_temp = &(*int_array_)[0];
-      uint32_t size = this->size ();
+      const Integer* ptr_temp = &(*int_array_)[0];
+      uint32_t size = this->size();
 
       if (size >= 1)
         buffer << *ptr_temp;
@@ -357,15 +372,15 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
       // set fixed or scientific
       if (!madara_use_scientific)
       {
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "KnowledgeRecord::to_string: using fixed format\n");
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using fixed format\n");
 
         buffer << std::fixed;
       }
       else
       {
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "KnowledgeRecord::to_string: using scientific format\n");
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using scientific format\n");
 
         buffer << std::scientific;
       }
@@ -373,15 +388,19 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
       if (madara_double_precision >= 0)
       {
         // set the precision of double output
-        buffer << std::setprecision (madara_double_precision);
+        buffer << std::setprecision(madara_double_precision);
 
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-          " precision set to %d\n", madara_double_precision);
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string:"
+            " precision set to %d\n",
+            madara_double_precision);
       }
       else
       {
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-          " precision set to default\n", madara_double_precision);
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string:"
+            " precision set to default\n",
+            madara_double_precision);
       }
 
       buffer << double_value_;
@@ -391,34 +410,38 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
       // set fixed or scientific
       if (!madara_use_scientific)
       {
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "KnowledgeRecord::to_string: using fixed format\n");
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using fixed format\n");
 
         buffer << std::fixed;
       }
       else
       {
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED,
-          "KnowledgeRecord::to_string: using scientific format\n");
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string: using scientific format\n");
 
         buffer << std::scientific;
       }
 
       if (madara_double_precision >= 0)
       {
-        buffer << std::setprecision (madara_double_precision);
+        buffer << std::setprecision(madara_double_precision);
 
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-          " precision set to %d\n", madara_double_precision);
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string:"
+            " precision set to %d\n",
+            madara_double_precision);
       }
       else
       {
-        madara_logger_ptr_log (logger_, logger::LOG_DETAILED, "KnowledgeRecord::to_string:" \
-          " precision set to default\n", madara_double_precision);
+        madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+            "KnowledgeRecord::to_string:"
+            " precision set to default\n",
+            madara_double_precision);
       }
 
-      const double * ptr_temp = &(*double_array_)[0];
-      uint32_t size = this->size ();
+      const double* ptr_temp = &(*double_array_)[0];
+      uint32_t size = this->size();
 
       if (size >= 1)
         buffer << *ptr_temp;
@@ -426,236 +449,244 @@ KnowledgeRecord::to_string (const std::string & delimiter) const
       ++ptr_temp;
 
       for (uint32_t i = 1; i < size; ++i, ++ptr_temp)
-        buffer << delimiter << *ptr_temp; 
+        buffer << delimiter << *ptr_temp;
     }
-    else if (is_binary_file_type (type_))
+    else if (is_binary_file_type(type_))
     {
       buffer << "binary:size=";
-      buffer << size (); 
+      buffer << size();
     }
-    return buffer.str ();
+    return buffer.str();
   }
   else
-    return std::string (*str_value_);
+    return std::string(*str_value_);
 }
 
 // read the value_ in a string format
-unsigned char *
-KnowledgeRecord::to_unmanaged_buffer (size_t & size) const
+unsigned char* KnowledgeRecord::to_unmanaged_buffer(size_t& size) const
 {
-  char * buffer;
+  char* buffer;
 
-  if (is_string_type (type_))
+  if (is_string_type(type_))
   {
-    size = str_value_->size ();
-    buffer = new char [size];
-    memcpy (buffer, str_value_->c_str (), size);
+    size = str_value_->size();
+    buffer = new char[size];
+    memcpy(buffer, str_value_->c_str(), size);
   }
-  else if (is_binary_file_type (type_))
+  else if (is_binary_file_type(type_))
   {
-    size = file_value_-> size();
-    buffer = new char [size];
-    memcpy (buffer, &(*file_value_)[0], size);
+    size = file_value_->size();
+    buffer = new char[size];
+    memcpy(buffer, &(*file_value_)[0], size);
   }
   else if (type_ == INTEGER)
   {
     size = sizeof(Integer);
-    buffer = new char [size];
-    memcpy (buffer, &int_value_, size);
+    buffer = new char[size];
+    memcpy(buffer, &int_value_, size);
   }
   else if (type_ == DOUBLE)
   {
     size = sizeof(double);
-    buffer = new char [size];
-    memcpy (buffer, &double_value_, size);
+    buffer = new char[size];
+    memcpy(buffer, &double_value_, size);
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    size = sizeof(Integer) * int_array_->size ();
-    buffer = new char [size];
-    memcpy (buffer, &(*int_array_)[0], size);
+    size = sizeof(Integer) * int_array_->size();
+    buffer = new char[size];
+    memcpy(buffer, &(*int_array_)[0], size);
   }
   else if (type_ == DOUBLE_ARRAY)
   {
-    size = sizeof(double) * double_array_->size () ;
-    buffer = new char [size];
-    memcpy (buffer, &(*double_array_)[0], size);
-  } else if (has_history ()) {
-    return ref_newest ().to_unmanaged_buffer (size);
-  } else {
+    size = sizeof(double) * double_array_->size();
+    buffer = new char[size];
+    memcpy(buffer, &(*double_array_)[0], size);
+  }
+  else if (has_history() && !buf_->empty())
+  {
+    return ref_newest().to_unmanaged_buffer(size);
+  }
+  else
+  {
     buffer = nullptr;
     size = 0;
   }
 
-  return (unsigned char *)buffer;
+  return (unsigned char*)buffer;
 }
 
-
-KnowledgeRecord
-KnowledgeRecord::fragment (unsigned int first, unsigned int last)
+KnowledgeRecord KnowledgeRecord::fragment(unsigned int first, unsigned int last)
 {
-  if (has_history ()) {
-    return fragment (first, last);
-  }
-
   knowledge::KnowledgeRecord ret;
 
-  if (is_string_type (type_))
+  if (!exists())
   {
-    unsigned int size = (unsigned int)str_value_->size ();
-
-    // make sure last is accessible in the data type
-    last = std::min <unsigned int> (last, size - 1);
-
-     // Create a new buffer, copy over the elements, and add a null delimiter
-    char * new_buffer = new char [last - first + 2];
-
-    memcpy (new_buffer, str_value_->c_str () + first, last - first + 1);
-    new_buffer[last-first + 1] = 0;
-
-    ret.set_value (new_buffer);
+    return ret;
   }
-  else if (is_binary_file_type (type_))
+
+  if (has_history())
   {
-    unsigned int size = (unsigned int)file_value_->size ();
+    return fragment(first, last);
+  }
+
+  if (is_string_type(type_))
+  {
+    unsigned int size = (unsigned int)str_value_->size();
 
     // make sure last is accessible in the data type
-    last = std::min <unsigned int> (last, (unsigned int)size - 1);
+    last = std::min<unsigned int>(last, size - 1);
+
+    // Create a new buffer, copy over the elements, and add a null delimiter
+    char* new_buffer = new char[last - first + 2];
+
+    memcpy(new_buffer, str_value_->c_str() + first, last - first + 1);
+    new_buffer[last - first + 1] = 0;
+
+    ret.set_value(new_buffer);
+  }
+  else if (is_binary_file_type(type_))
+  {
+    unsigned int size = (unsigned int)file_value_->size();
+
+    // make sure last is accessible in the data type
+    last = std::min<unsigned int>(last, (unsigned int)size - 1);
 
     // Unlike string types, file buffers are not ended with a null delimiter
     uint32_t bufsize = last - first + 1;
-    unsigned char * new_buffer = new unsigned char [bufsize];
+    unsigned char* new_buffer = new unsigned char[bufsize];
 
-    memcpy (new_buffer, &(*file_value_)[0] + first, last - first + 1);
+    memcpy(new_buffer, &(*file_value_)[0] + first, last - first + 1);
 
     // create a new record with the unsigned char buffer as contents
-    ret.set_file (new_buffer, bufsize);
+    ret.set_file(new_buffer, bufsize);
   }
   else if (type_ == INTEGER_ARRAY)
   {
-    unsigned int size = (unsigned int)int_array_->size ();
+    unsigned int size = (unsigned int)int_array_->size();
 
     // make sure last is accessible in the data type
-    last = std::min <unsigned int> (last, size - 1);
+    last = std::min<unsigned int>(last, size - 1);
     uint32_t bufsize = last - first + 1;
 
-    std::vector <Integer> integers;
-    integers.resize (bufsize);
-    Integer * ptr_temp = &(*int_array_)[0];
+    std::vector<Integer> integers;
+    integers.resize(bufsize);
+    Integer* ptr_temp = &(*int_array_)[0];
 
     for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
       integers[i] = *ptr_temp;
 
-    ret.set_value (integers);
+    ret.set_value(integers);
   }
   else if (type_ == DOUBLE_ARRAY)
   {
-    unsigned int size = (unsigned int) double_array_->size ();
+    unsigned int size = (unsigned int)double_array_->size();
 
     // make sure last is accessible in the data type
-    last = std::min <unsigned int> (last, size - 1);
+    last = std::min<unsigned int>(last, size - 1);
     uint32_t bufsize = last - first + 1;
 
-    std::vector <double> doubles;
-    doubles.resize (bufsize);
-    double * ptr_temp = &(*double_array_)[0];
+    std::vector<double> doubles;
+    doubles.resize(bufsize);
+    double* ptr_temp = &(*double_array_)[0];
 
     for (unsigned int i = first; i <= last; ++i, ++ptr_temp)
       doubles[i] = *ptr_temp;
 
-    ret.set_value (doubles);
+    ret.set_value(doubles);
   }
 
   return ret;
 }
 
-bool
-KnowledgeRecord::operator< (
-  const knowledge::KnowledgeRecord & rhs) const
+bool KnowledgeRecord::operator<(const knowledge::KnowledgeRecord& rhs) const
 {
-  if (has_history ()) {
-    return ref_newest ().operator< (rhs);
+  if (has_history())
+  {
+    return (rhs.buf_->empty() ? KnowledgeRecord{} : ref_newest())
+        .
+        operator<(rhs);
   }
 
-  if (rhs.has_history ()) {
-    return operator< (rhs.ref_newest ());
+  if (rhs.has_history())
+  {
+    return operator<(rhs.buf_->empty() ? KnowledgeRecord{} : rhs.ref_newest());
   }
 
-  Integer result (0);
+  Integer result(0);
 
   // if the left hand side is an integer
-  if (is_integer_type (type_))
+  if (is_integer_type(type_))
   {
-    Integer lhs = this->to_integer ();
+    Integer lhs = this->to_integer();
 
-    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
+    if (is_double_type(rhs.type_) || is_string_type(rhs.type_))
     {
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs < other;
     }
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs < other;
     }
   }
 
   // if the left hand side is a string
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
     // string to string comparison
-    if      (is_string_type (rhs.type_))
+    if (is_string_type(rhs.type_))
     {
-      result =
-        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
-        size () >= rhs.size () ? size () : rhs.size ()) < 0;
+      result = strncmp(str_value_->c_str(), rhs.str_value_->c_str(),
+                   size() >= rhs.size() ? size() : rhs.size()) < 0;
     }
 
     // string to double comparison
-    else if (is_double_type (rhs.type_))
+    else if (is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      double temp = to_double ();
-      double other = rhs.to_double ();
+      double temp = to_double();
+      double other = rhs.to_double();
 
       result = temp < other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      Integer temp = to_integer ();
-      Integer other = rhs.to_integer ();
+      Integer temp = to_integer();
+      Integer other = rhs.to_integer();
 
       result = temp < other;
     }
   }
 
   // if the left hand side is a double
-  else if (is_double_type (type_))
+  else if (is_double_type(type_))
   {
-    double lhs = to_double ();
+    double lhs = to_double();
 
     // string to string comparison
-    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
+    if (is_string_type(rhs.type_) || is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
 
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs < other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
       result = lhs < other;
     }
   }
@@ -663,93 +694,94 @@ KnowledgeRecord::operator< (
   return result != 0;
 }
 
-bool
-KnowledgeRecord::operator<= (
-  const knowledge::KnowledgeRecord & rhs) const
+bool KnowledgeRecord::operator<=(const knowledge::KnowledgeRecord& rhs) const
 {
-  if (has_history ()) {
-    return ref_newest ().operator<= (rhs);
+  if (has_history())
+  {
+    return (rhs.buf_->empty() ? KnowledgeRecord{} : ref_newest())
+        .
+        operator<=(rhs);
   }
 
-  if (rhs.has_history ()) {
-    return operator<= (rhs.ref_newest ());
+  if (rhs.has_history())
+  {
+    return operator<=(rhs.buf_->empty() ? KnowledgeRecord{} : rhs.ref_newest());
   }
 
-  Integer result (0);
+  Integer result(0);
 
   // if the left hand side is an integer
-  if (is_integer_type (type_))
+  if (is_integer_type(type_))
   {
-    Integer lhs = this->to_integer ();
+    Integer lhs = this->to_integer();
 
-    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
+    if (is_double_type(rhs.type_) || is_string_type(rhs.type_))
     {
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs <= other;
     }
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs <= other;
     }
   }
 
   // if the left hand side is a string
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
     // string to string comparison
-    if      (is_string_type (rhs.type_))
+    if (is_string_type(rhs.type_))
     {
-      result = 
-        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
-        size () >= rhs.size () ? size () : rhs.size ()) <= 0;
+      result = strncmp(str_value_->c_str(), rhs.str_value_->c_str(),
+                   size() >= rhs.size() ? size() : rhs.size()) <= 0;
     }
 
     // string to double comparison
-    else if (is_double_type (rhs.type_))
+    else if (is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      double temp = to_double ();
-      double other = rhs.to_double ();
+      double temp = to_double();
+      double other = rhs.to_double();
 
       result = temp <= other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      Integer temp = to_integer ();
-      Integer other = rhs.to_integer ();
+      Integer temp = to_integer();
+      Integer other = rhs.to_integer();
 
       result = temp <= other;
     }
   }
 
   // if the left hand side is a double
-  else if (is_double_type (type_))
+  else if (is_double_type(type_))
   {
-    double lhs = to_double ();
+    double lhs = to_double();
 
     // string to string comparison
-    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
+    if (is_string_type(rhs.type_) || is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
 
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs <= other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
       result = lhs <= other;
     }
   }
@@ -757,83 +789,85 @@ KnowledgeRecord::operator<= (
   return result != 0;
 }
 
-bool
-KnowledgeRecord::operator== (
-  const knowledge::KnowledgeRecord & rhs) const
+bool KnowledgeRecord::operator==(const knowledge::KnowledgeRecord& rhs) const
 {
-  if (has_history ()) {
-    return ref_newest ().operator== (rhs);
-  }
-
-  if (rhs.has_history ()) {
-    return operator== (rhs.ref_newest ());
-  }
-
-  Integer result (0);
-
-  // if left hand side does 
-  if (!exists ())
+  if (has_history())
   {
-    if (!rhs.exists () || rhs.is_false ())
+    return (rhs.buf_->empty() ? KnowledgeRecord{} : ref_newest())
+        .
+        operator==(rhs);
+  }
+
+  if (rhs.has_history())
+  {
+    return operator==(rhs.buf_->empty() ? KnowledgeRecord{} : rhs.ref_newest());
+  }
+
+  Integer result(0);
+
+  // if left hand side does
+  if (!exists())
+  {
+    if (!rhs.exists() || rhs.is_false())
     {
       result = 1;
     }
   }
 
   // if the left hand side is an integer
-  else if (is_integer_type (type_))
+  else if (is_integer_type(type_))
   {
-    if (is_double_type (rhs.type_))
+    if (is_double_type(rhs.type_))
     {
-      result = to_double () == rhs.to_double ();
+      result = to_double() == rhs.to_double();
     }
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      result = to_integer () == rhs.to_integer ();
+      result = to_integer() == rhs.to_integer();
     }
-    else if (is_string_type (rhs.type_))
+    else if (is_string_type(rhs.type_))
     {
-      if (rhs.size () > 0 && rhs.str_value_->at (0) >= '0' &&
-        rhs.str_value_->at (0) <= '9')
+      if (rhs.size() > 0 && rhs.str_value_->at(0) >= '0' &&
+          rhs.str_value_->at(0) <= '9')
       {
-        result = to_double () == rhs.to_double ();
+        result = to_double() == rhs.to_double();
       }
-      else result = 0;
+      else
+        result = 0;
     }
   }
 
   // if the left hand side is a string
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
     // string to string comparison
-    if      (is_string_type (rhs.type_))
+    if (is_string_type(rhs.type_))
     {
-      result = 
-        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
-        size () >= rhs.size () ? size () : rhs.size ()) == 0;
+      result = strncmp(str_value_->c_str(), rhs.str_value_->c_str(),
+                   size() >= rhs.size() ? size() : rhs.size()) == 0;
     }
 
     // string to double comparison
-    else if (is_double_type (rhs.type_))
+    else if (is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      result = to_double () == rhs.to_double ();
+      result = to_double() == rhs.to_double();
     }
 
     // check if right hand side is uncreated
-    else if (!rhs.exists ())
+    else if (!rhs.exists())
     {
-      result = is_false ();
+      result = is_false();
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      if (size () > 0 && this->str_value_->at (0) >= '0' &&
-        this->str_value_->at (0) <= '9')
+      if (size() > 0 && this->str_value_->at(0) >= '0' &&
+          this->str_value_->at(0) <= '9')
       {
-        result = to_double () == rhs.to_double ();
+        result = to_double() == rhs.to_double();
       }
       else
       {
@@ -843,25 +877,25 @@ KnowledgeRecord::operator== (
   }
 
   // if the left hand side is a double
-  else if (is_double_type (type_))
+  else if (is_double_type(type_))
   {
-    double lhs = to_double ();
+    double lhs = to_double();
 
     // string to string comparison
-    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
+    if (is_string_type(rhs.type_) || is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
 
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs == other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs == other;
     }
@@ -870,93 +904,94 @@ KnowledgeRecord::operator== (
   return result != 0;
 }
 
-bool
-KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
+bool KnowledgeRecord::operator>(const knowledge::KnowledgeRecord& rhs) const
 {
-  if (has_history ()) {
-    return ref_newest ().operator> (rhs);
+  if (has_history())
+  {
+    return (rhs.buf_->empty() ? KnowledgeRecord{} : ref_newest())
+        .
+        operator>(rhs);
   }
 
-  if (rhs.has_history ()) {
-    return operator> (rhs.ref_newest ());
+  if (rhs.has_history())
+  {
+    return operator>(rhs.buf_->empty() ? KnowledgeRecord{} : rhs.ref_newest());
   }
 
-  Integer result (0);
+  Integer result(0);
 
   // if the left hand side is an integer
-  if (is_integer_type (type_))
+  if (is_integer_type(type_))
   {
-    Integer lhs = this->to_integer ();
+    Integer lhs = this->to_integer();
 
-    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
+    if (is_double_type(rhs.type_) || is_string_type(rhs.type_))
     {
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs > other;
     }
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs > other;
     }
   }
 
-
   // if the left hand side is a string
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
     // string to string comparison
-    if      (is_string_type (rhs.type_))
+    if (is_string_type(rhs.type_))
     {
-      result = 
-        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
-        size () >= rhs.size () ? size () : rhs.size ()) > 0;
+      result = strncmp(str_value_->c_str(), rhs.str_value_->c_str(),
+                   size() >= rhs.size() ? size() : rhs.size()) > 0;
     }
 
     // string to double comparison
-    else if (is_double_type (rhs.type_))
+    else if (is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      double lhs = to_double ();
-      double other = rhs.to_double ();
+      double lhs = to_double();
+      double other = rhs.to_double();
 
       result = lhs > other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      Integer lhs = to_integer ();
-      Integer other = rhs.to_integer ();
+      Integer lhs = to_integer();
+      Integer other = rhs.to_integer();
 
       result = lhs > other;
     }
   }
 
   // if the left hand side is a double
-  else if (is_double_type (type_))
+  else if (is_double_type(type_))
   {
-    double lhs = to_double ();
+    double lhs = to_double();
 
     // string to string comparison
-    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
+    if (is_string_type(rhs.type_) || is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
 
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs > other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs > other;
     }
@@ -965,93 +1000,94 @@ KnowledgeRecord::operator> (const knowledge::KnowledgeRecord & rhs) const
   return result != 0;
 }
 
-bool
-KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
+bool KnowledgeRecord::operator>=(const knowledge::KnowledgeRecord& rhs) const
 {
-  if (has_history ()) {
-    return ref_newest ().operator>= (rhs);
+  if (has_history())
+  {
+    return (rhs.buf_->empty() ? KnowledgeRecord{} : ref_newest())
+        .
+        operator>=(rhs);
   }
 
-  if (rhs.has_history ()) {
-    return operator>= (rhs.ref_newest ());
+  if (rhs.has_history())
+  {
+    return operator>=(rhs.buf_->empty() ? KnowledgeRecord{} : rhs.ref_newest());
   }
 
-  Integer result (0);
+  Integer result(0);
 
   // if the left hand side is an integer
-  if (is_integer_type (type_))
+  if (is_integer_type(type_))
   {
-    Integer lhs = this->to_integer ();
+    Integer lhs = this->to_integer();
 
-    if (is_double_type (rhs.type_) || is_string_type (rhs.type_))
+    if (is_double_type(rhs.type_) || is_string_type(rhs.type_))
     {
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs >= other;
     }
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs >= other;
     }
   }
 
-
   // if the left hand side is a string
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
     // string to string comparison
-    if      (is_string_type (rhs.type_))
+    if (is_string_type(rhs.type_))
     {
-      result =
-        strncmp (str_value_->c_str (), rhs.str_value_->c_str (), 
-        size () >= rhs.size () ? size () : rhs.size ()) >= 0;
+      result = strncmp(str_value_->c_str(), rhs.str_value_->c_str(),
+                   size() >= rhs.size() ? size() : rhs.size()) >= 0;
     }
 
     // string to double comparison
-    else if (is_double_type (rhs.type_))
+    else if (is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      double lhs = to_double ();
-      double other = rhs.to_double ();
+      double lhs = to_double();
+      double other = rhs.to_double();
 
       result = lhs >= other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
-      Integer lhs = to_integer ();
-      Integer other = rhs.to_integer ();
+      Integer lhs = to_integer();
+      Integer other = rhs.to_integer();
 
       result = lhs >= other;
     }
   }
 
   // if the left hand side is a double
-  else if (is_double_type (type_))
+  else if (is_double_type(type_))
   {
-    double lhs = to_double ();
+    double lhs = to_double();
 
     // string to string comparison
-    if      (is_string_type (rhs.type_) || is_double_type (rhs.type_))
+    if (is_string_type(rhs.type_) || is_double_type(rhs.type_))
     {
       // when comparing strings to anything else, convert the
       // value into a double for maximum precision
 
-      double other = rhs.to_double ();
+      double other = rhs.to_double();
 
       result = lhs >= other;
     }
 
     // default is string to integer comparison
-    else if (is_integer_type (rhs.type_))
+    else if (is_integer_type(rhs.type_))
     {
-      Integer other = rhs.to_integer ();
+      Integer other = rhs.to_integer();
 
       result = lhs >= other;
     }
@@ -1060,109 +1096,110 @@ KnowledgeRecord::operator>= (const knowledge::KnowledgeRecord & rhs) const
   return result != 0;
 }
 
-
-KnowledgeRecord
-KnowledgeRecord::retrieve_index (size_t index) const
+KnowledgeRecord KnowledgeRecord::retrieve_index(size_t index) const
 {
   knowledge::KnowledgeRecord ret_value;
 
   if (type_ == INTEGER_ARRAY)
   {
-    if (index < size_t (int_array_->size ()))
-      ret_value.set_value (int_array_->at (index));
+    if (index < size_t(int_array_->size()))
+      ret_value.set_value(int_array_->at(index));
   }
   else if (type_ == DOUBLE_ARRAY)
   {
-    if (index < size_t (double_array_-> size ()))
-      ret_value.set_value (double_array_->at (index));
+    if (index < size_t(double_array_->size()))
+      ret_value.set_value(double_array_->at(index));
   }
-  else if (has_history ())
+  else if (has_history() && !buf_->empty())
   {
-    return ref_newest ().retrieve_index (index);
+    return ref_newest().retrieve_index(index);
   }
 
   return ret_value;
 }
 
-KnowledgeRecord 
-KnowledgeRecord::dec_index (size_t index)
+KnowledgeRecord KnowledgeRecord::dec_index(size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
     unshare();
 
-    if (double_array_->size () <= index) {
-      double_array_->resize (index + 1);
+    if (double_array_->size() <= index)
+    {
+      double_array_->resize(index + 1);
     }
-    return knowledge::KnowledgeRecord(--double_array_->at (index));
+    return knowledge::KnowledgeRecord(--double_array_->at(index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
     unshare();
 
-    if (int_array_->size () <= index) {
-      int_array_->resize (index + 1);
+    if (int_array_->size() <= index)
+    {
+      int_array_->resize(index + 1);
     }
-    return knowledge::KnowledgeRecord(--int_array_->at (index));
+    return knowledge::KnowledgeRecord(--int_array_->at(index));
   }
-  else if (has_history ())
+  else if (has_history())
   {
-    KnowledgeRecord tmp = get_newest ();
-    tmp.dec_index (index);
-    set_value (tmp);
+    KnowledgeRecord tmp = get_newest();
+    tmp.dec_index(index);
+    set_value(tmp);
     return tmp;
   }
   std::vector<Integer> tmp(index + 1);
-  emplace_integers (std::move(tmp));
-  return knowledge::KnowledgeRecord(--int_array_->at (index));
+  emplace_integers(std::move(tmp));
+  return knowledge::KnowledgeRecord(--int_array_->at(index));
 }
 
-KnowledgeRecord 
-KnowledgeRecord::inc_index (size_t index)
+KnowledgeRecord KnowledgeRecord::inc_index(size_t index)
 {
   if (type_ == DOUBLE_ARRAY)
   {
     unshare();
 
-    if (double_array_->size () <= index) {
-      double_array_->resize (index + 1);
+    if (double_array_->size() <= index)
+    {
+      double_array_->resize(index + 1);
     }
-    return knowledge::KnowledgeRecord(++double_array_->at (index));
+    return knowledge::KnowledgeRecord(++double_array_->at(index));
   }
   else if (type_ == INTEGER_ARRAY)
   {
     unshare();
 
-    if (int_array_->size () <= index) {
-      int_array_->resize (index + 1);
+    if (int_array_->size() <= index)
+    {
+      int_array_->resize(index + 1);
     }
-    return knowledge::KnowledgeRecord(++int_array_->at (index));
+    return knowledge::KnowledgeRecord(++int_array_->at(index));
   }
-  else if (has_history ())
+  else if (has_history())
   {
-    KnowledgeRecord tmp = get_newest ();
-    tmp.inc_index (index);
-    set_value (tmp);
+    KnowledgeRecord tmp = get_newest();
+    tmp.inc_index(index);
+    set_value(tmp);
     return tmp;
   }
   std::vector<Integer> tmp(index + 1);
-  emplace_integers (std::move(tmp));
-  return knowledge::KnowledgeRecord(++int_array_->at (index));
+  emplace_integers(std::move(tmp));
+  return knowledge::KnowledgeRecord(++int_array_->at(index));
 }
 
-void
-KnowledgeRecord::resize (size_t new_size)
+void KnowledgeRecord::resize(size_t new_size)
 {
-  if (has_history ()) {
-    KnowledgeRecord tmp = get_newest ();
-    tmp.resize (new_size);
-    set_value (std::move(tmp));
+  if (has_history())
+  {
+    KnowledgeRecord tmp = get_newest();
+    tmp.resize(new_size);
+    set_value(std::move(tmp));
     return;
   }
 
-  size_t cur_size = size ();
+  size_t cur_size = size();
 
-  if (cur_size == new_size) {
+  if (cur_size == new_size)
+  {
     return;
   }
 
@@ -1170,46 +1207,51 @@ KnowledgeRecord::resize (size_t new_size)
 
   if (new_size > cur_size)
   {
-    if (type_ == EMPTY ||
-        type_ == INTEGER)
+    if (!exists() || type_ == INTEGER)
     {
-      Integer zero (0);
-      set_index (new_size - 1, zero);
+      Integer zero(0);
+      set_index(new_size - 1, zero);
       return;
     }
     else if (type_ == DOUBLE)
     {
-      double zero (0.0);
-      set_index (new_size - 1, zero);
+      double zero(0.0);
+      set_index(new_size - 1, zero);
       return;
     }
   }
-  if (type_ == INTEGER_ARRAY) {
-    int_array_->resize (new_size);
-  } else if (type_ == DOUBLE_ARRAY) {
-    double_array_->resize (new_size);
-  } else if (is_string_type (type_)) {
-    str_value_->resize (new_size);
-  } else if (is_binary_file_type (type_)) {
-    file_value_->resize (new_size);
+  if (type_ == INTEGER_ARRAY)
+  {
+    int_array_->resize(new_size);
+  }
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    double_array_->resize(new_size);
+  }
+  else if (is_string_type(type_))
+  {
+    str_value_->resize(new_size);
+  }
+  else if (is_binary_file_type(type_))
+  {
+    file_value_->resize(new_size);
   }
 }
 
-int
-  KnowledgeRecord::apply (
-  ThreadSafeContext & context,
-  const std::string & key, unsigned int /*quality*/, uint64_t /*clock*/,
-  bool perform_lock)
+int KnowledgeRecord::apply(ThreadSafeContext& context, const std::string& key,
+    unsigned int /*quality*/, uint64_t /*clock*/, bool perform_lock)
 {
   int result = -1;
 
-  if (key.length () > 0)
+  if (key.length() > 0)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::apply:" \
-      " attempting to set %s=%s\n", key.c_str (), to_string ().c_str ());
+    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        "KnowledgeRecord::apply:"
+        " attempting to set %s=%s\n",
+        key.c_str(), to_string().c_str());
 
     if (perform_lock)
-      context.lock ();
+      context.lock();
 
     // if the data we are updating had a lower clock value or less quality
     // then that means this update is the latest value. Among
@@ -1220,85 +1262,90 @@ int
     // then that means this update is the latest value. Among
     // other things, this means our solution will work even
     // without FIFO channel transports
-    result = context.update_record_from_external (key, *this, 
-      knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND);
+    result = context.update_record_from_external(key, *this,
+        knowledge::KnowledgeUpdateSettings::GLOBAL_AS_LOCAL_NO_EXPAND);
 
     if (perform_lock)
     {
-      context.unlock ();
-      context.set_changed ();
+      context.unlock();
+      context.set_changed();
     }
 
     // if we actually updated the value
     if (result == 1)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::apply:" \
-        " received data[%s]=%s.\n",
-        key.c_str (), to_string ().c_str ());
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "KnowledgeRecord::apply:"
+          " received data[%s]=%s.\n",
+          key.c_str(), to_string().c_str());
     }
     // if the data was already current
     else if (result == 0)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::apply:" \
-        " discarded data[%s]=%s as the value was already set.\n",
-        key.c_str (), to_string ().c_str ());
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "KnowledgeRecord::apply:"
+          " discarded data[%s]=%s as the value was already set.\n",
+          key.c_str(), to_string().c_str());
     }
     else if (result == -1)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::apply:" \
-        " discarded data due to null key.\n");
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "KnowledgeRecord::apply:"
+          " discarded data due to null key.\n");
     }
     else if (result == -2)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::apply:" \
-        " discarded data[%s]=%s due to lower quality.\n",
-        key.c_str (), to_string ().c_str ());
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "KnowledgeRecord::apply:"
+          " discarded data[%s]=%s due to lower quality.\n",
+          key.c_str(), to_string().c_str());
     }
     else if (result == -3)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR, "KnowledgeRecord::apply:" \
-        " discarded data[%s]=%" PRId64 " due to older timestamp.\n",
-        key.c_str (), to_string ().c_str ());
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "KnowledgeRecord::apply:"
+          " discarded data[%s]=%" PRId64 " due to older timestamp.\n",
+          key.c_str(), to_string().c_str());
     }
   }
   return result;
 }
 
-bool
-KnowledgeRecord::is_true (void) const
+bool KnowledgeRecord::is_true(void) const
 {
-  madara_logger_ptr_log (logger_, logger::LOG_MAJOR, "KnowledgeRecord::apply:" \
-    " checking if record is non-zero.\n");
+  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+      "KnowledgeRecord::apply:"
+      " checking if record is non-zero.\n");
 
-  if (is_integer_type (type_))
-    return to_integer () != 0;
-  else if (is_double_type (type_))
+  if (is_integer_type(type_))
+    return to_integer() != 0;
+  else if (is_double_type(type_))
   {
-    double value = to_double ();
+    double value = to_double();
     return value < 0 || value > 0;
   }
-  else if (is_string_type (type_))
+  else if (is_string_type(type_))
   {
-    return str_value_->size () >= 1;
+    return str_value_->size() >= 1;
   }
-  else if (is_binary_file_type (type_))
+  else if (is_binary_file_type(type_))
   {
-    return file_value_->size () >= 1;
+    return file_value_->size() >= 1;
   }
-  else if (is_any_type (type_))
+  else if (is_any_type(type_))
   {
-    return !any_value_->empty ();
+    return !any_value_->empty();
   }
-  else if (has_history ())
+  else if (has_history())
   {
-    return ref_newest ().is_true();
+    return !buf_->empty() && ref_newest().is_true();
   }
   else
   {
     return false;
   }
 }
+}
+}
 
-} }
-
-#endif   // _KNOWLEDGE_RECORD_CPP_
+#endif  // _KNOWLEDGE_RECORD_CPP_

@@ -10,10 +10,10 @@
 
 namespace madara
 {
-  namespace exceptions
-  {
-    class BadAnyAccess;
-  }
+namespace exceptions
+{
+class BadAnyAccess;
+}
 }
 
 #endif /* _MADARA_EXCEPTIONS_BADANYACCESS_H_ */

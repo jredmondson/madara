@@ -10,22 +10,21 @@
 
 namespace logger = madara::logger;
 
-
-std::string host ("");
-const std::string default_host1 ("127.0.0.1:43110");
-const std::string default_host2 ("127.0.0.1:43111");
+std::string host("");
+const std::string default_host1("127.0.0.1:43110");
+const std::string default_host2("127.0.0.1:43111");
 madara::transport::QoSTransportSettings settings;
 
-void handle_arguments (int argc, char ** argv)
+void handle_arguments(int argc, char** argv)
 {
   for (int i = 1; i < argc; ++i)
   {
-    std::string arg1 (argv[i]);
+    std::string arg1(argv[i]);
 
     if (arg1 == "-a" || arg1 == "--address")
     {
       if (i + 1 < argc)
-        settings.hosts.push_back (argv[i + 1]);
+        settings.hosts.push_back(argv[i + 1]);
 
       ++i;
     }
@@ -47,7 +46,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
@@ -57,7 +56,7 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        logger::global_logger->add_file (argv[i + 1]);
+        logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
@@ -66,10 +65,10 @@ void handle_arguments (int argc, char ** argv)
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
-        logger::global_logger->set_level (level);
+        logger::global_logger->set_level(level);
       }
 
       ++i;
@@ -79,11 +78,11 @@ void handle_arguments (int argc, char ** argv)
       if (i + 1 < argc)
       {
         double drop_rate;
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> drop_rate;
-        
-        settings.update_drop_rate (drop_rate,
-          madara::transport::PACKET_DROP_DETERMINISTIC);
+
+        settings.update_drop_rate(
+            drop_rate, madara::transport::PACKET_DROP_DETERMINISTIC);
       }
 
       ++i;
@@ -94,39 +93,42 @@ void handle_arguments (int argc, char ** argv)
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-        "\nProgram summary for %s:\n\n" \
-        "  Test the UDP transport. Requires 2+ processes. The result of\n" \
-        "  running these processes should be that each process reports\n" \
-        "  var2 and var3 being set to 1.\n\n" \
-        " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-a|--address ip:port]   add a udp ip:port to send to (first add is self ip:port)\n" \
-        " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        " [-i|--id id]             the id of this agent (should be non-negative)\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        " [-f|--logfile file]      log to a file\n" \
-        " [-r|--reduced]           use the reduced message header\n" \
-        "\n",
-        argv[0]);
-      exit (0);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "  Test the UDP transport. Requires 2+ processes. The result of\n"
+          "  running these processes should be that each process reports\n"
+          "  var2 and var3 being set to 1.\n\n"
+          " [-o|--host hostname]     the hostname of this process "
+          "(def:localhost)\n"
+          " [-a|--address ip:port]   add a udp ip:port to send to (first add "
+          "is self ip:port)\n"
+          " [-d|--domain domain]     the knowledge domain to send and listen "
+          "to\n"
+          " [-i|--id id]             the id of this agent (should be "
+          "non-negative)\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          " [-f|--logfile file]      log to a file\n"
+          " [-r|--reduced]           use the reduced message header\n"
+          "\n",
+          argv[0]);
+      exit(0);
     }
   }
 }
 
-
-
-int main (int argc, char ** argv)
+int main(int argc, char** argv)
 {
-  handle_arguments (argc, argv);
-  
+  handle_arguments(argc, argv);
+
 #ifndef _MADARA_NO_KARL_
   // if the user wants us to do defaults for either host1 or 2
-  if (settings.hosts.size () < 2)
+  if (settings.hosts.size() < 2)
   {
-    size_t cur_size = settings.hosts.size ();
+    size_t cur_size = settings.hosts.size();
 
-    settings.hosts.resize (2);
-    
+    settings.hosts.resize(2);
+
     // if we are id 0, use host1 as our ip
     if (settings.id == 0)
     {
@@ -156,36 +158,34 @@ int main (int argc, char ** argv)
   wait_settings.max_wait_time = 10;
   wait_settings.delay_sending_modifieds = false;
 
-  madara::knowledge::KnowledgeBase knowledge (host, settings);
+  madara::knowledge::KnowledgeBase knowledge(host, settings);
 
-  knowledge.set (".id",
-    (madara::knowledge::KnowledgeRecord::Integer) settings.id, wait_settings);
+  knowledge.set(".id", (madara::knowledge::KnowledgeRecord::Integer)settings.id,
+      wait_settings);
 
   if (settings.id == 0)
   {
-    madara::knowledge::CompiledExpression compiled = 
-      knowledge.compile (
-        "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3"
-      );
+    madara::knowledge::CompiledExpression compiled = knowledge.compile(
+        "(var2 = 1) ;> (var1 = 0) ;> (var4 = -2.0/3) ;> var3");
 
-    knowledge.wait (compiled, wait_settings);
+    knowledge.wait(compiled, wait_settings);
   }
   else
   {
-    madara::knowledge::CompiledExpression compiled = 
-      knowledge.compile ("!var1 && var2 => var3 = 1");
+    madara::knowledge::CompiledExpression compiled =
+        knowledge.compile("!var1 && var2 => var3 = 1");
 
-    knowledge.wait (compiled, wait_settings);
+    knowledge.wait(compiled, wait_settings);
   }
-  
-  knowledge.evaluate (".updates_required = #get_clock ()",
-    madara::knowledge::EvalSettings::SEND);
 
-  knowledge.print ();
-  
+  knowledge.evaluate(".updates_required = #get_clock ()",
+      madara::knowledge::EvalSettings::SEND);
+
+  knowledge.print();
+
 #else
-  madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS,
-    "This test is disabled due to karl feature being disabled.\n");
+  madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+      "This test is disabled due to karl feature being disabled.\n");
 #endif
   return 0;
 }

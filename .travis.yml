@@ -26,7 +26,9 @@ env:
 
 matrix:
   allow_failures:
-    - env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+    #- env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+    - env: NAME="Ubuntu 14.04 android" ANDROID="android" SSL="ssl" TESTS=""
+    - env: NAME="Ubuntu 14.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
   include:
       ################MAC#####################
 
@@ -48,11 +50,11 @@ matrix:
       os: osx
       osx_image: xcode9.3
 
-      # clang, osx, zeromq
-    - compiler: clang
-      env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-      os: osx
-      osx_image: xcode9.3
+    # ICEBOXED: clang, osx, zeromq
+    #- compiler: clang
+    #  env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
+    #  os: osx
+    #  osx_image: xcode9.3
 
       # clang, osx, simtime
     - compiler: clang

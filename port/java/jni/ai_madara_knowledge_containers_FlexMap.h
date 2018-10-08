@@ -14,8 +14,7 @@ extern "C" {
  * Signature: ()J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__
-  (JNIEnv *, jobject);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__(JNIEnv*, jobject);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -23,8 +22,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__J
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__J(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -32,8 +31,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1FlexMap__J
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1freeFlexMap
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1freeFlexMap(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -41,8 +40,7 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1freeFlexMap
  * Signature: (JZ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1clear
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1clear(JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -50,8 +48,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1clear
  * Signature: (JLjava/lang/String;)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1erase
-  (JNIEnv *, jobject, jlong, jstring);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1erase(
+    JNIEnv*, jobject, jlong, jstring);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -59,8 +57,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1erase
  * Signature: (JLjava/lang/String;)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1setString
-  (JNIEnv *, jobject, jlong, jstring);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1setString(
+    JNIEnv*, jobject, jlong, jstring);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -68,17 +66,16 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setString
  * Signature: (JD)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1setDouble
-  (JNIEnv *, jobject, jlong, jdouble);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1setDouble(
+    JNIEnv*, jobject, jlong, jdouble);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
  * Method:    jni_set
  * Signature: (JJJ)V
  */
-MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1set
-  (JNIEnv *, jobject, jlong, jlong, jlong);
+MADARA_EXPORT void JNICALL Java_ai_madara_knowledge_containers_FlexMap_jni_1set(
+    JNIEnv*, jobject, jlong, jlong, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -86,8 +83,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1set
  * Signature: (J)Ljava/lang/String;
  */
 MADARA_EXPORT jstring JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1getName
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1getName(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -95,8 +92,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1getName
  * Signature: (JJJLjava/lang/String;)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1setName
-  (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1setName(
+    JNIEnv*, jobject, jlong, jlong, jlong, jstring);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -104,17 +101,17 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1setName
  * Signature: (JLjava/lang/String;)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1get
-  (JNIEnv *, jobject, jlong, jstring);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1get(
+    JNIEnv*, jobject, jlong, jstring);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_getIndex
-* Signature: (JI)J
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_getIndex
+ * Signature: (JI)J
+ */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1getIndex
-(JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1getIndex(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -122,8 +119,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1getIndex
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1toRecord
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1toRecord(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -131,8 +128,8 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1toRecord
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1modify
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1modify(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_FlexMap
@@ -140,64 +137,62 @@ Java_ai_madara_knowledge_containers_FlexMap_jni_1modify
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1toMapContainer
-  (JNIEnv *, jobject, jlong);
-
+Java_ai_madara_knowledge_containers_FlexMap_jni_1toMapContainer(
+    JNIEnv*, jobject, jlong);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_getDelimiter
-* Signature: (J)Ljava/lang/String;
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_getDelimiter
+ * Signature: (J)Ljava/lang/String;
+ */
 MADARA_EXPORT jstring JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1getDelimiter
-(JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1getDelimiter(
+    JNIEnv*, jobject, jlong);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_setDelimiter
-* Signature: (JLjava/lang/String;)V
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_setDelimiter
+ * Signature: (JLjava/lang/String;)V
+ */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1setDelimiter
-(JNIEnv *, jobject, jlong, jstring);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1setDelimiter(
+    JNIEnv*, jobject, jlong, jstring);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_keys
-* Signature: (JZ)[Ljava/lang/String;
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_keys
+ * Signature: (JZ)[Ljava/lang/String;
+ */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1keys
-(JNIEnv *, jobject, jlong, jboolean);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1keys(
+    JNIEnv*, jobject, jlong, jboolean);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_setSettings
-* Signature: (JJ)V
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_setSettings
+ * Signature: (JJ)V
+ */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1setSettings
-(JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1setSettings(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_isTrue
-* Signature: (J)Z
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_isTrue
+ * Signature: (J)Z
+ */
 MADARA_EXPORT jboolean JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1isTrue
-(JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_FlexMap_jni_1isTrue(
+    JNIEnv*, jobject, jlong);
 
 /*
-* Class:     ai_madara_knowledge_containers_FlexMap
-* Method:    jni_isFalse
-* Signature: (J)Z
-*/
+ * Class:     ai_madara_knowledge_containers_FlexMap
+ * Method:    jni_isFalse
+ * Signature: (J)Z
+ */
 MADARA_EXPORT jboolean JNICALL
-Java_ai_madara_knowledge_containers_FlexMap_jni_1isFalse
-(JNIEnv *, jobject, jlong);
-
+Java_ai_madara_knowledge_containers_FlexMap_jni_1isFalse(
+    JNIEnv*, jobject, jlong);
 
 #ifdef __cplusplus
 }

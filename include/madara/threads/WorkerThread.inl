@@ -10,14 +10,13 @@
 
 #include "WorkerThread.h"
 
-namespace madara { namespace threads {
-
-inline void
-WorkerThread::change_frequency (
-  double hertz,
-  utility::TimeValue & current, utility::Duration & frequency,
-  utility::TimeValue & next_epoch,
-  bool & one_shot, bool & blaster)
+namespace madara
+{
+namespace threads
+{
+inline void WorkerThread::change_frequency(double hertz,
+    utility::TimeValue& current, utility::Duration& frequency,
+    utility::TimeValue& next_epoch, bool& one_shot, bool& blaster)
 {
   hertz_ = hertz;
 #ifndef MADARA_NO_THREAD_LOCAL
@@ -25,13 +24,14 @@ WorkerThread::change_frequency (
 #endif
   if (hertz_ > 0.0)
   {
-    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
-      "WorkerThread(%s)::svc:" \
-      " thread repeating at %f hz\n", name_.c_str (), hertz_);
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
+        "WorkerThread(%s)::svc:"
+        " thread repeating at %f hz\n",
+        name_.c_str(), hertz_);
 
     one_shot = false;
-    
-    frequency = utility::seconds_to_duration (1.0/hertz_);
+
+    frequency = utility::seconds_to_duration(1.0 / hertz_);
 
     next_epoch = current;
     next_epoch += frequency;
@@ -40,21 +40,23 @@ WorkerThread::change_frequency (
   {
     // infinite hertz until terminate
 
-    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
-      "WorkerThread(%s)::svc:" \
-      " thread blasting at infinite hz\n", name_.c_str ());
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
+        "WorkerThread(%s)::svc:"
+        " thread blasting at infinite hz\n",
+        name_.c_str());
 
     one_shot = false;
     blaster = true;
   }
   else
   {
-    madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_MAJOR,
-      "WorkerThread(%s)::svc:" \
-      " thread running once\n", name_.c_str ());
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
+        "WorkerThread(%s)::svc:"
+        " thread running once\n",
+        name_.c_str());
   }
 }
+}
+}
 
-} }
-
-#endif // _MADARA_THREADS_WORKER_THREAD_H_
+#endif  // _MADARA_THREADS_WORKER_THREAD_H_

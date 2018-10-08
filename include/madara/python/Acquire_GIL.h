@@ -15,30 +15,30 @@
 
 namespace madara
 {
-  namespace python
+namespace python
+{
+/**
+ * @class Acquire_GIL
+ * @brief This class encapsulates accessing the global interpreter lock
+ **/
+class Acquire_GIL
+{
+public:
+  Acquire_GIL()
   {
-    /**
-     * @class Acquire_GIL
-     * @brief This class encapsulates accessing the global interpreter lock
-     **/
-    class Acquire_GIL 
-    {
-    public:
-      Acquire_GIL ()
-      {
-        state_ = PyGILState_Ensure();
-      }
-
-      ~Acquire_GIL()
-      {
-        PyGILState_Release(state_);
-      }
-
-    private:
-      PyGILState_STATE state_;
-    };
+    state_ = PyGILState_Ensure();
   }
-}
-#endif // not defined _MADARA_PYTHON_ACQUIRE_GIL_H_
 
-#endif // defined _MADARA_PYTHON_CALLBACKS_
+  ~Acquire_GIL()
+  {
+    PyGILState_Release(state_);
+  }
+
+private:
+  PyGILState_STATE state_;
+};
+}
+}
+#endif  // not defined _MADARA_PYTHON_ACQUIRE_GIL_H_
+
+#endif  // defined _MADARA_PYTHON_CALLBACKS_

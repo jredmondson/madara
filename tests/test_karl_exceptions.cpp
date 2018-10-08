@@ -8,10 +8,11 @@
 namespace knowledge = madara::knowledge;
 namespace expression = madara::expression;
 namespace exceptions = madara::exceptions;
+namespace logger = madara::logger;
 
-int madara_fails (0);
+int madara_fails(0);
 
-void test_functions (void)
+void test_functions(void)
 {
   std::cerr << "#####################\n";
   std::cerr << "TESTING UNDEFINED FUNCTIONS\n";
@@ -21,30 +22,29 @@ void test_functions (void)
   std::cerr << "Testing undefined function: ";
   try
   {
-    knowledge.evaluate ("not_defined ()");
+    knowledge.evaluate("not_defined()");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 
-
   std::cerr << "Testing undefined system function: ";
   try
   {
-    knowledge.evaluate ("#not_defined ()");
+    knowledge.evaluate("#not_defined()");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 }
 
-void test_bad_operators (void)
+void test_bad_operators(void)
 {
   std::cerr << "#####################\n";
   std::cerr << "TESTING BAD OPERATORS\n";
@@ -54,11 +54,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=--: ";
   try
   {
-    knowledge.evaluate ("b=--");
+    knowledge.evaluate("b=--");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -66,11 +66,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=+: ";
   try
   {
-    knowledge.evaluate ("b=+");
+    knowledge.evaluate("b=+");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -78,11 +78,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=&&: ";
   try
   {
-    knowledge.evaluate ("b=&&");
+    knowledge.evaluate("b=&&");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -90,11 +90,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=||: ";
   try
   {
-    knowledge.evaluate ("b=||");
+    knowledge.evaluate("b=||");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -102,11 +102,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=*: ";
   try
   {
-    knowledge.evaluate ("b=*");
+    knowledge.evaluate("b=*");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -114,11 +114,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=%: ";
   try
   {
-    knowledge.evaluate ("b=%");
+    knowledge.evaluate("b=%");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -126,11 +126,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b=-: ";
   try
   {
-    knowledge.evaluate ("b=-");
+    knowledge.evaluate("b=-");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -138,11 +138,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b-=: ";
   try
   {
-    knowledge.evaluate ("b-=");
+    knowledge.evaluate("b-=");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -150,11 +150,11 @@ void test_bad_operators (void)
   std::cerr << "Testing b*=: ";
   try
   {
-    knowledge.evaluate ("b*=");
+    knowledge.evaluate("b*=");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -162,17 +162,17 @@ void test_bad_operators (void)
   std::cerr << "Testing b=0/: ";
   try
   {
-    knowledge.evaluate ("b=/");
+    knowledge.evaluate("b=/");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 }
 
-void test_nan (void)
+void test_nan(void)
 {
   std::cerr << "#####################\n";
   std::cerr << "TESTING NAN FUNCTIONS\n";
@@ -180,25 +180,25 @@ void test_nan (void)
   knowledge::KnowledgeBase knowledge;
 
   std::cerr << "Evaluating var1 = 1/0...\n";
-  knowledge.evaluate ("var1 = 1/0");
+  knowledge.evaluate("var1 = 1/0");
 
   std::cerr << "Evaluating var2 = var1/0...\n";
-  knowledge.evaluate ("var2 = var1/0");
+  knowledge.evaluate("var2 = var1/0");
 
   std::cerr << "Evaluating var3 = 1/var0...\n";
-  knowledge.evaluate ("var3 = 1/var0");
+  knowledge.evaluate("var3 = 1/var0");
 
-  std::cerr << "Evaluating var4 = #sqrt (-1)...\n";
-  knowledge.evaluate ("var4 = #sqrt (-1)");
+  std::cerr << "Evaluating var4 = #sqrt(-1)...\n";
+  knowledge.evaluate("var4 = #sqrt(-1)");
 
   std::cerr << "Evaluating var5 = nan...\n";
-  knowledge.evaluate ("var5 = nan");
+  knowledge.evaluate("var5 = nan");
 
   std::cerr << "Evaluating var6 = var5 != var5...\n";
-  knowledge.evaluate ("var6 = var5 != var5");
+  knowledge.evaluate("var6 = var5 != var5");
 
   std::cerr << "Testing divide by zero: ";
-  if (knowledge.get ("var1") != knowledge.get ("var1"))
+  if(knowledge.get("var1") != knowledge.get("var1"))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -209,7 +209,7 @@ void test_nan (void)
   }
 
   std::cerr << "Testing variable divide by zero: ";
-  if (knowledge.get ("var2") != knowledge.get ("var2"))
+  if(knowledge.get("var2") != knowledge.get("var2"))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -220,7 +220,7 @@ void test_nan (void)
   }
 
   std::cerr << "Testing divide by variable zero: ";
-  if (knowledge.get ("var3") != knowledge.get ("var3"))
+  if(knowledge.get("var3") != knowledge.get("var3"))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -231,7 +231,7 @@ void test_nan (void)
   }
 
   std::cerr << "Testing sqrt(-1): ";
-  if (knowledge.get ("var4") != knowledge.get ("var4"))
+  if(knowledge.get("var4") != knowledge.get("var4"))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -242,7 +242,7 @@ void test_nan (void)
   }
 
   std::cerr << "Testing assignment of nan: ";
-  if (knowledge.get ("var5") != knowledge.get ("var5"))
+  if(knowledge.get("var5") != knowledge.get("var5"))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -250,11 +250,11 @@ void test_nan (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "var5 = " << knowledge.get ("var5") << "\n";
+    std::cerr << "var5 = " << knowledge.get("var5") << "\n";
   }
 
-  std::cerr << "Testing nan check (var != var): ";
-  if (knowledge.get ("var6").is_true ())
+  std::cerr << "Testing nan check(var != var): ";
+  if(knowledge.get("var6").is_true())
   {
     std::cerr << "SUCCESS\n";
   }
@@ -262,24 +262,23 @@ void test_nan (void)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-    std::cerr << "var6 = " << knowledge.get ("var6") << "\n";
+    std::cerr << "var6 = " << knowledge.get("var6") << "\n";
   }
 
   try
   {
     std::cerr << "Testing array creation with nan var name: ";
-    knowledge.evaluate ("nan[3]");
+    knowledge.evaluate("nan[3]");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
-
 }
 
-void test_empty_assignment (void)
+void test_empty_assignment(void)
 {
   std::cerr << "#####################\n";
   std::cerr << "TESTING ASSIGNMENTS WITH NO LEFT-HAND VARS\n";
@@ -289,66 +288,66 @@ void test_empty_assignment (void)
 
   try
   {
-    std::cerr << "Testing assignment (-=): ";
-    knowledge.evaluate ("-= 5");
+    std::cerr << "Testing assignment(-=): ";
+    knowledge.evaluate("-= 5");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 
   try
   {
-    std::cerr << "Testing assignment (+=): ";
-    knowledge.evaluate ("+= 5");
+    std::cerr << "Testing assignment(+=): ";
+    knowledge.evaluate("+= 5");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 
   try
   {
-    std::cerr << "Testing assignment (*=): ";
-    knowledge.evaluate ("*= 5");
+    std::cerr << "Testing assignment(*=): ";
+    knowledge.evaluate("*= 5");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 
   try
   {
-    std::cerr << "Testing assignment (/=): ";
-    knowledge.evaluate ("/= 5");
+    std::cerr << "Testing assignment(/=): ";
+    knowledge.evaluate("/= 5");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 
   try
   {
-    std::cerr << "Testing assignment (=): ";
-    knowledge.evaluate ("= 5");
+    std::cerr << "Testing assignment(=): ";
+    knowledge.evaluate("= 5");
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
-  catch (exceptions::KarlException &)
+  catch(exceptions::KarlException&)
   {
     std::cerr << "SUCCESS\n";
   }
 }
 
-void test_min (void)
+void test_min(void)
 {
   knowledge::KnowledgeBase knowledge;
 
@@ -356,55 +355,202 @@ void test_min (void)
   std::cerr << "TESTING MIN/MAX INTEGERS\n";
   std::cerr << "#####################\n";
 
-  knowledge.set (".min_int", INT64_MIN);
-  knowledge.set (".max_int", INT64_MAX);
+  knowledge.set(".min_int", INT64_MIN);
+  knowledge.set(".max_int", INT64_MAX);
 
-  std::string karl_min = knowledge.expand_statement ("min_int = {.min_int}");
-  std::string karl_max = knowledge.expand_statement ("max_int = {.max_int}");
+  std::string karl_min = knowledge.expand_statement("min_int = {.min_int}");
+  std::string karl_max = knowledge.expand_statement("max_int = {.max_int}");
 
-  knowledge.evaluate (karl_min);
-  knowledge.evaluate (karl_max);
+  knowledge.evaluate(karl_min);
+  knowledge.evaluate(karl_max);
 
-  int64_t local_min = knowledge.get (".min_int").to_integer ();
-  int64_t local_max = knowledge.get (".max_int").to_integer ();
-  int64_t global_min = knowledge.get ("min_int").to_integer ();
-  int64_t global_max = knowledge.get ("max_int").to_integer ();
+  int64_t local_min = knowledge.get(".min_int").to_integer();
+  int64_t local_max = knowledge.get(".max_int").to_integer();
+  int64_t global_min = knowledge.get("min_int").to_integer();
+  int64_t global_max = knowledge.get("max_int").to_integer();
 
   std::cerr << "Testing " << karl_min << " evaluation: ";
-  
-  if (local_min == global_min)
+
+  if(local_min == global_min)
     std::cerr << "SUCCESS\n";
   else
   {
     std::cerr << "FAIL.";
     ++madara_fails;
-    std::cerr << " .min_int=" << local_min << ", " <<
-      "min_int=" << global_min << "\n";
+    std::cerr << " .min_int=" << local_min << ", "
+              << "min_int=" << global_min << "\n";
   }
 
   std::cerr << "Testing " << karl_max << " evaluation: ";
 
-  if (local_max == global_max)
+  if(local_max == global_max)
     std::cerr << "SUCCESS\n";
   else
   {
     std::cerr << "FAIL.";
     ++madara_fails;
-    std::cerr << " .max_int=" << local_max << ", " <<
-      "max_int=" << global_max << "\n";
+    std::cerr << " .max_int=" << local_max << ", "
+              << "max_int=" << global_max << "\n";
+  }
+}
+
+void test_unitialized(void)
+{
+  knowledge::KnowledgeBase kb;
+  knowledge::EvalSettings settings;
+  settings.exception_on_unitialized = true;
+
+  std::cerr << "##########################\n";
+  std::cerr << "TESTING UNINITIALIZED VARS\n";
+  std::cerr << "##########################\n";
+
+  // Attempting to set kb with normal eval settings
+  std::cerr << "Testing evaluate with default settings: ";
+  try
+  {
+    kb.evaluate("var1 = var2");
+    std::cerr << "SUCCESS\n";
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  
+  kb.clear();
+
+  // logger::global_logger->set_level (6);
+
+  // Attempting to set kb with exception eval settings
+  std::cerr << "Testing evaluate with exception settings: ";
+  try
+  {
+    kb.evaluate("var1 = var2", settings);
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  kb.clear();
+
+  // Attempting to set kb with exception eval settings
+  std::cerr << "Testing multi-part evaluate with exception settings: ";
+  try
+  {
+    kb.evaluate("var1 = 0; var2 = 0; var3 = var4; var4 = 4", settings);
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  kb.clear();
+
+  // Attempting to set kb with exception eval settings
+  std::cerr << "Testing array ref evaluate with exception settings: ";
+  try
+  {
+    kb.evaluate("var1 = var2[3]", settings);
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  kb.clear();
+
+  // Attempting to set kb with exception eval settings
+  std::cerr << "Testing multi-part evaluate with exception settings: ";
+  try
+  {
+    kb.evaluate("var1 = 3; var2 = var1; var3 = 4; var4 = var3", settings);
+    std::cerr << "SUCCESS\n";
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+  kb.clear();
+
+  // Attempting to get uninitialized with exception eval settings
+  std::cerr << "Testing get with default settings: ";
+  try
+  {
+    kb.get("var1");
+    std::cerr << "SUCCESS\n";
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+  kb.clear();
+
+  // Attempting to get uninitialized with exception eval settings
+  std::cerr << "Testing get with exception settings: ";
+  try
+  {
+    kb.get("var1", settings);
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "SUCCESS\n";
+  }
+
+  kb.clear();
+
+  // Attempting to get uninitialized with exception eval settings
+  std::cerr << "Testing retrieve_index with default settings: ";
+  try
+  {
+    kb.retrieve_index("var1", 1);
+    std::cerr << "SUCCESS\n";
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+
+  kb.clear();
+
+  // Attempting to get uninitialized with exception eval settings
+  std::cerr << "Testing retrieve_index with exception settings: ";
+  try
+  {
+    kb.retrieve_index("var1", 1, settings);
+    std::cerr << "FAIL\n";
+    ++madara_fails;
+  }
+  catch(exceptions::UninitializedException&)
+  {
+    std::cerr << "SUCCESS\n";
   }
 
 }
 
-int main (int, char **)
+int main(int, char**)
 {
-  test_functions ();
-  test_nan ();
-  test_min ();
-  test_empty_assignment ();
-  test_bad_operators ();
+  test_functions();
+  test_nan();
+  test_min();
+  test_empty_assignment();
+  test_bad_operators();
+  test_unitialized();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
@@ -415,4 +561,3 @@ int main (int, char **)
 
   return madara_fails;
 }
-

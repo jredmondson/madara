@@ -9,7 +9,7 @@ DEST_DIR=""
 SOURCE_DIR=""
 UNZIP=0
 NEEDS_FIX=0
-COMPRESS_LIST=""
+COMPRESS_LIST=()
 
 #while [ "$#" -gt 0 ];
 #do
@@ -131,27 +131,27 @@ else
   COMPRESS_LIST=${DEST_DIR}/datapackage.json
 
   if [ -d ${SOURCE_DIR}/bin ]; then
-    COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/bin"
+    COMPRESS_LIST+=("${SOURCE_DIR}/bin");
   fi
 
   if [ -d ${SOURCE_DIR}/data ]; then
-    COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/data"
+    COMPRESS_LIST+=("${SOURCE_DIR}/data");
   fi
 
   if [ -d ${SOURCE_DIR}/doc ]; then
-    COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/doc"
+    COMPRESS_LIST+=("${SOURCE_DIR}/doc");
   fi
 
   if [ -d ${SOURCE_DIR}/lib ]; then
-    COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/lib"
+    COMPRESS_LIST+=("${SOURCE_DIR}/lib");
   fi
 
   if [ -d ${SOURCE_DIR}/scripts ]; then
-    COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/scripts"
+    COMPRESS_LIST+=("${SOURCE_DIR}/scripts");
   fi
 
   if [ -d ${SOURCE_DIR}/src ]; then
-    COMPRESS_LIST="${COMPRESS_LIST} ${SOURCE_DIR}/src"
+    COMPRESS_LIST+=("${SOURCE_DIR}/src");
   fi
 
   IFS=" "
@@ -172,8 +172,8 @@ else
       FILE=${DEST_DIR}/${FILE}
     fi
 
-    echo "tar ${TAR_ARGS} ${FILE} ${COMPRESS_LIST}"
-    tar ${TAR_ARGS} ${FILE} ${COMPRESS_LIST} --exclude=1
+    echo "tar ${TAR_ARGS} ${FILE} ${COMPRESS_LIST[@]}"
+    tar ${TAR_ARGS} ${FILE} "${COMPRESS_LIST[@]}" </dev/null
   else
     if [ "$FILE" = "bundle" ]; then
       FILE="$FILE.gz"

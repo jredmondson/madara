@@ -8,234 +8,235 @@
 
 namespace madara
 {
-  namespace utility
+namespace utility
+{
+// Solve circular include problem via forward decls.
+template<typename T>
+class LStackNode;
+
+template<typename T>
+class LStackIterator;
+
+template<typename T>
+class LStackConstIterator;
+
+/**
+ * @class LStack
+ * @brief Defines a generic "last-in/first-out" (LIFO) Abstract Data
+ *        Type (ADT) using a stack that's implemented as a linked list.
+ */
+template<class T>
+class LStack
+{
+  friend class LStackIterator<T>;
+  friend class LStackConstIterator<T>;
+
+public:
+  // Define a "trait"
+  typedef T value_type;
+
+  /**
+   * @class Underflow
+   * @brief Exception thrown by methods in this class when an
+   *        underflow condition occurs.
+   */
+  class Underflow
   {
-    // Solve circular include problem via forward decls.
-    template <typename T>
-    class LStackNode;
+  };
 
-    template <typename T>
-    class LStackIterator;
+  /**
+   * @class Overflow.
+   * @brief Exception thrown by methods in this class when an overflow
+   *        condition occurs.
+   */
+  class Overflow
+  {
+  };
 
-    template <typename T>
-    class LStackConstIterator;
+  /// Constructor.
+  LStack(size_t size_hint = 0);
 
-    /**
-    * @class LStack
-    * @brief Defines a generic "last-in/first-out" (LIFO) Abstract Data
-    *        Type (ADT) using a stack that's implemented as a linked list.
-    */
-    template <class T> 
-    class LStack
-    {
-      friend class LStackIterator<T>;
-      friend class LStackConstIterator<T>;
-    public:
-      // Define a "trait"
-      typedef T value_type;
+  /// Copy constructor.
+  LStack(const LStack<T>& rhs);
 
-      /**
-      * @class Underflow
-      * @brief Exception thrown by methods in this class when an
-      *        underflow condition occurs. 
-      */
-      class Underflow {};
+  /// Assignment operator.
+  LStack<T>& operator=(const LStack<T>& rhs);
 
-      /**
-      * @class Overflow.
-      * @brief Exception thrown by methods in this class when an overflow
-      *        condition occurs.  
-      */
-      class Overflow {};
+  /// Perform actions needed when stack goes out of scope.
+  ~LStack(void);
 
-      /// Constructor.
-      LStack (size_t size_hint = 0);
+  /// Place a @a new_item at the tail of the stack.  Throws the @a
+  /// Overflow exception if the stack is full, e.g., if memory is
+  /// exhausted.
+  void push(const T& new_item);
 
-      /// Copy constructor.
-      LStack (const LStack<T> &rhs);
+  /// Remove and return the front item on the stack.  Throws the @a
+  /// Underflow exception if the stack is empty.
+  T pop(void);
 
-      /// Assignment operator.
-      LStack<T> &operator = (const LStack<T> &rhs);
+  /// Returns the front stack item without removing it.  Throws the @a
+  /// Underflow exception if the stack is empty.
+  T top(void) const;
 
-      /// Perform actions needed when stack goes out of scope. 
-      ~LStack (void);
+  /// Returns 1 if the stack is empty, otherwise returns 0.
+  bool is_empty(void) const;
 
-      /// Place a @a new_item at the tail of the stack.  Throws the @a
-      /// Overflow exception if the stack is full, e.g., if memory is
-      /// exhausted.
-      void push (const T &new_item);
+  /// Returns 1 if the stack is full, otherwise returns 0.
+  bool is_full(void) const;
 
-      /// Remove and return the front item on the stack.  Throws the @a
-      /// Underflow exception if the stack is empty.
-      T pop (void);
+  /// Returns the current number of elements in the stack.
+  size_t size(void) const;
 
-      /// Returns the front stack item without removing it.  Throws the @a
-      /// Underflow exception if the stack is empty.
-      T top (void) const;
+  /// Compare this stack with @a rhs for equality.  Returns true if
+  /// the size's of the two stacks are equal and all the elements from
+  /// 0 .. size() are equal, else false.
+  bool operator==(const LStack<T>& rhs) const;
 
-      /// Returns 1 if the stack is empty, otherwise returns 0. 
-      bool is_empty (void) const;
+  // Compare this stack with @a rhs for inequality such that @a
+  // *this!=s is always the complement of the boolean return value of
+  // @a *this==s.
+  bool operator!=(const LStack<T>& s) const;
 
-      /// Returns 1 if the stack is full, otherwise returns 0. 
-      bool is_full (void) const;
+  /// Delete all the nodes in the LStack.
+  void erase(void);
 
-      /// Returns the current number of elements in the stack.
-      size_t size (void) const;
+  typedef LStackIterator<T> iterator;
+  typedef LStackConstIterator<T> const_iterator;
 
-      /// Compare this stack with @a rhs for equality.  Returns true if
-      /// the size's of the two stacks are equal and all the elements from
-      /// 0 .. size() are equal, else false.
-      bool operator== (const LStack<T> &rhs) const;
+  /// Get an iterator that points to the beginning of the stack.
+  iterator begin(void);
 
-      // Compare this stack with @a rhs for inequality such that @a
-      // *this!=s is always the complement of the boolean return value of
-      // @a *this==s.
-      bool operator!= (const LStack<T> &s) const;
+  /// Get a const iterator that points to the beginning of the stack.
+  const_iterator begin(void) const;
 
-      /// Delete all the nodes in the LStack.
-      void erase (void);
+  /// Get an iterator that points to the end of the stack.
+  iterator end(void);
 
-      typedef LStackIterator<T> iterator;
-      typedef LStackConstIterator<T> const_iterator;
+  /// Get a const iterator that points to the end of the stack.
+  const_iterator end(void) const;
 
-      /// Get an iterator that points to the beginning of the stack.
-      iterator begin (void);
+protected:
+  /// Remove the front item on the stack.  does not throw exceptions.
+  void pop_i(void);
 
-      /// Get a const iterator that points to the beginning of the stack.
-      const_iterator begin (void) const;
+  /// Copy a linked list of nodes.  This can throw a bad_alloc
+  /// exception.
+  void copy_list(const LStack<T>& rhs);
 
-      /// Get an iterator that points to the end of the stack.
-      iterator end (void);
+  /// Delete a linked list of nodes.
+  void delete_list(void);
 
-      /// Get a const iterator that points to the end of the stack.
-      const_iterator end (void) const;
+private:
+  /// We only need to keep a single pointer for the circular linked
+  /// list.  This points to the tail of the stack.  Since the list is
+  /// circular, the head of the stack is always @a head_->next_.
+  LStackNode<T>* head_;
 
-    protected:
-      /// Remove the front item on the stack.  does not throw exceptions.
-      void pop_i (void);
+  /// Number of items that are currently in the stack.
+  size_t count_;
+};
 
-      /// Copy a linked list of nodes.  This can throw a bad_alloc
-      /// exception.
-      void copy_list (const LStack<T> &rhs);
+/**
+ * @class LStackIterator
+ * @brief Implements a forward iterator for LStack type classes.
+ *
+ * Note:  Having a const ExpressionTreeIterator does not guarantee that the
+ * current *position* that it points to will not change, it only guarantees that
+ * you cannot change the underlying stack!
+ */
+template<typename T>
+class LStackIterator
+{
+public:
+  /// Construct an LStackIterator at position pos.
+  LStackIterator(LStack<T>& stack, size_t pos = 0);
 
-      /// Delete a linked list of nodes.
-      void delete_list (void);
+  /// Construct an LStackIterator at node pos.
+  LStackIterator(LStack<T>& stack, LStackNode<T>* pos = 0);
 
-    private:
-      /// We only need to keep a single pointer for the circular linked
-      /// list.  This points to the tail of the stack.  Since the list is
-      /// circular, the head of the stack is always @a head_->next_.
-      LStackNode<T> *head_;
+  /// Dereference operator returns a reference to the item contained
+  /// at the current position
+  T& operator*(void);
 
-      /// Number of items that are currently in the stack.
-      size_t count_;
-    };
+  /// Returns a const reference to the item contained at the current position
+  const T& operator*(void)const;
 
-    /**
-    * @class LStackIterator
-    * @brief Implements a forward iterator for LStack type classes.
-    *
-    * Note:  Having a const ExpressionTreeIterator does not guarantee that the current
-    * *position* that it points to will not change, it only guarantees that
-    * you cannot change the underlying stack!
-    */
-    template <typename T>
-    class LStackIterator 
-    {
-    public:
-      /// Construct an LStackIterator at position pos.  
-      LStackIterator (LStack<T> &stack,
-        size_t pos = 0);
+  /// Preincrement operator
+  LStackIterator<T>& operator++(void);
 
-      /// Construct an LStackIterator at node pos.
-      LStackIterator (LStack<T> &stack,
-        LStackNode<T> *pos = 0);
+  /// Postincrement operator
+  LStackIterator<T> operator++(int);
 
-      /// Dereference operator returns a reference to the item contained
-      /// at the current position
-      T& operator* (void);
+  /// Equality operator
+  bool operator==(const LStackIterator<T>& rhs) const;
 
-      /// Returns a const reference to the item contained at the current position
-      const T& operator* (void) const;
+  /// Nonequality operator
+  bool operator!=(const LStackIterator<T>& lhs) const;
 
-      /// Preincrement operator
-      LStackIterator<T> &operator++ (void);
+  // = Necessary traits
+  typedef ::std::forward_iterator_tag iterator_category;
+  typedef T value_type;
+  typedef T* pointer;
+  typedef T& reference;
+  typedef int difference_type;
 
-      /// Postincrement operator
-      LStackIterator<T> operator++ (int);
+private:
+  /// the stack we are dealing with
+  LStack<T>& stack_;
 
-      /// Equality operator
-      bool operator== (const LStackIterator<T> &rhs) const;
+  // the position in the linked list
+  mutable LStackNode<T>* pos_;
+};
 
-      /// Nonequality operator
-      bool operator!= (const LStackIterator<T> &lhs) const;
+/**
+ * @class LStackConstIterator
+ * @brief Implements a forward iterator for LStack type classes.
+ *
+ * Note:  Having a const ExpressionTreeIterator does not guarantee that the
+ * current *position* that it points to will not change, it only guarantees that
+ * you cannot change the underlying stack!
+ */
+template<typename T>
+class LStackConstIterator
+{
+public:
+  /// Construct an LStackIterator at position pos.
+  LStackConstIterator(const LStack<T>& stack, size_t pos = 0);
 
-      // = Necessary traits
-      typedef ::std::forward_iterator_tag iterator_category;
-      typedef T value_type;
-      typedef T *pointer;
-      typedef T &reference;
-      typedef int difference_type;
+  /// Construct an LStackIterator at node pos.
+  LStackConstIterator(const LStack<T>& stack, LStackNode<T>* pos);
 
-    private:
-      /// the stack we are dealing with
-      LStack<T> &stack_;
+  /// Dereference operator returns a const reference to the item
+  /// contained at the current position.
+  const T& operator*(void)const;
 
-      // the position in the linked list
-      mutable LStackNode<T> *pos_;
-    };
+  /// Preincrement operator
+  const LStackConstIterator<T>& operator++(void)const;
 
-    /**
-    * @class LStackConstIterator
-    * @brief Implements a forward iterator for LStack type classes.
-    *
-    * Note:  Having a const ExpressionTreeIterator does not guarantee that the current
-    * *position* that it points to will not change, it only guarantees that
-    * you cannot change the underlying stack!
-    */
-    template <typename T>
-    class LStackConstIterator 
-    {
-    public:
-      /// Construct an LStackIterator at position pos.  
-      LStackConstIterator (const LStack<T> &stack,
-        size_t pos = 0);
+  /// Postincrement operator
+  LStackConstIterator<T> operator++(int)const;
 
-      /// Construct an LStackIterator at node pos.  
-      LStackConstIterator (const LStack<T> &stack,
-        LStackNode<T> *pos);
+  /// Equality operator
+  bool operator==(const LStackConstIterator<T>& rhs) const;
 
-      /// Dereference operator returns a const reference to the item
-      /// contained at the current position.
-      const T& operator* (void) const;
+  /// Nonequality operator
+  bool operator!=(const LStackConstIterator<T>& lhs) const;
 
-      /// Preincrement operator
-      const LStackConstIterator<T> &operator++ (void) const;
+  // = Necessary traits
+  typedef ::std::forward_iterator_tag iterator_category;
+  typedef T value_type;
+  typedef T* pointer;
+  typedef T& reference;
+  typedef int difference_type;
 
-      /// Postincrement operator
-      LStackConstIterator<T> operator++ (int) const;
+private:
+  /// the stack we are dealing with
+  const LStack<T>& stack_;
 
-      /// Equality operator
-      bool operator== (const LStackConstIterator<T> &rhs) const;
-
-      /// Nonequality operator
-      bool operator!= (const LStackConstIterator<T> &lhs) const;
-
-      // = Necessary traits
-      typedef ::std::forward_iterator_tag iterator_category;
-      typedef T value_type;
-      typedef T *pointer;
-      typedef T &reference;
-      typedef int difference_type;
-
-    private:
-      /// the stack we are dealing with
-      const LStack<T> &stack_;
-
-      // the position in the linked list
-      mutable LStackNode<T> *pos_;
-    };
-  }
+  // the position in the linked list
+  mutable LStackNode<T>* pos_;
+};
+}
 }
 
 #include "LStack.cpp"

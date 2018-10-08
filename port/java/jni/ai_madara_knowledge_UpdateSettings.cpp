@@ -11,55 +11,52 @@ namespace knowledge = madara::knowledge;
 typedef knowledge::KnowledgeUpdateSettings UpdateSettings;
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_current
-* Signature: ()J
-*/
-jlong JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__ (JNIEnv *, jclass)
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_current
+ * Signature: ()J
+ */
+jlong JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__(
+    JNIEnv*, jclass)
 {
-  return (jlong)(new UpdateSettings ());
+  return (jlong)(new UpdateSettings());
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_current
-* Signature: (J)J
-*/
-jlong JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__J
-(JNIEnv * env, jclass, jlong original)
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_current
+ * Signature: (J)J
+ */
+jlong JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__J(
+    JNIEnv* env, jclass, jlong original)
 {
-  jlong result (0);
-  UpdateSettings * source = (UpdateSettings *)original;
+  jlong result(0);
+  UpdateSettings* source = (UpdateSettings*)original;
 
   if (source)
   {
-    result = (jlong) new UpdateSettings (*source);
+    result = (jlong) new UpdateSettings(*source);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::copyConstructor: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::copyConstructor: "
+        "UpdateSettings object is released already");
   }
 
   return result;
 }
 
-
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_setAlwaysOverwrite
-* Signature: (JZ)V
-*/
-void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite
-(JNIEnv * env, jclass, jlong cptr, jboolean alwaysOverwrite)
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_setAlwaysOverwrite
+ * Signature: (JZ)V
+ */
+void JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite(
+    JNIEnv* env, jclass, jlong cptr, jboolean alwaysOverwrite)
 {
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   if (current)
   {
@@ -68,24 +65,24 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::setAlwaysOverwrite: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::setAlwaysOverwrite: "
+        "UpdateSettings object is released already");
   }
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_getAlwaysOverwrite
-* Signature: (J)Z
-*/
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_getAlwaysOverwrite
+ * Signature: (J)Z
+ */
 jboolean JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite
-(JNIEnv * env, jclass, jlong cptr)
+Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite(
+    JNIEnv* env, jclass, jlong cptr)
 {
-  jboolean result (0);
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  jboolean result(0);
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   if (current)
   {
@@ -94,25 +91,25 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::getAlwaysOverwrite: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::getAlwaysOverwrite: "
+        "UpdateSettings object is released already");
   }
 
   return result;
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_setTreatGlobalsAsLocals
-* Signature: (JZ)V
-*/
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_setTreatGlobalsAsLocals
+ * Signature: (JZ)V
+ */
 void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals
-(JNIEnv * env, jclass, jlong cptr, jboolean treatGlobalsAsLocals)
+Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals(
+    JNIEnv* env, jclass, jlong cptr, jboolean treatGlobalsAsLocals)
 {
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   if (current)
   {
@@ -121,24 +118,24 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::setTreatGlobalsAsLocals: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::setTreatGlobalsAsLocals: "
+        "UpdateSettings object is released already");
   }
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_getTreatGlobalsAsLocals
-* Signature: (J)Z
-*/
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_getTreatGlobalsAsLocals
+ * Signature: (J)Z
+ */
 jboolean JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals
-(JNIEnv * env, jclass, jlong cptr)
+Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals(
+    JNIEnv* env, jclass, jlong cptr)
 {
-  jboolean result (0);
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  jboolean result(0);
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   if (current)
   {
@@ -147,25 +144,24 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::getTreatGlobalsAsLocals: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::getTreatGlobalsAsLocals: "
+        "UpdateSettings object is released already");
   }
 
   return result;
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_setDefaultClockIncrement
-* Signature: (JJ)V
-*/
-void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement
-(JNIEnv * env, jclass, jlong cptr, jlong defaultClockIncrement)
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_setDefaultClockIncrement
+ * Signature: (JJ)V
+ */
+void JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement(
+    JNIEnv* env, jclass, jlong cptr, jlong defaultClockIncrement)
 {
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   if (current)
   {
@@ -174,24 +170,23 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::setClockIncrement: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::setClockIncrement: "
+        "UpdateSettings object is released already");
   }
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_getDefaultClockIncrement
-* Signature: (J)J
-*/
-jlong JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement
-(JNIEnv * env, jclass, jlong cptr)
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_getDefaultClockIncrement
+ * Signature: (J)J
+ */
+jlong JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement(
+    JNIEnv* env, jclass, jlong cptr)
 {
-  jlong result (0);
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  jlong result(0);
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   if (current)
   {
@@ -200,25 +195,24 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    
+
     madara::utility::java::throw_dead_obj_exception(env,
-      "UpdateSettings::getClockIncrement: "
-      "UpdateSettings object is released already");
+        "UpdateSettings::getClockIncrement: "
+        "UpdateSettings object is released already");
   }
 
   return result;
 }
 
 /*
-* Class:   ai_madara_knowledge_UpdateSettings
-* Method:  jni_freeUpdateSettings
-* Signature: (J)V
-*/
-void JNICALL
-Java_ai_madara_knowledge_UpdateSettings_jni_1freeUpdateSettings
-(JNIEnv *, jclass, jlong cptr)
+ * Class:   ai_madara_knowledge_UpdateSettings
+ * Method:  jni_freeUpdateSettings
+ * Signature: (J)V
+ */
+void JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1freeUpdateSettings(
+    JNIEnv*, jclass, jlong cptr)
 {
-  UpdateSettings * current = (UpdateSettings *)cptr;
+  UpdateSettings* current = (UpdateSettings*)cptr;
 
   delete current;
 }

@@ -11,73 +11,71 @@
 
 namespace madara
 {
-  namespace expression
-  {
-    class ComponentNode;
-    class Visitor;
+namespace expression
+{
+class ComponentNode;
+class Visitor;
 
-    /**
-     * @class CompositePostdecrementNode
-     * @brief A composite node that decrements a left expression. If
-     *        left expression is a variable, then the variable will
-     *        be updated with the new value.
-     */
-    class CompositePostdecrementNode : public CompositeUnaryNode
-    {
-    public:
-      /**
-       * Constructor
-       * @param   logger the logger to use for printing
-       * @param   right  right expression
-       **/
-      CompositePostdecrementNode (logger::Logger & logger,
-        ComponentNode *right);
+/**
+ * @class CompositePostdecrementNode
+ * @brief A composite node that decrements a left expression. If
+ *        left expression is a variable, then the variable will
+ *        be updated with the new value.
+ */
+class CompositePostdecrementNode : public CompositeUnaryNode
+{
+public:
+  /**
+   * Constructor
+   * @param   logger the logger to use for printing
+   * @param   right  right expression
+   **/
+  CompositePostdecrementNode(logger::Logger& logger, ComponentNode* right);
 
-      /**
-       * Destructor
-       **/
-      virtual ~CompositePostdecrementNode (void);
+  /**
+   * Destructor
+   **/
+  virtual ~CompositePostdecrementNode(void);
 
-      /**
-       * Returns the printable character of the node
-       * @return    value of the node
-       **/
-      virtual madara::knowledge::KnowledgeRecord item (void) const;
+  /**
+   * Returns the printable character of the node
+   * @return    value of the node
+   **/
+  virtual madara::knowledge::KnowledgeRecord item(void) const;
 
-      /** 
-       * Prunes the expression tree of unnecessary nodes. 
-       * @param     can_change   set to true if variable nodes are contained
-       * @return    one subtracted from the value returned by 
-       *            the right expression
-       **/
-      virtual madara::knowledge::KnowledgeRecord prune (bool & can_change);
+  /**
+   * Prunes the expression tree of unnecessary nodes.
+   * @param     can_change   set to true if variable nodes are contained
+   * @return    one subtracted from the value returned by
+   *            the right expression
+   **/
+  virtual madara::knowledge::KnowledgeRecord prune(bool& can_change);
 
-      /** 
-       * Evaluates the node. 
-       * @param     settings     settings for evaluating the node
-       * @return    one subtracted from the value returned by 
-       *            the right expression
-       **/
-      virtual madara::knowledge::KnowledgeRecord evaluate (
-        const madara::knowledge::KnowledgeUpdateSettings & settings);
+  /**
+   * Evaluates the node.
+   * @param     settings     settings for evaluating the node
+   * @return    one subtracted from the value returned by
+   *            the right expression
+   **/
+  virtual madara::knowledge::KnowledgeRecord evaluate(
+      const madara::knowledge::KnowledgeUpdateSettings& settings);
 
-      /** 
-       * Accepts a visitor subclassed from the Visitor class
-       * @param    visitor   visitor instance to use
-       **/
-      virtual void accept (Visitor &visitor) const;
+  /**
+   * Accepts a visitor subclassed from the Visitor class
+   * @param    visitor   visitor instance to use
+   **/
+  virtual void accept(Visitor& visitor) const;
 
-    private:
+private:
+  /// variable holder
+  VariableNode* var_;
 
-      /// variable holder
-      VariableNode * var_;
-
-      /// variable index holder
-      CompositeArrayReference * array_;
-    };
-  }
+  /// variable index holder
+  CompositeArrayReference* array_;
+};
+}
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_
 
 #endif /* _MADARA_COMPOSITE_POSTDECREMENT_NODE_H_ */

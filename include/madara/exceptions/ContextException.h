@@ -7,17 +7,17 @@
 
 namespace madara
 {
-  namespace exceptions
-  {
-    /**
-     * An exception for attempting to access an invalid context1
-     **/
-    class ContextException : public MadaraException
-    {
-    public:
-      using MadaraException::MadaraException;
-    };
-  }
+namespace exceptions
+{
+/**
+ * An exception for attempting to access an invalid context1
+ **/
+class ContextException : public MadaraException
+{
+public:
+  using MadaraException::MadaraException;
+};
+}
 }
 
 #endif /* _MADARA_EXCEPTIONS_CONTEXTEXCEPTION_H_ */

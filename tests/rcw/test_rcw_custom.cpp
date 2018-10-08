@@ -19,8 +19,16 @@ struct my_type
   int c;
 };
 
-std::vector<int64_t> get_value(const my_type &v) { return {v.a, v.b, v.c}; }
-void set_value(my_type &v, std::vector<int64_t> n) { v.a = n[0]; v.b = n[1]; v.c = n[2]; }
+std::vector<int64_t> get_value(const my_type& v)
+{
+  return {v.a, v.b, v.c};
+}
+void set_value(my_type& v, std::vector<int64_t> n)
+{
+  v.a = n[0];
+  v.b = n[1];
+  v.c = n[2];
+}
 
 struct my_tracked_type
 {
@@ -30,14 +38,28 @@ struct my_tracked_type
   bool dirty;
 };
 
-std::vector<int64_t> get_value(const my_tracked_type &v) { return {v.a, v.b, v.c}; }
-void set_value(my_tracked_type &v, std::vector<int64_t> n) { v.a = n[0]; v.b = n[1]; v.c = n[2]; }
+std::vector<int64_t> get_value(const my_tracked_type& v)
+{
+  return {v.a, v.b, v.c};
+}
+void set_value(my_tracked_type& v, std::vector<int64_t> n)
+{
+  v.a = n[0];
+  v.b = n[1];
+  v.c = n[2];
+}
 
-bool is_dirty(const my_tracked_type &v) { return v.dirty; }
-void clear_dirty(my_tracked_type &v) { v.dirty = false; }
+bool is_dirty(const my_tracked_type& v)
+{
+  return v.dirty;
+}
+void clear_dirty(my_tracked_type& v)
+{
+  v.dirty = false;
+}
 
 /// Test and demonstrate custom types
-int main(int, char **)
+int main(int, char**)
 {
   KnowledgeBase kb;
   Transaction tx(kb);

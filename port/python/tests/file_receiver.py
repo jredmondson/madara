@@ -17,11 +17,12 @@ import madara.filters as filters
 
 # create transport settings for a multicast transport
 settings = transport.QoSTransportSettings()
-settings.hosts.append("239.255.0.1:4150")
-settings.type = transport.TransportTypes.MULTICAST
+#settings.hosts.append("239.255.0.1:4150")
+#settings.type = transport.TransportTypes.MULTICAST
+settings.type = transport.TransportTypes.UDP
 #settings.hosts.append("127.0.0.1:40002")
-#settings.hosts.append("127.0.0.1:40001")
-#settings.hosts.append("127.0.0.1:40000")
+settings.hosts.append("127.0.0.1:40001")
+settings.hosts.append("127.0.0.1:40000")
 #settings.type = transport.TransportTypes.ZMQ
 settings.queue_length = 12000000
 
@@ -32,13 +33,33 @@ filter.set_dir_mapping("agent.0.sandbox.files.file", "files")
 settings.add_receive_filter(filter)
 
 # create a knowledge base with the multicast transport settings
-knowledge = engine.KnowledgeBase("agent1", settings)
+kb = engine.KnowledgeBase("agent1", settings)
 
 sleep_time = 180
+filename = "ros2gams_bigbag.sbz"
+
+if len(sys.argv) > 1:
+  filename = sys.argv[1]
+  print ("Changing file name to ", filename)
 
 if len(sys.argv) > 2:
-  print ("Changing sleep time to ", sys.argv[1])
-  sleep_time = int (sys.argv[1])
+  sleep_time = float (sys.argv[2])
+  print ("Changing sleep time to ", sleep_time)
 
-time.sleep(sleep_time)
+print ("keys will be read from ", "agent.0.sandbox.files.file.", filename)
 
+requester = madara.knowledge.FileRequester ()
+requester.init ("agent.0.sandbox.files.file." + filename,
+  "agent.0.sync.sandbox.files.file." + filename, "files/" + filename, kb, 500)
+
+print ("Beginning requests for ", filename)
+
+print ("Fragments are currently: ", madara.to_pylongs (requester.build_fragment_request ()))
+
+requester.needs_request ()
+time.sleep (3)
+
+while requester.needs_request ():
+  print ("Percent complete is ", requester.get_percent_complete (), "Frag list is ", madara.to_pylongs (requester.build_fragment_request ()))
+  kb.send_modifieds ()
+  time.sleep (1)

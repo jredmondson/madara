@@ -24,117 +24,115 @@ class StrideTask;
 
 namespace madara
 {
-  namespace transport
-  {
-    /**
-     * @class PacketScheduler
-     * @brief Provides scheduler for dropping packets
-     **/
+namespace transport
+{
+/**
+ * @class PacketScheduler
+ * @brief Provides scheduler for dropping packets
+ **/
 
-    class MADARA_EXPORT PacketScheduler
-    {
-    public:
-      /**
-       * Default constructor
-       **/
-      PacketScheduler (const QoSTransportSettings * settings = 0);
-      
-      /**
-       * Copy constructor
-       * @param  rhs   the value to be copied into this class
-       **/
-      PacketScheduler (const PacketScheduler & rhs);
+class MADARA_EXPORT PacketScheduler
+{
+public:
+  /**
+   * Default constructor
+   **/
+  PacketScheduler(const QoSTransportSettings* settings = 0);
 
-      /**
-       * Destructor
-       **/
-      virtual ~PacketScheduler ();
+  /**
+   * Copy constructor
+   * @param  rhs   the value to be copied into this class
+   **/
+  PacketScheduler(const PacketScheduler& rhs);
 
-      /**
-       * Assignment operator
-       * @param  rhs   the value to be copied into this class
-       **/
-      void operator= (const PacketScheduler & rhs);
-      
-      /**
-       * Adds a message to the monitor
-       * @return   false if the packet should be dropped, true otherwise
-       **/
-      bool add (void);
+  /**
+   * Destructor
+   **/
+  virtual ~PacketScheduler();
 
-      /**
-       * Attaches settings
-       * @param   settings   Settings to attach to this scheduler
-       **/
-      void attach (const QoSTransportSettings * settings);
+  /**
+   * Assignment operator
+   * @param  rhs   the value to be copied into this class
+   **/
+  void operator=(const PacketScheduler& rhs);
 
-      /**
-       * Queries the monitor for the current dropped messages
-       * @return   current bandwidth utilization in bytes
-       *           over the entire window (this is not bytes/s)
-       **/
-      uint64_t get_dropped (void);
-      
-      /**
-       * Queries the monitor for the current sent messages
-       * per second over the past window
-       * @return   current bandwidth utilization in bytes/s
-       **/
-      uint64_t get_sent (void);
+  /**
+   * Adds a message to the monitor
+   * @return   false if the packet should be dropped, true otherwise
+   **/
+  bool add(void);
 
+  /**
+   * Attaches settings
+   * @param   settings   Settings to attach to this scheduler
+   **/
+  void attach(const QoSTransportSettings* settings);
 
-      /**
-       * Clears the packet scheduler
-       **/
-      void clear (void);
+  /**
+   * Queries the monitor for the current dropped messages
+   * @return   current bandwidth utilization in bytes
+   *           over the entire window (this is not bytes/s)
+   **/
+  uint64_t get_dropped(void);
 
-      /**
-       * Resets the packet scheduler to current settings
-       **/
-      void reset (void);
+  /**
+   * Queries the monitor for the current sent messages
+   * per second over the past window
+   * @return   current bandwidth utilization in bytes/s
+   **/
+  uint64_t get_sent(void);
 
-      /**
-       * Prints the number of status of the packet scheduler
-       * @param   log_level   the log level to print status at
-       * @param   prefix      the prefix of the calling function to allow
-       *                      for more descriptive and relevant status
-       **/
-      void print_status (unsigned int log_level = 0,
-        const char * prefix = "PacketScheduler");
+  /**
+   * Clears the packet scheduler
+   **/
+  void clear(void);
 
-    protected:
+  /**
+   * Resets the packet scheduler to current settings
+   **/
+  void reset(void);
 
-      /**
-       * Mutex for supporting multithreaded monitor calls
-       **/
-      mutable MADARA_LOCK_TYPE mutex_;
-      
-      /**
-       * Transport settings
-       **/
-      const QoSTransportSettings * settings_;
+  /**
+   * Prints the number of status of the packet scheduler
+   * @param   log_level   the log level to print status at
+   * @param   prefix      the prefix of the calling function to allow
+   *                      for more descriptive and relevant status
+   **/
+  void print_status(
+      unsigned int log_level = 0, const char* prefix = "PacketScheduler");
 
-      /**
-       * Number of sent messages
-       **/
-      uint64_t  sent_messages_;
+protected:
+  /**
+   * Mutex for supporting multithreaded monitor calls
+   **/
+  mutable MADARA_LOCK_TYPE mutex_;
 
-      /**
-       * Number of dropped messages
-       **/
-      uint64_t  dropped_messages_;
+  /**
+   * Transport settings
+   **/
+  const QoSTransportSettings* settings_;
 
-      /**
-       * Consecutive dropped messages
-       **/
-      uint64_t  consecutive_drops_;
+  /**
+   * Number of sent messages
+   **/
+  uint64_t sent_messages_;
 
-      /**
-       * queue used by stride scheduling algorithm
-       **/
-      std::priority_queue <StrideTask, std::vector <StrideTask> > queue_;
-    };
-  }
+  /**
+   * Number of dropped messages
+   **/
+  uint64_t dropped_messages_;
+
+  /**
+   * Consecutive dropped messages
+   **/
+  uint64_t consecutive_drops_;
+
+  /**
+   * queue used by stride scheduling algorithm
+   **/
+  std::priority_queue<StrideTask, std::vector<StrideTask> > queue_;
+};
+}
 }
 
-#endif   // _MADARA_PACKET_SCHEDULER_H_
+#endif  // _MADARA_PACKET_SCHEDULER_H_

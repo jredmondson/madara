@@ -14,8 +14,8 @@ extern "C" {
  * Signature: ()J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1CircularBuffer__
-  (JNIEnv *, jobject);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1CircularBuffer__(
+    JNIEnv*, jobject);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -23,8 +23,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1CircularBuffer__
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1CircularBuffer__J
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1CircularBuffer__J(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -32,8 +32,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1CircularBuffer__J
  * Signature: (J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1freeCircularBuffer
-  (JNIEnv *, jclass, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1freeCircularBuffer(
+    JNIEnv*, jclass, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -41,8 +41,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1freeCircularBuffer
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1addRecord
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1addRecord(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -50,8 +50,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1addRecord
  * Signature: (J[J)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1addRecordVector
-  (JNIEnv *, jobject, jlong, jlongArray);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1addRecordVector(
+    JNIEnv*, jobject, jlong, jlongArray);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -59,8 +59,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1addRecordVector
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getRecord
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getRecord(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -68,8 +68,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getRecord
  * Signature: (JI)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getEarliestRecordVector
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getEarliestRecordVector(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -77,8 +77,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getEarliestRecordVector
  * Signature: (JI)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getLatestRecordVector
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getLatestRecordVector(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -86,8 +86,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getLatestRecordVector
  * Signature: (JI)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1inspectRecord
-  (JNIEnv *, jobject, jlong, jint);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1inspectRecord(
+    JNIEnv*, jobject, jlong, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -95,8 +95,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1inspectRecord
  * Signature: (JII)[Ljava/lang/Object;
  */
 MADARA_EXPORT jobjectArray JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1inspectRecordVector
-  (JNIEnv *, jobject, jlong, jint, jint);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1inspectRecordVector(
+    JNIEnv*, jobject, jlong, jint, jint);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -104,8 +104,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1inspectRecordVector
  * Signature: (J)Ljava/lang/String;
  */
 MADARA_EXPORT jstring JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getName
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getName(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -113,8 +113,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1getName
  * Signature: (JJJLjava/lang/String;)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1setName
-  (JNIEnv *, jobject, jlong, jlong, jlong, jstring);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1setName(
+    JNIEnv*, jobject, jlong, jlong, jlong, jstring);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -122,8 +122,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1setName
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1size
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1size(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -131,8 +131,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1size
  * Signature: ()V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1clear
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1clear(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -140,8 +140,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1clear
  * Signature: (J)J
  */
 MADARA_EXPORT jlong JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1count
-  (JNIEnv *, jobject, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1count(
+    JNIEnv*, jobject, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -149,8 +149,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1count
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1resize
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1resize(
+    JNIEnv*, jobject, jlong, jlong);
 
 /*
  * Class:     ai_madara_knowledge_containers_CircularBuffer
@@ -158,8 +158,8 @@ Java_ai_madara_knowledge_containers_CircularBuffer_jni_1resize
  * Signature: (JJ)V
  */
 MADARA_EXPORT void JNICALL
-Java_ai_madara_knowledge_containers_CircularBuffer_jni_1setSettings
-  (JNIEnv *, jobject, jlong, jlong);
+Java_ai_madara_knowledge_containers_CircularBuffer_jni_1setSettings(
+    JNIEnv*, jobject, jlong, jlong);
 
 #ifdef __cplusplus
 }

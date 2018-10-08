@@ -1,69 +1,63 @@
 
 #ifndef _MADARA_NO_KARL_
 
-
 #include "madara/expression/LeafNode.h"
 #include "madara/expression/SystemCallWriteFile.h"
 #include "madara/expression/Visitor.h"
 
-
-madara::expression::SystemCallWriteFile::SystemCallWriteFile (
-  madara::knowledge::ThreadSafeContext & context,
-  const ComponentNodes & nodes)
-  : SystemCallNode (context, nodes)
+madara::expression::SystemCallWriteFile::SystemCallWriteFile(
+    madara::knowledge::ThreadSafeContext& context, const ComponentNodes& nodes)
+  : SystemCallNode(context, nodes)
 {
-
 }
 
 // Dtor
-madara::expression::SystemCallWriteFile::~SystemCallWriteFile (void)
-{
-}
+madara::expression::SystemCallWriteFile::~SystemCallWriteFile(void) {}
 
 madara::knowledge::KnowledgeRecord
-madara::expression::SystemCallWriteFile::item (void) const
+madara::expression::SystemCallWriteFile::item(void) const
 {
-  return madara::knowledge::KnowledgeRecord (nodes_.size ());
+  return madara::knowledge::KnowledgeRecord(nodes_.size());
 }
 
-/// Prune the tree of unnecessary nodes. 
+/// Prune the tree of unnecessary nodes.
 /// Returns evaluation of the node and sets can_change appropriately.
 /// if this node can be changed, that means it shouldn't be pruned.
 madara::knowledge::KnowledgeRecord
-madara::expression::SystemCallWriteFile::prune (bool & can_change)
+madara::expression::SystemCallWriteFile::prune(bool& can_change)
 {
   // user can always change a function, and we have no control over
   // what it does. Consequently, a function node cannot be pruned out
   // under any situation
   can_change = true;
-  
+
   madara::knowledge::KnowledgeRecord result;
-  
-  for (ComponentNodes::iterator i = nodes_.begin (); i != nodes_.end ();
-       ++i)
+
+  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
   {
     bool arg_can_change = false;
-    result = (*i)->prune (arg_can_change);
-    
-    if (!arg_can_change && dynamic_cast <LeafNode *> (*i) == 0)
+    result = (*i)->prune(arg_can_change);
+
+    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
     {
       delete *i;
-      *i = new LeafNode (*(this->logger_), result);
+      *i = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size () != 2)
+  if (nodes_.size() != 2)
   {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::SystemCallWriteFile: "
-      "KARL COMPILE ERROR:"
-      "System call write_file requires 2 arguments: "
-      "a knowledge record and a file name\n");
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::SystemCallWriteFile: "
+        "KARL COMPILE ERROR:"
+        "System call write_file requires 2 arguments: "
+        "a knowledge record and a file name\n");
 
-    throw exceptions::KarlException ("madara::expression::SystemCallWriteFile: "
-      "KARL COMPILE ERROR: "
-      "System call write_file requires 2 arguments: "
-      "a knowledge record and a file name\n");
+    throw exceptions::KarlException(
+        "madara::expression::SystemCallWriteFile: "
+        "KARL COMPILE ERROR: "
+        "System call write_file requires 2 arguments: "
+        "a knowledge record and a file name\n");
   }
 
   return result;
@@ -71,69 +65,69 @@ madara::expression::SystemCallWriteFile::prune (bool & can_change)
 
 /// Evaluates the node and its children. This does not prune any of
 /// the expression tree, and is much faster than the prune function
-madara::knowledge::KnowledgeRecord 
-madara::expression::SystemCallWriteFile::evaluate (
-const madara::knowledge::KnowledgeUpdateSettings & settings)
+madara::knowledge::KnowledgeRecord
+madara::expression::SystemCallWriteFile::evaluate(
+    const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size () == 2)
+  if (nodes_.size() == 2)
   {
-    // copying strings wastes execution time, so we hold the knowledge::KnowledgeRecord
-    // instead of the resulting string filename.
-    knowledge::KnowledgeRecord arg1 = nodes_[0]->evaluate (settings);
-    knowledge::KnowledgeRecord arg2 = nodes_[1]->evaluate (settings);
+    // copying strings wastes execution time, so we hold the
+    // knowledge::KnowledgeRecord instead of the resulting string filename.
+    knowledge::KnowledgeRecord arg1 = nodes_[0]->evaluate(settings);
+    knowledge::KnowledgeRecord arg2 = nodes_[1]->evaluate(settings);
 
-    knowledge::KnowledgeRecord * filename = &arg1;
-    knowledge::KnowledgeRecord * contents = &arg2;
+    knowledge::KnowledgeRecord* filename = &arg1;
+    knowledge::KnowledgeRecord* contents = &arg2;
 
-    madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-      "madara::expression::SystemCallWriteFile: "
-      "System call write_file is attempting to open %s.\n",
-      filename->to_string ().c_str ());
+    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        "madara::expression::SystemCallWriteFile: "
+        "System call write_file is attempting to open %s.\n",
+        filename->to_string().c_str());
 
-    ssize_t bytes_written = contents->to_file (filename->to_string ());
+    ssize_t bytes_written = contents->to_file(filename->to_string());
 
     if (bytes_written <= 0)
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "madara::expression::SystemCallWriteFile: "
-        "KARL ERROR: System call write_file could not write to %s\n",
-        filename->to_string ().c_str ());
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "madara::expression::SystemCallWriteFile: "
+          "KARL ERROR: System call write_file could not write to %s\n",
+          filename->to_string().c_str());
 
-      return madara::knowledge::KnowledgeRecord (bytes_written);
+      return madara::knowledge::KnowledgeRecord(bytes_written);
     }
     else
     {
-      madara_logger_ptr_log (logger_, logger::LOG_MINOR,
-        "madara::expression::SystemCallWriteFile: "
-        "System call write_file wrote %zd bytes to %s\n",
-        bytes_written, filename->to_string ().c_str ());
+      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          "madara::expression::SystemCallWriteFile: "
+          "System call write_file wrote %zd bytes to %s\n",
+          bytes_written, filename->to_string().c_str());
     }
   }
   else
   {
-    madara_logger_ptr_log (logger_, logger::LOG_ERROR,
-      "madara::expression::SystemCallWriteFile: "
-      "KARL RUNTIME ERROR:"
-      "System call write_file requires 2 arguments: "
-      "a knowledge record and a file name\n");
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "madara::expression::SystemCallWriteFile: "
+        "KARL RUNTIME ERROR:"
+        "System call write_file requires 2 arguments: "
+        "a knowledge record and a file name\n");
 
-    throw exceptions::KarlException ("madara::expression::SystemCallWriteFile: "
-      "KARL RUNTIME ERROR: "
-      "System call write_file requires 2 arguments: "
-      "a knowledge record and a file name\n");
+    throw exceptions::KarlException(
+        "madara::expression::SystemCallWriteFile: "
+        "KARL RUNTIME ERROR: "
+        "System call write_file requires 2 arguments: "
+        "a knowledge record and a file name\n");
   }
 
   return return_value;
 }
 
 // accept a visitor
-void 
-madara::expression::SystemCallWriteFile::accept (
-  madara::expression::Visitor &visitor) const
+void madara::expression::SystemCallWriteFile::accept(
+    madara::expression::Visitor& visitor) const
 {
-  visitor.visit (*this);
+  visitor.visit(*this);
 }
 
-#endif // _MADARA_NO_KARL_
+#endif  // _MADARA_NO_KARL_

@@ -1,7 +1,6 @@
 #ifndef _MADARA_NDDS_LISTENER_H_
 #define _MADARA_NDDS_LISTENER_H_
 
-
 #include <string>
 
 #include "madara/knowledge/ThreadSafeContext.h"
@@ -14,95 +13,90 @@
 
 namespace madara
 {
-  namespace transport
-  {
-    /**
-     * @class NddsListener
-     * @brief Container for NDDS callbacks
-     **/
-    class NddsListener: public DDSDataReaderListener
-    {
-    public:
-      /**
-       * Constructor
-       * @param    settings   Transport settings
-       * @param id  unique identifier of this entity (e.g., host:port)
-       * @param context the knowledge context to access and mutate
-       * @param    send_monitor    bandwidth monitor for enforcing send limits
-       * @param    receive_monitor    bandwidth monitor for enforcing
-       *                              receive limits
-       * @param    packet_scheduler scheduler for mimicking network conditions
-       **/
-      NddsListener(
-        const TransportSettings & settings, const std::string & id,
-        knowledge::ThreadSafeContext & context,
-        BandwidthMonitor & send_monitor,
-        BandwidthMonitor & receive_monitor,
-        PacketScheduler & packet_scheduler);
+namespace transport
+{
+/**
+ * @class NddsListener
+ * @brief Container for NDDS callbacks
+ **/
+class NddsListener : public DDSDataReaderListener
+{
+public:
+  /**
+   * Constructor
+   * @param    settings   Transport settings
+   * @param id  unique identifier of this entity (e.g., host:port)
+   * @param context the knowledge context to access and mutate
+   * @param    send_monitor    bandwidth monitor for enforcing send limits
+   * @param    receive_monitor    bandwidth monitor for enforcing
+   *                              receive limits
+   * @param    packet_scheduler scheduler for mimicking network conditions
+   **/
+  NddsListener(const TransportSettings& settings, const std::string& id,
+      knowledge::ThreadSafeContext& context, BandwidthMonitor& send_monitor,
+      BandwidthMonitor& receive_monitor, PacketScheduler& packet_scheduler);
 
-      /**
-       * Copy constructor
-       **/
-      NddsListener(const NddsListener &ref);
+  /**
+   * Copy constructor
+   **/
+  NddsListener(const NddsListener& ref);
 
-      /**
-       * Destructor
-       **/
-      ~NddsListener();
+  /**
+   * Destructor
+   **/
+  ~NddsListener();
 
-      /**
-       * Handles the case where a subscription has been matched
-       * @param reader the DDS data reader to read from
-       * @param status the status of the matched subscription
-       **/
-      void on_subscription_matched (DDSDataReader * reader,
-                        const DDS_SubscriptionMatchedStatus & status);
-      
-      /**
-       * Sends a rebroadcast packet.
-       * @param  print_prefix     prefix to include before every log message,
-       *                          e.g., "MyTransport::svc"
-       * @param   header   header for the rebroadcasted packet
-       * @param   records  records to rebroadcast (already filtered for
-       *                   rebroadcast)
-       **/
-      void rebroadcast (
-        const char * print_prefix,
-        MessageHeader * header,
-        const knowledge::KnowledgeMap & records);
+  /**
+   * Handles the case where a subscription has been matched
+   * @param reader the DDS data reader to read from
+   * @param status the status of the matched subscription
+   **/
+  void on_subscription_matched(
+      DDSDataReader* reader, const DDS_SubscriptionMatchedStatus& status);
 
-      /**
-       * Handles the case that data has become available
-       * @param reader the DDS data reader to read from
-       **/
-      void on_data_available(DDSDataReader* reader);
-    private:
-      
-      /// Transport settings
-      const QoSTransportSettings settings_;
+  /**
+   * Sends a rebroadcast packet.
+   * @param  print_prefix     prefix to include before every log message,
+   *                          e.g., "MyTransport::svc"
+   * @param   header   header for the rebroadcasted packet
+   * @param   records  records to rebroadcast (already filtered for
+   *                   rebroadcast)
+   **/
+  void rebroadcast(const char* print_prefix, MessageHeader* header,
+      const knowledge::KnowledgeMap& records);
 
-      // NDDS variables
-      const std::string id_;
+  /**
+   * Handles the case that data has become available
+   * @param reader the DDS data reader to read from
+   **/
+  void on_data_available(DDSDataReader* reader);
 
-      // context for updating variables from network
-      knowledge::ThreadSafeContext * context_;
-      
-      /// data received rules, defined in Transport settings
-      knowledge::CompiledExpression  on_data_received_;
-      
-      /// buffer for receiving
-      utility::ScopedArray <char>      buffer_;
+private:
+  /// Transport settings
+  const QoSTransportSettings settings_;
 
-      /// monitor for sending bandwidth usage
-      BandwidthMonitor   &   send_monitor_;
-      
-      /// monitor for receiving bandwidth usage
-      BandwidthMonitor   &   receive_monitor_;
+  // NDDS variables
+  const std::string id_;
 
-      /// scheduler for mimicking target network conditions
-      PacketScheduler    &   packet_scheduler_;
-    };  // End of class NddsListener
-  }
+  // context for updating variables from network
+  knowledge::ThreadSafeContext* context_;
+
+  /// data received rules, defined in Transport settings
+  knowledge::CompiledExpression on_data_received_;
+
+  /// buffer for receiving
+  utility::ScopedArray<char> buffer_;
+
+  /// monitor for sending bandwidth usage
+  BandwidthMonitor& send_monitor_;
+
+  /// monitor for receiving bandwidth usage
+  BandwidthMonitor& receive_monitor_;
+
+  /// scheduler for mimicking target network conditions
+  PacketScheduler& packet_scheduler_;
+};  // End of class NddsListener
+}
 }
 
-#endif // _MADARA_NDDS_LISTENER_H_
+#endif  // _MADARA_NDDS_LISTENER_H_

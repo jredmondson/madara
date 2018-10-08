@@ -29,8 +29,10 @@
 #include "TypeHandlers.h"
 #include "ConstAnyRef.h"
 
-namespace madara { namespace knowledge {
-
+namespace madara
+{
+namespace knowledge
+{
 /**
  * Provides methods common to Any and AnyRef. Use those classes, not this one
  * directly.
@@ -39,11 +41,18 @@ template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 class BasicAny : public BasicConstAny<Impl, ValImpl, CRefImpl>
 {
   using Base = BasicConstAny<Impl, ValImpl, CRefImpl>;
+
 protected:
   using Base::Base;
 
-  Impl &impl() { return *static_cast<Impl*>(this); }
-  const Impl &impl() const { return *static_cast<const Impl*>(this); }
+  Impl& impl()
+  {
+    return *static_cast<Impl*>(this);
+  }
+  const Impl& impl() const
+  {
+    return *static_cast<const Impl*>(this);
+  }
 
   using Base::check_type;
 
@@ -55,7 +64,8 @@ protected:
   template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class BasicConstAny;
 
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2,
+      typename CRefImpl2>
   friend class BasicAny;
 
 public:
@@ -81,7 +91,7 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  T &ref(type<T> t) const
+  T& ref(type<T> t) const
   {
     impl().check_type(t);
     return impl().ref_unsafe(t);
@@ -99,22 +109,23 @@ public:
    * @return a reference to the contained value
    **/
   template<typename T>
-  T &ref() const
+  T& ref() const
   {
     return impl().ref(type<T>{});
   }
 
   template<typename T>
-  T *ptr(type<T> t) const
+  T* ptr(type<T> t) const
   {
-    if (!impl().try_type(t)) {
+    if (!impl().try_type(t))
+    {
       return nullptr;
     }
     return &impl().ref_unsafe(t);
   }
 
   template<typename T>
-  T *ptr() const
+  T* ptr() const
   {
     return ptr(type<T>{});
   }
@@ -136,7 +147,7 @@ public:
    * @return a reference to the contained value's member
    **/
   template<typename T, typename Class>
-  T &ref(T Class::* ptm) const
+  T& ref(T Class::*ptm) const
   {
     return (&impl().ref(type<Class>{}))->*ptm;
   }
@@ -159,7 +170,7 @@ public:
    * @return result of the method called
    **/
   template<typename T, typename Class, typename... Params, typename... Args>
-  T ref(T (Class::* ptmf)(Params...) const, Args&&... args) const
+  T ref(T (Class::*ptmf)(Params...) const, Args&&... args) const
   {
     return ((&impl().ref(type<Class>{}))->*ptmf)(std::forward<Args>(args)...);
   }
@@ -182,7 +193,7 @@ public:
    * @return result of the method called
    **/
   template<typename T, typename Class, typename... Params, typename... Args>
-  T ref(T (Class::* ptmf)(Params...), Args&&... args) const
+  T ref(T (Class::*ptmf)(Params...), Args&&... args) const
   {
     return ((&impl().ref(type<Class>{}))->*ptmf)(std::forward<Args>(args)...);
   }
@@ -196,7 +207,7 @@ public:
    * @return a reference of type T to the stored data
    **/
   template<typename T>
-  T &ref_unsafe() const
+  T& ref_unsafe() const
   {
     return impl().ref_unsafe(type<T>{});
   }
@@ -210,9 +221,9 @@ public:
    * @return a reference of type T to the stored data
    **/
   template<typename T>
-  T &ref_unsafe(type<T>) const
+  T& ref_unsafe(type<T>) const
   {
-    return *reinterpret_cast<T *>(this->data_);
+    return *reinterpret_cast<T*>(this->data_);
   }
 
   /**
@@ -230,7 +241,7 @@ public:
    * Otherwise, a BadAnyAccess exception is thrown.
    **/
   template<typename T>
-  void assign(T &&t) const;
+  void assign(T&& t) const;
 
   using Base::find_field;
   using Base::list_fields;
@@ -240,7 +251,7 @@ public:
    *
    * Get the AnyField objects for a given type by calling list_fields()
    **/
-  RefImpl ref(const AnyField &field) const
+  RefImpl ref(const AnyField& field) const
   {
     auto ret = Base::ref(field);
     return {ret.handler_, ret.data_};
@@ -251,7 +262,7 @@ public:
    *
    * Use the ref(AnyField) overload for better efficiency.
    **/
-  RefImpl ref(const char *name) const
+  RefImpl ref(const char* name) const
   {
     return ref(find_field(name));
   }
@@ -261,7 +272,7 @@ public:
    *
    * Use the ref(AnyField) overload for better efficiency.
    **/
-  RefImpl ref(const std::string &name) const
+  RefImpl ref(const std::string& name) const
   {
     return ref(find_field(name));
   }
@@ -274,7 +285,7 @@ public:
    * Get the AnyField objects for a given type by calling list_fields()
    **/
   template<typename T>
-  T &ref(const AnyField &field) const
+  T& ref(const AnyField& field) const
   {
     return ref(field).template ref<T>();
   }
@@ -287,7 +298,7 @@ public:
    * Use the ref<T>(AnyField) overload for better efficiency.
    **/
   template<typename T>
-  T &ref(const char *name) const
+  T& ref(const char* name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
@@ -300,7 +311,7 @@ public:
    * Use the ref<T>(AnyField) overload for better efficiency.
    **/
   template<typename T>
-  T &ref(const std::string &name) const
+  T& ref(const std::string& name) const
   {
     return ref(find_field(name)).template ref<T>();
   }
@@ -352,8 +363,8 @@ public:
    * value by typed reference (see tags namespace)
    **/
   template<typename... Args>
-  auto operator()(Args&&... args) const ->
-    decltype(ref(std::forward<Args>(args)...))
+  auto operator()(Args&&... args) const
+      -> decltype(ref(std::forward<Args>(args)...))
   {
     return ref(std::forward<Args>(args)...);
   }
@@ -378,7 +389,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl at(const char *i) const
+  RefImpl at(const char* i) const
   {
     auto r = Base::at(i);
     return {r.handler_, r.data_};
@@ -391,7 +402,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl at(const std::string &i) const
+  RefImpl at(const std::string& i) const
   {
     return at(i.c_str());
   }
@@ -416,7 +427,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl operator[](const char *i) const
+  RefImpl operator[](const char* i) const
   {
     return at(i);
   }
@@ -428,7 +439,7 @@ public:
    *
    * Range checking is determined by stored type, and will be used if available.
    **/
-  RefImpl operator[](const std::string &i) const
+  RefImpl operator[](const std::string& i) const
   {
     return at(i);
   }
@@ -452,7 +463,7 @@ public:
    * Throws a BadAnyAccess if raw() or empty() are true, or if the stored type
    * doesn't support conversion from a KnowledgeRecord
    **/
-  void from_record(const KnowledgeRecord &rec) const;
+  void from_record(const KnowledgeRecord& rec) const;
 };
 
 /**
@@ -478,15 +489,15 @@ public:
   /**
    * Construct as a reference to the given Any
    **/
-  AnyRef(const Any &other);
+  AnyRef(const Any& other);
 
   /**
    * Forwards to assign(T), as long as T is not an Any or AnyRef, modifying
    * the object this refers to.
    **/
   template<typename T>
-  auto operator=(T &&val) ->
-    enable_if_<!is_convertible<decay_<T>, ConstAnyRef>()>
+  auto operator=(T&& val)
+      -> enable_if_<!is_convertible<decay_<T>, ConstAnyRef>()>
   {
     return this->assign(std::forward<T>(val));
   }
@@ -496,14 +507,13 @@ public:
    * be stored in an Any, but the object need actually be stored in an Any
    **/
   template<typename T>
-  void target(T &t)
+  void target(T& t)
   {
     handler_ = &get_type_handler<T>();
     data_ = (void*)&t;
   }
 
-  static AnyRef from_pointers_unsafe(
-      const TypeHandlers *handler, void *data)
+  static AnyRef from_pointers_unsafe(const TypeHandlers* handler, void* data)
   {
     return {handler, data};
   }
@@ -516,15 +526,18 @@ public:
   template<typename Impl2, typename ValImpl2, typename RefImpl2>
   friend class ::madara::knowledge::BasicConstAny;
 
-  template<typename Impl2, typename ValImpl2, typename RefImpl2, typename CRefImpl2>
+  template<typename Impl2, typename ValImpl2, typename RefImpl2,
+      typename CRefImpl2>
   friend class ::madara::knowledge::BasicAny;
 };
 
-inline ConstAnyRef::ConstAnyRef(const AnyRef &other)
-  : Base(other.handler_, other.data_) {}
+inline ConstAnyRef::ConstAnyRef(const AnyRef& other)
+  : Base(other.handler_, other.data_)
+{
+}
 
-} // namespace knowledge
+}  // namespace knowledge
 
-} // namespace madara
+}  // namespace madara
 
 #endif  // MADARA_KNOWLEDGE_ANY_REF_H_

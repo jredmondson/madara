@@ -7,7 +7,10 @@
 
 #define MADARA_EXTERN_C extern "C" MADARA_EXPORT
 
-namespace madara { namespace utility {
+namespace madara
+{
+namespace utility
+{
 #else
 #define MADARA_EXTERN_C
 #endif
@@ -42,7 +45,8 @@ MADARA_EXTERN_C const double minrate;
 #ifdef __cplusplus
 constexpr bool simtime = true;
 
-class SimTime {
+class SimTime
+{
 private:
   static std::mutex mutex_;
   static sim_time_callback_fn callback_;
@@ -54,17 +58,20 @@ private:
 public:
   SimTime() = delete;
 
-  static uint64_t last_realtime() {
+  static uint64_t last_realtime()
+  {
     std::lock_guard<std::mutex> guard(mutex_);
     return last_realtime_;
   }
 
-  static uint64_t last_simtime() {
+  static uint64_t last_simtime()
+  {
     std::lock_guard<std::mutex> guard(mutex_);
     return last_simtime_;
   }
 
-  static double last_rate() {
+  static double last_rate()
+  {
     std::lock_guard<std::mutex> guard(mutex_);
     return last_rate_;
   }
@@ -75,13 +82,12 @@ public:
   static uint64_t duration(uint64_t sim_duration);
   static uint64_t future(uint64_t sim_offset);
 
-  friend sim_time_callback_fn set_sim_time_callback(
-      sim_time_callback_fn fn);
+  friend sim_time_callback_fn set_sim_time_callback(sim_time_callback_fn fn);
 
   friend void sim_time_notify(uint64_t, double);
 };
 
-#endif // ifdef __cplusplus
+#endif  // ifdef __cplusplus
 #else
 #ifdef __cplusplus
 constexpr bool simtime = false;
@@ -89,7 +95,8 @@ constexpr bool simtime = false;
 #endif
 
 #ifdef __cplusplus
-} } // namespace madara::utility
+}
+}  // namespace madara::utility
 #endif
 
 #endif

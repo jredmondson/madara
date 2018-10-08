@@ -10,22 +10,22 @@
 
 namespace logger = madara::logger;
 
-std::string host ("");
-const std::string default_multicast ("239.255.0.1:4150");
+std::string host("");
+const std::string default_multicast("239.255.0.1:4150");
 madara::transport::TransportSettings settings;
 
 // command line arguments
-int parse_args (int argc, char * argv[]);
+int parse_args(int argc, char* argv[]);
 
 // test functions
-void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge);
-void write_transported_files (madara::knowledge::KnowledgeBase & knowledge);
+void read_and_create_files(madara::knowledge::KnowledgeBase& knowledge);
+void write_transported_files(madara::knowledge::KnowledgeBase& knowledge);
 
-int main (int argc, char * argv[])
+int main(int argc, char* argv[])
 {
-  settings.hosts.resize (1);
+  settings.hosts.resize(1);
   settings.hosts[0] = default_multicast;
-  int retcode = parse_args (argc, argv);
+  int retcode = parse_args(argc, argv);
 
   // set type to multicast and change queue length to 512K
   settings.type = madara::transport::MULTICAST;
@@ -36,97 +36,91 @@ int main (int argc, char * argv[])
 
   if (settings.id == 1)
   {
-    wait_settings.pre_print_statement = 
-      "Waiting on an_xml to change from process.id==1...\n";
+    wait_settings.pre_print_statement =
+        "Waiting on an_xml to change from process.id==1...\n";
   }
 
   if (retcode < 0)
     return retcode;
 
-  madara::knowledge::KnowledgeBase knowledge ("", settings);
-  
-  knowledge.set (".id",
-    (madara::knowledge::KnowledgeRecord::Integer) settings.id,
-    madara::knowledge::EvalSettings::SEND);
-  
+  madara::knowledge::KnowledgeBase knowledge("", settings);
+
+  knowledge.set(".id", (madara::knowledge::KnowledgeRecord::Integer)settings.id,
+      madara::knowledge::EvalSettings::SEND);
+
   // run tests
-//  test_tree_compilation (knowledge);
+  //  test_tree_compilation (knowledge);
   if (settings.id == 0)
-    read_and_create_files (knowledge);
+    read_and_create_files(knowledge);
   else
   {
-    madara::utility::wait_true (knowledge,
-      "finished_transmitting", wait_settings);
-    write_transported_files (knowledge);
+    madara::utility::wait_true(
+        knowledge, "finished_transmitting", wait_settings);
+    write_transported_files(knowledge);
   }
 
-  //knowledge.print ();
+  // knowledge.print ();
 
   return 0;
 }
 
 /// Tests logicals operators (&&, ||)
-void read_and_create_files (madara::knowledge::KnowledgeBase & knowledge)
+void read_and_create_files(madara::knowledge::KnowledgeBase& knowledge)
 {
-  knowledge.clear ();
+  knowledge.clear();
 
-  knowledge.read_file ("sample",
-    madara::utility::expand_envs ("$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg"),
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file ("sample", "sample_copy.jpg");
+  knowledge.read_file("sample",
+      madara::utility::expand_envs(
+          "$(MADARA_ROOT)/tests/images/manaus_hotel_100x100.jpg"),
+      madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file("sample", "sample_copy.jpg");
 
-  knowledge.set (".a_string", "Hello world!",
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file (".a_string", "hello_world.txt");
-  knowledge.read_file ("hello_world", "hello_world.txt",
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file ("hello_world", "hello_world_copy.txt");
-  
-  knowledge.set (".an_integer", madara::knowledge::KnowledgeRecord::Integer (10),
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file (".an_integer", "ten.txt");
-  knowledge.read_file ("ten", "ten.txt",
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file ("ten", "ten_copy.txt");
-  
-  knowledge.set (".a_double", 12.5,
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file (".a_double", "twelve.txt");
-  knowledge.read_file ("double", "twelve.txt",
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file ("double", "twelve_copy.txt");
+  knowledge.set(
+      ".a_string", "Hello world!", madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file(".a_string", "hello_world.txt");
+  knowledge.read_file(
+      "hello_world", "hello_world.txt", madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file("hello_world", "hello_world_copy.txt");
 
-  knowledge.set (".an_xml",
-    "<tree><leaf>15</leaf><leaf>This leaf is empty.</leaf></tree>",
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file (".an_xml", "an_xml_file.xml");
-  knowledge.read_file ("a_tree", "an_xml_file.xml",
-    madara::knowledge::EvalSettings::SEND);
-  knowledge.write_file ("a_tree", "an_xml_file_copy.xml");
+  knowledge.set(".an_integer", madara::knowledge::KnowledgeRecord::Integer(10),
+      madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file(".an_integer", "ten.txt");
+  knowledge.read_file("ten", "ten.txt", madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file("ten", "ten_copy.txt");
 
-  
-  knowledge.set ("finished_transmitting", 1,
-    madara::knowledge::EvalSettings::SEND);
-  
+  knowledge.set(".a_double", 12.5, madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file(".a_double", "twelve.txt");
+  knowledge.read_file(
+      "double", "twelve.txt", madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file("double", "twelve_copy.txt");
+
+  knowledge.set(".an_xml",
+      "<tree><leaf>15</leaf><leaf>This leaf is empty.</leaf></tree>",
+      madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file(".an_xml", "an_xml_file.xml");
+  knowledge.read_file(
+      "a_tree", "an_xml_file.xml", madara::knowledge::EvalSettings::SEND);
+  knowledge.write_file("a_tree", "an_xml_file_copy.xml");
+
+  knowledge.set(
+      "finished_transmitting", 1, madara::knowledge::EvalSettings::SEND);
 }
-
 
 /// Tests logicals operators (&&, ||)
-void write_transported_files (
-  madara::knowledge::KnowledgeBase & knowledge)
+void write_transported_files(madara::knowledge::KnowledgeBase& knowledge)
 {
-  knowledge.write_file ("a_tree", "/files/an_xml_file_transported.xml");
-  knowledge.write_file ("double", "/files/twelve_transported.txt");
-  knowledge.write_file ("ten", "/files/ten_transported.txt");
-  knowledge.write_file ("hello_world", "/files/hello_world_transported.txt");
-  knowledge.write_file ("sample", "/files/sample_transported.jpg");
+  knowledge.write_file("a_tree", "/files/an_xml_file_transported.xml");
+  knowledge.write_file("double", "/files/twelve_transported.txt");
+  knowledge.write_file("ten", "/files/ten_transported.txt");
+  knowledge.write_file("hello_world", "/files/hello_world_transported.txt");
+  knowledge.write_file("sample", "/files/sample_transported.jpg");
 }
 
-int parse_args (int argc, char * argv[])
+int parse_args(int argc, char* argv[])
 {
   for (int i = 1; i < argc; ++i)
   {
-    std::string arg1 (argv[i]);
+    std::string arg1(argv[i]);
 
     if (arg1 == "-m" || arg1 == "--multicast")
     {
@@ -153,7 +147,7 @@ int parse_args (int argc, char * argv[])
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
       }
 
@@ -163,32 +157,38 @@ int parse_args (int argc, char * argv[])
     {
       if (i + 1 < argc)
       {
-        std::stringstream buffer (argv[i + 1]);
+        std::stringstream buffer(argv[i + 1]);
         int level;
         buffer >> level;
-        logger::global_logger->set_level (level);
+        logger::global_logger->set_level(level);
       }
 
       ++i;
     }
     else
     {
-      madara_logger_ptr_log (logger::global_logger.get(), logger::LOG_ALWAYS, 
-        "\nProgram summary for %s:\n\n" \
-"This test checks the functionality of file reading/writing. To properly\n"
-"test file functionality, please create a file at /files/sample.jpg,\n"
-"preferably with a real image. Check the sample_copy.jpg for correctness\n\n",
-        " [-o|--host hostname]     the hostname of this process (def:localhost)\n" \
-        " [-m|--multicast ip:port] the multicast ip to send and listen to\n" \
-        " [-d|--domain domain]     the knowledge domain to send and listen to\n" \
-        " [-i|--id id]             the id of this agent (should be non-negative)\n" \
-        " [-l|--level level]       the logger level (0+, higher is higher detail)\n" \
-        "\n",
-        argv[0]);
-      exit (0);
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nProgram summary for %s:\n\n"
+          "This test checks the functionality of file reading/writing. To "
+          "properly\n"
+          "test file functionality, please create a file at "
+          "/files/sample.jpg,\n"
+          "preferably with a real image. Check the sample_copy.jpg for "
+          "correctness\n\n",
+          " [-o|--host hostname]     the hostname of this process "
+          "(def:localhost)\n"
+          " [-m|--multicast ip:port] the multicast ip to send and listen to\n"
+          " [-d|--domain domain]     the knowledge domain to send and listen "
+          "to\n"
+          " [-i|--id id]             the id of this agent (should be "
+          "non-negative)\n"
+          " [-l|--level level]       the logger level (0+, higher is higher "
+          "detail)\n"
+          "\n",
+          argv[0]);
+      exit(0);
     }
   }
 
   return 0;
 }
-
