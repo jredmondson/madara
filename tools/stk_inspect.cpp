@@ -1076,14 +1076,15 @@ int main(int argc, char** argv)
   if(print_stats)
   {
     std::cout << "Printing stats:\n";
-    stats.print();
+    
+    print_variables(variables, std::cout, false, true, false, stats);
   }
 
   if(print_knowledge)
   {
-    kb.load_context(load_checkpoint_settings);
     std::cout << "Printing final KB:\n";
-    kb.print();
+
+    print_variables(variables, std::cout, true, false, false, stats);
   }
 
   if (events.size () > 0)
