@@ -115,7 +115,7 @@ void UdpRegistryClient::send_register(void)
 }
 
 long UdpRegistryClient::send_data(
-    const knowledge::VariableReferenceMap& orig_updates)
+    const knowledge::KnowledgeMap& orig_updates)
 {
   if (!settings_.no_sending)
   {

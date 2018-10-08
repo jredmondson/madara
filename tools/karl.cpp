@@ -44,7 +44,7 @@ typedef std::vector<std::string> StringVector;
 
 // default KaRL config file
 std::string default_karl_config =
-    madara::utility::expand_envs("$(HOME)/.karl/karl.cfg");
+    madara::utility::expand_envs("$(HOME)/.madara/karl.cfg");
 
 // default transport settings
 std::string host("");
@@ -368,7 +368,9 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-c|--check-result]      check result of eval. If not zero, then "
           "terminate\n"
           "  [-cf|--config-file]      Config file full path, file contains "
-          "karl cmd line flags, also uses default config file\n"
+          "karl cmd line\n"
+          "                           flags, also uses default config file\n"
+          "                           $(HOME)/.madara/karl.cfg\n"
           "  [-d|--domain domain]     the knowledge domain to send and listen "
           "to\n"
           "  [--debug]                print all sent, received, and final "
@@ -474,6 +476,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-v|--version]           print current MADARA version\n"
           "\n",
           argv[0]);
+
       exit(0);
     }
     else if (arg1 == "-i" || arg1 == "--input")
@@ -1242,7 +1245,12 @@ int main(int argc, char** argv)
   // and first
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
       "Attempting to load default karl config...\n");
-  load_config_file(default_karl_config);
+      
+  if (utility::file_exists (default_karl_config))
+  {
+    load_config_file(default_karl_config);
+  }
+
 
   // handle all user arguments
   handle_arguments(argc, (const char**)argv);

@@ -179,22 +179,24 @@ size_t KnowledgeBaseImpl::attach_transport(
         " no transport was specified. Setting transport to null.\n");
   }
 
-  MADARA_GUARD_TYPE guard(map_.mutex_);
-
-  // if we have a valid transport, add it to the transports vector
-  if (transport != 0)
   {
-    transports_.emplace_back(transport);
-  }
+    MADARA_GUARD_TYPE guard(transport_mutex_);
 
-  return transports_.size();
+    // if we have a valid transport, add it to the transports vector
+    if (transport != 0)
+    {
+      transports_.emplace_back(transport);
+    }
+
+    return transports_.size();
+  }
 }
 
 void KnowledgeBaseImpl::close_transport(void)
 {
   decltype(transports_) old_transports;
   {
-    MADARA_GUARD_TYPE guard(map_.mutex_);
+    MADARA_GUARD_TYPE guard(transport_mutex_);
     using std::swap;
     swap(old_transports, transports_);
   }
@@ -392,54 +394,24 @@ int KnowledgeBaseImpl::send_modifieds(
 {
   int result = 0;
 
-  MADARA_GUARD_TYPE guard(map_.mutex_);
+  MADARA_GUARD_TYPE guard(transport_mutex_);
 
   if (transports_.size() > 0 && !settings.delay_sending_modifieds)
   {
-    const VariableReferenceMap& modified = map_.get_modifieds();
+    KnowledgeMap modified;
+    
+    // get the modifieds and reset those that will be sent, atomically
+    {
+      MADARA_GUARD_TYPE guard(map_.mutex_);
+      modified = map_.get_modifieds_current(settings.send_list, true);
+    }
 
     if (modified.size() > 0)
     {
-      // if there is not an allowed send_list list
-      if (settings.send_list.size() == 0)
+      // send across each transport
+      for (auto& transport : transports_)
       {
-        // send across each transport
-        for (auto& transport : transports_)
-        {
-          transport->send_data(modified);
-        }
-
-        // reset the modified map
-        map_.reset_modified();
-      }
-      // if there is a send_list
-      else
-      {
-        VariableReferenceMap allowed_modifieds;
-        // otherwise, we are only allowed to send a subset of modifieds
-        for (const auto& entry : modified)
-        {
-          if (settings.send_list.find(entry.first) != settings.send_list.end())
-          {
-            allowed_modifieds.emplace_hint(allowed_modifieds.end(), entry);
-          }
-        }
-
-        // if the subset was greater than zero, we send the subset
-        if (allowed_modifieds.size() > 0)
-        {
-          // send across each transport
-          for (auto& transport : transports_)
-          {
-            transport->send_data(allowed_modifieds);
-          }
-
-          // reset modified list for the allowed modifications
-          for (const auto& entry : allowed_modifieds)
-          {
-            map_.reset_modified(entry.first);
-          }
-        }
+        transport->send_data(modified);
       }
 
       map_.inc_clock(settings);

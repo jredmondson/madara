@@ -1131,6 +1131,8 @@ private:
   ThreadSafeContext map_;
   std::string id_;
   transport::QoSTransportSettings settings_;
+  
+  mutable MADARA_LOCK_TYPE transport_mutex_;
 
   std::vector<std::unique_ptr<transport::Base>> transports_;
 };
