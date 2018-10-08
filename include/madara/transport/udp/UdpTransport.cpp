@@ -256,7 +256,7 @@ long UdpTransport::send_message(const char* buf, size_t packet_size)
 }
 
 long UdpTransport::send_data(
-    const knowledge::VariableReferenceMap& orig_updates)
+    const knowledge::KnowledgeMap& orig_updates)
 {
   long result(0);
   const char* print_prefix = "UdpTransport::send_data";

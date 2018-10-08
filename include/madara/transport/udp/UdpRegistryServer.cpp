@@ -30,7 +30,7 @@ int madara::transport::UdpRegistryServer::setup(void)
 }
 
 long madara::transport::UdpRegistryServer::send_data(
-    const madara::knowledge::VariableReferenceMap& orig_updates)
+    const madara::knowledge::KnowledgeMap& orig_updates)
 {
   if (!settings_.no_sending)
   {

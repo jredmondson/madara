@@ -96,7 +96,7 @@ public:
    *                0   No message to send
    *               > 0  size of buffered message
    **/
-  long prep_send(const knowledge::VariableReferenceMap& orig_updates,
+  long prep_send(const knowledge::KnowledgeMap& orig_updates,
       const char* print_prefix);
 
   /**
@@ -109,7 +109,7 @@ public:
    *
    * @return  result of operation or -1 if we are shutting down
    **/
-  virtual long send_data(const knowledge::VariableReferenceMap&) = 0;
+  virtual long send_data(const knowledge::KnowledgeMap&) = 0;
 
   /**
    * Invalidates a transport to indicate it is shutting down
