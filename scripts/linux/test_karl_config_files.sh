@@ -63,9 +63,9 @@ TESTLINE=""
 
 # test simple load of one config file which also points to a karl logic file
 echo "Test simple load of one config file which also points to a karl logic file"
-$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl1.cfg &> log1 
+$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl1.cfg &> $MADARA_ROOT/tests/settings/log1 
 
-input="log1"
+input="$MADARA_ROOT/tests/settings/log1"
 while IFS= read -r line
 do
   #echo "line: $line endline"
