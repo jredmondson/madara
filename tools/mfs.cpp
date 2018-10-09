@@ -60,7 +60,7 @@ filters::AESBufferFilter ssl_filter;
 filters::LZ4BufferFilter lz4_filter;
 #endif
 
-// time to run for (-1 is forever)
+// time to run for(-1 is forever)
 double run_time(-1);
 
 // by default send digests every 1 second
@@ -157,7 +157,7 @@ bool is_valid_filename(const std::string& filename)
 {
   bool result = true;
 
-  if (filename.find("../") != std::string::npos)
+  if(filename.find("../") != std::string::npos)
   {
     result = false;
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -165,7 +165,7 @@ bool is_valid_filename(const std::string& filename)
         "filename %s has directory changes. LIKELY MALICIOUS ATTACK\n",
         filename.c_str());
   }
-  else if (filename.find("//") != std::string::npos)
+  else if(filename.find("//") != std::string::npos)
   {
     result = false;
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -173,7 +173,7 @@ bool is_valid_filename(const std::string& filename)
         "filename %s attempts // directory address. LIKELY MALICIOUS ATTACK\n",
         filename.c_str());
   }
-  else if (utility::begins_with(filename, "/"))
+  else if(utility::begins_with(filename, "/"))
   {
     result = false;
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -206,7 +206,7 @@ void send_file(knowledge::KnowledgeBase& kb, const std::string& operation,
 
   size_t num_fragments = streamer.get_size() / 60000;
 
-  if (streamer.get_size() % 60000 > 0)
+  if(streamer.get_size() % 60000 > 0)
   {
     num_fragments++;
   }
@@ -229,11 +229,11 @@ void send_file(knowledge::KnowledgeBase& kb, const std::string& operation,
   size_t cur_frag = 0;
 
   // iterate over the fragments and send each one in its own packet
-  for (size_t i = 0; i < num_fragments; ++i)
+  for(size_t i = 0; i < num_fragments; ++i)
   {
-    if (valid_fragments.size() > 0)
+    if(valid_fragments.size() > 0)
     {
-      if (cur_frag == valid_fragments.size())
+      if(cur_frag == valid_fragments.size())
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "send_file: %s: %s:"
@@ -243,7 +243,7 @@ void send_file(knowledge::KnowledgeBase& kb, const std::string& operation,
         break;
       }
 
-      if (valid_fragments[cur_frag] >= 0 &&
+      if(valid_fragments[cur_frag] >= 0 &&
           (size_t)valid_fragments[cur_frag] < num_fragments)
       {
         i = (size_t)valid_fragments[cur_frag];
@@ -262,7 +262,7 @@ void send_file(knowledge::KnowledgeBase& kb, const std::string& operation,
 
     // if this is a full file request or this is a useful fragment
     // then send the fragment
-    // if (valid_fragments.size () == 0 ||
+    // if(valid_fragments.size () == 0 ||
     //     i == (size_t)valid_fragments[cur_frag])
     {
       // modify the fragment, the num fragments, and the CRC
@@ -274,7 +274,7 @@ void send_file(knowledge::KnowledgeBase& kb, const std::string& operation,
           "sending frag %d: %d B.\n",
           operation.c_str(), filename.c_str(), (int)i, (int)frag_size);
 
-      if (send_bandwidth > 0)
+      if(send_bandwidth > 0)
       {
         while (
             bandwidth_monitor.get_bytes_per_second() > (uint64_t)send_bandwidth)
@@ -335,14 +335,14 @@ struct Sandbox
     T end, p;
     std::vector<std::string> result;
 
-    for (p = T(path); p != end; ++p)
+    for(p = T(path); p != end; ++p)
     {
       auto file_path = p->path();
 
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "build_file_vector: checking file %s\n", file_path.string().c_str());
 
-      if (filesystem::is_regular_file(file_path))
+      if(filesystem::is_regular_file(file_path))
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "build_file_vector: adding file %s\n", file_path.string().c_str());
@@ -360,10 +360,10 @@ struct Sandbox
   {
     T end, p;
 
-    for (p = T(path); p != end; ++p)
+    for(p = T(path); p != end; ++p)
     {
       auto file_path = p->path();
-      if (filesystem::is_regular_file(file_path))
+      if(filesystem::is_regular_file(file_path))
       {
         // grab the filename
         std::string full_path = file_path.string();
@@ -390,14 +390,14 @@ struct Sandbox
 
     try
     {
-      for (p = T(path); p != end; ++p)
+      for(p = T(path); p != end; ++p)
       {
         auto file_path = p->path();
 
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "delete_iterate: checking file %s\n", file_path.string().c_str());
 
-        if (filesystem::is_regular_file(file_path))
+        if(filesystem::is_regular_file(file_path))
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
               "delete_iterate: removing file %s\n", file_path.string().c_str());
@@ -430,14 +430,14 @@ struct Sandbox
   {
     T end, p;
 
-    for (p = T(path); p != end; ++p)
+    for(p = T(path); p != end; ++p)
     {
       auto file_path = p->path();
 
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "send_iterate: checking file %s\n", file_path.string().c_str());
 
-      if (filesystem::is_regular_file(file_path))
+      if(filesystem::is_regular_file(file_path))
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "send_iterate: sending file %s\n", file_path.string().c_str());
@@ -462,9 +462,9 @@ struct Sandbox
 
   inline void refresh_files(void)
   {
-    if (valid)
+    if(valid)
     {
-      if (recursive)
+      if(recursive)
       {
         refresh_iterate<filesystem::recursive_directory_iterator>();
       }
@@ -477,9 +477,9 @@ struct Sandbox
 
   inline void send_all_files(void)
   {
-    if (valid)
+    if(valid)
     {
-      if (recursive)
+      if(recursive)
       {
         send_iterate<filesystem::recursive_directory_iterator>();
       }
@@ -492,10 +492,10 @@ struct Sandbox
 
   inline void delete_all_files(void)
   {
-    if (valid)
+    if(valid)
     {
       std::vector<std::string> filenames;
-      if (recursive)
+      if(recursive)
       {
         filenames =
             build_file_vector<filesystem::recursive_directory_iterator>();
@@ -505,7 +505,7 @@ struct Sandbox
         filenames = build_file_vector<filesystem::directory_iterator>();
       }
 
-      for (auto filename : filenames)
+      for(auto filename : filenames)
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "delete_all_files: deleting file %s\n", filename.c_str());
@@ -528,7 +528,7 @@ struct Sandbox
               "process_requests: deleting keys with %s prefix in KB\n",
               temp.c_str());
 
-          for (auto entry : keys)
+          for(auto entry : keys)
           {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_ALWAYS, "process_requests: deleting key %s\n",
@@ -589,12 +589,12 @@ public:
         "HandleRequests: Iterating from record %s from requester %s\n",
         record->first.c_str(), request.requester.c_str());
 
-    for (; record != records.end(); ++record)
+    for(; record != records.end(); ++record)
     {
       bool bad_record = false;
-      if (utility::begins_with(record->first, sync_sandbox_prefix))
+      if(utility::begins_with(record->first, sync_sandbox_prefix))
       {
-        if (utility::ends_with(record->first, "all_files"))
+        if(utility::ends_with(record->first, "all_files"))
         {
           size_t sandbox_end =
               record->first.find(".all_files", sync_sandbox_prefix.size());
@@ -617,13 +617,13 @@ public:
           size_t sandbox_end =
               record->first.find(".file.", sync_sandbox_prefix.size());
 
-          if (sandbox_end != std::string::npos)
+          if(sandbox_end != std::string::npos)
           {
             request.sandbox = record->first.substr(sync_sandbox_prefix.size(),
                 sandbox_end - sync_sandbox_prefix.size());
             request.filename = record->first.substr(sandbox_end + 6);
 
-            if (!is_valid_filename(request.filename))
+            if(!is_valid_filename(request.filename))
             {
               madara_logger_ptr_log(logger::global_logger.get(),
                   logger::LOG_ALWAYS,
@@ -638,7 +638,7 @@ public:
 
             // if the type is an integer array, then these are fragments to try
             // to send.
-            if (record->second.is_array_type())
+            if(record->second.is_array_type())
             {
               request.fragments = record->second.to_integers();
 
@@ -670,7 +670,7 @@ public:
                 record->first.c_str());
           }  // end else of sandbox end check
 
-          if (!bad_record)
+          if(!bad_record)
           {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_ERROR, "HandleRequests: Enqueueing request.\n");
@@ -679,14 +679,14 @@ public:
           }  // end if !bad_record
         }    // end has sandbox prefix for loop
       }      // end if begins with sync prefix
-      else if (utility::begins_with(record->first, delete_sandbox_prefix))
+      else if(utility::begins_with(record->first, delete_sandbox_prefix))
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
             "HandleRequests: DeleteRequest: sandbox=%s, "
             "match=%s\n",
             record->first.c_str(), delete_sandbox_prefix.c_str());
 
-        if (utility::ends_with(record->first, ".all_files"))
+        if(utility::ends_with(record->first, ".all_files"))
         {
           size_t sandbox_end =
               record->first.find(".all_files", delete_sandbox_prefix.size());
@@ -710,14 +710,14 @@ public:
           size_t sandbox_end =
               record->first.find(".file.", delete_sandbox_prefix.size());
 
-          if (sandbox_end != std::string::npos)
+          if(sandbox_end != std::string::npos)
           {
             delete_request.sandbox =
                 record->first.substr(delete_sandbox_prefix.size(),
                     sandbox_end - delete_sandbox_prefix.size());
             delete_request.filename = record->first.substr(sandbox_end + 6);
 
-            if (!is_valid_filename(delete_request.filename))
+            if(!is_valid_filename(delete_request.filename))
             {
               madara_logger_ptr_log(logger::global_logger.get(),
                   logger::LOG_ALWAYS,
@@ -751,7 +751,7 @@ public:
                 record->first.c_str());
           }  // end else of sandbox end check
 
-          if (!bad_record)
+          if(!bad_record)
           {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_ALWAYS,
@@ -797,10 +797,10 @@ void process_requests(std::vector<Sandbox>& sandboxes,
         request.sandbox.c_str(), request.filename.c_str(),
         (int)request.last_modified)
 
-        for (auto sandbox : sandboxes)
+        for(auto sandbox : sandboxes)
     {
       // if this is the sandbox
-      if (sandbox.id == request.sandbox)
+      if(sandbox.id == request.sandbox)
       {
         // check for last_modified time
         KnowledgeRecord last_modified =
@@ -808,9 +808,9 @@ void process_requests(std::vector<Sandbox>& sandboxes,
 
         std::string filename = sandbox.path + "/" + request.filename;
 
-        if (!request.all_files)
+        if(!request.all_files)
         {
-          if (!filesystem::is_regular_file(filename))
+          if(!filesystem::is_regular_file(filename))
           {
             madara_logger_ptr_log(logger::global_logger.get(),
                 logger::LOG_ERROR,
@@ -824,7 +824,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
           std::string operation;
 
           // is user requesting fragments of a file?
-          if (request.fragments.size() > 0)
+          if(request.fragments.size() > 0)
           {
             operation = "TRANSFER";
             madara_logger_ptr_log(logger::global_logger.get(),
@@ -834,7 +834,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
                 operation.c_str(), (int)request.fragments.size(),
                 filename.c_str());
           }
-          else if (last_modified.is_valid() &&
+          else if(last_modified.is_valid() &&
                    last_modified > request.last_modified)
           {
             operation = "TRANSFER";
@@ -887,14 +887,14 @@ void process_requests(std::vector<Sandbox>& sandboxes,
         "process_requests: DeleteRequest: sandbox=%s file=%s\n",
         delete_request.sandbox.c_str(), delete_request.filename.c_str());
 
-    for (auto sandbox : sandboxes)
+    for(auto sandbox : sandboxes)
     {
       // if this is the sandbox
-      if (sandbox.id == delete_request.sandbox)
+      if(sandbox.id == delete_request.sandbox)
       {
         std::string filename = sandbox.path + "/" + delete_request.filename;
 
-        if (!delete_request.all_files)
+        if(!delete_request.all_files)
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
               "process_requests: handling delete request for %s\n",
@@ -902,7 +902,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
 
           // check if the filename has ../ or // which is a malicious request
 
-          if (filesystem::is_regular_file(filename))
+          if(filesystem::is_regular_file(filename))
           {
             std::string temp = prefix + ".sandbox." + sandbox.id + ".file.";
             temp += delete_request.filename;
@@ -920,7 +920,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
                   "process_requests: deleting keys with %s prefix in KB\n",
                   temp.c_str());
 
-              for (auto entry : keys)
+              for(auto entry : keys)
               {
                 madara_logger_ptr_log(logger::global_logger.get(),
                     logger::LOG_ALWAYS, "process_requests: deleting key %s\n",
@@ -930,7 +930,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
               }
             }
           }  // end if a regular file
-          else if (filesystem::is_directory(filename))
+          else if(filesystem::is_directory(filename))
           {
             filesystem::remove_all(
                 sandbox.path + "/" + delete_request.filename);
@@ -961,29 +961,29 @@ void process_requests(std::vector<Sandbox>& sandboxes,
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-b" || arg1 == "--broadcast")
+    if(arg1 == "-b" || arg1 == "--broadcast")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::BROADCAST;
       }
       ++i;
     }
-    else if (arg1 == "-d" || arg1 == "--domain")
+    else if(arg1 == "-d" || arg1 == "--domain")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-dp" || arg1 == "--digest-period")
+    else if(arg1 == "-dp" || arg1 == "--digest-period")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> digest_period;
@@ -991,9 +991,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-esb" || arg1 == "--send-bandwidth")
+    else if(arg1 == "-esb" || arg1 == "--send-bandwidth")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> send_bandwidth;
@@ -1005,9 +1005,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-etb" || arg1 == "--total-bandwidth")
+    else if(arg1 == "-etb" || arg1 == "--total-bandwidth")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> total_bandwidth;
@@ -1020,18 +1020,18 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -1041,11 +1041,11 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-lt" || arg1 == "--load-transport")
+    else if(arg1 == "-lt" || arg1 == "--load-transport")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        if (load_transport_prefix == "")
+        if(load_transport_prefix == "")
           settings.load(argv[i + 1]);
         else
           settings.load(argv[i + 1], load_transport_prefix);
@@ -1053,20 +1053,20 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-ltp" || arg1 == "--load-transport-prefix")
+    else if(arg1 == "-ltp" || arg1 == "--load-transport-prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         load_transport_prefix = argv[i + 1];
       }
 
       ++i;
     }
-    else if (arg1 == "-ltt" || arg1 == "--load-transport-text")
+    else if(arg1 == "-ltt" || arg1 == "--load-transport-text")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
-        if (load_transport_prefix == "")
+        if(load_transport_prefix == "")
           settings.load_text(argv[i + 1]);
         else
           settings.load_text(argv[i + 1], load_transport_prefix);
@@ -1074,7 +1074,7 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-lz4" || arg1 == "--lz4")
+    else if(arg1 == "-lz4" || arg1 == "--lz4")
     {
 #ifdef _USE_LZ4_
       settings.add_filter(&lz4_filter);
@@ -1084,32 +1084,32 @@ void handle_arguments(int argc, char** argv)
           "compiled\n");
 #endif
     }
-    else if (arg1 == "-m" || arg1 == "--multicast")
+    else if(arg1 == "-m" || arg1 == "--multicast")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::MULTICAST;
       }
       ++i;
     }
-    else if (arg1 == "-o" || arg1 == "--host")
+    else if(arg1 == "-o" || arg1 == "--host")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--prefix")
+    else if(arg1 == "-p" || arg1 == "--prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         prefix = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-q" || arg1 == "--queue-length")
+    else if(arg1 == "-q" || arg1 == "--queue-length")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
@@ -1117,13 +1117,13 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-r" || arg1 == "--reduced")
+    else if(arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
     }
-    else if (arg1 == "-rhz" || arg1 == "--read-hz")
+    else if(arg1 == "-rhz" || arg1 == "--read-hz")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.read_thread_hertz;
@@ -1131,9 +1131,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-rq" || arg1 == "--requests")
+    else if(arg1 == "-rq" || arg1 == "--requests")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> requests_buffer_size;
@@ -1141,46 +1141,46 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-s" || arg1 == "--save")
+    else if(arg1 == "-s" || arg1 == "--save")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         save_location = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-sj" || arg1 == "--save-json")
+    else if(arg1 == "-sj" || arg1 == "--save-json")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         save_json = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-sb" || arg1 == "--save-binary")
+    else if(arg1 == "-sb" || arg1 == "--save-binary")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         save_binary = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-sc" || arg1 == "--save-checkpoint")
+    else if(arg1 == "-sc" || arg1 == "--save-checkpoint")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         save_checkpoint = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-scp" || arg1 == "--save-checkpoint-prefix")
+    else if(arg1 == "-scp" || arg1 == "--save-checkpoint-prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         save_checkpoint_settings.prefixes.push_back(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-ss" || arg1 == "--save-size")
+    else if(arg1 == "-ss" || arg1 == "--save-size")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> save_checkpoint_settings.buffer_size;
@@ -1188,10 +1188,10 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-ssl" || arg1 == "--ssl")
+    else if(arg1 == "-ssl" || arg1 == "--ssl")
     {
 #ifdef _USE_SSL_
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         ssl_filter.generate_key(argv[i + 1]);
         load_checkpoint_settings.buffer_filters.push_back(&ssl_filter);
@@ -1208,36 +1208,36 @@ void handle_arguments(int argc, char** argv)
       ++i;
 #endif
     }
-    else if (arg1 == "-st" || arg1 == "--save-transport")
+    else if(arg1 == "-st" || arg1 == "--save-transport")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         save_transport = argv[i + 1];
       }
 
       ++i;
     }
-    else if (arg1 == "-stp" || arg1 == "--save-transport-prefix")
+    else if(arg1 == "-stp" || arg1 == "--save-transport-prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         save_transport_prefix = argv[i + 1];
       }
 
       ++i;
     }
-    else if (arg1 == "-stt" || arg1 == "--save-transport-text")
+    else if(arg1 == "-stt" || arg1 == "--save-transport-text")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         save_transport_text = argv[i + 1];
       }
 
       ++i;
     }
-    else if (arg1 == "-sz" || arg1 == "--send-hz")
+    else if(arg1 == "-sz" || arg1 == "--send-hz")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.max_send_hertz;
@@ -1245,59 +1245,59 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-u" || arg1 == "--udp")
+    else if(arg1 == "-u" || arg1 == "--udp")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::UDP;
       }
       ++i;
     }
-    else if (arg1 == "-v" || arg1 == "--version")
+    else if(arg1 == "-v" || arg1 == "--version")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "MADARA version: %s\n", utility::get_version().c_str());
     }
-    else if (arg1 == "-t" || arg1 == "--time")
+    else if(arg1 == "-t" || arg1 == "--time")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> run_time;
       }
       ++i;
     }
-    else if (arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
+    else if(arg1 == "-tdp" || arg1 == "--transport-debug-prefix")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.debug_to_kb(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "--zmq" || arg1 == "--0mq")
+    else if(arg1 == "--zmq" || arg1 == "--0mq")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
       }
       ++i;
     }
-    else if (arg1 == "-0f" || arg1 == "--init-file")
+    else if(arg1 == "-0f" || arg1 == "--init-file")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         initfiles.push_back(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-0b" || arg1 == "--init-bin")
+    else if(arg1 == "-0b" || arg1 == "--init-bin")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         initbinaries.push_back(argv[i + 1]);
       }
@@ -1415,7 +1415,7 @@ int main(int argc, char** argv)
   handle_arguments(argc, argv);
 
   // default transport is multicast
-  if (settings.hosts.size() == 0)
+  if(settings.hosts.size() == 0)
   {
     settings.type = transport::MULTICAST;
     settings.hosts.push_back(default_multicast);
@@ -1426,18 +1426,18 @@ int main(int argc, char** argv)
   settings.add_receive_filter(&receive_filter);
 
   // save transport always happens after all possible transport chagnes
-  if (save_transport != "")
+  if(save_transport != "")
   {
-    if (save_transport_prefix == "")
+    if(save_transport_prefix == "")
       settings.save(save_transport);
     else
       settings.save(save_transport, save_transport_prefix);
   }
 
   // save transport always happens after all possible transport chagnes
-  if (save_transport_text != "")
+  if(save_transport_text != "")
   {
-    if (save_transport_prefix == "")
+    if(save_transport_prefix == "")
       settings.save_text(save_transport_text);
     else
       settings.save_text(save_transport_text, save_transport_prefix);
@@ -1471,7 +1471,7 @@ int main(int argc, char** argv)
   delete_consumer.resize();
 
   // load any binary settings
-  for (auto& file : initbinaries)
+  for(auto& file : initbinaries)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "Reading binary checkpoint from file %s:\n", file.c_str());
@@ -1484,7 +1484,7 @@ int main(int argc, char** argv)
   load_checkpoint_settings.ignore_header_check = true;
 
   // allow user-readable text files to overwrite binary settings
-  for (auto& file : initfiles)
+  for(auto& file : initfiles)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "Reading karl logic from file %s:\n", file.c_str());
@@ -1501,7 +1501,7 @@ int main(int argc, char** argv)
 
   kb.attach_transport(host, settings);
 
-  if (keys.size() == 0)
+  if(keys.size() == 0)
   {
     sandbox_map["default"].set(filesystem::current_path().string());
     sandbox_map.keys(keys, true);
@@ -1511,20 +1511,20 @@ int main(int argc, char** argv)
 
   std::vector<Sandbox> sandboxes(keys.size());
 
-  for (size_t i = 0; i < keys.size(); ++i)
+  for(size_t i = 0; i < keys.size(); ++i)
   {
     containers::FlexMap sandbox = sandbox_map[keys[i]];
     sandboxes[i].read(sandbox, keys[i], kb);
     sandboxes[i].refresh_files();
   }
 
-  if (run_time > 0)
+  if(run_time > 0)
   {
     utility::EpochEnforcer<utility::Clock> enforcer(digest_period, run_time);
 
     while (shutdown_request.is_false() && !enforcer.is_done())
     {
-      for (auto sandbox : sandboxes)
+      for(auto sandbox : sandboxes)
       {
         sandbox.modify();
       }
@@ -1543,7 +1543,7 @@ int main(int argc, char** argv)
 
     while (shutdown_request.is_false())
     {
-      for (auto sandbox : sandboxes)
+      for(auto sandbox : sandboxes)
       {
         sandbox.modify();
       }
@@ -1560,28 +1560,28 @@ int main(int argc, char** argv)
   kb.print();
 
   // save as checkpoint of changes by logics and input files
-  if (save_checkpoint.size() > 0)
+  if(save_checkpoint.size() > 0)
   {
     save_checkpoint_settings.filename = save_checkpoint;
     kb.save_checkpoint(save_checkpoint_settings);
   }
 
   // save as karl if requested
-  if (save_location.size() > 0)
+  if(save_location.size() > 0)
   {
     save_checkpoint_settings.filename = save_location;
     kb.save_as_karl(save_checkpoint_settings);
   }
 
   // save as karl if requested
-  if (save_json.size() > 0)
+  if(save_json.size() > 0)
   {
     save_checkpoint_settings.filename = save_json;
     kb.save_as_json(save_checkpoint_settings);
   }
 
   // save as binary if requested
-  if (save_binary.size() > 0)
+  if(save_binary.size() > 0)
   {
     save_checkpoint_settings.filename = save_binary;
     kb.save_context(save_checkpoint_settings);

@@ -600,7 +600,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
-    if(arg1 == "-cf" || arg1 == "--config-file")
+    else if(arg1 == "-cf" || arg1 == "--config-file")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "Found user config file flag, param: %s\n", argv[i + 1]);
@@ -1290,24 +1290,16 @@ int main(int argc, char** argv)
 
   if(print_stats)
   {
-    if(debug)
-    {
-      std::cout << "Printing stats:\n";
-    }
-
-    stats.print();
+    std::cout << "Printing stats:\n";
+    
+    print_variables(variables, std::cout, false, true, false, stats);
   }
 
   if(print_knowledge)
   {
-    kb.load_context(load_checkpoint_settings);
+    std::cout << "Printing final KB:\n";
 
-    if(debug)
-    {
-      std::cout << "Printing final KB:\n";
-    }
-
-    kb.print();
+    print_variables(variables, std::cout, true, false, false, stats);
   }
 
   if(events.size() > 0)

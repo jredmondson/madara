@@ -156,8 +156,8 @@ else
 
   IFS=" "
 
-  echo "mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} ${BUNDLE_ARGS[@]}"
-  mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} "${BUNDLE_ARGS[@]}"
+  echo "\$MADARA_ROOT/bin/mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} ${BUNDLE_ARGS[@]}"
+  $MADARA_ROOT/bin/mabundle -d ${DEST_DIR} -s ${SOURCE_DIR} "${BUNDLE_ARGS[@]}"
 
   if [ $TAR -eq 1 ]; then
 

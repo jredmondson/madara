@@ -22,41 +22,41 @@ bool create_sample(false);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--create-sample")
+    if(arg1 == "-c" || arg1 == "--create-sample")
     {
       create_sample = true;
     }
-    else if (arg1 == "-e" || arg1 == "--header-file")
+    else if(arg1 == "-e" || arg1 == "--header-file")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         headers.push_back(argv[i + 1]);
       }
       ++i;
     }
-    else if (arg1 == "-o" || arg1 == "--output-dir")
+    else if(arg1 == "-o" || arg1 == "--output-dir")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         output_dir = argv[i + 1];
       }
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--project-name")
+    else if(arg1 == "-p" || arg1 == "--project-name")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         project_name = argv[i + 1];
       }
       ++i;
     }
-    else if (arg1 == "-s" || arg1 == "--source-file")
+    else if(arg1 == "-s" || arg1 == "--source-file")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         sources.push_back(argv[i + 1]);
       }
@@ -88,7 +88,7 @@ bool copy_mpbs(void)
   bool result(false);
   std::string madara_root = getenv("MADARA_ROOT");
 
-  if (madara_root != "")
+  if(madara_root != "")
   {
     // read mpb files
     std::string using_ace =
@@ -119,7 +119,7 @@ bool write_workspace_file(void)
   std::string filename(output_dir + "/" + project_name + ".mwc");
 
   workspace.open(filename.c_str());
-  if (workspace.is_open())
+  if(workspace.is_open())
   {
     workspace << "workspace {\n";
     workspace << "  " + project_name + ".mpc\n";
@@ -142,7 +142,7 @@ bool write_sample_source(void)
   std::string filename(output_dir + "/" + project_name + ".cpp");
 
   sample.open(filename.c_str());
-  if (sample.is_open())
+  if(sample.is_open())
   {
     sample << "#include \"madara/knowledge/KnowledgeBase.h\"\n\n";
     sample << "namespace knowledge = madara::knowledge;\n\n";
@@ -170,7 +170,7 @@ bool write_project_file(void)
   std::string filename(output_dir + "/" + project_name + ".mpc");
 
   project.open(filename.c_str());
-  if (project.is_open())
+  if(project.is_open())
   {
     project << "project (" << project_name << ") : using_madara, using_ace {\n";
 
@@ -192,7 +192,7 @@ bool write_project_file(void)
 
     project << "  HeaderFiles {\n";
 
-    for (size_t i = 0; i < headers.size(); ++i)
+    for(size_t i = 0; i < headers.size(); ++i)
     {
       project << "    " << headers[i] << "\n";
     }
@@ -201,12 +201,12 @@ bool write_project_file(void)
 
     project << "  SourceFiles {\n";
 
-    for (size_t i = 0; i < sources.size(); ++i)
+    for(size_t i = 0; i < sources.size(); ++i)
     {
       project << "    " << sources[i] << "\n";
     }
 
-    if (create_sample)
+    if(create_sample)
     {
       project << "    " << project_name << ".cpp\n";
     }
@@ -230,7 +230,7 @@ int main(int argc, char** argv)
   handle_arguments(argc, argv);
 
   // create the output dir if necessary
-  if (output_dir != ".")
+  if(output_dir != ".")
   {
     // create the mkdir command for the output directory
     std::string mkdir("mkdir ");
@@ -241,7 +241,7 @@ int main(int argc, char** argv)
 
     mkdir += output_dir;
 
-    if (system(mkdir.c_str()) != 0)
+    if(system(mkdir.c_str()) != 0)
     {
       std::cerr << "ERROR: Issue with command " << mkdir << "\n";
     }
@@ -251,7 +251,7 @@ int main(int argc, char** argv)
   write_workspace_file();
   write_project_file();
 
-  if (create_sample)
+  if(create_sample)
     write_sample_source();
 
   return 0;
