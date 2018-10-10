@@ -1166,7 +1166,7 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
 
   std::transform(argv_config_files.begin(), argv_config_files.end(),
       std::back_inserter(argvp_config_files),
-      std::mem_fun_ref(&std::string::c_str));
+      [](const std::string &s) { return s.c_str(); });
 
   handle_arguments(argvp_config_files.size(), argvp_config_files.data(),
       recursion_limit - 1);
