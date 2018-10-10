@@ -75,7 +75,7 @@ matrix:
             - llvm-toolchain-trusty-5.0
           packages:
             - libssl-dev
-            - clang-5.0
+#            - clang-5.0
       os: linux
 
       # g++, linux, no ssl
