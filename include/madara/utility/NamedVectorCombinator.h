@@ -117,9 +117,11 @@ public:
 
     if(make_unique)
     {
-      result.insert(result.end(),
-        std::make_move_iterator(unique_list.begin()),
-        std::make_move_iterator(unique_list.end()));
+      result.insert(result.end(), unique_list.begin(), unique_list.end());
+
+        // in C++17, this works and reduces copying costs. May switch then.
+        // std::make_move_iterator(unique_list.begin()),
+        // std::make_move_iterator(unique_list.end()));
     }
   }
 
