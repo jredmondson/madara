@@ -14,6 +14,7 @@
 
 #include "madara/utility/Timer.h"
 #include "madara/knowledge/FileFragmenter.h"
+#include "madara/utility/NamedVectorCombinator.h"
 
 namespace knowledge = madara::knowledge;
 namespace utility = madara::utility;
@@ -23,11 +24,11 @@ int madara_fails = 0;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (argc > 1)
+    if(argc > 1)
     {
       std::cout
           << "\nProgram Summary for " << argv[0]
@@ -134,7 +135,7 @@ void test_version(void)
   buffer << human_readable_version;
   buffer >> version;
 
-  if (version == converted_version)
+  if(version == converted_version)
     std::cout << "Current version conversion is a SUCCESS.\n";
   else
   {
@@ -162,7 +163,7 @@ void test_heaps(void)
    *   3       6      2      1
    **/
 
-  if (input[0] == 10 && input[1] == 8 && input[2] == 5 && input[3] == 3 &&
+  if(input[0] == 10 && input[1] == 8 && input[2] == 5 && input[3] == 3 &&
       input[4] == 6 && input[5] == 2 && input[6] == 1)
     std::cerr << "SUCCESS\n";
   else
@@ -181,7 +182,7 @@ void test_heaps(void)
    *   5       6      8      10
    **/
 
-  if (input[0] == 1 && input[1] == 2 && input[2] == 3 && input[3] == 5 &&
+  if(input[0] == 1 && input[1] == 2 && input[2] == 3 && input[3] == 5 &&
       input[4] == 6 && input[5] == 8 && input[6] == 10)
     std::cerr << "SUCCESS\n";
   else
@@ -195,7 +196,7 @@ void test_ints(void)
 {
   std::cerr << "Testing nearest int to 2.25... ";
 
-  if (madara::utility::nearest_int(2.25) == 2)
+  if(madara::utility::nearest_int(2.25) == 2)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -205,7 +206,7 @@ void test_ints(void)
 
   std::cerr << "Testing nearest int to 2.8... ";
 
-  if (madara::utility::nearest_int(2.8) == 3)
+  if(madara::utility::nearest_int(2.8) == 3)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -215,7 +216,7 @@ void test_ints(void)
 
   std::cerr << "Testing nearest int to 16.1... ";
 
-  if (madara::utility::nearest_int(16.1) == 16)
+  if(madara::utility::nearest_int(16.1) == 16)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -225,7 +226,7 @@ void test_ints(void)
 
   std::cerr << "Testing nearest int to 9.9575... ";
 
-  if (madara::utility::nearest_int(9.9575) == 10)
+  if(madara::utility::nearest_int(9.9575) == 10)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -237,9 +238,9 @@ void test_ints(void)
 
   int num_zeroes = 0;
   int num_ones = 0;
-  for (int i = 0; i < 100000; ++i)
+  for(int i = 0; i < 100000; ++i)
   {
-    if (madara::utility::rand_int(0, 1, true) == 0)
+    if(madara::utility::rand_int(0, 1, true) == 0)
       ++num_zeroes;
     else
       ++num_ones;
@@ -247,7 +248,7 @@ void test_ints(void)
 
   std::cerr << "freq 0=" << num_zeroes << ", freq 1=" << num_ones << "... ";
 
-  if (num_zeroes > 30000 && num_ones > 30000)
+  if(num_zeroes > 30000 && num_ones > 30000)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -259,9 +260,9 @@ void test_ints(void)
 
   num_zeroes = 0;
   num_ones = 0;
-  for (int i = 0; i < 100000; ++i)
+  for(int i = 0; i < 100000; ++i)
   {
-    if (madara::utility::rand_int(0, 1, false) == 0)
+    if(madara::utility::rand_int(0, 1, false) == 0)
       ++num_zeroes;
     else
       ++num_ones;
@@ -269,7 +270,7 @@ void test_ints(void)
 
   std::cerr << "freq 0=" << num_zeroes << ", freq 1=" << num_ones << "... ";
 
-  if (num_zeroes > 30000 && num_ones > 30000)
+  if(num_zeroes > 30000 && num_ones > 30000)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -283,7 +284,7 @@ void test_time(void)
   std::cerr << "Testing get_time... ";
   int64_t start = madara::utility::get_time();
 
-  for (int i = 0; i < 30000; ++i)
+  for(int i = 0; i < 30000; ++i)
   {
     madara::utility::rand_int(0, 1);
   }
@@ -292,7 +293,7 @@ void test_time(void)
 
   std::cerr << end - start;
 
-  if (end - start > 0)
+  if(end - start > 0)
     std::cerr << " SUCCESS\n";
   else
   {
@@ -311,13 +312,13 @@ void test_sqrt(void)
   timer.start();
 
   double input = 1000000000;
-  for (int i = 0; i < 1000000000; ++i)
+  for(int i = 0; i < 1000000000; ++i)
   {
     input = sqrt(input);
   }
 
   timer.stop();
-  int measured = (int)timer.duration_ns();
+  int measured =(int)timer.duration_ns();
   int average = measured / 1000000000;
 
   std::cerr << "sqrt: 1,000,000,000 iterations in " << measured
@@ -337,7 +338,7 @@ void test_sleep(void)
 
   std::cerr << "result=" << end_time;
 
-  if (end_time >= sleep_time)
+  if(end_time >= sleep_time)
   {
     std::cerr << "... SUCCESS\n";
   }
@@ -352,7 +353,7 @@ void test_sleep(void)
 
   std::cerr << "result=" << end_time;
 
-  if (end_time >= 2.5)
+  if(end_time >= 2.5)
   {
     std::cerr << "... SUCCESS\n";
   }
@@ -367,7 +368,7 @@ void test_sleep(void)
 
   std::cerr << "result=" << end_time;
 
-  if (end_time >= 2.25)
+  if(end_time >= 2.25)
   {
     std::cerr << "... SUCCESS\n";
   }
@@ -393,10 +394,10 @@ void test_sleep(void)
     auto dur_actual =
         sc::duration_cast<sc::milliseconds>(end_actual - start_actual);
 
-    std::cerr << "result=" << dur << " [" << (dur_actual.count() / 1000.0)
+    std::cerr << "result=" << dur << " [" <<(dur_actual.count() / 1000.0)
               << "]";
 
-    if (dur >= sleep_time)
+    if(dur >= sleep_time)
     {
       std::cerr << "... SUCCESS\n";
     }
@@ -425,7 +426,7 @@ void test_replace(void)
   std::cerr << "  Single char replace... ";
   size_t result = utility::string_replace(source, "i", "u", true);
 
-  if (result == 2 && source == "My mulkshake brungs all the boys to the yard.")
+  if(result == 2 && source == "My mulkshake brungs all the boys to the yard.")
   {
     std::cerr << "SUCCESS";
   }
@@ -443,7 +444,7 @@ void test_replace(void)
   result =
       utility::string_replace(source, "milkshake brings", "crumpets bring");
 
-  if (result == 1 && source == "My crumpets bring all the boys to the yard.")
+  if(result == 1 && source == "My crumpets bring all the boys to the yard.")
   {
     std::cerr << "SUCCESS";
   }
@@ -462,7 +463,7 @@ void test_replace(void)
 
   result = utility::string_replace(source, "bob", "jake");
 
-  if (result == 4 && source == "jake is a builder. jake is a boss. jake is the "
+  if(result == 4 && source == "jake is a builder. jake is a boss. jake is the "
                                "foreman. jake is a hoss.")
   {
     std::cerr << "SUCCESS";
@@ -480,7 +481,7 @@ void test_replace(void)
 
   result = utility::string_replace(source, "bob", "jake", false);
 
-  if (result == 1 && source == "jake is a builder. bob is a boss. bob is the "
+  if(result == 1 && source == "jake is a builder. bob is a boss. bob is the "
                                "foreman. bob is a hoss.")
   {
     std::cerr << "SUCCESS";
@@ -502,14 +503,14 @@ void test_fragment(const std::string& message,
   std::shared_ptr<const std::vector<unsigned char>> binary =
       record.share_binary();
 
-  if (binary->size() != size)
+  if(binary->size() != size)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
   else
   {
-    if (memcmp(binary->data(), text_buffer, size) == 0)
+    if(memcmp(binary->data(), text_buffer, size) == 0)
     {
       std::cerr << "SUCCESS\n";
     }
@@ -523,7 +524,7 @@ void test_fragment(const std::string& message,
 
 void test_file_crc(void)
 {
-  std::cerr << "Testing file_crc and file_size...\n";
+  std::cerr << "Testing file_crc and file_size...";
 
   std::string filename =
       "$(MADARA_ROOT)/tests/images/manaus_hotel_900x1500.jpg";
@@ -549,7 +550,7 @@ void test_file_crc(void)
   crc_32_hash.process_bytes(buffer.data(), file_size);
   crcs.push_back(crc_32_hash.checksum());
 
-  if (crcs[0] != 0 && std::adjacent_find(crcs.begin(), crcs.end(),
+  if(crcs[0] != 0 && std::adjacent_find(crcs.begin(), crcs.end(),
                           std::not_equal_to<uint32_t>()) == crcs.end())
   {
     std::cerr << "SUCCESS\n";
@@ -557,7 +558,7 @@ void test_file_crc(void)
   else
   {
     std::cerr << "FAIL. crc32 results were:\n";
-    for (auto crc : crcs)
+    for(auto crc : crcs)
     {
       std::cerr << "  " << crc << "\n";
     }
@@ -591,7 +592,7 @@ void test_file_fragmenter(void)
   std::cerr << "  Splitting 256KB buffer into 5 chunks... ";
 
   knowledge::FileFragmenter fragmenter(text_buffer, size, segment_size);
-  if (fragmenter.records.size() == 5)
+  if(fragmenter.records.size() == 5)
   {
     std::cerr << "SUCCESS\n";
 
@@ -613,7 +614,7 @@ void test_file_fragmenter(void)
         fragmenter.create_vector("record.split", kb);
     knowledge::VariableReferences modifieds;
 
-    if (fragments[0].size() == segment_size &&
+    if(fragments[0].size() == segment_size &&
         fragments[1].size() == segment_size &&
         fragments[2].size() == segment_size &&
         fragments[3].size() == segment_size &&
@@ -624,7 +625,7 @@ void test_file_fragmenter(void)
       std::cerr << "  Checking modifieds...";
       modifieds = kb.save_modifieds();
 
-      if (modifieds.size() == 0)
+      if(modifieds.size() == 0)
       {
         std::cerr << "SUCCESS\n";
       }
@@ -640,7 +641,7 @@ void test_file_fragmenter(void)
 
       size_t rebuilt_size = fragmenter.from_kb("record.split", kb);
 
-      if (rebuilt_size == size && fragmenter.file_size == size)
+      if(rebuilt_size == size && fragmenter.file_size == size)
       {
         std::cerr << "SUCCESS\n";
       }
@@ -656,7 +657,7 @@ void test_file_fragmenter(void)
 
       rebuilt_size = fragmenter.from_kb("record.split", kb);
 
-      if (rebuilt_size != size && fragmenter.file_size == rebuilt_size)
+      if(rebuilt_size != size && fragmenter.file_size == rebuilt_size)
       {
         std::cerr << "SUCCESS\n";
       }  // end is still fragmented
@@ -665,7 +666,7 @@ void test_file_fragmenter(void)
         std::cerr << "FAIL\n";
         ++madara_fails;
         kb.print();
-      }  // end is complete (FAIL)
+      }  // end is complete(FAIL)
 
       std::cerr << "  Checking modifieds with default settings... ";
 
@@ -673,7 +674,7 @@ void test_file_fragmenter(void)
           "record.split", kb, knowledge::KnowledgeUpdateSettings::DEFAULT);
       modifieds = kb.save_modifieds();
 
-      if (modifieds.size() == 6)
+      if(modifieds.size() == 6)
       {
         std::cerr << "SUCCESS\n";
       }  // end modifieds == 6
@@ -683,7 +684,7 @@ void test_file_fragmenter(void)
                   << modifieds.size() << "\n";
         ++madara_fails;
         kb.print();
-      }  // end modifieds != 6 (FAIL)
+      }  // end modifieds != 6(FAIL)
 
       std::cerr << "  Clearing modifieds...\n";
 
@@ -694,7 +695,7 @@ void test_file_fragmenter(void)
       fragments.modify(2);
       modifieds = kb.save_modifieds();
 
-      if (modifieds.size() == 1)
+      if(modifieds.size() == 1)
       {
         std::cerr << "SUCCESS\n";
       }  // end modifieds == 1
@@ -704,22 +705,181 @@ void test_file_fragmenter(void)
                   << modifieds.size() << "\n";
         ++madara_fails;
         kb.print();
-      }  // end modifieds != 1 (FAIL)
+      }  // end modifieds != 1(FAIL)
     }    // end has 5 fragments of appropriate size
     else
     {
       std::cerr << "FAIL\n";
       ++madara_fails;
       kb.print();
-    }  // end does not have appropriate fragments (FAIL)
+    }  // end does not have appropriate fragments(FAIL)
   }    // end has 5 fragments
   else
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
-  }  // end does not have 5 fragments (FAIL)
+  }  // end does not have 5 fragments(FAIL)
 
   delete[] text_buffer;
+}
+
+void test_named_vector_combinator(void)
+{
+  std::cerr << "Testing NamedVectorCombinator...\n";
+  std::vector<std::string> vector1 = {
+    "bob", "charlie", "jane", "william"};
+  std::vector<std::string> vector2 = {
+    "andrew", "earl", "james", "jane", "kevin"};
+  std::vector<std::string> result;
+  std::string input1 = "a\nb\nc\nd\ne";
+  std::string input2 = "d\ne\nf\ng\nh";
+
+  std::cerr << "  Adding 2 lists and merging...";
+  utility::NamedVectorCombinator combinator;
+  combinator.add("vector1", vector1);
+  combinator.add("vector2", vector2);
+
+  combinator.merge({"vector1", "vector2"}, result);
+
+  if(result.size() == 8 && result[0] == "andrew" && result[1] == "bob" &&
+     result[2] == "charlie" && result[3] == "earl" && result[4] == "james" &&
+     result[5] == "jane" && result[6] == "kevin" && result[7] == "william")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n  List contained " << result.size() << " elements:\n";
+
+    for(auto name : result)
+    {
+      std::cerr << "    " << name << "\n";
+    }
+
+    ++madara_fails;
+  }  // end does not the correct result list
+
+  std::cerr << "  Adding 2 strings of lists and merging...";
+  combinator.add("input1", input1);
+  combinator.add("input2", input2);
+
+  combinator.merge({"input1", "input2"}, result);
+
+  if(result.size() == 8 && result[0] == "a" && result[1] == "b" &&
+     result[2] == "c" && result[3] == "d" && result[4] == "e" &&
+     result[5] == "f" && result[6] == "g" && result[7] == "h")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n  List contained " << result.size() << " elements:\n";
+
+    for(auto name : result)
+    {
+      std::cerr << "    " << name << "\n";
+    }
+
+    ++madara_fails;
+  }  // end does not the correct result list
+
+  std::cerr << "  Adding 4 files of lists and merging 2 thread read lists...";
+
+  // read four example settings files in $MADARA_ROOT
+  combinator.from_file("thread1.read", utility::expand_envs (
+    "$(MADARA_ROOT)/tests/settings/named_vectors/thread1.read"));
+  combinator.from_file("thread1.write", utility::expand_envs (
+    "$(MADARA_ROOT)/tests/settings/named_vectors/thread1.write"));
+  combinator.from_file("thread2.read", utility::expand_envs (
+    "$(MADARA_ROOT)/tests/settings/named_vectors/thread2.read"));
+  combinator.from_file("thread2.write", utility::expand_envs (
+    "$(MADARA_ROOT)/tests/settings/named_vectors/thread2.write"));
+
+  // merge the read files into a single list
+  combinator.merge({"thread1.read", "thread2.read"}, result);
+
+  if(result.size() == 7 &&
+     result[0] == "agent.0.battery" &&
+     result[1] == "agent.0.correctness" &&
+     result[2] == "agent.0.history" &&
+     result[3] == "agent.0.imu" &&
+     result[4] == "agent.0.location" &&
+     result[5] == "agent.0.orientation" &&
+     result[6] == "agent.0.stability")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n  List contained " << result.size() << " elements:\n";
+
+    for(auto name : result)
+    {
+      std::cerr << "    " << name << "\n";
+    }
+
+    ++madara_fails;
+  }  // end does not the correct result list
+
+  std::cerr << "  Merging 2 thread write lists...";
+
+  // merge the write files into a single list
+  combinator.merge({"thread1.write", "thread2.write"}, result);
+
+  if(result.size() == 5 &&
+     result[0] == "agent.0.correctness" &&
+     result[1] == "agent.0.mission.next" &&
+     result[2] == "agent.0.mission.status" &&
+     result[3] == "agent.0.stability" &&
+     result[4] == "agent.1.algorithm")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n  List contained " << result.size() << " elements:\n";
+
+    for(auto name : result)
+    {
+      std::cerr << "    " << name << "\n";
+    }
+
+    ++madara_fails;
+  }  // end does not the correct result list
+
+  std::cerr << "  Merging all 4 thread read/write lists...";
+
+  // merge all files into a single list
+  combinator.merge(
+    {"thread1.read", "thread1.write",
+     "thread2.read", "thread2.write"}, result);
+
+  if(result.size() == 10 &&
+     result[0] == "agent.0.battery" &&
+     result[1] == "agent.0.correctness" &&
+     result[2] == "agent.0.history" &&
+     result[3] == "agent.0.imu" &&
+     result[4] == "agent.0.location" &&
+     result[5] == "agent.0.mission.next" &&
+     result[6] == "agent.0.mission.status" &&
+     result[7] == "agent.0.orientation" &&
+     result[8] == "agent.0.stability" &&
+     result[9] == "agent.1.algorithm")
+  {
+    std::cerr << "SUCCESS\n";
+  }
+  else
+  {
+    std::cerr << "FAIL\n  List contained " << result.size() << " elements:\n";
+
+    for(auto name : result)
+    {
+      std::cerr << "    " << name << "\n";
+    }
+
+    ++madara_fails;
+  }  // end does not the correct result list
+
 }
 
 int main(int argc, char** argv)
@@ -736,8 +896,9 @@ int main(int argc, char** argv)
   test_sleep();
   test_file_fragmenter();
   test_file_crc();
+  test_named_vector_combinator();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
