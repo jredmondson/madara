@@ -63,7 +63,7 @@ TESTLINE=""
 
 # test simple load of one config file which also points to a karl logic file
 echo "Test simple load of one config file which also points to a karl logic file"
-$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl1.cfg # &> $MADARA_ROOT/tests/settings/log1 
+$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl1.cfg &> $MADARA_ROOT/tests/settings/log1 
 
 input="$MADARA_ROOT/tests/settings/log1"
 while IFS= read -r line
@@ -81,10 +81,10 @@ fi
 
 # recursion limit test, should fail
 echo "Recursion limit test, fallout at 10"
-$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl.cfg &> log2 
+$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl.cfg &> $MADARA_ROOT/tests/settings/log2 
 
 TESTLINE=""
-input="log2"
+input="$MADARA_ROOT/tests/settings/log2"
 while IFS= read -r line
 do
   #echo "line: $line endline"
@@ -100,10 +100,10 @@ fi
 
 # test one karl config loading another karl config
 echo "Test one karl config loading another karl config"
-$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl2.cfg &> log3 
+$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl2.cfg &> $MADARA_ROOT/tests/settings/log3 
 
 TESTLINE=""
-input="log3"
+input="$MADARA_ROOT/tests/settings/log3"
 while IFS= read -r line
 do
   #echo "line: $line endline"
@@ -119,10 +119,10 @@ fi
 
 # test one karl config loading a karl logic file which contains commands to tripper an exception
 echo "Test one karl config loading a karl logic file which contains commands to tripper an exception"
-$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl4.cfg &> log4 
+$MADARA_ROOT/bin/karl -cf $MADARA_ROOT/tests/settings/karl4.cfg &> $MADARA_ROOT/tests/settings/log4 
 
 TESTLINE=""
-input="log4"
+input="$MADARA_ROOT/tests/settings/log4"
 while IFS= read -r line
 do
   #echo "line: $line endline"
