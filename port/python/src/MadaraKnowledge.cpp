@@ -92,6 +92,20 @@ class_<T> define_basic_any(const char* name, const char* doc, I init)
   using namespace madara::knowledge;
   using namespace madara::exceptions;
 
+  static auto get_capnp_bytes = [](const T& a) -> object
+    {
+      auto buf = a.get_capnp_buffer().asChars();
+      Py_buffer pybuf;
+      int err = PyBuffer_FillInfo(&pybuf, 0, (char*)buf.begin(),
+          buf.size(), true, PyBUF_CONTIG_RO);
+      if (err == -1)
+      {
+        PyErr_Print();
+        throw madara::exceptions::MadaraException("Bad python buffer");
+      }
+      return object(handle<>(PyMemoryView_FromBuffer(&pybuf)));
+    };
+
 #define MADARA_PYSETITEM(Key, Val)                                   \
   .def("__setitem__", +[](T& a, Key key, Val val) { a[key] = val; }, \
       "Set an element at the given index to a C++ " #Val)
@@ -186,18 +200,12 @@ class_<T> define_basic_any(const char* name, const char* doc, I init)
           "Check if string indexing is supported")
       .def("supports_fields", &T::supports_fields,
           "Check if fields are supported")
+      .def("get_capnp_bytes", +get_capnp_bytes,
+          "Get a bytes array for the held object. Throws if held object "
+          "isn't a Cap'n Proto message.")
       .def("reader",
           +[](const T& a) -> object {
-            auto buf = a.get_capnp_buffer().asChars();
-            Py_buffer pybuf;
-            int err = PyBuffer_FillInfo(&pybuf, 0, (char*)buf.begin(),
-                buf.size(), true, PyBUF_CONTIG_RO);
-            if (err == -1)
-            {
-              PyErr_Print();
-              throw madara::exceptions::MadaraException("Bad python buffer");
-            }
-            object bytes(handle<>(PyMemoryView_FromBuffer(&pybuf)));
+            object bytes = get_capnp_bytes(a);
             // object bytes(handle<>(PyByteArray_FromStringAndSize(buf.begin(),
             // buf.size())));  std::vector<unsigned char> sbuf(buf.begin(),
             // buf.begin() + buf.size());

@@ -27,7 +27,7 @@ print(b.tag())
 print(b)
 print(b.reader())
 
-pose = geo.Pose.new_message();
+pose = geo.Pose.new_message()
 pose.x = 42
 pose.i = 3.14
 
@@ -45,6 +45,8 @@ c = kb.get("asdf")
 
 print(c.to_any().reader())
 
+print(c.to_any().get_capnp_bytes())
+
 print(kb.get("zxcv").to_any().reader())
 
 kb.set("apple", 42)
@@ -53,3 +55,6 @@ kb.set("jar", "baz")
 
 print(list(kb.to_map("a")));
 print(list(kb.to_map("", ".", "ar")));
+
+b = geo.Pose.from_bytes(c.to_any().get_capnp_bytes())
+print(b)
