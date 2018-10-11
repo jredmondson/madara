@@ -257,9 +257,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
         "KnowledgeBaseImpl::wait:"
         " completed first eval to get %s\n",
         last_value.to_string().c_str());
-
-    send_modifieds("KnowledgeBaseImpl:wait", settings);
   }
+
+  send_modifieds("KnowledgeBaseImpl:wait", settings);
 
   // wait for expression to be true
   while (!last_value.to_integer() &&
@@ -297,9 +297,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
           "KnowledgeBaseImpl::wait:"
           " completed eval to get %s\n",
           last_value.to_string().c_str());
-
-      send_modifieds("KnowledgeBaseImpl:wait", settings);
     }
+
+    send_modifieds("KnowledgeBaseImpl:wait", settings);
     map_.signal();
 
   }  // end while (!last)
@@ -337,11 +337,13 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
 
   // lock the context from being updated by any ongoing threads
   {
-    MADARA_GUARD_TYPE guard(map_.mutex_);
+    {
+      MADARA_GUARD_TYPE guard(map_.mutex_);
 
-    // interpret the current expression and then evaluate it
-    // tree = interpreter_.interpret (map_, expression);
-    last_value = ce.expression.evaluate(settings);
+      // interpret the current expression and then evaluate it
+      // tree = interpreter_.interpret (map_, expression);
+      last_value = ce.expression.evaluate(settings);
+    }
 
     send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
@@ -371,11 +373,13 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
 
   // lock the context from being updated by any ongoing threads
   {
-    MADARA_GUARD_TYPE guard(map_.mutex_);
+    {
+      MADARA_GUARD_TYPE guard(map_.mutex_);
 
-    // interpret the current expression and then evaluate it
-    // tree = interpreter_.interpret (map_, expression);
-    last_value = map_.evaluate(root, settings);
+      // interpret the current expression and then evaluate it
+      // tree = interpreter_.interpret (map_, expression);
+      last_value = map_.evaluate(root, settings);
+    }
 
     send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
