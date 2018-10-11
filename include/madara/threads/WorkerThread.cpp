@@ -138,7 +138,7 @@ void WorkerThread::run(void)
   }
   catch (const std::exception& e)
   {
-    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
         "WorkerThread::WorkerThread(%s):"
         " failed to create thread: %s\n",
         name_.c_str(), e.what());

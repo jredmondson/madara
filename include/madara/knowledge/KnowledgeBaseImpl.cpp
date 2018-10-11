@@ -394,9 +394,13 @@ int KnowledgeBaseImpl::send_modifieds(
 {
   int result = 0;
 
-  MADARA_GUARD_TYPE guard(transport_mutex_);
+  bool do_send_modifieds;
+  {
+    MADARA_GUARD_TYPE guard(transport_mutex_);
+    do_send_modifieds = (transports_.size() > 0 && !settings.delay_sending_modifieds);
+  }
 
-  if (transports_.size() > 0 && !settings.delay_sending_modifieds)
+  if (do_send_modifieds)
   {
     KnowledgeMap modified;
     
