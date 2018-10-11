@@ -32,7 +32,7 @@ struct null_mutex
 
 struct lock_logger : public std::recursive_mutex
 {
-  lock_logger() : name_("Unamed") {}
+  lock_logger() : name_("Unnamed") {}
   lock_logger(std::string name) : name_(name) {}
 
   void lock()

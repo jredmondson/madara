@@ -397,7 +397,7 @@ int KnowledgeBaseImpl::send_modifieds(
   bool do_send_modifieds;
   {
     MADARA_GUARD_TYPE guard(transport_mutex_);
-    do_send_modifieds = (transports_.size() > 0 && !settings.delay_sending_modifieds);
+    do_send_modifieds = (!settings.delay_sending_modifieds && transports_.size() > 0);
   }
 
   if (do_send_modifieds)
@@ -410,13 +410,15 @@ int KnowledgeBaseImpl::send_modifieds(
       modified = map_.get_modifieds_current(settings.send_list, true);
     }
 
-    MADARA_GUARD_TYPE guard(transport_mutex_);
     if (modified.size() > 0)
     {
-      // send across each transport
-      for (auto& transport : transports_)
       {
-        transport->send_data(modified);
+        MADARA_GUARD_TYPE guard(transport_mutex_);
+        // send across each transport
+        for (auto& transport : transports_)
+        {
+          transport->send_data(modified);
+        }
       }
 
       map_.inc_clock(settings);
@@ -434,19 +436,28 @@ int KnowledgeBaseImpl::send_modifieds(
   }
   else
   {
-    if (transports_.size() == 0)
-    {
-      madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
-          "%s: no transport configured\n", prefix.c_str());
 
-      result = -2;
-    }
-    else if (settings.delay_sending_modifieds)
+    if (settings.delay_sending_modifieds)
     {
       madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
           "%s: user requested to not send modifieds\n", prefix.c_str());
 
       result = -3;
+      return result;
+    }
+
+    size_t num_transports;
+    {
+      MADARA_GUARD_TYPE guard(transport_mutex_);
+      num_transports = transports_.size();
+    }
+
+    if (num_transports)
+    {
+      madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
+          "%s: no transport configured\n", prefix.c_str());
+
+      result = -2;
     }
   }
 
