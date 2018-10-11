@@ -257,9 +257,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
         "KnowledgeBaseImpl::wait:"
         " completed first eval to get %s\n",
         last_value.to_string().c_str());
-
-    send_modifieds("KnowledgeBaseImpl:wait", settings);
   }
+
+  send_modifieds("KnowledgeBaseImpl:wait", settings);
 
   // wait for expression to be true
   while (!last_value.to_integer() &&
@@ -298,8 +298,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
           " completed eval to get %s\n",
           last_value.to_string().c_str());
 
-      send_modifieds("KnowledgeBaseImpl:wait", settings);
     }
+
+    send_modifieds("KnowledgeBaseImpl:wait", settings);
     map_.signal();
 
   }  // end while (!last)
@@ -343,12 +344,12 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
     // tree = interpreter_.interpret (map_, expression);
     last_value = ce.expression.evaluate(settings);
 
-    send_modifieds("KnowledgeBaseImpl:evaluate", settings);
-
     // print the post statement at highest log level (cannot be masked)
     if (settings.post_print_statement != "")
       map_.print(settings.post_print_statement, logger::LOG_ALWAYS);
   }
+
+  send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
   return last_value;
 }
@@ -377,12 +378,12 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
     // tree = interpreter_.interpret (map_, expression);
     last_value = map_.evaluate(root, settings);
 
-    send_modifieds("KnowledgeBaseImpl:evaluate", settings);
-
     // print the post statement at highest log level (cannot be masked)
     if (settings.post_print_statement != "")
       map_.print(settings.post_print_statement, logger::LOG_ALWAYS);
   }
+
+  send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
   return last_value;
 }

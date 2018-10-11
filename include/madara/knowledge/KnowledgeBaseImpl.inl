@@ -138,10 +138,12 @@ inline int KnowledgeBaseImpl::apply_modified(const EvalSettings& settings)
 {
   // lock the context and apply modified flags and current clock to
   // all global variables
-  MADARA_GUARD_TYPE guard(map_.mutex_);
+  {
+    MADARA_GUARD_TYPE guard(map_.mutex_);
 
-  map_.apply_modified();
-
+    map_.apply_modified();
+  }
+  
   int ret = 0;
 
   send_modifieds("KnowledgeBaseImpl:apply_modified", settings);
