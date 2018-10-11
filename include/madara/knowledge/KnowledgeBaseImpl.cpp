@@ -394,7 +394,8 @@ int KnowledgeBaseImpl::send_modifieds(
 {
   int result = 0;
 
-  MADARA_GUARD_TYPE guard(transport_mutex_);
+  MADARA_GUARD_TYPE map_guard(map_.mutex_);
+  MADARA_GUARD_TYPE transport_guard(transport_mutex_);
 
   if (transports_.size() > 0 && !settings.delay_sending_modifieds)
   {
@@ -402,7 +403,6 @@ int KnowledgeBaseImpl::send_modifieds(
     
     // get the modifieds and reset those that will be sent, atomically
     {
-      MADARA_GUARD_TYPE guard(map_.mutex_);
       modified = map_.get_modifieds_current(settings.send_list, true);
     }
 
