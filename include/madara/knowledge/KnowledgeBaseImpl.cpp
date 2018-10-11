@@ -410,6 +410,7 @@ int KnowledgeBaseImpl::send_modifieds(
       modified = map_.get_modifieds_current(settings.send_list, true);
     }
 
+    MADARA_GUARD_TYPE guard(transport_mutex_);
     if (modified.size() > 0)
     {
       // send across each transport
