@@ -407,7 +407,7 @@ inline size_t KnowledgeBaseImpl::get_num_transports(void)
 
 inline size_t KnowledgeBaseImpl::remove_transport(size_t index)
 {
-  std::unique_ptr<transport::Base> transport;
+  std::shared_ptr<transport::Base> transport;
   size_t size = 0;
   {
     MADARA_GUARD_TYPE guard(transport_mutex_);
