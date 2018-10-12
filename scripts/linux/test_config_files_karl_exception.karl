@@ -1,5 +1,5 @@
 // this will cause an exception
-bullcrap(test_result += 1);
+undef_func(test_result += 1);
 
 // return result
 test_result
