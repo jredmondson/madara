@@ -1,0 +1,5 @@
+agent.0.location
+agent.0.orientation
+agent.0.battery
+agent.0.imu
+agent.0.history
