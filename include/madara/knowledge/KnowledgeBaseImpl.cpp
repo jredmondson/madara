@@ -421,13 +421,6 @@ int KnowledgeBaseImpl::send_modifieds(
       {
         MADARA_GUARD_TYPE done_sending_guard(done_sending_mutex_);
 
-        // If flag is already set, stop looping. Other threads will clear while
-        // we're in this loop if they fail to take send_mutex_.
-        if (done_sending_)
-        {
-          return 0;
-        }
-
         std::unique_lock<MADARA_LOCK_TYPE>
             send_guard_tmp(send_mutex_, std::try_to_lock);
 
@@ -436,6 +429,13 @@ int KnowledgeBaseImpl::send_modifieds(
           // Some other thread is currently doing send_modifieds. Signal it to
           // repeat in case there are new updates to send.
           done_sending_ = false;
+          return 0;
+        }
+
+        // If flag is already set, stop looping. Other threads will clear while
+        // we're in this loop if they fail to take send_mutex_.
+        if (done_sending_)
+        {
           return 0;
         }
 
