@@ -1,0 +1,4 @@
+test_result += 1;
+
+// return result
+test_result

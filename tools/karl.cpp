@@ -1216,7 +1216,8 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
     else
     {
       param = flag_param.substr(flag_param.find_first_of(" ") + 1,
-          flag_param.length() - (flag_param.find_first_of(" ") + 1));
+          flag_param.length() - (flag_param.find_first_of(" ") + 1));      
+      param = madara::utility::expand_envs(param);          
     }
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
         "Flag: %s, Param: %s\n", flag.c_str(), param.c_str());
