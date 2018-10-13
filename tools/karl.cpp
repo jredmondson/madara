@@ -15,6 +15,7 @@
 #include "madara/threads/Threader.h"
 
 #include "madara/utility/Utility.h"
+#include "madara/utility/NamedVectorCombinator.h"
 #include "madara/filters/GenericFilters.h"
 #include "madara/filters/PrefixPrint.h"
 #include "madara/logger/GlobalLogger.h"
@@ -382,6 +383,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-k|--print-knowledge]   print final knowledge\n"
           "  [-kp|--print-prefix pfx] filter prints by prefix. Can be "
           "multiple.\n"
+          "  [-kpl|--print-prefix-list file] filter prints by prefix. The "
+          "file is a \n"
+          "                           new-line delimited prefix list that "
+          "can be read\n"
+          "                           by NamedVectorCombinator.\n"
           "  [-ky]                    print knowledge after frequent "
           "evaluations\n"
           "  [-l|--level level]       the logger level (0+, higher is higher "
@@ -389,6 +395,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-lcp|--load-checkpoint-prefix prfx]\n"
           "                           prefix of knowledge to load from "
           "checkpoint\n"
+          "  [-lcpl|--load-prefix-list file] filter loads by prefix. The "
+          "file is a \n"
+          "                           new-line delimited prefix list that "
+          "can be read\n"
+          "                           by NamedVectorCombinator.\n"
           "  [-ls|--load-size bytes]  size of buffer needed for file load\n"
           "  [-lt|--load-transport file] a file to load transport settings "
           "from\n"
@@ -425,6 +436,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-scp|--save-checkpoint-prefix prfx]\n"
           "                           prefix of knowledge to save in "
           "checkpoint\n"
+          "  [-scpl|--save-prefix-list file] filter saves by prefix. The "
+          "file is a \n"
+          "                           new-line delimited prefix list that "
+          "can be read\n"
+          "                           by NamedVectorCombinator.\n"
           "  [-sj|--save-json file]   save the resulting knowledge base as "
           "JSON\n"
           "  [-sff|--stream-from file] stream knowledge from a file\n"
@@ -500,14 +516,40 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     {
       print_knowledge = true;
     }
-    else if(arg1 == "-kp" || arg1 == "--print-prefixes")
+    else if(arg1 == "-kp" || arg1 == "--print-prefix")
     {
       if(i + 1 < argc)
       {
         for(int j = i + 1;
              j < argc && strlen(argv[j]) > 0 && argv[j][0] != '-'; ++i, ++j)
+        {
+          if(debug)
+          {
+            std::cout << "  Limiting results to prefix " << argv[j] << "\n";
+          }
+
           print_prefixes.push_back(argv[j]);
+        }
+
+        // ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.merge({"current"}, print_prefixes);
       }
+    }
+    else if(arg1 == "-kpl" || arg1 == "--print-prefix-list")
+    {
+      if(i + 1 < argc)
+      {
+        // add file and ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.from_file("new", argv[i + 1]);
+
+        combinator.merge({"current", "new"}, print_prefixes);
+      }
+      
+      ++i;
     }
     else if(arg1 == "-ky")
     {
@@ -532,6 +574,21 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         load_checkpoint_settings.prefixes.push_back(argv[i + 1]);
       }
 
+      ++i;
+    }
+    else if(arg1 == "-lcpl" || arg1 == "--load-prefix-list")
+    {
+      if(i + 1 < argc)
+      {
+        // add file and ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.from_file("new", argv[i + 1]);
+
+        combinator.merge({"current", "new"},
+          load_checkpoint_settings.prefixes);
+      }
+      
       ++i;
     }
     else if(arg1 == "-ls" || arg1 == "--load-size")
@@ -843,6 +900,21 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
+    else if(arg1 == "-scpl" || arg1 == "--save-prefix-list")
+    {
+      if(i + 1 < argc)
+      {
+        // add file and ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.from_file("new", argv[i + 1]);
+
+        combinator.merge({"current", "new"},
+          save_checkpoint_settings.prefixes);
+      }
+      
+      ++i;
+    }
     else if(arg1 == "-sff" || arg1 == "--stream-from")
     {
       if(i + 1 < argc)
@@ -1134,7 +1206,7 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
 
   // read each line of the text formatted file in, each line contains
   // one flag followed by a space then the param if there is a parameter
-  while (std::getline(file, flag_param))
+  while(std::getline(file, flag_param))
   {
     flag = flag_param.substr(0, flag_param.find_first_of(" "));
     if(flag_param.find_first_of(" ") == std::string::npos)
@@ -1246,7 +1318,7 @@ int main(int argc, char** argv)
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
       "Attempting to load default karl config...\n");
       
-  if(utility::file_exists (default_karl_config))
+  if(utility::file_exists(default_karl_config))
   {
     load_config_file(default_karl_config);
   }
