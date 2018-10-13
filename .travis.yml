@@ -165,6 +165,7 @@ script:
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_fragmentation ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_karl_containers ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_karl_exceptions ; fi
+  - if [ ! -z $TESTS ] && ["$TRAVIS_OS_NAME" != "osx"]; then $MADARA_ROOT/scripts/linux/test_karl_config_files.sh ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_kb_destructions ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_key_expansion ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_packet_scheduler ; fi

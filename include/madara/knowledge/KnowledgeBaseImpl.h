@@ -13,6 +13,7 @@
 
 #include <ostream>
 #include <vector>
+#include <atomic>
 
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/WaitSettings.h"
@@ -1133,8 +1134,21 @@ private:
   transport::QoSTransportSettings settings_;
   
   mutable MADARA_LOCK_TYPE transport_mutex_;
+  mutable MADARA_LOCK_TYPE send_mutex_;
+  mutable MADARA_LOCK_TYPE done_sending_mutex_;
 
-  std::vector<std::unique_ptr<transport::Base>> transports_;
+  std::vector<std::shared_ptr<transport::Base>> transports_;
+
+  /**
+   * Atomically retrieve the set of transports
+   **/
+  std::vector<std::shared_ptr<transport::Base>> get_transports()
+  {
+    MADARA_GUARD_TYPE transport_guard(transport_mutex_);
+    return transports_;
+  }
+
+  bool done_sending_ = false;
 };
 }
 }

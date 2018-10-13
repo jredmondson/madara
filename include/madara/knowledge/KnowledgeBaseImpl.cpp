@@ -257,9 +257,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
         "KnowledgeBaseImpl::wait:"
         " completed first eval to get %s\n",
         last_value.to_string().c_str());
-
-    send_modifieds("KnowledgeBaseImpl:wait", settings);
   }
+
+  send_modifieds("KnowledgeBaseImpl:wait", settings);
 
   // wait for expression to be true
   while (!last_value.to_integer() &&
@@ -297,9 +297,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
           "KnowledgeBaseImpl::wait:"
           " completed eval to get %s\n",
           last_value.to_string().c_str());
-
-      send_modifieds("KnowledgeBaseImpl:wait", settings);
     }
+
+    send_modifieds("KnowledgeBaseImpl:wait", settings);
     map_.signal();
 
   }  // end while (!last)
@@ -337,11 +337,13 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
 
   // lock the context from being updated by any ongoing threads
   {
-    MADARA_GUARD_TYPE guard(map_.mutex_);
+    {
+      MADARA_GUARD_TYPE guard(map_.mutex_);
 
-    // interpret the current expression and then evaluate it
-    // tree = interpreter_.interpret (map_, expression);
-    last_value = ce.expression.evaluate(settings);
+      // interpret the current expression and then evaluate it
+      // tree = interpreter_.interpret (map_, expression);
+      last_value = ce.expression.evaluate(settings);
+    }
 
     send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
@@ -371,11 +373,13 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
 
   // lock the context from being updated by any ongoing threads
   {
-    MADARA_GUARD_TYPE guard(map_.mutex_);
+    {
+      MADARA_GUARD_TYPE guard(map_.mutex_);
 
-    // interpret the current expression and then evaluate it
-    // tree = interpreter_.interpret (map_, expression);
-    last_value = map_.evaluate(root, settings);
+      // interpret the current expression and then evaluate it
+      // tree = interpreter_.interpret (map_, expression);
+      last_value = map_.evaluate(root, settings);
+    }
 
     send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
@@ -392,60 +396,92 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
 int KnowledgeBaseImpl::send_modifieds(
     const std::string& prefix, const EvalSettings& settings)
 {
-  int result = 0;
-
-  MADARA_GUARD_TYPE map_guard(map_.mutex_);
-  MADARA_GUARD_TYPE transport_guard(transport_mutex_);
-
-  if (transports_.size() > 0 && !settings.delay_sending_modifieds)
+  if (settings.delay_sending_modifieds)
   {
-    KnowledgeMap modified;
-    
-    // get the modifieds and reset those that will be sent, atomically
-    {
-      modified = map_.get_modifieds_current(settings.send_list, true);
-    }
+    madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
+        "%s: user requested to not send modifieds\n", prefix.c_str());
 
-    if (modified.size() > 0)
+    return -3;
+  }
+
+  {
+    MADARA_GUARD_TYPE done_sending_guard(done_sending_mutex_);
+    done_sending_ = false;
+  }
+
+  // Loop until threads stop asking us to repeat, which will occur if they
+  // try to send while we're sending.
+  for (;;)
+  {
+    // Limit scope of send_guard
     {
+      std::unique_lock<MADARA_LOCK_TYPE> send_guard;
+
+      // Limit scope of done_sending_guard
+      {
+        MADARA_GUARD_TYPE done_sending_guard(done_sending_mutex_);
+
+        std::unique_lock<MADARA_LOCK_TYPE>
+            send_guard_tmp(send_mutex_, std::try_to_lock);
+
+        if (!send_guard_tmp.owns_lock())
+        {
+          // Some other thread is currently doing send_modifieds. Signal it to
+          // repeat in case there are new updates to send.
+          done_sending_ = false;
+          return 0;
+        }
+
+        // If flag is already set, stop looping. Other threads will clear while
+        // we're in this loop if they fail to take send_mutex_.
+        if (done_sending_)
+        {
+          return 0;
+        }
+
+        send_guard = std::move(send_guard_tmp);
+
+        done_sending_ = true;
+      }
+      // release done_sending_mutex_
+
+      // We hold send_mutex_ here
+
+      auto transports = get_transports();
+
+      if (transports.size() == 0)
+      {
+        madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
+            "%s: no transport configured\n", prefix.c_str());
+
+        return -2;
+      }
+
+      // get the modifieds and reset those that will be sent, atomically
+      auto modified = map_.get_modifieds_current(settings.send_list, true);
+
+      if (modified.size() == 0)
+      {
+        madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
+            "%s: no modifications to send\n", prefix.c_str());
+
+        return -1;
+      }
+
       // send across each transport
-      for (auto& transport : transports_)
+      for (auto& transport : transports)
       {
         transport->send_data(modified);
       }
-
-      map_.inc_clock(settings);
-
-      if (settings.signal_changes)
-        map_.signal(false);
     }
-    else
-    {
-      madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
-          "%s: no modifications to send\n", prefix.c_str());
+    // Released send_mutex_
 
-      result = -1;
-    }
+    map_.inc_clock(settings);
+
+    if (settings.signal_changes)
+      map_.signal(false);
   }
-  else
-  {
-    if (transports_.size() == 0)
-    {
-      madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
-          "%s: no transport configured\n", prefix.c_str());
-
-      result = -2;
-    }
-    else if (settings.delay_sending_modifieds)
-    {
-      madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
-          "%s: user requested to not send modifieds\n", prefix.c_str());
-
-      result = -3;
-    }
-  }
-
-  return result;
 }
+
 }
 }
