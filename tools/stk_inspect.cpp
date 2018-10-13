@@ -13,6 +13,7 @@
 #include "madara/threads/Threader.h"
 
 #include "madara/utility/Utility.h"
+#include "madara/utility/NamedVectorCombinator.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/knowledge/containers/FlexMap.h"
 
@@ -212,6 +213,11 @@ int64_t process_command(const std::string & command,
         print_prefixes.push_back(tokens[i]);
         ++result;
       }
+
+      // ensure uniqueness
+      utility::NamedVectorCombinator combinator;
+      combinator.add("current", print_prefixes);
+      combinator.merge({"current"}, print_prefixes); 
     }
     else if(utility::begins_with(logic, "clear_prefixes"))
     {
@@ -637,7 +643,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     {
       print_knowledge = true;
     }
-    else if(arg1 == "-kp" || arg1 == "--print-prefixes")
+    else if(arg1 == "-kp" || arg1 == "--print-prefix")
     {
       if(i + 1 < argc)
       {
@@ -651,7 +657,26 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
           print_prefixes.push_back(argv[j]);
         }
+
+        // ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.merge({"current"}, print_prefixes);
       }
+    }
+    else if(arg1 == "-kpl" || arg1 == "--print-prefix-list")
+    {
+      if(i + 1 < argc)
+      {
+        // add file and ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.from_file("new", argv[i + 1]);
+
+        combinator.merge({"current", "new"}, print_prefixes);
+      }
+
+      ++i;
     }
     else if(arg1 == "-ks" || arg1 == "--print-stats")
     {
@@ -686,6 +711,21 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         }
       }
 
+      ++i;
+    }
+    else if(arg1 == "-lcpl" || arg1 == "--load-prefix-list")
+    {
+      if(i + 1 < argc)
+      {
+        // add file and ensure uniqueness
+        utility::NamedVectorCombinator combinator;
+        combinator.add("current", print_prefixes);
+        combinator.from_file("new", argv[i + 1]);
+
+        combinator.merge({"current", "new"},
+          load_checkpoint_settings.prefixes);
+      }
+      
       ++i;
     }
     else if(arg1 == "-ls" || arg1 == "--load-size")
@@ -915,12 +955,22 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-k|--print-knowledge]   print final knowledge\n"
           "  [-kp|--print-prefix pfx] filter prints by prefix. Can be "
           "multiple.\n"
+          "  [-kpl|--print-prefix-list file] filter prints by prefix. The "
+          "file is a \n"
+          "                           new-line delimited prefix list that "
+          "can be read\n"
+          "                           by NamedVectorCombinator.\n"
           "  [-ks|--print-stats]      print stats knowledge base contents\n"
           "  [-l|--level level]       the logger level(0+, higher is higher "
           "detail)\n"
           "  [-lcp|--load-checkpoint-prefix prfx]\n"
           "                           prefix of knowledge to load from "
           "checkpoint\n"
+          "  [-lcpl|--load-prefix-list file] filter loads by prefix. The "
+          "file is a \n"
+          "                           new-line delimited prefix list that "
+          "can be read\n"
+          "                           by NamedVectorCombinator.\n"
           "  [-ls|--load-size bytes]  size of buffer needed for file load\n"
           "  [-n|--capnp tag:msg_type] register tag with given message "
           "schema.\n"
