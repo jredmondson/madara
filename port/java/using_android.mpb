@@ -8,4 +8,6 @@ feature (android) {
   includes += $(SYSROOT)/usr/include
 
   libs += log
+  
+  postbuild = mvn -f port/java -DskipTests -P development package jar:test-jar install
 }
