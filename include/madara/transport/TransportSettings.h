@@ -235,7 +235,7 @@ public:
    * fragmented clock values were 1=4GB, 2=4GB, 3=4GB, then you could
    * have 12GB, regardless of max_fragment_size.
    **/
-  uint32_t fragment_queue_length = 5;
+  uint32_t fragment_queue_length = 100;
 
   /// Reliability required of the transport.
   /// See madara::transport::Reliabilities for options

@@ -358,6 +358,16 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
+    else if (arg1 == "-fql" || arg1 == "--fragment-queue-length")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer(argv[i + 1]);
+        buffer >> settings.fragment_queue_length;
+      }
+
+      ++i;
+    }
     else if(arg1 == "-h" || arg1 == "--help")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -377,6 +387,8 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [--debug]                print all sent, received, and final "
           "knowledge\n"
           "  [-f|--logfile file]      log to a file\n"
+          "  [-fql--fragment-queue-length num] the depth of the fragment lst\n"
+          "                           more depth is better for big packets\n"
           "  [-h|--help]              print help menu (i.e., this menu)\n"
           "  [-i|--input file]        file containing MADARA logic to "
           "evaluate\n"
@@ -406,6 +418,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-ltp|--load-transport-prefix prfx] prefix of saved settings\n"
           "  [-ltt|--load-transport-text file] a text file to load transport "
           "settings from\n"
+          "  [-lz4|--lz4]             compress with LZ4 over network\n"
           "  [-m|--multicast ip:port] the multicast ip to send and listen to\n"
           "  [-n|--capnp tag:msg_type] register tag with given message schema. "
           "See also -nf and -ni.\n"
@@ -445,6 +458,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "JSON\n"
           "  [-sff|--stream-from file] stream knowledge from a file\n"
           "  [-ss|--save-size bytes]  size of buffer needed for file saves\n"
+          "  [-ssl|--ssl password]    encrypt with 256bit AES over network\n"
           "  [-st|--save-transsport file] a file to save transport settings "
           "to\n"
           "  [-sff|--stream-to file]  stream knowledge to a file\n"

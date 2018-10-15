@@ -139,17 +139,33 @@ public:
   /**
    * the identifier of this transport (MADARA_IDENTIFIER)
    **/
-  char madara_id[MADARA_IDENTIFIER_LENGTH];
+  char madara_id[MADARA_IDENTIFIER_LENGTH] = {
+    '\0','\0','\0','\0','\0','\0','\0','\0'
+  };
 
   /**
    * the domain that this message is intended for
    **/
-  char domain[MADARA_DOMAIN_MAX_LENGTH];
+  char domain[MADARA_DOMAIN_MAX_LENGTH] = {
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0'
+  };
 
   /**
    * the originator of the message (host:port)
    **/
-  char originator[MAX_ORIGINATOR_LENGTH];
+  char originator[MAX_ORIGINATOR_LENGTH] = {
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0',
+    '\0','\0','\0','\0','\0','\0','\0','\0'
+  };
 
   /**
    * the type of message @see madara::transport::Messages enum

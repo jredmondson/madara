@@ -14,6 +14,7 @@
 #include <string>
 #include <string.h>
 #include "madara/utility/StdInt.h"
+#include "madara/utility/ScopedArray.h"
 #include "madara/MadaraExport.h"
 #include "madara/transport/MessageHeader.h"
 
@@ -21,7 +22,7 @@ namespace madara
 {
 namespace transport
 {
-#define FRAGMENTATION_MADARA_ID "KFRG1.3"
+#define FRAGMENTATION_MADARA_ID "KFRG1.4"
 
 /**
  * @class FragmentMessageHeader
@@ -42,7 +43,8 @@ namespace transport
  *        [132] [64 bit unsigned wall clock timestamp]<br />
  *        [140] [8 bit unsigned ttl--for rebroadcasts]<br />
  *        [141] [32 bit update number out of num updates]<br />
- *        [145] [knowledge updates start here in the buffer]
+ *        [145] [64 bit total size of full packet]<br />
+ *        [153] [knowledge updates start here in the buffer]
  */
 
 class MADARA_EXPORT FragmentMessageHeader : public MessageHeader
@@ -119,13 +121,20 @@ public:
     return strncmp(&(buffer[8]), FRAGMENTATION_MADARA_ID, 7) == 0;
   }
 
+  /**
+   * Converts the structure into a human-readable string
+   * @return  the stringified version of Fragmentation
+   **/
+  virtual std::string to_string (void) override;
+
   uint32_t update_number;
+  uint64_t total_size;
 };
 
 /**
  * Map of fragment identifiers to fragments
  **/
-typedef std::map<uint32_t, const char*> FragmentMap;
+typedef std::map<uint32_t, utility::ScopedArray<const char>> FragmentMap;
 
 /**
  * Map of clocks to fragments
@@ -146,6 +155,7 @@ typedef std::map<std::string, ClockFragmentMap> OriginatorFragmentMap;
  * @param fragment     the fragment to add
  * @param queue_length number of clock entries allowed per originator
  * @param map          a map of existing message fragments
+ * @param total_size   the size of the returned buffer (!0 on success)
  * @param clear        if true, clears a fragment entry if message
  *                     is complete
  * @return   unmanaged buffer that contains completed message.
@@ -153,15 +163,16 @@ typedef std::map<std::string, ClockFragmentMap> OriginatorFragmentMap;
  **/
 MADARA_EXPORT char* add_fragment(const char* originator, uint64_t clock,
     uint32_t update_number, const char* fragment, uint32_t queue_length,
-    OriginatorFragmentMap& map, bool clear = true);
+    OriginatorFragmentMap& map, uint64_t & total_size, bool clear = true);
 
 /**
  * Pieces together a fragment map into a single buffer
- * @param  map     map containing fragments
+ * @param  map         map containing fragments
+ * @param  total_size  the total size of the resulting buffer
  * @return   unmanaged buffer that contains completed message.
  *           If not zero, you must clean this up with delete []
  **/
-MADARA_EXPORT char* defrag(FragmentMap& map);
+MADARA_EXPORT char* defrag(FragmentMap& map, uint64_t & total_size);
 
 /**
  * Deletes fragments within a fragment map and clears the map
@@ -171,12 +182,23 @@ MADARA_EXPORT void delete_fragments(FragmentMap& map);
 
 /**
  * Breaks a large packet into smaller packets
- * @param  source   large packet that needs to be fragmented
+ * @param  source         large packet that needs to be fragmented
+ * @param  total_size     total size of the source buffer
+ * @param  originator     the originator id of the agent
+ * @param  clock          the lamport clock for fragments to use
+ * @param  timestamp      the ns timestamp of the message
+ * @param  quality        the quality of the sender
+ * @param  ttl            the time-to-live of the message for rebroadcasting
  * @param  fragment_size  maximum fragment size
- * @param  map      map containing resulting fragments
+ * @param  map            map containing resulting fragments
  **/
 MADARA_EXPORT void frag(
-    const char* source, uint32_t fragment_size, FragmentMap& map);
+    const char* source, uint64_t total_size,
+    const char* originator, const char* domain,
+    uint64_t clock,
+    uint64_t timestamp,
+    uint32_t quality, unsigned char ttl,
+    uint64_t fragment_size, FragmentMap& map);
 
 /**
  * Breaks a large packet into smaller packets

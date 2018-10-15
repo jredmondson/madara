@@ -80,14 +80,15 @@ void UdpTransportReadThread::rebroadcast(const char* print_prefix,
   char* buffer = buffer_.get_ptr();
   int result(0);
 
-  if (!settings_.no_sending)
+  if (!settings_.no_sending && records.size () > 0)
   {
     result = prep_rebroadcast(*context_, buffer, buffer_remaining, settings_,
         print_prefix, header, records, transport_.packet_scheduler_);
 
     if (result > 0)
     {
-      result = transport_.send_message(buffer, result);
+      uint64_t clock = records.begin()->second.clock;
+      result = transport_.send_message(buffer, result, clock);
 
       if (result > 0)
       {

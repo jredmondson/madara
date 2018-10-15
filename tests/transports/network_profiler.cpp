@@ -7,10 +7,20 @@
 #include "madara/utility/Utility.h"
 #include "madara/utility/EpochEnforcer.h"
 
+#ifdef _USE_SSL_
+#include "madara/filters/ssl/AESBufferFilter.h"
+#endif
+
+#ifdef _USE_LZ4_
+#include "madara/filters/lz4/LZ4BufferFilter.h"
+#endif
+
+
 namespace utility = madara::utility;
 namespace logger = madara::logger;
 namespace knowledge = madara::knowledge;
 namespace transport = madara::transport;
+namespace filters = madara::filters;
 
 // default transport settings
 std::string host("");
@@ -21,6 +31,14 @@ size_t data_size(128);
 double send_hertz(-1);
 size_t num_vars(1);
 
+#ifdef _USE_SSL_
+filters::AESBufferFilter ssl_transport_filter;
+#endif
+
+#ifdef _USE_LZ4_
+filters::LZ4BufferFilter lz4_transport_filter;
+#endif
+
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
@@ -28,38 +46,13 @@ void handle_arguments(int argc, char** argv)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast")
-    {
-      if (i + 1 < argc)
-      {
-        settings.hosts.push_back(argv[i + 1]);
-        settings.type = madara::transport::MULTICAST;
-      }
-      ++i;
-    }
-    else if (arg1 == "-b" || arg1 == "--broadcast")
+   if (arg1 == "-b" || arg1 == "--broadcast")
     {
       if (i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
-      ++i;
-    }
-    else if (arg1 == "-u" || arg1 == "--udp")
-    {
-      if (i + 1 < argc)
-      {
-        settings.hosts.push_back(argv[i + 1]);
-        settings.type = madara::transport::UDP;
-      }
-      ++i;
-    }
-    else if (arg1 == "-o" || arg1 == "--host")
-    {
-      if (i + 1 < argc)
-        host = argv[i + 1];
-
       ++i;
     }
     else if (arg1 == "-d" || arg1 == "--domain")
@@ -88,6 +81,16 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
+    else if (arg1 == "-fql" || arg1 == "--fragment-queue-length")
+    {
+      if (i + 1 < argc)
+      {
+        std::stringstream buffer(argv[i + 1]);
+        buffer >> settings.fragment_queue_length;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-i" || arg1 == "--id")
     {
       if (i + 1 < argc)
@@ -111,6 +114,24 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
+    else if(arg1 == "-lz4" || arg1 == "--lz4")
+    {
+#ifdef _USE_LZ4_
+      settings.add_filter(&lz4_transport_filter);
+#else
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+          "ERROR: parameter (-lz4|--lz4) requires feature lz4\n");
+#endif
+    }
+    else if (arg1 == "-m" || arg1 == "--multicast")
+    {
+      if (i + 1 < argc)
+      {
+        settings.hosts.push_back(argv[i + 1]);
+        settings.type = madara::transport::MULTICAST;
+      }
+      ++i;
+    }
     else if (arg1 == "--num-vars")
     {
       if (i + 1 < argc)
@@ -118,6 +139,13 @@ void handle_arguments(int argc, char** argv)
         std::stringstream buffer(argv[i + 1]);
         buffer >> num_vars;
       }
+
+      ++i;
+    }
+    else if (arg1 == "-o" || arg1 == "--host")
+    {
+      if (i + 1 < argc)
+        host = argv[i + 1];
 
       ++i;
     }
@@ -169,6 +197,27 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
+    else if(arg1 == "-ssl" || arg1 == "--ssl")
+    {
+#ifdef _USE_SSL_
+      if(i + 1 < argc)
+      {
+        ssl_transport_filter.generate_key(argv[i + 1]);
+        settings.add_filter(&ssl_transport_filter);
+        ++i;
+      }
+      else
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+            "ERROR: parameter (-ssl|--ssl) requires password\n");
+      }
+#else
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
+          "ERROR: parameter (-ssl|--ssl) requires feature ssl compiled into "
+          "MADARA\n");
+      ++i;
+#endif
+    }
     else if (arg1 == "-t" || arg1 == "--time")
     {
       if (i + 1 < argc)
@@ -177,6 +226,15 @@ void handle_arguments(int argc, char** argv)
         buffer >> test_time;
       }
 
+      ++i;
+    }
+    else if (arg1 == "-u" || arg1 == "--udp")
+    {
+      if (i + 1 < argc)
+      {
+        settings.hosts.push_back(argv[i + 1]);
+        settings.type = madara::transport::UDP;
+      }
       ++i;
     }
     else if (arg1 == "-z" || arg1 == "--read-hertz")
@@ -213,10 +271,13 @@ void handle_arguments(int argc, char** argv)
           "to\n"
           " [-e|--threads threads]   number of read threads\n"
           " [-f|--logfile file]      log to a file\n"
+          " [-fql--fragment-queue-length num] the depth of the fragment list\n"
+          "                          more depth is better for larger packets\n"
           " [-i|--id id]             the id of this agent (should be "
           "non-negative)\n"
           " [-l|--level level]       the logger level (0+, higher is higher "
           "detail)\n"
+          " [-lz4|--lz4]             compress/decompress with LZ4\n"
           " [-m|--multicast ip:port] the multicast ip to send and listen to\n"
           " [--num-vars vars]        the number of vars to split size up into\n"
           " [-o|--host hostname]     the hostname of this process "
@@ -224,6 +285,7 @@ void handle_arguments(int argc, char** argv)
           " [-q|--queue-length len   the buffer size to use for the test\n"
           " [-r|--reduced]           use the reduced message header\n"
           " [-s|--size size]         size of data packet to send in bytes\n"
+          " [-ssl|--ssl password]    encrypt/decrypt with 256bit AES\n"
           " [--send-hz hertz]        hertz to send at\n"
           " [-t|--time time]         time to burst messages for throughput "
           "test\n"
