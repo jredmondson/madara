@@ -171,7 +171,7 @@ project (Test_Counter) : using_madara, no_karl, no_xml, null_lock, using_simtime
   }
 }
 
-project (Test_Fragmentation) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Fragmentation) : using_madara, no_karl, no_xml, null_lock, using_simtime, using_ssl {
   exeout = $(MADARA_ROOT)/bin
   exename = test_fragmentation
   
@@ -539,7 +539,7 @@ project (Network_Counter_Filter) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Network_Profiler) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Network_Profiler) : using_madara, no_karl, no_xml, null_lock, using_simtime, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = network_profiler
   

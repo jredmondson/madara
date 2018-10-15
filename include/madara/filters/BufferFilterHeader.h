@@ -83,17 +83,17 @@ public:
   /**
    * the size of this header plus the updates
    **/
-  uint64_t size;
+  uint64_t size = 0;
 
   /**
    * filter id
    **/
-  char id[8];
+  char id[8] = {'\0', '\0', '\0', '\0', '\0', '\0', '\0', '\0'};
 
   /**
    * filter version
    **/
-  uint32_t version;
+  uint32_t version = 0;
 };
 }
 }

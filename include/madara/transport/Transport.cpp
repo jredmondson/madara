@@ -328,6 +328,9 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     FragmentMessageHeader* frag_header =
         dynamic_cast<FragmentMessageHeader*>(header);
 
+    // total size of the fragmented packet
+    uint64_t total_size = 0;
+
     madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
         "%s:"
         " Processing fragment %" PRIu32 " of %s:%" PRIu64 ".\n",
@@ -337,11 +340,31 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     // add the fragment and attempt to defrag the message
     char* message = transport::add_fragment(frag_header->originator,
         frag_header->clock, frag_header->update_number, buffer,
-        settings.fragment_queue_length, settings.fragment_map, true);
+        settings.fragment_queue_length, settings.fragment_map, total_size, true);
 
     // if we have no return message, we may have previously defragged it
-    if(!message)
+    if(!message || total_size == 0)
     {
+      return 0;
+    }
+
+    // copy the intermediate buffer to the user-allocated buffer
+    char* buffer_override = (char*)buffer;
+    memcpy(buffer_override, message, total_size);
+
+    // cleanup the old buffer. We should really have a zero-copy 
+    delete[] message;
+
+    int decode_result = (uint32_t)settings.filter_decode(
+        (char*)buffer, total_size, settings.queue_length);
+
+    if (decode_result <= 0)
+    {
+      madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
+          "%s:"
+          " ERROR: Unable to decode fragments. Likely incorrect filters.\n",
+          print_prefix);
+
       return 0;
     }
     else
@@ -356,11 +379,11 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
        * In order to do that, we need to overwrite buffer with message
        * so it can be processed normally.
        **/
-      buffer_remaining = (int64_t)frag_header->get_size(message);
-      if(buffer_remaining <= settings.queue_length)
+      buffer_remaining = (int64_t)decode_result;
+      if(buffer_remaining <= settings.queue_length &&
+          buffer_remaining > (int64_t)MessageHeader::static_encoded_size ())
       {
-        char* buffer_override = (char*)buffer;
-        memcpy(buffer_override, message, frag_header->get_size(message));
+        delete header;
 
         // check the buffer for a reduced message header
         if(ReducedMessageHeader::reduced_message_header_test(buffer))
@@ -384,19 +407,45 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
           header = new MessageHeader();
           update = header->read(buffer, buffer_remaining);
         }
+        else
+        {
+          madara_logger_log(context.get_logger(), logger::LOG_MINOR,
+              "%s:"
+              " ERROR: defrag resulted in unknown message header.\n",
+              print_prefix);
 
-        delete[] message;
-      }
-    }
-  }
+          return 0;
+        }
+
+        madara_logger_log(context.get_logger(),
+            logger::LOG_MAJOR, "%s:"
+            " past fragment header create.\n",
+            print_prefix);
+      } // end if buffer remaining
+    } // end if decode didn't break
+  } // end if is fragment
+
 
   int actual_updates = 0;
   uint64_t current_time = utility::get_time();
   double deadline = settings.get_deadline();
+
+  madara_logger_log(context.get_logger(),
+      logger::LOG_MAJOR, "%s:"
+      " create transport_context with: "
+      "originator(%s), domain(%s), remote(%s), time(%" PRIu64 ").\n",
+      print_prefix, header->originator, header->domain, remote_host,
+      header->timestamp);
+
   TransportContext transport_context(TransportContext::RECEIVING_OPERATION,
       receive_monitor.get_bytes_per_second(),
       send_monitor.get_bytes_per_second(), header->timestamp, current_time,
       header->domain, header->originator, remote_host);
+
+  madara_logger_log(context.get_logger(),
+      logger::LOG_MAJOR, "%s:"
+      " past transport_context create.\n",
+      print_prefix);
 
   uint64_t latency(0);
 

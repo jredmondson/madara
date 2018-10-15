@@ -302,7 +302,7 @@ public:
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
               "CheckpointSettings::decode: buffer filter %s doesn't match."
-              " Returning 0.",
+              " Returning 0.\n",
               header.id);
 
           return 0;

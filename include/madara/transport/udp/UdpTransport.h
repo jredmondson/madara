@@ -82,8 +82,9 @@ protected:
   int setup_write_socket() override;
   int setup_read_thread(double hertz, const std::string& name) override;
 
-  long send_message(const char* buf, size_t size);
-  long send_buffer(const udp::endpoint& target, const char* buf, size_t size);
+  long send_message(const char* buf, size_t size, uint64_t clock);
+  long send_buffer(const udp::endpoint& target,
+    const char* buf, size_t size);
   virtual bool pre_send_buffer(size_t addr_index)
   {
     return addr_index != 0;
