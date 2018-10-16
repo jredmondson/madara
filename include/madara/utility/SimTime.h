@@ -58,28 +58,64 @@ private:
 public:
   SimTime() = delete;
 
+  /**
+   * Get real time of last time simtime parameters were updated, either by a
+   * notification, or by callback.
+   **/
   static uint64_t last_realtime()
   {
     std::lock_guard<std::mutex> guard(mutex_);
     return last_realtime_;
   }
 
+  /**
+   * Get simtime of last time simtime parameters were updated, either by a
+   * notification, or by callback.
+   **/
   static uint64_t last_simtime()
   {
     std::lock_guard<std::mutex> guard(mutex_);
     return last_simtime_;
   }
 
+  /**
+   * Get last known simtime rate, without calling callback
+   **/
   static double last_rate()
   {
     std::lock_guard<std::mutex> guard(mutex_);
     return last_rate_;
   }
 
+  /**
+   * Get current real-time, not effected by simtime settings
+   **/
   static uint64_t realtime();
+
+  /**
+   * Get real-time stamp equivalent to given simtime stamp, according to
+   * current simtime settings.
+   **/
+  static uint64_t realtime(uint64_t simtime);
+
+  /**
+   * Get simtime equivalent of current real-time
+   **/
   static uint64_t time();
+
+  /**
+   * Get current simtime rate. Will call callback if set.
+   **/
   static double rate();
+
+  /**
+   * Scale a duration of simtime to realtime
+   **/
   static uint64_t duration(uint64_t sim_duration);
+
+  /**
+   * Calculate the realtime of an offset into the future in simtime
+   **/
   static uint64_t future(uint64_t sim_offset);
 
   friend sim_time_callback_fn set_sim_time_callback(sim_time_callback_fn fn);

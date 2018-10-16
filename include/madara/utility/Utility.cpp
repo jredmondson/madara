@@ -603,6 +603,57 @@ SecondsDuration sleep(const SecondsDuration& sleep_time)
   return current - start;
 }
 
+Duration sleep_until(TimeValue wake)
+{
+#ifdef MADARA_FEATURE_SIMTIME
+  static const Duration max_sleep{10000000};
+#endif
+
+  TimeValue start = get_time_value();;
+  TimeValue current;
+
+  while ((current = get_time_value()) < wake)
+  {
+#ifndef MADARA_FEATURE_SIMTIME
+    std::this_thread::sleep_until(wake);
+#else
+#if 0
+    std::cerr << (target - current).count() << " "  << rate << " " <<
+      actual_dur.count() << std::endl;
+#endif
+    TimeValue actual_target =
+      TimeValue(Duration(SimTime::realtime(wake.time_since_epoch().count())));
+
+    TimeValue actual_current = Clock::now();
+    TimeValue max_target = actual_current + max_sleep;
+#if 0
+    std::cerr <<
+      start.time_since_epoch().count() << " " <<
+      target.time_since_epoch().count() << " " <<
+      current.time_since_epoch().count() << " " <<
+      SimTime::time() << " " <<
+      actual_target.time_since_epoch().count() << " " <<
+      max_target.time_since_epoch().count() << std::endl;
+#endif
+    if (actual_target < max_target)
+    {
+      std::this_thread::sleep_until(actual_target);
+    }
+    else
+    {
+      std::this_thread::sleep_until(max_target);
+    }
+#endif
+  }
+
+  return current - start;
+}
+
+Duration sleep_until(uint64_t wake)
+{
+  return sleep_until(TimeValue(Duration(wake)));
+}
+
 bool wait_true(knowledge::KnowledgeBase& knowledge, const std::string& variable,
     const knowledge::WaitSettings& settings)
 {
