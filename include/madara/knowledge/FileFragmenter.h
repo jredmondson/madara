@@ -62,7 +62,7 @@ public:
   {
     void* buffer;
 
-    if (utility::read_file(filename, buffer, file_size) == 0)
+    if(utility::read_file(filename, buffer, file_size) == 0)
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
           "FileFragmenter::fragment_file: "
@@ -97,7 +97,7 @@ public:
     size_t extra = size % frag_size;
     utility::ScopedArray<unsigned char> segment = new unsigned char[frag_size];
 
-    if (extra > 0)
+    if(extra > 0)
     {
       records.resize(num_frags + 1);
 
@@ -111,7 +111,7 @@ public:
     }
 
     // need to then emplace each buffer into the records
-    for (size_t i = 0; i < num_frags; ++i)
+    for(size_t i = 0; i < num_frags; ++i)
     {
       // copy over each segment of frag_size and emplace in record
       memcpy(segment.get(), &(buffer[i * frag_size]), frag_size);
@@ -134,7 +134,7 @@ public:
   {
     containers::Vector result(key, kb, 0, true, settings);
 
-    for (size_t i = 0; i < records.size(); ++i)
+    for(size_t i = 0; i < records.size(); ++i)
       result.push_back(records[i]);
 
     return result;
@@ -165,10 +165,10 @@ public:
         (int)records.size(), key.c_str());
 
     // go through the records and check for valid records
-    for (auto record : records)
+    for(auto record : records)
     {
       // if it's valid, add the size
-      if (record.is_file_type())
+      if(record.is_file_type())
       {
         file_size += record.size();
       }
@@ -188,13 +188,13 @@ public:
         (int)file_size);
 
     // if there are no missing fragments, copy everything to file_contents
-    if (!has_missing)
+    if(!has_missing)
     {
       file_contents = new char[file_size];
       char* current = file_contents.get();
 
       // go through the records and check for valid records
-      for (auto record : records)
+      for(auto record : records)
       {
         // need to check on whether or not we need to try/catch here
         std::shared_ptr<const std::vector<unsigned char>> binary =

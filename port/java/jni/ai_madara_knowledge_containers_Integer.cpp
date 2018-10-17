@@ -72,7 +72,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1Integer__J(
   containers::Integer* result(0);
   containers::Integer* source = (containers::Integer*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new containers::Integer(*source);
   }
@@ -109,7 +109,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1set(
 {
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     *current = value;
   }
@@ -134,7 +134,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1inc(
   jlong result(0);
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = ++(*current);
   }
@@ -161,7 +161,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1dec(
   jlong result(0);
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = --(*current);
   }
@@ -188,7 +188,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1incValue(
   jlong result(0);
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = ((*current) += value);
   }
@@ -215,7 +215,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1decValue(
   jlong result(0);
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = ((*current) -= value);
   }
@@ -242,7 +242,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1getName(
   jstring result = 0;
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -268,16 +268,16 @@ void JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1setName(
 {
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -306,7 +306,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1toString(
   jstring result = 0;
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->to_string().c_str());
   }
@@ -333,7 +333,7 @@ jdouble JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1toInteger(
   jdouble result(0.0);
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->to_integer();
   }
@@ -360,7 +360,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1toLong(
   jlong result(0);
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->to_integer();
   }
@@ -381,7 +381,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1modify(
 {
   containers::Integer* current = (containers::Integer*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -402,7 +402,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -422,7 +422,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1isTrue(
   containers::Integer* current = (containers::Integer*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -444,7 +444,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Integer_jni_1isFalse(
   containers::Integer* current = (containers::Integer*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

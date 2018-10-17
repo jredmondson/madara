@@ -38,7 +38,7 @@ madara::knowledge::KnowledgeRecordFilters::~KnowledgeRecordFilters() {}
 void madara::knowledge::KnowledgeRecordFilters::operator=(
     const knowledge::KnowledgeRecordFilters& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     filters_ = rhs.filters_;
     aggregate_filters_ = rhs.aggregate_filters_;
@@ -49,7 +49,7 @@ void madara::knowledge::KnowledgeRecordFilters::operator=(
 void madara::knowledge::KnowledgeRecordFilters::add(uint32_t types,
     knowledge::KnowledgeRecord (*function)(FunctionArguments&, Variables&))
 {
-  if (function != 0)
+  if(function != 0)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -57,10 +57,10 @@ void madara::knowledge::KnowledgeRecordFilters::add(uint32_t types,
         "Adding C record filter\n");
 
     // start with 1st bit, check every bit until types is 0
-    for (uint32_t cur = 1; types > 0; cur <<= 1)
+    for(uint32_t cur = 1; types > 0; cur <<= 1)
     {
       // if current is set in the bitmask
-      if (madara::utility::bitmask_check(types, cur))
+      if(madara::utility::bitmask_check(types, cur))
       {
         // remove the filter list from the type cur
         filters_[cur].push_back(Function(function));
@@ -75,7 +75,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(uint32_t types,
 void madara::knowledge::KnowledgeRecordFilters::add(void (*function)(
     KnowledgeMap&, const transport::TransportContext&, Variables&))
 {
-  if (function != 0)
+  if(function != 0)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -89,7 +89,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(void (*function)(
 void madara::knowledge::KnowledgeRecordFilters::add(
     filters::AggregateFilter* functor)
 {
-  if (functor != 0)
+  if(functor != 0)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -103,7 +103,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(
 void madara::knowledge::KnowledgeRecordFilters::add(
     filters::BufferFilter* functor)
 {
-  if (functor != 0)
+  if(functor != 0)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -117,7 +117,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(
 void madara::knowledge::KnowledgeRecordFilters::add(
     uint32_t types, filters::RecordFilter* functor)
 {
-  if (functor != 0)
+  if(functor != 0)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -125,10 +125,10 @@ void madara::knowledge::KnowledgeRecordFilters::add(
         "Adding record function filter to types\n");
 
     // start with 1st bit, check every bit until types is 0
-    for (uint32_t cur = 1; types > 0; cur <<= 1)
+    for(uint32_t cur = 1; types > 0; cur <<= 1)
     {
       // if current is set in the bitmask
-      if (madara::utility::bitmask_check(types, cur))
+      if(madara::utility::bitmask_check(types, cur))
       {
         // remove the filter list from the type cur
         filters_[cur].push_back(Function(functor));
@@ -145,7 +145,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(
 void madara::knowledge::KnowledgeRecordFilters::add(
     uint32_t types, jobject& callable)
 {
-  if (callable != NULL)
+  if(callable != NULL)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -153,10 +153,10 @@ void madara::knowledge::KnowledgeRecordFilters::add(
         "Adding Java record filter\n");
 
     // start with 1st bit, check every bit until types is 0
-    for (uint32_t cur = 1; types > 0; cur <<= 1)
+    for(uint32_t cur = 1; types > 0; cur <<= 1)
     {
       // if current is set in the bitmask
-      if (madara::utility::bitmask_check(types, cur))
+      if(madara::utility::bitmask_check(types, cur))
       {
         // remove the filter list from the type cur
         filters_[cur].push_back(Function(callable));
@@ -170,7 +170,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(
 
 void madara::knowledge::KnowledgeRecordFilters::add(jobject& callable)
 {
-  if (callable != NULL)
+  if(callable != NULL)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -188,13 +188,13 @@ void madara::knowledge::KnowledgeRecordFilters::add(jobject& callable)
 void madara::knowledge::KnowledgeRecordFilters::add(
     uint32_t types, boost::python::object& callable)
 {
-  if (!callable.is_none())
+  if(!callable.is_none())
   {
     // start with 1st bit, check every bit until types is 0
-    for (uint32_t cur = 1; types > 0; cur <<= 1)
+    for(uint32_t cur = 1; types > 0; cur <<= 1)
     {
       // if current is set in the bitmask
-      if (madara::utility::bitmask_check(types, cur))
+      if(madara::utility::bitmask_check(types, cur))
       {
         // remove the filter list from the type cur
         filters_[cur].push_back(Function(callable));
@@ -209,7 +209,7 @@ void madara::knowledge::KnowledgeRecordFilters::add(
 void madara::knowledge::KnowledgeRecordFilters::add(
     boost::python::object& callable)
 {
-  if (!callable.is_none())
+  if(!callable.is_none())
   {
     aggregate_filters_.push_back(AggregateFilter(callable));
   }
@@ -226,10 +226,10 @@ void madara::knowledge::KnowledgeRecordFilters::attach(
 void madara::knowledge::KnowledgeRecordFilters::clear(uint32_t types)
 {
   // start with 1st bit, check every bit until types is 0
-  for (uint32_t cur = 1; types > 0; cur <<= 1)
+  for(uint32_t cur = 1; types > 0; cur <<= 1)
   {
     // if current is set in the bitmask
-    if (madara::utility::bitmask_check(types, cur))
+    if(madara::utility::bitmask_check(types, cur))
     {
       // remove the filter list from the type cur
       filters_.erase(cur);
@@ -252,13 +252,13 @@ void madara::knowledge::KnowledgeRecordFilters::clear_buffer_filters(void)
 
 void madara::knowledge::KnowledgeRecordFilters::print_num_filters(void) const
 {
-  if (context_)
+  if(context_)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_ALWAYS,
         "Printing Knowledge Record Filter Chains by Type...\n");
 
-    for (FilterMap::const_iterator i = filters_.begin(); i != filters_.end();
+    for(FilterMap::const_iterator i = filters_.begin(); i != filters_.end();
          ++i)
     {
       madara_logger_cond_log(context_, context_->get_logger(),
@@ -287,7 +287,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
   knowledge::KnowledgeRecord result(input);
 
   // if there are filters for this type
-  if (type_match != filters_.end())
+  if(type_match != filters_.end())
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -302,7 +302,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
 
     heap_variables->context_ = context_;
 
-    for (FilterChain::const_iterator i = chain.begin(); i != chain.end(); ++i)
+    for(FilterChain::const_iterator i = chain.begin(); i != chain.end(); ++i)
     {
       madara_logger_cond_log(context_, context_->get_logger(),
           logger::global_logger.get(), logger::LOG_MAJOR,
@@ -316,7 +316,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
 
       arguments.resize(madara::filters::TOTAL_ARGUMENTS);
 
-      if (name != "")
+      if(name != "")
       {
         // second argument is the variable name, if applicable
         arguments[1].set_value(name);
@@ -357,7 +357,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
           "Checking filter type\n");
 
       // optimize selection for functors, the preferred filter impl
-      if (i->is_functor())
+      if(i->is_functor())
       {
         madara_logger_cond_log(context_, context_->get_logger(),
             logger::global_logger.get(), logger::LOG_MAJOR,
@@ -367,7 +367,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
         result = i->functor->filter(arguments, *heap_variables.get());
       }
 #ifdef _MADARA_JAVA_
-      else if (i->is_java_callable())
+      else if(i->is_java_callable())
       {
         madara_logger_cond_log(context_, context_->get_logger(),
             logger::global_logger.get(), logger::LOG_MAJOR,
@@ -397,7 +397,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
         jlongArray ret = jvm.env->NewLongArray((jsize)arguments.size());
         jlong* tmp = new jlong[(jsize)arguments.size()];
 
-        for (unsigned int x = 0; x < arguments.size(); x++)
+        for(unsigned int x = 0; x < arguments.size(); x++)
         {
           tmp[x] = (jlong)arguments[x].clone();
         }
@@ -442,16 +442,16 @@ madara::knowledge::KnowledgeRecordFilters::filter(
 
         bool do_delete = true;
         // We need to see if they returned an arg we sent them, or a new value
-        for (unsigned int x = 0; x < arguments.size(); x++)
+        for(unsigned int x = 0; x < arguments.size(); x++)
         {
-          if (cptr == (jlong) & (arguments[x]))
+          if(cptr == (jlong) & (arguments[x]))
           {
             do_delete = false;
             break;
           }
         }
 
-        if (cptr != 0)
+        if(cptr != 0)
         {
           madara_logger_cond_log(context_, context_->get_logger(),
               logger::global_logger.get(), logger::LOG_MINOR,
@@ -461,7 +461,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
           result = *(madara::knowledge::KnowledgeRecord*)cptr;
         }
 
-        if (do_delete)
+        if(do_delete)
         {
           madara_logger_cond_log(context_, context_->get_logger(),
               logger::global_logger.get(), logger::LOG_MINOR,
@@ -482,7 +482,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
-      else if (i->is_python_callable())
+      else if(i->is_python_callable())
       {
         madara_logger_cond_log(context_, context_->get_logger(),
             logger::global_logger.get(), logger::LOG_MAJOR,
@@ -500,7 +500,7 @@ madara::knowledge::KnowledgeRecordFilters::filter(
 #endif
 
       // if the function is not zero
-      else if (i->is_extern_unnamed())
+      else if(i->is_extern_unnamed())
       {
         madara_logger_cond_log(context_, context_->get_logger(),
             logger::global_logger.get(), logger::LOG_MAJOR,
@@ -511,12 +511,12 @@ madara::knowledge::KnowledgeRecordFilters::filter(
       }
 
       // did the filter add records to be sent?
-      if (arguments.size() > madara::filters::TOTAL_ARGUMENTS)
+      if(arguments.size() > madara::filters::TOTAL_ARGUMENTS)
       {
-        for (unsigned int j = madara::filters::TOTAL_ARGUMENTS;
+        for(unsigned int j = madara::filters::TOTAL_ARGUMENTS;
              j + 1 < arguments.size(); j += 2)
         {
-          if (arguments[j].is_string_type())
+          if(arguments[j].is_string_type())
           {
             madara_logger_cond_log(context_, context_->get_logger(),
                 logger::global_logger.get(), logger::LOG_MAJOR,
@@ -550,7 +550,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
     const transport::TransportContext& transport_context) const
 {
   // if there are aggregate filters
-  if (aggregate_filters_.size() > 0)
+  if(aggregate_filters_.size() > 0)
   {
     madara_logger_cond_log(context_, context_->get_logger(),
         logger::global_logger.get(), logger::LOG_MAJOR,
@@ -562,11 +562,11 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
 
     heap_variables->context_ = context_;
 
-    for (AggregateFilters::const_iterator i = aggregate_filters_.begin();
+    for(AggregateFilters::const_iterator i = aggregate_filters_.begin();
          i != aggregate_filters_.end(); ++i)
     {
       // optimize selection for functors, the preferred filter impl
-      if (i->is_functor())
+      if(i->is_functor())
       {
         madara_logger_cond_log(context_, context_->get_logger(),
             logger::global_logger.get(), logger::LOG_MINOR,
@@ -574,7 +574,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
             "Checking vars for null\n");
 
         Variables* vars = heap_variables.get();
-        if (vars)
+        if(vars)
         {
           madara_logger_cond_log(context_, context_->get_logger(),
               logger::global_logger.get(), logger::LOG_MAJOR,
@@ -597,7 +597,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
         }
       }
 #ifdef _MADARA_JAVA_
-      else if (i->is_java_callable())
+      else if(i->is_java_callable())
       {
         // manage VM attachment
         madara::utility::java::Acquire_VM jvm;
@@ -657,7 +657,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
         // overwrite the old records
         // records = *heap_records.get ();
 
-        for (KnowledgeMap::const_iterator i = heap_records->begin();
+        for(KnowledgeMap::const_iterator i = heap_records->begin();
              i != heap_records->end(); ++i)
         {
           records[i->first] = i->second;
@@ -676,7 +676,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
 
 #ifdef _MADARA_PYTHON_CALLBACKS_
 
-      else if (i->is_python_callable())
+      else if(i->is_python_callable())
       {
         // acquire the interpreter lock to use the python function
         madara::python::Acquire_GIL acquire_gil;
@@ -689,7 +689,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter(KnowledgeMap& records,
 #endif
 
       // if the function is not zero
-      else if (i->is_extern_unnamed())
+      else if(i->is_extern_unnamed())
       {
         i->unnamed_filter(records, transport_context, *heap_variables.get());
       }
@@ -701,7 +701,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter_decode(
     char* source, int size, int max_size) const
 {
   // decode from back to front
-  for (filters::BufferFilters::const_reverse_iterator i =
+  for(filters::BufferFilters::const_reverse_iterator i =
            buffer_filters_.rbegin();
        i != buffer_filters_.rend(); ++i)
   {
@@ -713,7 +713,7 @@ void madara::knowledge::KnowledgeRecordFilters::filter_encode(
     char* source, int size, int max_size) const
 {
   // encode from front to back
-  for (filters::BufferFilters::const_iterator i = buffer_filters_.begin();
+  for(filters::BufferFilters::const_iterator i = buffer_filters_.begin();
        i != buffer_filters_.end(); ++i)
   {
     (*i)->encode(source, size, max_size);

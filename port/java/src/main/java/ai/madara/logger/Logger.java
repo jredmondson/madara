@@ -206,7 +206,7 @@ public class Logger extends MadaraJNI
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeLogger(getCPtr());
       setCPtr(0);

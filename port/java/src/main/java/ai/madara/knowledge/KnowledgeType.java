@@ -90,9 +90,9 @@ public enum KnowledgeType
    */
   public static KnowledgeType getType(int val)
   {
-    for (KnowledgeType t : values())
+    for(KnowledgeType t : values())
     {
-      if (t.value() == val)
+      if(t.value() == val)
         return t;
     }
     return null;

@@ -77,7 +77,7 @@ public class LogAggregate implements AggregateFilter
     buffer.append("  Operation Type:");
 
     int index = (int) context.getOperation();
-    if (index < opTypes.length)
+    if(index < opTypes.length)
     {
       buffer.append(opTypes[index]);
     }

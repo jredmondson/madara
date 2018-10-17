@@ -53,7 +53,7 @@ struct DiyFp {
 
         int biased_e = static_cast<int>((u.u64 & kDpExponentMask) >> kDpSignificandSize);
         uint64_t significand = (u.u64 & kDpSignificandMask);
-        if (biased_e != 0) {
+        if(biased_e != 0) {
             f = significand + kDpHiddenBit;
             e = biased_e - kDpExponentBias;
         } 
@@ -71,15 +71,15 @@ struct DiyFp {
 #if defined(_MSC_VER) && defined(_M_AMD64)
         uint64_t h;
         uint64_t l = _umul128(f, rhs.f, &h);
-        if (l & (uint64_t(1) << 63)) // rounding
+        if(l & (uint64_t(1) << 63)) // rounding
             h++;
         return DiyFp(h, e + rhs.e + 64);
-#elif (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && defined(__x86_64__)
+#elif(__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)) && defined(__x86_64__)
         __extension__ typedef unsigned __int128 uint128;
         uint128 p = static_cast<uint128>(f) * static_cast<uint128>(rhs.f);
         uint64_t h = static_cast<uint64_t>(p >> 64);
         uint64_t l = static_cast<uint64_t>(p);
-        if (l & (uint64_t(1) << 63)) // rounding
+        if(l & (uint64_t(1) << 63)) // rounding
             h++;
         return DiyFp(h, e + rhs.e + 64);
 #else
@@ -108,7 +108,7 @@ struct DiyFp {
         return DiyFp(f << s, e - s);
 #else
         DiyFp res = *this;
-        while (!(res.f & (static_cast<uint64_t>(1) << 63))) {
+        while(!(res.f & (static_cast<uint64_t>(1) << 63))) {
             res.f <<= 1;
             res.e--;
         }
@@ -118,7 +118,7 @@ struct DiyFp {
 
     DiyFp NormalizeBoundary() const {
         DiyFp res = *this;
-        while (!(res.f & (kDpHiddenBit << 1))) {
+        while(!(res.f & (kDpHiddenBit << 1))) {
             res.f <<= 1;
             res.e--;
         }
@@ -228,7 +228,7 @@ inline DiyFp GetCachedPower(int e, int* K) {
     //int k = static_cast<int>(ceil((-61 - e) * 0.30102999566398114)) + 374;
     double dk = (-61 - e) * 0.30102999566398114 + 347;  // dk must be positive, so can do ceiling in positive
     int k = static_cast<int>(dk);
-    if (dk - k > 0.0)
+    if(dk - k > 0.0)
         k++;
 
     unsigned index = static_cast<unsigned>((k >> 3) + 1);

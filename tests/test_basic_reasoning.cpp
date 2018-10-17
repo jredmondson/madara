@@ -66,7 +66,7 @@ madara::knowledge::KnowledgeRecord set_var1_to_arg2(
     madara::knowledge::FunctionArguments& args,
     madara::knowledge::Variables& variables)
 {
-  if (args.size() > 1)
+  if(args.size() > 1)
   {
     variables.set(".var1", args[1]);
   }
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
 {
   int retcode = parse_args(argc, argv);
 
-  if (retcode < 0)
+  if(retcode < 0)
     return retcode;
 
 #ifndef _MADARA_NO_KARL_
@@ -1516,7 +1516,7 @@ void test_simplification_operators(madara::knowledge::KnowledgeBase& knowledge)
 
 int parse_args(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "Program Summary for %s:\n\n"
@@ -1573,7 +1573,7 @@ void test_arrays(void)
     assert((Rec(lhs) op rhs)cmp target);                     \
     assert((Rec(lhs) op rhs).method() cmp target);           \
     assert((lhs op rhs)cmp target);                          \
-  } while (0)
+  } while(0)
 
 void test_record_math(void)
 {

@@ -64,15 +64,15 @@ public:
 
 private:
     void Read() {
-        if (current_ < bufferLast_)
+        if(current_ < bufferLast_)
             ++current_;
-        else if (!eof_) {
+        else if(!eof_) {
             count_ += readCount_;
             readCount_ = fread(buffer_, 1, bufferSize_, fp_);
             bufferLast_ = buffer_ + readCount_ - 1;
             current_ = buffer_;
 
-            if (readCount_ < bufferSize_) {
+            if(readCount_ < bufferSize_) {
                 buffer_[readCount_] = '\0';
                 ++bufferLast_;
                 eof_ = true;

@@ -15,7 +15,7 @@ namespace mcast = ip::multicast;
 
 void MulticastTransportReadThread::cleanup(void)
 {
-  if (transport_.addresses_.size() == 0)
+  if(transport_.addresses_.size() == 0)
   {
     return;
   }

@@ -48,7 +48,7 @@ madara::knowledge::containers::Double::~Double() {}
 void madara::knowledge::containers::Double::modify(void)
 {
   ContextGuard context_guard(*context_);
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     context_->mark_modified(variable_);
   }
@@ -60,7 +60,7 @@ std::string madara::knowledge::containers::Double::get_debug_info(void)
 
   result << "Double: ";
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -90,7 +90,7 @@ madara::knowledge::containers::Double::clone(void) const
 
 void madara::knowledge::containers::Double::operator=(const Double& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
@@ -103,7 +103,7 @@ void madara::knowledge::containers::Double::operator=(const Double& rhs)
 
 void madara::knowledge::containers::Double::exchange(containers::Double& other)
 {
-  if (context_ && other.context_)
+  if(context_ && other.context_)
   {
     std::lock(*context_, *other.context_, mutex_, other.mutex_);
 
@@ -160,7 +160,7 @@ void madara::knowledge::containers::Double::set_name(
 madara::knowledge::containers::Double::type
 madara::knowledge::containers::Double::operator=(type value)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -175,7 +175,7 @@ madara::knowledge::containers::Double::operator+=(type value)
 {
   madara::knowledge::containers::Double::type result(0);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -193,7 +193,7 @@ madara::knowledge::containers::Double::operator-=(type value)
 {
   madara::knowledge::containers::Double::type result(0);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -208,7 +208,7 @@ madara::knowledge::containers::Double::operator-=(type value)
 madara::knowledge::containers::Double::type
     madara::knowledge::containers::Double::operator++(void)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -221,7 +221,7 @@ madara::knowledge::containers::Double::type
 madara::knowledge::containers::Double::type
     madara::knowledge::containers::Double::operator--(void)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -233,7 +233,7 @@ madara::knowledge::containers::Double::type
 
 bool madara::knowledge::containers::Double::operator==(type value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -245,7 +245,7 @@ bool madara::knowledge::containers::Double::operator==(type value) const
 
 bool madara::knowledge::containers::Double::operator!=(type value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -258,7 +258,7 @@ bool madara::knowledge::containers::Double::operator!=(type value) const
 bool madara::knowledge::containers::Double::operator==(
     const Double& value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -272,7 +272,7 @@ bool madara::knowledge::containers::Double::operator==(
 bool madara::knowledge::containers::Double::operator!=(
     const Double& value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -285,7 +285,7 @@ bool madara::knowledge::containers::Double::operator!=(
 
 bool madara::knowledge::containers::Double::operator<(type value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -297,7 +297,7 @@ bool madara::knowledge::containers::Double::operator<(type value) const
 
 bool madara::knowledge::containers::Double::operator<=(type value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -309,7 +309,7 @@ bool madara::knowledge::containers::Double::operator<=(type value) const
 
 bool madara::knowledge::containers::Double::operator>(type value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -321,7 +321,7 @@ bool madara::knowledge::containers::Double::operator>(type value) const
 
 bool madara::knowledge::containers::Double::operator>=(type value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -341,7 +341,7 @@ bool madara::knowledge::containers::Double::exists(void) const
 {
   bool result(false);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -356,7 +356,7 @@ madara::knowledge::containers::Double::to_record(void) const
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -368,7 +368,7 @@ madara::knowledge::containers::Double::to_record(void) const
 
 double madara::knowledge::containers::Double::to_double(void) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -381,7 +381,7 @@ double madara::knowledge::containers::Double::to_double(void) const
 madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::containers::Double::to_integer(void) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -393,7 +393,7 @@ madara::knowledge::containers::Double::to_integer(void) const
 
 std::string madara::knowledge::containers::Double::to_string(void) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -406,7 +406,7 @@ std::string madara::knowledge::containers::Double::to_string(void) const
 void madara::knowledge::containers::Double::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -421,7 +421,7 @@ bool madara::knowledge::containers::Double::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "Double::is_true: checking for non-zero value\n", (int)result);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);

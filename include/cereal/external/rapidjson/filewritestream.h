@@ -38,7 +38,7 @@ public:
     }
 
     void Put(char c) { 
-        if (current_ >= bufferEnd_)
+        if(current_ >= bufferEnd_)
             Flush();
 
         *current_++ = c;
@@ -46,7 +46,7 @@ public:
 
     void PutN(char c, size_t n) {
         size_t avail = static_cast<size_t>(bufferEnd_ - current_);
-        while (n > avail) {
+        while(n > avail) {
             std::memset(current_, c, avail);
             current_ += avail;
             Flush();
@@ -54,16 +54,16 @@ public:
             avail = static_cast<size_t>(bufferEnd_ - current_);
         }
 
-        if (n > 0) {
+        if(n > 0) {
             std::memset(current_, c, n);
             current_ += n;
         }
     }
 
     void Flush() {
-        if (current_ != buffer_) {
+        if(current_ != buffer_) {
             size_t result = fwrite(buffer_, 1, static_cast<size_t>(current_ - buffer_), fp_);
-            if (result < static_cast<size_t>(current_ - buffer_)) {
+            if(result < static_cast<size_t>(current_ - buffer_)) {
                 // failure deliberately ignored at this time
                 // added to avoid warn_unused_result build errors
             }

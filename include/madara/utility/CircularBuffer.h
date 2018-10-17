@@ -57,7 +57,7 @@ public:
   CircularBuffer(const CircularBuffer& other)
     : CircularBuffer(other.size(), other.front_)
   {
-    for (const T& cur : other)
+    for(const T& cur : other)
     {
       emplace_back(cur);
     }
@@ -118,14 +118,14 @@ public:
    **/
   void reserve(size_t size)
   {
-    if (size == cap_)
+    if(size == cap_)
     {
       // Nothing to do
       return;
     }
 
     CircularBuffer tmp(size, front_);
-    while (!empty())
+    while(!empty())
     {
       tmp.emplace_back(std::move(pop_front()));
     }
@@ -183,7 +183,7 @@ public:
   /// Empty the buffer, destructing all elements
   void clear()
   {
-    while (!empty())
+    while(!empty())
     {
       discard_front();
     }
@@ -319,7 +319,7 @@ public:
 
     size_t operator-(const const_iterator& other) const
     {
-      if (buf_ != other.buf_)
+      if(buf_ != other.buf_)
       {
         return (size_t)-1;
       }
@@ -468,7 +468,7 @@ public:
 
     size_t operator-(const iterator& other) const
     {
-      if (buf_ != other.buf_)
+      if(buf_ != other.buf_)
       {
         return (size_t)-1;
       }
@@ -584,12 +584,12 @@ public:
   ssize_t check_range(size_t i) const
   {
     ssize_t ret = i - front_;
-    if (ret < 0)
+    if(ret < 0)
     {
       return ret;
     }
     ret = i - back_;
-    if (ret > 0)
+    if(ret > 0)
     {
       return ret;
     }
@@ -599,7 +599,7 @@ public:
 private:
   void throw_out_of_range(const char* func, size_t i) const
   {
-    if (i < front_)
+    if(i < front_)
     {
       std::stringstream ss;
       ss << "CircularBuffer::" << func << ": index " << i
@@ -607,7 +607,7 @@ private:
       throw std::out_of_range(ss.str());
     }
 
-    if (i >= back_)
+    if(i >= back_)
     {
       std::stringstream ss;
       ss << "CircularBuffer::" << func << ": index " << i
@@ -651,7 +651,7 @@ public:
    **/
   T pop_front()
   {
-    if (empty())
+    if(empty())
     {
       return T{};
     }
@@ -674,7 +674,7 @@ public:
    **/
   T pop_back()
   {
-    if (empty())
+    if(empty())
     {
       return T{};
     }
@@ -692,7 +692,7 @@ public:
   template<typename... Args>
   T& emplace_back(Args&&... args)
   {
-    if (size() >= capacity())
+    if(size() >= capacity())
     {
       discard_front();
     }

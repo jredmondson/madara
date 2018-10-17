@@ -119,13 +119,13 @@ filter_deadlines (
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size () >= madara::filters::TOTAL_ARGUMENTS)
+  if(args.size () >= madara::filters::TOTAL_ARGUMENTS)
   {
     /**
      * if the message has arrived within deadline, print success and
      * increment the on time messages
      **/
-    if (args[6].to_integer () - args[5].to_integer () < deadline_in_secs)
+    if(args[6].to_integer () - args[5].to_integer () < deadline_in_secs)
     {
       /**
        * 
@@ -133,7 +133,7 @@ filter_deadlines (
       vars.print ("Received a message on time.\n", 0);
       vars.inc (on_time_messages);
 
-      if (vars.get (on_time_messages).to_integer () == 2)
+      if(vars.get (on_time_messages).to_integer () == 2)
       {
         vars.print (
           "Inducing a 10 seconds sleep to force deadline infractions.\n", 0);
@@ -169,14 +169,14 @@ int main (int argc, char * argv[])
   bool terminated = false;
 
   // Check command line arguments for a non-zero id
-  if (argc >= 2)
+  if(argc >= 2)
   {
     // save the first argument into an integer
     std::stringstream buffer (argv[1]);
     buffer >> settings.id;
 
     // the 2nd argument is the log level
-    if (argc >= 3)
+    if(argc >= 3)
     {
       int log_level;
       std::stringstream reader (argv[2]);
@@ -190,7 +190,7 @@ int main (int argc, char * argv[])
     }
   }
   
-  if (settings.id != 0)
+  if(settings.id != 0)
   {
     /**
      * unlike other tutorials that require multiple filters, a deadline
@@ -258,11 +258,11 @@ int main (int argc, char * argv[])
   knowledge::CompiledExpression compiled_receiver_logic =
     kb.compile (receiver_logic);
 
-  while (!terminated)
+  while(!terminated)
   {
-    if (settings.id == 0)
+    if(settings.id == 0)
     {
-      if (kb.evaluate (compiled_sender_logic,
+      if(kb.evaluate (compiled_sender_logic,
         madara::knowledge::EvalSettings::SEND).to_integer () == 0)
       {
         /**

@@ -95,7 +95,7 @@ enum ParseErrorCode {
     \code
         Document doc;
         ParseResult ok = doc.Parse("[42]");
-        if (!ok) {
+        if(!ok) {
             fprintf(stderr, "JSON parse error: %s (%u)",
                     GetParseError_En(ok.Code()), ok.Offset());
             exit(EXIT_FAILURE);

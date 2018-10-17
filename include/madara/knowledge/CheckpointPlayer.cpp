@@ -20,7 +20,7 @@ namespace knowledge
 {
 void CheckpointReader::start()
 {
-  if (stage != 0)
+  if(stage != 0)
   {
     return;
   }
@@ -33,7 +33,7 @@ void CheckpointReader::start()
   file.open(
       checkpoint_settings.filename.c_str(), std::ios::in | std::ios::binary);
 
-  if (!file)
+  if(!file)
   {
     madara_logger_ptr_log(logger_, logger::LOG_ALWAYS,
         "ThreadSafeContext::load_context:"
@@ -59,7 +59,7 @@ void CheckpointReader::start()
       " file contains %d bytes.\n",
       (int)length);
 
-  if (!file.read(buffer.get(), FileHeader::encoded_size()))
+  if(!file.read(buffer.get(), FileHeader::encoded_size()))
   {
     std::stringstream message;
     message << "ThreadSafeContext::load_context: ";
@@ -79,7 +79,7 @@ void CheckpointReader::start()
 
   checkpoint_start = (size_t)FileHeader::encoded_size();
 
-  if (total_read < FileHeader::encoded_size() ||
+  if(total_read < FileHeader::encoded_size() ||
       !FileHeader::file_header_test(current))
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
@@ -109,7 +109,7 @@ void CheckpointReader::start()
    * the file is sufficient to at least be a message header (what
    * we use as a checkpoint header
    **/
-  if (meta.states == 0)
+  if(meta.states == 0)
   {
     stage = 9;
     return;
@@ -121,23 +121,23 @@ void CheckpointReader::start()
 
 std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
 {
-  if (stage == 0)
+  if(stage == 0)
   {
     start();
   }
 
-  if (stage == 9)
+  if(stage == 9)
   {
     return {};
   }
 
   // Outer loop for progressing through stages
-  for (;;)
+  for(;;)
   {
     // We're iterating to next state
-    if (stage == 1)
+    if(stage == 1)
     {
-      if (state >= meta.states || state > checkpoint_settings.last_state)
+      if(state >= meta.states || state > checkpoint_settings.last_state)
       {
         madara_logger_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::load_context:"
@@ -156,7 +156,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
       // fseek (file, (long)checkpoint_start, SEEK_SET);
       file.seekg(checkpoint_start, file.beg);
 
-      if (!file.read((char*)&checkpoint_size, sizeof(checkpoint_size)))
+      if(!file.read((char*)&checkpoint_size, sizeof(checkpoint_size)))
       {
         std::stringstream message;
         message << "ThreadSafeContext::load_context: ";
@@ -173,7 +173,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
 
       checkpoint_size = utility::endian_swap(checkpoint_size);
 
-      if (checkpoint_settings.buffer_filters.size() > 0)
+      if(checkpoint_settings.buffer_filters.size() > 0)
       {
         checkpoint_size += filters::BufferFilterHeader::encoded_size();
       }
@@ -193,7 +193,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
           " reading %d bytes for full checkpoint\n",
           (int)checkpoint_size);
 
-      if (!file.read(buffer.get(), checkpoint_size))
+      if(!file.read(buffer.get(), checkpoint_size))
       {
         std::stringstream message;
         message << "ThreadSafeContext::load_context: ";
@@ -226,7 +226,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
       buffer_remaining = (int64_t)checkpoint_settings.decode(
           current, (int)total_read, (int)max_buffer);
 
-      if (buffer_remaining <= 0)
+      if(buffer_remaining <= 0)
       {
         stage = 9;
         throw exceptions::FilterException(
@@ -234,7 +234,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
             "decode () returned a negative encoding size. Bad filter/encode.");
       }
 
-      if (buffer_remaining <
+      if(buffer_remaining <
           (int64_t)transport::MessageHeader::static_encoded_size())
       {
         stage = 9;
@@ -250,12 +250,12 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
 
       current = (char*)checkpoint_header.read(current, buffer_remaining);
 
-      if (state == 0)
+      if(state == 0)
       {
         checkpoint_settings.initial_lamport_clock = checkpoint_header.clock;
       }
 
-      if (state == meta.states - 1)
+      if(state == meta.states - 1)
       {
         checkpoint_settings.last_lamport_clock = checkpoint_header.clock;
       }
@@ -273,7 +273,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
        * max_buffer. We want to make this checkpoint_header size into
        * something reasonable.
        **/
-      if (updates_size > (uint64_t)buffer_remaining)
+      if(updates_size > (uint64_t)buffer_remaining)
       {
         throw exceptions::MemoryException(
             "ThreadSafeContext::load_context: "
@@ -286,7 +286,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
           (int)state, (int)checkpoint_settings.initial_state,
           (int)checkpoint_settings.last_state);
 
-      if (state <= checkpoint_settings.last_state &&
+      if(state <= checkpoint_settings.last_state &&
           state >= checkpoint_settings.initial_state)
       {
         stage = 2;
@@ -305,9 +305,9 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
     }
 
     // We're iterating to next update
-    if (stage == 2)
+    if(stage == 2)
     {
-      if (update >= checkpoint_header.updates)
+      if(update >= checkpoint_header.updates)
       {
         stage = 1;
         continue;
@@ -325,10 +325,10 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
           (int)update, (int)checkpoint_header.updates, key.c_str());
 
       // check if the prefix is allowed
-      if (checkpoint_settings.prefixes.size() > 0)
+      if(checkpoint_settings.prefixes.size() > 0)
       {
         bool prefix_found = false;
-        for (size_t j = 0;
+        for(size_t j = 0;
              j < checkpoint_settings.prefixes.size() && !prefix_found; ++j)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
@@ -336,7 +336,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
               " checking record %s against prefix %s\n",
               key.c_str(), checkpoint_settings.prefixes[j].c_str());
 
-          if (madara::utility::begins_with(
+          if(madara::utility::begins_with(
                   key, checkpoint_settings.prefixes[j]))
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
@@ -347,7 +347,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
           }  // end if prefix success
         }    // end for all prefixes
 
-        if (!prefix_found)
+        if(!prefix_found)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::load_context:"
@@ -369,10 +369,10 @@ void CheckpointPlayer::thread_main(CheckpointPlayer* self)
   uint64_t first_toi = -1UL;
   uint64_t prev_toi = -1UL;
 
-  while (self->keep_running_.test_and_set())
+  while(self->keep_running_.test_and_set())
   {
     auto cur = self->reader_->next();
-    if (cur.first == "")
+    if(cur.first == "")
     {
       break;
     }
@@ -382,12 +382,12 @@ void CheckpointPlayer::thread_main(CheckpointPlayer* self)
         " record has toi %lu. prev: %lu. first: %lu\n",
         cur.second.toi(), prev_toi, first_toi);
 
-    if (first_toi == -1UL)
+    if(first_toi == -1UL)
     {
       first_toi = cur.second.toi();
       prev_toi = first_toi;
 #ifdef MADARA_FEATURE_SIMTIME
-      if (self->settings_.playback_simtime)
+      if(self->settings_.playback_simtime)
       {
         utility::sim_time_notify(first_toi, NAN);
       }
@@ -420,10 +420,10 @@ void CheckpointPlayer::thread_main(CheckpointPlayer* self)
 bool CheckpointPlayer::play_until(uint64_t target_toi)
 {
   init_reader();
-  for (;;)
+  for(;;)
   {
     auto cur = reader_->next();
-    if (cur.first.empty())
+    if(cur.first.empty())
     {
       return false;
     }
@@ -433,7 +433,7 @@ bool CheckpointPlayer::play_until(uint64_t target_toi)
     std::cerr << "play_until: " << cur.second.toi() << "   " << target_toi
               << std::endl;
 
-    if (cur.second.toi() >= target_toi)
+    if(cur.second.toi() >= target_toi)
     {
       return true;
     }

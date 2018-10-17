@@ -15,13 +15,13 @@ inline time_t madara::transport::BandwidthMonitor::update_utilization(void)
   BandwidthMessages::iterator begin = messages_.begin();
   BandwidthMessages::iterator end = begin;
 
-  for (end = begin; end != messages_.end(); ++end)
+  for(end = begin; end != messages_.end(); ++end)
   {
     /**
      * if we have an old message, remove it from utilization and schedule
      * a deletion
      **/
-    if (end->first < earliest_time)
+    if(end->first < earliest_time)
     {
       utilization_ -= end->second;
     }
@@ -29,7 +29,7 @@ inline time_t madara::transport::BandwidthMonitor::update_utilization(void)
       break;
   }
 
-  if (end != begin)
+  if(end != begin)
     messages_.erase(begin, end);
 
   return cur_time;

@@ -88,7 +88,7 @@ private:
   void terminate()
   {
     keep_running_.clear();
-    if (thread_.joinable())
+    if(thread_.joinable())
     {
       thread_.join();
     }

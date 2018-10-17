@@ -28,7 +28,7 @@ void madara::transport::ZMQTransportReadThread::init(
 {
   context_ = &(knowledge.get_context());
 
-  if (!settings_.no_receiving)
+  if(!settings_.no_receiving)
   {
     // int send_buff_size = 0;
     int rcv_buff_size = 0;
@@ -38,7 +38,7 @@ void madara::transport::ZMQTransportReadThread::init(
     int zero = 0;
     size_t opt_len = sizeof(int);
 
-    if (settings_.debug_to_kb_prefix != "")
+    if(settings_.debug_to_kb_prefix != "")
     {
       received_packets_.set_name(
           settings_.debug_to_kb_prefix + ".received_packets", knowledge);
@@ -53,7 +53,7 @@ void madara::transport::ZMQTransportReadThread::init(
     }
 
     // setup the receive buffer
-    if (settings_.queue_length > 0)
+    if(settings_.queue_length > 0)
       buffer_ = new char[settings_.queue_length];
 
     madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
@@ -62,7 +62,7 @@ void madara::transport::ZMQTransportReadThread::init(
 
     read_socket_ = zmq_socket(zmq_context.get_context(), ZMQ_SUB);
 
-    if (read_socket_ == NULL)
+    if(read_socket_ == NULL)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_ERROR,
           "ZMQTransportReadThread::init:"
@@ -76,7 +76,7 @@ void madara::transport::ZMQTransportReadThread::init(
     // subscribe to all messages
     result = zmq_setsockopt(read_socket_, ZMQ_SUBSCRIBE, 0, 0);
 
-    if (result == 0)
+    if(result == 0)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "ZMQTransportReadThread::init:"
@@ -102,7 +102,7 @@ void madara::transport::ZMQTransportReadThread::init(
     result =
         zmq_setsockopt(read_socket_, ZMQ_RCVBUF, (void*)&buff_size, opt_len);
 
-    if (result == 0)
+    if(result == 0)
     {
       result = zmq_getsockopt(
           read_socket_, ZMQ_RCVBUF, (void*)&rcv_buff_size, &opt_len);
@@ -123,7 +123,7 @@ void madara::transport::ZMQTransportReadThread::init(
     result =
         zmq_setsockopt(read_socket_, ZMQ_RCVTIMEO, (void*)&timeout, opt_len);
 
-    if (result == 0)
+    if(result == 0)
     {
       result =
           zmq_getsockopt(read_socket_, ZMQ_RCVTIMEO, (void*)&timeout, &opt_len);
@@ -141,10 +141,10 @@ void madara::transport::ZMQTransportReadThread::init(
           zmq_strerror(zmq_errno()));
     }
 
-    if (settings_.hosts.size() >= 1)
+    if(settings_.hosts.size() >= 1)
     {
       // if the first host was a reliable multicast, we need to connect to it
-      if (utility::begins_with(settings_.hosts[0], "pgm") ||
+      if(utility::begins_with(settings_.hosts[0], "pgm") ||
           utility::begins_with(settings_.hosts[0], "epgm"))
       {
       }
@@ -153,22 +153,22 @@ void madara::transport::ZMQTransportReadThread::init(
     // connect the reader to the host sockets
     size_t i = 0;
 
-    if (settings_.hosts.size() >= 1)
+    if(settings_.hosts.size() >= 1)
     {
       // we ignore first host unless it is pgm because writer is on first host
-      if (!utility::begins_with(settings_.hosts[0], "pgm") &&
+      if(!utility::begins_with(settings_.hosts[0], "pgm") &&
           !utility::begins_with(settings_.hosts[0], "epgm"))
       {
         ++i;
       }
     }
 
-    for (; i < settings_.hosts.size(); ++i)
+    for(; i < settings_.hosts.size(); ++i)
     {
       int connect_result =
           zmq_connect(read_socket_, settings_.hosts[i].c_str());
 
-      if (connect_result == 0)
+      if(connect_result == 0)
       {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "ZMQTransportReadThread::init:"
@@ -189,10 +189,10 @@ void madara::transport::ZMQTransportReadThread::init(
     }
   }
 
-  if (context_)
+  if(context_)
   {
     // check for an on_data_received ruleset
-    if (settings_.on_data_received_logic.length() != 0)
+    if(settings_.on_data_received_logic.length() != 0)
     {
       madara_logger_log(this->context_->get_logger(), logger::LOG_MAJOR,
           "ZMQTransportReadThread::init:"
@@ -219,7 +219,7 @@ void madara::transport::ZMQTransportReadThread::cleanup(void)
       "ZMQTransportReadThread::cleanup:"
       " starting cleanup\n");
 
-  if (read_socket_ != 0)
+  if(read_socket_ != 0)
   {
     madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
         "ZMQTransportReadThread::cleanup:"
@@ -228,7 +228,7 @@ void madara::transport::ZMQTransportReadThread::cleanup(void)
     int result = zmq_close(read_socket_);
     read_socket_ = 0;
 
-    if (result != 0)
+    if(result != 0)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_ERROR,
           "ZMQTransportReadThread::cleanup:"
@@ -250,14 +250,14 @@ void madara::transport::ZMQTransportReadThread::rebroadcast(
   char* buffer = buffer_.get_ptr();
   int result(0);
 
-  if (!settings_.no_sending)
+  if(!settings_.no_sending)
   {
     result = prep_rebroadcast(*context_, buffer, buffer_remaining, settings_,
         print_prefix, header, records, packet_scheduler_);
 
-    if (result > 0)
+    if(result > 0)
     {
-      if (settings_.hosts.size() > 0 && result > 0)
+      if(settings_.hosts.size() > 0 && result > 0)
       {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "ZMQTransportReadThread::send:"
@@ -279,7 +279,7 @@ void madara::transport::ZMQTransportReadThread::rebroadcast(
 
 void madara::transport::ZMQTransportReadThread::run(void)
 {
-  if (!settings_.no_receiving)
+  if(!settings_.no_receiving)
   {
     // allocate a buffer to send
     char* buffer = buffer_.get_ptr();
@@ -294,7 +294,7 @@ void madara::transport::ZMQTransportReadThread::run(void)
 
     knowledge::KnowledgeMap rebroadcast_records;
 
-    if (buffer == 0)
+    if(buffer == 0)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "%s:"
@@ -318,18 +318,18 @@ void madara::transport::ZMQTransportReadThread::run(void)
         " past recv on the socket.\n",
         print_prefix);
 
-    if (buffer_remaining > 0)
+    if(buffer_remaining > 0)
     {
-      if (settings_.debug_to_kb_prefix != "")
+      if(settings_.debug_to_kb_prefix != "")
       {
         received_data_ += buffer_remaining;
         ++received_packets_;
 
-        if (received_data_max_ < buffer_remaining)
+        if(received_data_max_ < buffer_remaining)
         {
           received_data_max_ = buffer_remaining;
         }
-        if (received_data_min_ > buffer_remaining || received_data_min_ == 0)
+        if(received_data_min_ > buffer_remaining || received_data_min_ == 0)
         {
           received_data_min_ = buffer_remaining;
         }
@@ -355,7 +355,7 @@ void madara::transport::ZMQTransportReadThread::run(void)
           " done processing %d byte update from %s.\n",
           print_prefix, (int)buffer_remaining, header->originator);
 
-      if (header)
+      if(header)
       {
         // delete header
         delete header;
@@ -368,7 +368,7 @@ void madara::transport::ZMQTransportReadThread::run(void)
           " wait timeout on new messages. Proceeding to next wait\n",
           print_prefix);
 
-      if (settings_.debug_to_kb_prefix != "")
+      if(settings_.debug_to_kb_prefix != "")
       {
         ++failed_receives_;
       }

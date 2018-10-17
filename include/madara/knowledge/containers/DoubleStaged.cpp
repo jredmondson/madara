@@ -80,7 +80,7 @@ std::string madara::knowledge::containers::DoubleStaged::get_debug_info_(void)
 void madara::knowledge::containers::DoubleStaged::exchange(
     containers::DoubleStaged& other)
 {
-  if (context_ && other.context_)
+  if(context_ && other.context_)
   {
     std::lock(*context_, *other.context_, mutex_, other.mutex_);
 

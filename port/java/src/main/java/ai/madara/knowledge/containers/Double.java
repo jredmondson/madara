@@ -265,7 +265,7 @@ public class Double extends BaseContainer {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeDouble(getCPtr());
 			setCPtr(0);
 		}

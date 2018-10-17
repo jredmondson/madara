@@ -64,7 +64,7 @@ public:
 
 #if CEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS
     Stack& operator=(Stack&& rhs) {
-        if (&rhs != this)
+        if(&rhs != this)
         {
             Destroy();
 
@@ -98,7 +98,7 @@ public:
     void Clear() { stackTop_ = stack_; }
 
     void ShrinkToFit() { 
-        if (Empty()) {
+        if(Empty()) {
             // If the stack is empty, completely deallocate the memory.
             Allocator::Free(stack_);
             stack_ = 0;
@@ -114,7 +114,7 @@ public:
     template<typename T>
     CEREAL_RAPIDJSON_FORCEINLINE void Reserve(size_t count = 1) {
          // Expand the stack if needed
-        if (CEREAL_RAPIDJSON_UNLIKELY(stackTop_ + sizeof(T) * count > stackEnd_))
+        if(CEREAL_RAPIDJSON_UNLIKELY(stackTop_ + sizeof(T) * count > stackEnd_))
             Expand<T>(count);
     }
 
@@ -181,8 +181,8 @@ private:
     void Expand(size_t count) {
         // Only expand the capacity if the current stack exists. Otherwise just create a stack with initial capacity.
         size_t newCapacity;
-        if (stack_ == 0) {
-            if (!allocator_)
+        if(stack_ == 0) {
+            if(!allocator_)
                 ownAllocator_ = allocator_ = CEREAL_RAPIDJSON_NEW(Allocator());
             newCapacity = initialCapacity_;
         } else {
@@ -190,7 +190,7 @@ private:
             newCapacity += (newCapacity + 1) / 2;
         }
         size_t newSize = GetSize() + sizeof(T) * count;
-        if (newCapacity < newSize)
+        if(newCapacity < newSize)
             newCapacity = newSize;
 
         Resize(newCapacity);

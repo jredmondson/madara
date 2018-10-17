@@ -70,7 +70,7 @@ public:
   {
     auto current_time = CLOCK::now();
 
-    while (next_ <= current_time)
+    while(next_ <= current_time)
       next_ += period_;
   }
 

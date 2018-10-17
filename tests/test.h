@@ -45,7 +45,7 @@ static inline void madara_tests_reset_count()
     msg << #lhs " [" << l << "] " #op " " #rhs " [" << r << "] "; \
     std::string smsg = msg.str();                                 \
     const char* cmsg = smsg.c_str();                              \
-    if (l op r)                                                   \
+    if(l op r)                                                   \
     {                                                             \
       log("SUCCESS : %s\n", cmsg);                                \
     }                                                             \
@@ -54,7 +54,7 @@ static inline void madara_tests_reset_count()
       log("FAIL    : %s\n", cmsg);                                \
       ++madara_tests_fail_count;                                  \
     }                                                             \
-  } while (0)
+  } while(0)
 
 #define TEST_EQ(lhs, rhs) TEST_OP(lhs, ==, rhs)
 #define TEST_NE(lhs, rhs) TEST_OP(lhs, !=, rhs)
@@ -71,7 +71,7 @@ static inline void madara_tests_reset_count()
       do                                                                      \
       {                                                                       \
         __VA_ARGS__                                                           \
-      } while (0);                                                            \
+      } while(0);                                                            \
       log("FAIL    : no exception thrown; expected " #EXCEPTION__ "\n");      \
       ++madara_tests_fail_count;                                              \
     }                                                                         \
@@ -90,6 +90,6 @@ static inline void madara_tests_reset_count()
           ", got unknown excpetion\n");                                       \
       ++madara_tests_fail_count;                                              \
     }                                                                         \
-  } while (0)
+  } while(0)
 
 #endif

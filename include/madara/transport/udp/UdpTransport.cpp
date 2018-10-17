@@ -105,7 +105,7 @@ long UdpTransport::send_buffer(
   int send_attempts = -1;
   ssize_t actual_sent = -1;
 
-  while (actual_sent < 0 && (settings_.resend_attempts < 0 ||
+  while(actual_sent < 0 && (settings_.resend_attempts < 0 ||
                                 send_attempts < settings_.resend_attempts))
   {
     if(settings_.max_send_hertz > 0)

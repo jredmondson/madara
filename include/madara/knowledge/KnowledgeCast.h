@@ -243,7 +243,7 @@ inline auto resize_or_clear(T& c, size_t n) ->
 {
   using elem_type = typename std::decay<decltype(c[0])>::type;
   size_t curn = get_size(c);
-  for (; n < curn; ++n)
+  for(; n < curn; ++n)
   {
     c[n] = elem_type{};
   }
@@ -385,7 +385,7 @@ inline auto knowledge_cast(const KnowledgeRecord& in, T& out) ->
         decltype(out)>::type
 {
   auto ints = impl::share_array<T>(in);
-  if (ints)
+  if(ints)
   {
     size_t count = ints->size();
     count = std::min(impl::resize_or_clear(out, count), count);
@@ -549,7 +549,7 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const KnowledgeRecord& l, const char* r)            \
   {                                                                           \
     auto s = l.share_string();                                                \
-    if (s)                                                                    \
+    if(s)                                                                    \
     {                                                                         \
       return s->compare(r) op 0;                                              \
     }                                                                         \
@@ -562,7 +562,7 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const char* l, const KnowledgeRecord& r)            \
   {                                                                           \
     auto s = r.share_string();                                                \
-    if (s)                                                                    \
+    if(s)                                                                    \
     {                                                                         \
       return std::strcmp(l, s->c_str()) op 0;                                 \
     }                                                                         \
@@ -575,7 +575,7 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const KnowledgeRecord& l, const std::string& r)     \
   {                                                                           \
     auto s = l.share_string();                                                \
-    if (s)                                                                    \
+    if(s)                                                                    \
     {                                                                         \
       return s->compare(r) op 0;                                              \
     }                                                                         \
@@ -588,7 +588,7 @@ inline const KnowledgeRecord& knowledge_cast(
   inline bool operator op(const std::string& l, const KnowledgeRecord& r)     \
   {                                                                           \
     auto s = r.share_string();                                                \
-    if (s)                                                                    \
+    if(s)                                                                    \
     {                                                                         \
       return l.compare(*s) op 0;                                              \
     }                                                                         \
@@ -692,19 +692,19 @@ inline T BasicConstAny<Impl, ValImpl, RefImpl>::to(type<T>) const
 {
   using exceptions::BadAnyAccess;
 
-  if (!handler_ || !data_)
+  if(!handler_ || !data_)
   {
     throw BadAnyAccess("Any::to<T>: Any is empty");
   }
 
-  if (handler_->tindex == type_id<T>())
+  if(handler_->tindex == type_id<T>())
   {
     return impl().template ref_unsafe<T>();
   }
 
-  if (supports_cast_from_record<T>::value)
+  if(supports_cast_from_record<T>::value)
   {
-    if (!supports_to_record())
+    if(!supports_to_record())
     {
       throw BadAnyAccess("Any::to<T>: Type stored in Any doesn't "
                          "support to_record");
@@ -726,21 +726,21 @@ template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 template<typename T>
 inline void BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::assign(T&& t) const
 {
-  if (!this->handler_ && this->data_)
+  if(!this->handler_ && this->data_)
   {
     impl().template ref<decay_<T>>() = std::forward<T>(t);
     return;
   }
 
-  if (this->handler_->tindex == type_id<T>())
+  if(this->handler_->tindex == type_id<T>())
   {
     ref<decay_<T>>() = std::forward<T>(t);
     return;
   }
 
-  if (supports_cast_to_record<T>::value)
+  if(supports_cast_to_record<T>::value)
   {
-    if (!supports_from_record())
+    if(!supports_from_record())
     {
       throw exceptions::BadAnyAccess("Type stored in Any doesn't "
                                      "support to_record");
@@ -761,7 +761,7 @@ template<typename Impl, typename ValImpl, typename RefImpl, typename CRefImpl>
 inline void BasicAny<Impl, ValImpl, RefImpl, CRefImpl>::from_record(
     const knowledge::KnowledgeRecord& rec) const
 {
-  if (!supports_from_record())
+  if(!supports_from_record())
   {
     throw exceptions::BadAnyAccess("Type stored in Any doesn't "
                                    "support to_record");

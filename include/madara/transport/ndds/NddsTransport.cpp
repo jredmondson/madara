@@ -23,7 +23,7 @@ madara::transport::NddsTransport::NddsTransport(const std::string& id,
     update_writer_(0),
     listener_(0)
 {
-  if (launch_transport)
+  if(launch_transport)
     setup();
 }
 
@@ -37,30 +37,30 @@ void madara::transport::NddsTransport::close(void)
   DDS_ReturnCode_t rc;
   this->invalidate_transport();
 
-  if (subscriber_)
+  if(subscriber_)
   {
     subscriber_->delete_datareader(data_reader_);
   }
 
-  if (publisher_)
+  if(publisher_)
   {
     publisher_->delete_datawriter(data_writer_);
   }
 
-  if (domain_participant_)
+  if(domain_participant_)
   {
     domain_participant_->delete_subscriber(subscriber_);
     domain_participant_->delete_publisher(publisher_);
     domain_participant_->delete_topic(update_topic_);
   }
 
-  if (domain_participant_)
+  if(domain_participant_)
   {
     /* Perform a clean shutdown of the participant and all the contained
      * entities
      */
     rc = domain_participant_->delete_contained_entities();
-    if (rc != DDS_RETCODE_OK)
+    if(rc != DDS_RETCODE_OK)
     {
       context_.get_logger().log(logger::LOG_MINOR,
           "NddsTransport::close: unable to delete participant entities\n");
@@ -68,7 +68,7 @@ void madara::transport::NddsTransport::close(void)
 
     rc = DDSDomainParticipantFactory::get_instance()->delete_participant(
         domain_participant_);
-    if (rc != DDS_RETCODE_OK)
+    if(rc != DDS_RETCODE_OK)
     {
       context_.get_logger().log(logger::LOG_MINOR,
           "NddsTransport::close: unable to delete participant\n");
@@ -113,7 +113,7 @@ int madara::transport::NddsTransport::setup(void)
           DDS_PARTICIPANT_QOS_DEFAULT, NULL, /* Listener */
           DDS_STATUS_MASK_NONE);
 
-  if (domain_participant_ == NULL)
+  if(domain_participant_ == NULL)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -125,7 +125,7 @@ int madara::transport::NddsTransport::setup(void)
   DDS_TopicQos topic_qos;
   domain_participant_->get_default_topic_qos(topic_qos);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     topic_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
     topic_qos.history.depth = this->settings_.queue_length;
@@ -142,7 +142,7 @@ int madara::transport::NddsTransport::setup(void)
   rc = Ndds_Knowledge_UpdateTypeSupport::register_type(
       domain_participant_, Ndds_Knowledge_UpdateTypeSupport::get_type_name());
 
-  if (rc != DDS_RETCODE_OK)
+  if(rc != DDS_RETCODE_OK)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -156,7 +156,7 @@ int madara::transport::NddsTransport::setup(void)
       Ndds_Knowledge_UpdateTypeSupport::get_type_name(), topic_qos,
       NULL, /* listener */
       DDS_STATUS_MASK_NONE);
-  if (update_topic_ == 0)
+  if(update_topic_ == 0)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -169,7 +169,7 @@ int madara::transport::NddsTransport::setup(void)
 
   domain_participant_->get_default_publisher_qos(pub_qos);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     pub_qos.presentation.access_scope = DDS_TOPIC_PRESENTATION_QOS;
     pub_qos.presentation.coherent_access = true;
@@ -180,7 +180,7 @@ int madara::transport::NddsTransport::setup(void)
   publisher_ =
       domain_participant_->create_publisher(pub_qos, NULL, /* listener */
           DDS_STATUS_MASK_NONE);
-  if (publisher_ == 0)
+  if(publisher_ == 0)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -196,7 +196,7 @@ int madara::transport::NddsTransport::setup(void)
   data_writer_ = publisher_->create_datawriter(update_topic_, datawriter_qos,
       NULL, /* listener */
       DDS_STATUS_MASK_NONE);
-  if (data_writer_ == 0)
+  if(data_writer_ == 0)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -207,7 +207,7 @@ int madara::transport::NddsTransport::setup(void)
 
   // create the specialized data writer for our data type
   update_writer_ = Ndds_Knowledge_UpdateDataWriter::narrow(data_writer_);
-  if (update_writer_ == 0)
+  if(update_writer_ == 0)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -218,7 +218,7 @@ int madara::transport::NddsTransport::setup(void)
 
   DDS_SubscriberQos sub_qos;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     sub_qos.presentation.access_scope = DDS_TOPIC_PRESENTATION_QOS;
     sub_qos.presentation.coherent_access = true;
@@ -229,7 +229,7 @@ int madara::transport::NddsTransport::setup(void)
   subscriber_ =
       domain_participant_->create_subscriber(sub_qos, NULL, /* listener */
           DDS_STATUS_MASK_NONE);
-  if (subscriber_ == 0)
+  if(subscriber_ == 0)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"
@@ -242,7 +242,7 @@ int madara::transport::NddsTransport::setup(void)
   subscriber_->get_default_datareader_qos(datareader_qos);
   subscriber_->copy_from_topic_qos(datareader_qos, topic_qos);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     datareader_qos.reliability.kind = DDS_RELIABLE_RELIABILITY_QOS;
     datareader_qos.history.depth = this->settings_.queue_length;
@@ -257,7 +257,7 @@ int madara::transport::NddsTransport::setup(void)
   // create a reader for the topic
   data_reader_ = subscriber_->create_datareader(
       update_topic_, datareader_qos, listener_, DDS_STATUS_MASK_ALL);
-  if (data_reader_ == 0)
+  if(data_reader_ == 0)
   {
     context_.get_logger().log(logger::LOG_ERROR,
         "NddsTransport::setup:"

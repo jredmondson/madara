@@ -74,15 +74,15 @@ protected:
   template<typename T>
   void check_type(type<T> t) const
   {
-    if (!data_)
+    if(!data_)
     {
       throw exceptions::BadAnyAccess("ref() called on empty Any");
     }
-    else if (!handler_)
+    else if(!handler_)
     {
       throw exceptions::BadAnyAccess("ref() called on const Any with raw data");
     }
-    else if (type_id<T>() != handler_->tindex)
+    else if(type_id<T>() != handler_->tindex)
     {
       throw exceptions::BadAnyAccess(t, handler_->tindex);
     }
@@ -222,7 +222,7 @@ public:
   template<typename T>
   const T* ptr(type<T> t) const
   {
-    if (!impl().try_type(t))
+    if(!impl().try_type(t))
     {
       return nullptr;
     }
@@ -288,17 +288,17 @@ public:
   typename T::Reader reader(type<T>) const
   {
     auto capn = cptr<CapnObject<T>>();
-    if (capn)
+    if(capn)
     {
       return capn->reader();
     }
     auto reg_capn = cptr<RegCapnObject>();
-    if (reg_capn)
+    if(reg_capn)
     {
       return reg_capn->reader().template as<T>();
     }
     auto gen_capn = cptr<GenericCapnObject>();
-    if (gen_capn)
+    if(gen_capn)
     {
       return gen_capn->reader(capnp::Schema::from<T>()).template as<T>();
     }
@@ -324,12 +324,12 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!handler_->get_reader)
+    if(!handler_->get_reader)
     {
       throw BadAnyAccess("Any does not contain a Cap'n Proto message");
     }
     capnp::DynamicStruct::Reader ret;
-    if (!handler_->get_reader(&ret, nullptr, nullptr, nullptr, data_))
+    if(!handler_->get_reader(&ret, nullptr, nullptr, nullptr, data_))
     {
       throw BadAnyAccess("Unknown schema for Cap'n Proto message.");
     }
@@ -345,12 +345,12 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!handler_->get_reader)
+    if(!handler_->get_reader)
     {
       throw BadAnyAccess("Any does not contain a Cap'n Proto message");
     }
     capnp::DynamicStruct::Reader ret;
-    if (!handler_->get_reader(&ret, &schema, nullptr, nullptr, data_))
+    if(!handler_->get_reader(&ret, &schema, nullptr, nullptr, data_))
     {
       throw BadAnyAccess("Wrong schema for Cap'n Proto message");
     }
@@ -361,13 +361,13 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!handler_->get_reader)
+    if(!handler_->get_reader)
     {
       throw BadAnyAccess("Any does not contain a Cap'n Proto message");
     }
     const char* data;
     size_t size;
-    if (!handler_->get_reader(nullptr, nullptr, &data, &size, data_))
+    if(!handler_->get_reader(nullptr, nullptr, &data, &size, data_))
     {
       throw BadAnyAccess("Unknown error getting Cap'n Proto object's buffer");
     }
@@ -423,7 +423,7 @@ public:
    **/
   void serialize(std::ostream& stream) const
   {
-    if (!handler_->save)
+    if(!handler_->save)
     {
       throw exceptions::BadAnyAccess(std::string("Type ") + tag() +
                                      "does not "
@@ -533,7 +533,7 @@ public:
     using exceptions::BadAnyAccess;
 
     auto t = this->tag();
-    if (t == nullptr)
+    if(t == nullptr)
     {
       throw BadAnyAccess(
           std::string("tagged_serialize(): unregistered type: ") +
@@ -557,7 +557,7 @@ public:
     /*
     const size_t align = sizeof(capnp::word);
     size_t over = stag.size() % align;
-    if (over > 0) {
+    if(over > 0) {
       size_t pad = align - over;
       stag.resize(stag.size() + pad, '\0');
     }*/
@@ -573,7 +573,7 @@ public:
    **/
   void serialize_json(std::ostream& o) const
   {
-    if (!handler_->save_json)
+    if(!handler_->save_json)
     {
       throw exceptions::BadAnyAccess(std::string("Type ") + tag() +
                                      "does not "
@@ -612,7 +612,7 @@ public:
    **/
   const std::vector<AnyField>& list_fields() const
   {
-    if (!supports_fields())
+    if(!supports_fields())
     {
       static std::vector<AnyField> empty;
       return empty;
@@ -630,7 +630,7 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!name)
+    if(!name)
     {
       throw BadAnyAccess("Null name pointer passed to find_field");
     }
@@ -638,7 +638,7 @@ public:
     const auto& fields = list_fields();
     auto found = std::equal_range(
         fields.begin(), fields.end(), name, compare_any_fields_by_name());
-    if (found.first == fields.end() || found.first == found.second)
+    if(found.first == fields.end() || found.first == found.second)
     {
       throw BadAnyAccess(
           std::string("Type in Any does not contain field \"") + name + "\"");
@@ -655,7 +655,7 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!handler_ || field.parent().tindex != handler_->tindex)
+    if(!handler_ || field.parent().tindex != handler_->tindex)
     {
       throw BadAnyAccess(std::string("Type in Any does not contain field \"") +
                          field.name() + "\"");
@@ -683,18 +683,18 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!supports_fields())
+    if(!supports_fields())
     {
       throw BadAnyAccess("Tried to access field in Any holding type "
                          "that doesn't support them");
     }
-    if (field.parent().tindex != handler_->tindex)
+    if(field.parent().tindex != handler_->tindex)
     {
       throw BadAnyAccess("Tried to access field in Any from a "
                          "class not contained within");
     }
     auto func = handler_->get_field;
-    if (!func)
+    if(!func)
     {
       return {};
     }
@@ -957,7 +957,7 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!supports_int_index())
+    if(!supports_int_index())
     {
       throw BadAnyAccess("Type in Any does not support indexing by integer");
     }
@@ -986,7 +986,7 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!supports_string_index())
+    if(!supports_string_index())
     {
       throw BadAnyAccess("Type in Any does not support indexing by string");
     }
@@ -1062,7 +1062,7 @@ public:
   {
     using exceptions::BadAnyAccess;
 
-    if (!supports_size())
+    if(!supports_size())
     {
       throw BadAnyAccess("Type in Any does not support size()");
     }
@@ -1170,24 +1170,24 @@ public:
    **/
   std::string to_string() const
   {
-    if (!handler_ && data_)
+    if(!handler_ && data_)
     {
       return impl().template ref<std::string>();
     }
 
-    if (handler_->tindex == type_id<std::string>())
+    if(handler_->tindex == type_id<std::string>())
     {
       return impl().template ref_unsafe<std::string>();
     }
 
-    if (supports_ostream())
+    if(supports_ostream())
     {
       std::stringstream s;
       stream(s);
       return s.str();
     }
 
-    if (supports_to_record())
+    if(supports_to_record())
     {
       std::string ret;
       try_knowledge_cast(handler_->to_record(data_), ret);
@@ -1227,11 +1227,11 @@ public:
    **/
   std::ostream& stream(std::ostream& o) const
   {
-    if (supports_ostream())
+    if(supports_ostream())
     {
       return handler_->to_ostream(o, data_);
     }
-    else if (supports_to_record())
+    else if(supports_to_record())
     {
       return o << to_record();
     }
@@ -1252,7 +1252,7 @@ public:
 
   const char* tag() const
   {
-    if (!handler_)
+    if(!handler_)
     {
       return nullptr;
     }

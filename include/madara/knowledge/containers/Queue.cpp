@@ -8,22 +8,22 @@ bool madara::knowledge::containers::Queue::enqueue(
 {
   bool result(false);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (count_ < 0)
+    if(count_ < 0)
       count_ = 0;
 
     // avoid double retrieval of count_ during check
     knowledge::KnowledgeRecord::Integer count = *count_;
 
-    if (context_ && name_ != "" && queue_.size() > 0 &&
+    if(context_ && name_ != "" && queue_.size() > 0 &&
         count < (KnowledgeRecord::Integer)queue_.size())
     {
       // there's no point in signaling inside of a locked context
-      if (!settings_.signal_changes)
+      if(!settings_.signal_changes)
         settings_.signal_changes = false;
 
       knowledge::KnowledgeRecord::Integer tail = *tail_;
@@ -35,7 +35,7 @@ bool madara::knowledge::containers::Queue::enqueue(
   }
 
   // now that we no longer have a lock on context, signal
-  if (context_)
+  if(context_)
     context_->signal();
 
   return result;
@@ -46,18 +46,18 @@ madara::knowledge::containers::Queue::dequeue(bool wait)
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (wait)
+    if(wait)
     {
-      while (count_ <= 0)
+      while(count_ <= 0)
         context_->wait_for_change(true);
     }
 
-    if (count_ > 0)
+    if(count_ > 0)
     {
       knowledge::KnowledgeRecord::Integer head = *head_;
 
@@ -69,7 +69,7 @@ madara::knowledge::containers::Queue::dequeue(bool wait)
   }
 
   // now that we no longer have a lock on context, signal
-  if (context_)
+  if(context_)
     context_->signal();
 
   return result;

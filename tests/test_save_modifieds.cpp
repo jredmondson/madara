@@ -27,7 +27,7 @@ int main(int, char**)
       "  Testing initial save modifieds (should be 0): %s\n",
       references.size() == 0 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 0)
+  if(references.size() != 0)
     ++madara_fails;
 
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -46,7 +46,7 @@ int main(int, char**)
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS, "%s\n",
       references.size() == 0 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 0)
+  if(references.size() != 0)
     ++madara_fails;
 
   knowledge.clear_modifieds();
@@ -59,7 +59,7 @@ int main(int, char**)
       "  Testing modifieds after 1 global var set: %s\n",
       references.size() == 1 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 1)
+  if(references.size() != 1)
     ++madara_fails;
 
   knowledge.clear_modifieds();
@@ -73,7 +73,7 @@ int main(int, char**)
       "  Testing modifieds after 2 global var set: %s\n",
       references.size() == 2 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 2)
+  if(references.size() != 2)
     ++madara_fails;
 
   knowledge.clear_modifieds();
@@ -97,7 +97,7 @@ int main(int, char**)
       "  Testing modifieds after 2 global var set, 2 local var set: %s\n",
       references.size() == 2 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 2)
+  if(references.size() != 2)
     ++madara_fails;
 
   knowledge.clear_modifieds();
@@ -112,7 +112,7 @@ int main(int, char**)
           ? "SUCCESS"
           : "FAIL");
 
-  if (!my_local_1.get_settings().treat_locals_as_globals ||
+  if(!my_local_1.get_settings().treat_locals_as_globals ||
       !my_local_2.get_settings().treat_locals_as_globals)
   {
     ++madara_fails;
@@ -130,7 +130,7 @@ int main(int, char**)
       "  Testing modifieds after treat_locals_as_globals = true (%d): %s\n",
       (int)references.size(), references.size() == 4 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 4)
+  if(references.size() != 4)
     ++madara_fails;
 
   knowledge.clear_modifieds();
@@ -151,10 +151,10 @@ int main(int, char**)
       " (%d): %s\n",
       (int)references.size(), references.size() == 2 ? "SUCCESS" : "FAIL");
 
-  if (references.size() != 2)
+  if(references.size() != 2)
     ++madara_fails;
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

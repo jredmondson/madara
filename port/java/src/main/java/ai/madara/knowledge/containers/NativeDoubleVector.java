@@ -268,7 +268,7 @@ public class NativeDoubleVector extends BaseContainer
   {
     Object[] objs = jni_toArray(getCPtr());
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
+    for(int i = 0; i < objs.length; ++i)
     {
       records[i] = (KnowledgeRecord)objs[i];
     }
@@ -304,7 +304,7 @@ public class NativeDoubleVector extends BaseContainer
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeNativeDoubleVector(getCPtr());
       setCPtr(0);

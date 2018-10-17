@@ -26,7 +26,7 @@ inline CircularBufferConsumerT<T>::CircularBufferConsumerT()
 template<typename T>
 inline void CircularBufferConsumerT<T>::check_name(const char* func) const
 {
-  if (name_ == "")
+  if(name_ == "")
   {
     throw exceptions::NameException(
         std::string("CircularBufferConsumerT<T>::") + func +
@@ -38,7 +38,7 @@ template<typename T>
 inline void CircularBufferConsumerT<T>::check_context(const char* func) const
 {
   check_name(func);
-  if (!context_)
+  if(!context_)
   {
     throw exceptions::ContextException(
         std::string("CircularBufferConsumerT<T>::") + func +
@@ -50,30 +50,30 @@ template<typename T>
 inline void CircularBufferConsumerT<T>::check_all(const char* func) const
 {
   std::string reason = "";
-  if (context_ == 0)
+  if(context_ == 0)
   {
     reason = "context has not been set";
   }
 
-  if (name_ == "")
+  if(name_ == "")
   {
-    if (reason.size() > 0)
+    if(reason.size() > 0)
     {
       reason += " and ";
     }
     reason = "name has not been set";
   }
 
-  if (buffer_.size() == 0)
+  if(buffer_.size() == 0)
   {
-    if (reason.size() > 0)
+    if(reason.size() > 0)
     {
       reason += " and ";
     }
     reason = "size == 0";
   }
 
-  if (reason != "")
+  if(reason != "")
   {
     std::stringstream message;
     message << "CircularBufferConsumerT<T>::" << func << ": ";
@@ -124,11 +124,11 @@ CircularBufferConsumerT<T>::increment(
     KnowledgeRecord::Integer base, KnowledgeRecord::Integer value) const
 {
   KnowledgeRecord::Integer result = base + value;
-  if (buffer_.size() > 0 && base + value >= 0)
+  if(buffer_.size() > 0 && base + value >= 0)
   {
     return (result) % (KnowledgeRecord::Integer)buffer_.size();
   }
-  else if (buffer_.size() > 0)
+  else if(buffer_.size() > 0)
   {
     return (KnowledgeRecord::Integer)buffer_.size() + result;
   }
@@ -151,14 +151,14 @@ void CircularBufferConsumerT<T>::consume(T& value) const
 
   KnowledgeRecord::Integer index_diff = *index_ - local_index_;
 
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer cur = increment(local_index_, 1);
 
-  if (remaining() > 0)
+  if(remaining() > 0)
   {
     ++local_index_;
     value = context_->get(buffer_.vector_[(size_t)(cur)]).template to_any<T>();
@@ -179,14 +179,14 @@ void CircularBufferConsumerT<T>::consume(T& value, size_t& dropped) const
 
   dropped = get_dropped();
 
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer cur = increment(local_index_, 1);
 
-  if (remaining() > 0)
+  if(remaining() > 0)
   {
     ++local_index_;
     value = context_->get(buffer_.vector_[(size_t)(cur)]).template to_any<T>();
@@ -206,7 +206,7 @@ inline size_t CircularBufferConsumerT<T>::get_dropped(void) const
   size_t difference = remaining();
   size_t buffer_size = size();
 
-  if (difference > buffer_size)
+  if(difference > buffer_size)
   {
     return difference - buffer_size;
   }
@@ -226,14 +226,14 @@ inline void CircularBufferConsumerT<T>::inspect(
 
   // If buffer overflowed, update local index to last valid value - 1
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer requested_index = local_index_ + position;
 
-  if (0 <= requested_index &&
+  if(0 <= requested_index &&
       (*index_ - (KnowledgeRecord::Integer)buffer_.size()) <= requested_index &&
       requested_index <= *index_)
   {
@@ -265,21 +265,21 @@ inline void CircularBufferConsumerT<T>::inspect(
 
   // If buffer overflowed, update local index to last valid value - 1
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer requested_index = local_index_ + position;
 
-  if (0 <= requested_index &&
+  if(0 <= requested_index &&
       (*index_ - (KnowledgeRecord::Integer)buffer_.size()) <= requested_index &&
       requested_index <= *index_)
   {
     KnowledgeRecord::Integer index =
         increment(local_index_, (KnowledgeRecord::Integer)position);
 
-    for (size_t i = 0; i < count; ++i, index = increment(index, 1))
+    for(size_t i = 0; i < count; ++i, index = increment(index, 1))
     {
       values.push_back(buffer_[(size_t)index].template to_any<T>());
     }
@@ -341,7 +341,7 @@ inline void CircularBufferConsumerT<T>::resize(void)
 template<typename T>
 inline void CircularBufferConsumerT<T>::resync(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
 
@@ -359,7 +359,7 @@ template<typename T>
 inline void CircularBufferConsumerT<T>::set_name(
     const std::string& name, KnowledgeBase& knowledge)
 {
-  if (name != "")
+  if(name != "")
   {
     ContextGuard context_guard(knowledge);
     name_ = name;
@@ -379,7 +379,7 @@ template<typename T>
 inline void CircularBufferConsumerT<T>::set_name(
     const std::string& name, Variables& knowledge)
 {
-  if (name != "")
+  if(name != "")
   {
     ContextGuard context_guard(*knowledge.get_context());
     name_ = name;
@@ -416,7 +416,7 @@ void CircularBufferConsumerT<T>::consume_latest(
 
   count = std::min(count, (size_t)(*index_ - local_index_));
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     values.push_back(buffer_[(size_t)cur].template to_any<T>());
   }
@@ -439,7 +439,7 @@ void CircularBufferConsumerT<T>::consume_latest(
 
   count = std::min(count, (size_t)(*index_ - local_index_));
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     values.push_back(buffer_[(size_t)cur].template to_any<T>());
   }
@@ -459,7 +459,7 @@ void CircularBufferConsumerT<T>::consume_earliest(
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
 
   // If buffer overflowed, update local index to last valid value - 1
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
     index_diff = (KnowledgeRecord::Integer)buffer_.size();
@@ -473,7 +473,7 @@ void CircularBufferConsumerT<T>::consume_earliest(
           ? increment(local_index_, 1)
           : increment(*index_, -(KnowledgeRecord::Integer)(buffer_.size()) + 1);
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, 1))
   {
     values.push_back(buffer_[(size_t)cur].template to_any<T>());
   }
@@ -501,7 +501,7 @@ void CircularBufferConsumerT<T>::consume_earliest(
           ? increment(local_index_, 1)
           : increment(*index_, -(KnowledgeRecord::Integer)(buffer_.size()) + 1);
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, 1))
   {
     values.push_back(buffer_[(size_t)cur].template to_any<T>());
   }
@@ -521,7 +521,7 @@ void CircularBufferConsumerT<T>::peek_latest(
 
   KnowledgeRecord::Integer cur = *index_ % buffer_.size();
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     values.push_back(buffer_[(size_t)cur].template to_any<T>());
   }
@@ -537,7 +537,7 @@ void CircularBufferConsumerT<T>::peek_latest(T& value) const
   KnowledgeRecord::Integer index = *index_;
   index = increment(index, 0);
 
-  if (count() > 0)
+  if(count() > 0)
   {
     value = context_->get(buffer_.vector_[(size_t)index]).template to_any<T>();
   }

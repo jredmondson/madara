@@ -52,7 +52,7 @@ void test_flex_map(void)
 
   std::cerr << "Checking for flex map creation test success:\n";
   std::cerr << "  Checking size of normal map creation... ";
-  if (normal_map.size() == 3)
+  if(normal_map.size() == 3)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -65,7 +65,7 @@ void test_flex_map(void)
   std::cerr << "  Checking elements of normal map...\n";
 
   std::cerr << "    Retrieving name...";
-  if (normal_map["name"] == "Robert Jenkins")
+  if(normal_map["name"] == "Robert Jenkins")
   {
     std::cerr << "SUCCESS\n";
   }
@@ -76,7 +76,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "    Retrieving age...";
-  if (normal_map["age"] == knowledge::KnowledgeRecord::Integer(50))
+  if(normal_map["age"] == knowledge::KnowledgeRecord::Integer(50))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -87,7 +87,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "    Retrieving salary...";
-  if (normal_map["salary"] == 30500.00)
+  if(normal_map["salary"] == 30500.00)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -109,7 +109,7 @@ void test_flex_map(void)
   knowledge.to_map("records", ".", "", next_keys, all_record_vars);
 
   std::cerr << "  Size check on next keys and all records are a: ";
-  if (next_keys.size() == 5 && all_record_vars.size() == 7)
+  if(next_keys.size() == 5 && all_record_vars.size() == 7)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -125,7 +125,7 @@ void test_flex_map(void)
   map.keys(sub_keys, true);
 
   std::cerr << "  Size check on flex map's sub keys: ";
-  if (sub_keys.size() == 5)
+  if(sub_keys.size() == 5)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -136,7 +136,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "  Checking context.to_map vs flex_map.keys: ";
-  if (sub_keys == next_keys)
+  if(sub_keys == next_keys)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -158,7 +158,7 @@ void test_flex_map(void)
       "Victim Robert claimed it was worth it";
 
   std::cerr << "  Checking existence of new indexed items in flex map: ";
-  if (robert_record.exists("tickets.0.offense") &&
+  if(robert_record.exists("tickets.0.offense") &&
       robert_record.exists("tickets.1.offense") &&
       map.exists("cassie.tickets.0.offense") &&
       map.exists("cassie.tickets.0.notes") &&
@@ -174,7 +174,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "  Checking existence of subkeys in flex map: ";
-  if (robert_record.exists("tickets", true) &&
+  if(robert_record.exists("tickets", true) &&
       robert_record.exists("name", true) && map.exists("cassie", true) &&
       map.exists("greg", true) && map.exists("norman", true))
   {
@@ -192,7 +192,7 @@ void test_flex_map(void)
   std::cerr << "  Checking subkeys of top level map: ";
   map.keys(sub_keys, true);
 
-  if (sub_keys.size() == 0)
+  if(sub_keys.size() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -208,7 +208,7 @@ void test_flex_map(void)
   std::cerr << "  Checking subkeys of top level map: ";
   map.keys(sub_keys, true);
 
-  if (sub_keys.size() != 0)
+  if(sub_keys.size() != 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -219,7 +219,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "  Checking to_integer defaults: ";
-  if (map["unknown"]["int"].to_integer(5) == 5)
+  if(map["unknown"]["int"].to_integer(5) == 5)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -230,7 +230,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "  Checking to_string defaults: ";
-  if (map["unknown"]["string"].to_string("nope") == "nope")
+  if(map["unknown"]["string"].to_string("nope") == "nope")
   {
     std::cerr << "SUCCESS\n";
   }
@@ -241,7 +241,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "  Checking to_double defaults: ";
-  if (map["unknown"]["double"].to_double(3.25) == 3.25)
+  if(map["unknown"]["double"].to_double(3.25) == 3.25)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -252,7 +252,7 @@ void test_flex_map(void)
   }
 
   std::cerr << "  Checking to_record defaults: ";
-  if (map["unknown"]["record"].to_record(knowledge::KnowledgeRecord(1)) == 1)
+  if(map["unknown"]["record"].to_record(knowledge::KnowledgeRecord(1)) == 1)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -299,7 +299,7 @@ void test_vector2D(void)
   // check the array values
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
       array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
   {
     std::cerr << "SUCCESS\n";
@@ -331,7 +331,7 @@ void test_vector2D(void)
             << "]: " << (size.x == 5 && size.y == 2 ? "SUCCESS\n" : "FAIL\n");
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 0 && array7_0 == 0 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 0 && array7_0 == 0 &&
       array7_1 == 0 && array7_2 == 0)
   {
     std::cerr << "SUCCESS\n";
@@ -376,7 +376,7 @@ void test_vector2D(void)
   // check the array values
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
       array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
   {
     std::cerr << "SUCCESS\n";
@@ -428,7 +428,7 @@ void test_vector2D(void)
   // check the iarray values
 
   std::cerr << "  Checking all iarray indices for values: ";
-  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
+  if(iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
       iarray7_1 == 3 && iarray7_2 == 214)
   {
     std::cerr << "SUCCESS\n";
@@ -460,7 +460,7 @@ void test_vector2D(void)
             << "]: " << (isize.x == 5 && isize.y == 2 ? "SUCCESS\n" : "FAIL\n");
 
   std::cerr << "  Checking all iarray indices for values: ";
-  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 0 && iarray7_0 == 0 &&
+  if(iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 0 && iarray7_0 == 0 &&
       iarray7_1 == 0 && iarray7_2 == 0)
   {
     std::cerr << "SUCCESS\n";
@@ -505,7 +505,7 @@ void test_vector2D(void)
   // check the iarray values
 
   std::cerr << "  Checking all iarray indices for values: ";
-  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
+  if(iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
       iarray7_1 == 3 && iarray7_2 == 214)
   {
     std::cerr << "SUCCESS\n";
@@ -563,7 +563,7 @@ void test_vector3D(void)
   // check the array values
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
       array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
   {
     std::cerr << "SUCCESS\n";
@@ -597,7 +597,7 @@ void test_vector3D(void)
                                                           : "FAIL\n");
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 0 && array7_0 == 0 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 0 && array7_0 == 0 &&
       array7_1 == 0 && array7_2 == 0)
   {
     std::cerr << "SUCCESS\n";
@@ -646,7 +646,7 @@ void test_vector3D(void)
   // check the array values
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
       array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
   {
     std::cerr << "SUCCESS\n";
@@ -700,7 +700,7 @@ void test_vector3D(void)
   // check the iarray values
 
   std::cerr << "  Checking all iarray indices for values: ";
-  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
+  if(iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
       iarray7_1 == 3 && iarray7_2 == 214)
   {
     std::cerr << "SUCCESS\n";
@@ -734,7 +734,7 @@ void test_vector3D(void)
                                                              : "FAIL\n");
 
   std::cerr << "  Checking all iarray indices for values: ";
-  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 0 && iarray7_0 == 0 &&
+  if(iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 0 && iarray7_0 == 0 &&
       iarray7_1 == 0 && iarray7_2 == 0)
   {
     std::cerr << "SUCCESS\n";
@@ -783,7 +783,7 @@ void test_vector3D(void)
   // check the iarray values
 
   std::cerr << "  Checking all iarray indices for values: ";
-  if (iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
+  if(iarray1_0 == 10 && iarray1_1 == 7 && iarray1_2 == 6 && iarray7_0 == 8 &&
       iarray7_1 == 3 && iarray7_2 == 214)
   {
     std::cerr << "SUCCESS\n";
@@ -832,7 +832,7 @@ void test_vector_vectors(void)
   // check the array values
 
   std::cerr << "  Checking all array indices for values: ";
-  if (array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
+  if(array1_0 == 10.22 && array1_1 == 7.31 && array1_2 == 6.179 &&
       array7_0 == 8.12 && array7_1 == 3.34 && array7_2 == 214.555)
   {
     std::cerr << "SUCCESS\n";
@@ -877,7 +877,7 @@ void test_vector_vectors(void)
   // check the array values
 
   std::cerr << "  Checking all array indices for values: ";
-  if (int_array1_0 == 10 && int_array1_1 == 7 && int_array1_2 == 6 &&
+  if(int_array1_0 == 10 && int_array1_1 == 7 && int_array1_2 == 6 &&
       int_array7_0 == 8 && int_array7_1 == 3 && int_array7_2 == 214)
   {
     std::cerr << "SUCCESS\n";
@@ -915,7 +915,7 @@ void test_vector(void)
 
   std::cerr << "Vector results:\n";
 
-  for (size_t i = 0; i < size; ++i)
+  for(size_t i = 0; i < size; ++i)
   {
     std::cerr << "  ";
     std::cerr << vector[i];
@@ -924,17 +924,17 @@ void test_vector(void)
 
   std::cerr << "\n";
 
-  if (size != 10)
+  if(size != 10)
     std::cerr << "FAIL. Vector.size != 10\n";
   else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
-  if (vector[1] == "value.at.1" && vector[7] == 7.7)
+  if(vector[1] == "value.at.1" && vector[7] == 7.7)
     std::cerr << "SUCCESS. Vector[1] and [7] were set and retrieved.\n";
   else
     std::cerr << "FAIL. Vector[1] and [7] were not set and retrieved.\n";
 
-  if (vector.get_name() == "test_vector")
+  if(vector.get_name() == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
     std::cerr << "FAIL. vector.name () did not return test_vector.\n";
@@ -943,7 +943,7 @@ void test_vector(void)
 
   vector.resize(7);
 
-  if (vector[1].to_string() == "value.at.1" &&
+  if(vector[1].to_string() == "value.at.1" &&
       knowledge.get("test_vector.7").to_double() != 7.7 && vector.size() == 7)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
@@ -954,7 +954,7 @@ void test_vector(void)
   vector.set(8, "value.at.8");
   vector.set(9, "value.at.9");
 
-  if (vector[1] == "value.at.1" && vector[8] == "value.at.8" &&
+  if(vector[1] == "value.at.1" && vector[8] == "value.at.8" &&
       vector[9] == "value.at.9" && vector.size() == 12)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
@@ -971,7 +971,7 @@ void test_vector(void)
   vector.copy_to(records);
 
   std::cerr << "Printing resulting knowledge vector.\n";
-  for (size_t i = 0; i < records.size(); ++i)
+  for(size_t i = 0; i < records.size(); ++i)
   {
     std::cerr << "  " << i << ": " << records[i] << "\n";
   }
@@ -1003,23 +1003,23 @@ void test_map(void)
 
   std::cerr << "\nMap results:\n";
 
-  for (std::vector<std::string>::iterator i = keys.begin(); i != keys.end();
+  for(std::vector<std::string>::iterator i = keys.begin(); i != keys.end();
        ++i)
     std::cerr << "  " << *i << "=" << map[*i] << "\n";
 
   std::cerr << "\n";
 
-  if (size != 4)
+  if(size != 4)
     std::cerr << "FAIL. Map.size != 4\n";
   else
     std::cerr << "SUCCESS. Map.size == 4\n";
 
-  if (keys.size() != 4)
+  if(keys.size() != 4)
     std::cerr << "FAIL. Map.keys ().size != 4\n";
   else
     std::cerr << "SUCCESS. Map.keys ().size == 4\n";
 
-  if (map["name"].to_string() == "Rob Roy" &&
+  if(map["name"].to_string() == "Rob Roy" &&
       map["occupation"].to_string() == "Lord of the MacGregors" &&
       map["age"].to_integer() == 63 && map["wives"].to_integer() == 1)
     std::cerr << "SUCCESS. map values were set and retrieved.\n";
@@ -1032,17 +1032,17 @@ void test_map(void)
   size = map.size();
   map.keys(keys);
 
-  if (size != 4)
+  if(size != 4)
     std::cerr << "FAIL. Map Copy.size != 4\n";
   else
     std::cerr << "SUCCESS. Map Copy.size == 4\n";
 
-  if (keys.size() != 4)
+  if(keys.size() != 4)
     std::cerr << "FAIL. Map Copy.keys ().size != 4\n";
   else
     std::cerr << "SUCCESS. Map Copy.keys ().size == 4\n";
 
-  if (copy["name"].to_string() == "Rob Roy" &&
+  if(copy["name"].to_string() == "Rob Roy" &&
       copy["occupation"].to_string() == "Lord of the MacGregors" &&
       copy["age"].to_integer() == 63 && copy["wives"].to_integer() == 1)
     std::cerr << "SUCCESS. map copy values were set and retrieved.\n";
@@ -1055,7 +1055,7 @@ void test_map(void)
 
   std::vector<std::string> new_keys(map.sync_keys());
 
-  if (map.exists("wife") && !copy.exists("wife") && new_keys.size() == 1 &&
+  if(map.exists("wife") && !copy.exists("wife") && new_keys.size() == 1 &&
       new_keys[0] == "wife")
     std::cerr << "SUCCESS. map.sync_keys () worked.\n";
   else
@@ -1065,7 +1065,7 @@ void test_map(void)
     std::cerr << "  new_keys.size() = " << new_keys.size() << ", should be 1\n";
   }
 
-  if (map.get_name() == "test_map" && copy.get_name() == "test_map")
+  if(map.get_name() == "test_map" && copy.get_name() == "test_map")
     std::cerr << "SUCCESS. map.name () returned test_map.\n";
   else
     std::cerr << "FAIL. map.name () did not return test_map.\n";
@@ -1084,7 +1084,7 @@ void test_map(void)
 
   int size_diff = int(before_delete.size() - after_delete.size());
 
-  if (before_delete.size() > after_delete.size())
+  if(before_delete.size() > after_delete.size())
   {
     std::cerr << "SUCCESS. map.clear () removed " << size_diff
               << " elements from modifieds list.\n";
@@ -1110,7 +1110,7 @@ void test_integer(void)
 
   std::cerr << "Integer value: " << *my_int << "\n";
 
-  if (my_int.get_name() == "my_int" && *my_int == 15)
+  if(my_int.get_name() == "my_int" && *my_int == 15)
     std::cerr << "SUCCESS. my_int was the correct name and value.\n";
   else
     std::cerr << "FAIL. my_int was not the correct name and value.\n";
@@ -1132,7 +1132,7 @@ void test_double(void)
 
   std::cerr << "Double value: " << *my_double << "\n";
 
-  if (my_double.get_name() == "my_double" && *my_double == 3.3)
+  if(my_double.get_name() == "my_double" && *my_double == 3.3)
     std::cerr << "SUCCESS. my_double was the correct name and value.\n";
   else
     std::cerr << "FAIL. my_double was not the correct name and value.\n";
@@ -1164,7 +1164,7 @@ void test_map_exchanges(void)
   std::cerr << "Exchanging...\n";
   map.exchange(map2);
 
-  if (!map.exists("a") && !map.exists("b") && !map.exists("c") &&
+  if(!map.exists("a") && !map.exists("b") && !map.exists("c") &&
       !map2.exists("d") && !map2.exists("e") && !map2.exists("f") &&
       !map2.exists("g") && map["d"] == "key4 contents" &&
       map["e"] == "key5 contents" && map["f"] == "key6 contents" &&
@@ -1182,7 +1182,7 @@ void test_map_exchanges(void)
 
   map.exchange(map2, false, false);
 
-  if (map2.exists("a") && map2.exists("b") && map2.exists("c") &&
+  if(map2.exists("a") && map2.exists("b") && map2.exists("c") &&
       map.exists("d") && map.exists("e") && map.exists("f") &&
       map.exists("g") && map2["d"] == "key4 contents" &&
       map2["e"] == "key5 contents" && map2["f"] == "key6 contents" &&
@@ -1219,7 +1219,7 @@ void test_vector_exchanges(void)
   std::cerr << "Exchanging...\n";
   vector.exchange(vector2);
 
-  if (vector.size() == 7 && vector2.size() == 12 &&
+  if(vector.size() == 7 && vector2.size() == 12 &&
       vector[2] == "vector2.2 value" && vector[3] == "vector2.3 value" &&
       vector2[1] == "vector1.1 value" && vector2[5] == "vector1.5 value" &&
       vector2[10] == "vector1.10 value")
@@ -1234,7 +1234,7 @@ void test_vector_exchanges(void)
   std::cerr << "Exchanging...\n";
   vector.exchange(vector2);
 
-  if (vector2.size() == 7 && vector.size() == 12 &&
+  if(vector2.size() == 7 && vector.size() == 12 &&
       vector2[2] == "vector2.2 value" && vector2[3] == "vector2.3 value" &&
       vector[1] == "vector1.1 value" && vector[5] == "vector1.5 value" &&
       vector[10] == "vector1.10 value")
@@ -1284,7 +1284,7 @@ void test_integer_vector(void)
 
   std::cerr << "Vector results:\n";
 
-  for (size_t i = 0; i < size; ++i)
+  for(size_t i = 0; i < size; ++i)
   {
     std::cerr << "  ";
     std::cerr << vector[i];
@@ -1293,18 +1293,18 @@ void test_integer_vector(void)
 
   std::cerr << "\n";
 
-  if (size != 10)
+  if(size != 10)
     std::cerr << "FAIL. Vector.size != 10\n";
   else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
-  if (vector[0] == 0 && vector[1] == 1 && vector[2] == 1 && vector[3] == 0 &&
+  if(vector[0] == 0 && vector[1] == 1 && vector[2] == 1 && vector[3] == 0 &&
       vector[4] == 0 && vector[7] == 1)
     std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
     std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
 
-  if (vector.get_name() == "test_vector")
+  if(vector.get_name() == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
     std::cerr << "FAIL. vector.name () did not return test_vector.\n";
@@ -1313,7 +1313,7 @@ void test_integer_vector(void)
 
   vector.resize(7);
 
-  if (vector[0] == 0 && vector[1] == 1 && vector[2] == 1 && vector[3] == 0 &&
+  if(vector[0] == 0 && vector[1] == 1 && vector[2] == 1 && vector[3] == 0 &&
       vector[4] == 0 && vector[7] == 0)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
@@ -1324,7 +1324,7 @@ void test_integer_vector(void)
   vector.set(8);
   vector.set(9);
 
-  if (vector[1] == 1 && vector[8] == 1 && vector[10] == 0 && vector[9] == 1 &&
+  if(vector[1] == 1 && vector[8] == 1 && vector[10] == 0 && vector[9] == 1 &&
       vector.size() == 12)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
@@ -1346,7 +1346,7 @@ void test_double_vector(void)
 
   std::cerr << "Vector results:\n";
 
-  for (size_t i = 0; i < size; ++i)
+  for(size_t i = 0; i < size; ++i)
   {
     std::cerr << "  ";
     std::cerr << vector[i];
@@ -1355,18 +1355,18 @@ void test_double_vector(void)
 
   std::cerr << "\n";
 
-  if (size != 10)
+  if(size != 10)
     std::cerr << "FAIL. Vector.size != 10\n";
   else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
-  if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
+  if(vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 7.7)
     std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
     std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
 
-  if (vector.get_name() == "test_vector")
+  if(vector.get_name() == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
     std::cerr << "FAIL. vector.name () did not return test_vector.\n";
@@ -1375,7 +1375,7 @@ void test_double_vector(void)
 
   vector.resize(7);
 
-  if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
+  if(vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 0)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
@@ -1386,7 +1386,7 @@ void test_double_vector(void)
   vector.set(8, 8.8);
   vector.set(9, 9.9);
 
-  if (vector[1] == 1.1 && vector[8] == 8.8 && vector[10] == 0 &&
+  if(vector[1] == 1.1 && vector[8] == 8.8 && vector[10] == 0 &&
       vector[9] == 9.9 && vector.size() == 12)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
@@ -1408,7 +1408,7 @@ void test_string_vector(void)
 
   std::cerr << "Vector results:\n";
 
-  for (size_t i = 0; i < size; ++i)
+  for(size_t i = 0; i < size; ++i)
   {
     std::cerr << "  ";
     std::cerr << vector[i];
@@ -1417,18 +1417,18 @@ void test_string_vector(void)
 
   std::cerr << "\n";
 
-  if (size != 10)
+  if(size != 10)
     std::cerr << "FAIL. Vector.size != 10\n";
   else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
-  if (vector[0] == "0" && vector[1] == "1.1" && vector[2] == "2.2" &&
+  if(vector[0] == "0" && vector[1] == "1.1" && vector[2] == "2.2" &&
       vector[3] == "0" && vector[4] == "0" && vector[7] == "7.7")
     std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
     std::cerr << "FAIL. Vector[1],[2],[7] were not set and retrieved.\n";
 
-  if (vector.get_name() == "test_vector")
+  if(vector.get_name() == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
     std::cerr << "FAIL. vector.name () did not return test_vector.\n";
@@ -1437,7 +1437,7 @@ void test_string_vector(void)
 
   vector.resize(7);
 
-  if (vector[0] == "0" && vector[1] == "1.1" && vector[2] == "2.2" &&
+  if(vector[0] == "0" && vector[1] == "1.1" && vector[2] == "2.2" &&
       vector[3] == "0" && vector[4] == "0" && vector[7] == "0")
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
@@ -1448,7 +1448,7 @@ void test_string_vector(void)
   vector.set(8, "8.8");
   vector.set(9, "9.9");
 
-  if (vector[1] == "1.1" && vector[8] == "8.8" && vector[10] == "0" &&
+  if(vector[1] == "1.1" && vector[8] == "8.8" && vector[10] == "0" &&
       vector[9] == "9.9" && vector.size() == 12)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
@@ -1471,7 +1471,7 @@ void test_native_vectors(void)
 
   std::cerr << "Vector results:\n";
 
-  for (size_t i = 0; i < size; ++i)
+  for(size_t i = 0; i < size; ++i)
   {
     std::cerr << "  ";
     std::cerr << vector[i];
@@ -1480,7 +1480,7 @@ void test_native_vectors(void)
 
   std::cerr << "\n";
 
-  if (size != 10)
+  if(size != 10)
   {
     std::cerr << "FAIL. Vector.size != 10\n";
     ++madara_fails;
@@ -1488,7 +1488,7 @@ void test_native_vectors(void)
   else
     std::cerr << "SUCCESS. Vector.size == 10\n";
 
-  if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
+  if(vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 7.7)
     std::cerr << "SUCCESS. Vector[1],[2],[7] were set and retrieved.\n";
   else
@@ -1497,7 +1497,7 @@ void test_native_vectors(void)
     ++madara_fails;
   }
 
-  if (vector.get_name() == "test_vector")
+  if(vector.get_name() == "test_vector")
     std::cerr << "SUCCESS. vector.name () returned test_vector.\n";
   else
   {
@@ -1509,7 +1509,7 @@ void test_native_vectors(void)
 
   vector.resize(7);
 
-  if (vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
+  if(vector[0] == 0 && vector[1] == 1.1 && vector[2] == 2.2 &&
       vector[3] == 0 && vector[4] == 0 && vector[7] == 0)
     std::cerr << "SUCCESS. Vector [7] no longer exists.\n";
   else
@@ -1523,7 +1523,7 @@ void test_native_vectors(void)
   vector.set(8, 8.8);
   vector.set(9, 9.9);
 
-  if (vector[1] == 1.1 && vector[8] == 8.8 && vector[10] == 0 &&
+  if(vector[1] == 1.1 && vector[8] == 8.8 && vector[10] == 0 &&
       vector[9] == 9.9 && vector.size() == 12)
     std::cerr << "SUCCESS. Resize to 12 was successful.\n";
   else
@@ -1535,7 +1535,7 @@ void test_native_vectors(void)
   std::vector<double> vals = {4, 8, 15, 16, 23, 42};
   vector.set(vals.data(), (uint32_t)vals.size());
 
-  if (vector.size() == 6 && vector[0] == 4 && vector[1] == 8 &&
+  if(vector.size() == 6 && vector[0] == 4 && vector[1] == 8 &&
       vector[2] == 15 && vector[3] == 16 && vector[4] == 23 && vector[5] == 42)
     std::cerr << "SUCCESS. Set from C array succeeded.\n";
   else
@@ -1565,19 +1565,19 @@ void test_queue(void)
   messages.emplace("seventh string");
   check = messages.emplace("eighth string");
 
-  if (!check)
+  if(!check)
     std::cerr << "  SUCCESS: enqueue size check.\n";
   else
     std::cerr << "  FAIL: enqueue size check.\n";
 
   record = messages.dequeue();
-  if (record == "first string")
+  if(record == "first string")
     std::cerr << "  SUCCESS: first dequeue.\n";
   else
     std::cerr << "  FAIL: first dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "second string")
+  if(record == "second string")
     std::cerr << "  SUCCESS: second dequeue.\n";
   else
     std::cerr << "  FAIL: second dequeue.\n";
@@ -1586,49 +1586,49 @@ void test_queue(void)
   messages.emplace("ninth string");
   check = messages.emplace("tenth string");
 
-  if (!check)
+  if(!check)
     std::cerr << "  SUCCESS: 2nd enqueue size check.\n";
   else
     std::cerr << "  FAIL: 2nd enqueue size check.\n";
 
   record = messages.dequeue();
-  if (record == "third string")
+  if(record == "third string")
     std::cerr << "  SUCCESS: third dequeue.\n";
   else
     std::cerr << "  FAIL: third dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "fourth string")
+  if(record == "fourth string")
     std::cerr << "  SUCCESS: fourth dequeue.\n";
   else
     std::cerr << "  FAIL: fourth dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "fifth string")
+  if(record == "fifth string")
     std::cerr << "  SUCCESS: fifth dequeue.\n";
   else
     std::cerr << "  FAIL: fifth dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "sixth string")
+  if(record == "sixth string")
     std::cerr << "  SUCCESS: sixth dequeue.\n";
   else
     std::cerr << "  FAIL: sixth dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "seventh string")
+  if(record == "seventh string")
     std::cerr << "  SUCCESS: seventh dequeue.\n";
   else
     std::cerr << "  FAIL: seventh dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "eighth string")
+  if(record == "eighth string")
     std::cerr << "  SUCCESS: eighth dequeue.\n";
   else
     std::cerr << "  FAIL: eighth dequeue.\n";
 
   record = messages.dequeue();
-  if (record == "ninth string")
+  if(record == "ninth string")
     std::cerr << "  SUCCESS: ninth dequeue.\n";
   else
     std::cerr << "  FAIL: ninth dequeue.\n";
@@ -1636,7 +1636,7 @@ void test_queue(void)
   messages.emplace("first cleared");
   messages.emplace("second cleared");
 
-  if (messages.inspect(0) == "first cleared" &&
+  if(messages.inspect(0) == "first cleared" &&
       messages.inspect(1) == "second cleared")
   {
     std::cerr << "  SUCCESS: inspect on multiple records.\n";
@@ -1648,12 +1648,12 @@ void test_queue(void)
 
   messages.clear();
 
-  if (messages.count() == 0 && messages.size() == 7)
+  if(messages.count() == 0 && messages.size() == 7)
     std::cerr << "  SUCCESS: clear.\n";
   else
     std::cerr << "  FAIL: clear.\n";
 
-  if (!messages.dequeue(false).exists())
+  if(!messages.dequeue(false).exists())
   {
     std::cerr << "  SUCCESS: asynchronous dequeue empty.\n";
   }
@@ -1672,7 +1672,7 @@ void test_queue(void)
 
   messages.resize(5);
 
-  if (messages.count() == 5 && messages.count() == messages.size())
+  if(messages.count() == 5 && messages.count() == messages.size())
   {
     std::cerr << "  SUCCESS: resize.\n";
   }
@@ -1711,7 +1711,7 @@ void test_collection(void)
 
   std::cerr << "  Testing modifieds.size == 3 after container creation... ";
 
-  if (context.get_modifieds().size() != 3)
+  if(context.get_modifieds().size() != 3)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
@@ -1807,7 +1807,7 @@ void test_collection(void)
 
   std::cerr << "  Testing collection.size == 10 after adding containers... ";
 
-  if (collection.size() != 10)
+  if(collection.size() != 10)
   {
     std::cerr << "FAIL. Size returned " << collection.size() << "\n";
   }
@@ -1827,7 +1827,7 @@ void test_collection(void)
 
   std::cerr << "  Testing modifieds.size == 0 after clearing modified... ";
 
-  if (context.get_modifieds().size() != 0)
+  if(context.get_modifieds().size() != 0)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
@@ -1844,7 +1844,7 @@ void test_collection(void)
 
   std::cerr << "  Testing modifieds.size == 55 after modifying containers... ";
 
-  if (context.get_modifieds().size() != 55)
+  if(context.get_modifieds().size() != 55)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
@@ -1865,7 +1865,7 @@ void test_collection(void)
 
   std::cerr << "  Testing collection.size == 0 after clearing containers... ";
 
-  if (collection.size() != 0)
+  if(collection.size() != 0)
   {
     std::cerr << "FAIL. Size returned " << collection.size() << "\n";
   }
@@ -1882,7 +1882,7 @@ void test_collection(void)
 
   std::cerr << "  Testing collection.size == 3 after adding containers... ";
 
-  if (collection.size() != 3)
+  if(collection.size() != 3)
   {
     std::cerr << "FAIL. Size returned " << collection.size() << "\n";
   }
@@ -1899,7 +1899,7 @@ void test_collection(void)
 
   std::cerr << "  Testing modifieds.size == 3... ";
 
-  if (context.get_modifieds().size() != 3)
+  if(context.get_modifieds().size() != 3)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
@@ -1920,7 +1920,7 @@ void test_collection(void)
 
   std::cerr << "  Testing modifieds.size == 0... ";
 
-  if (context.get_modifieds().size() != 0)
+  if(context.get_modifieds().size() != 0)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
@@ -1938,7 +1938,7 @@ void test_collection(void)
 
   std::cerr << "  Testing modifieds.size == 4... ";
 
-  if (context.get_modifieds().size() != 4)
+  if(context.get_modifieds().size() != 4)
   {
     std::cerr << "FAIL\n";
     ++madara_fails;
@@ -1968,7 +1968,7 @@ void test_circular(void)
 
   std::cerr << "  Testing count (2) vs size (3)... ";
 
-  if (buffer1.size() == 3 && buffer1.count() == 2)
+  if(buffer1.size() == 3 && buffer1.count() == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -1993,7 +1993,7 @@ void test_circular(void)
 
   std::cerr << "  Testing addx3 on buffer1... ";
 
-  if (buffer1_contents.size() == 3 && buffer1_contents[2] == 1 &&
+  if(buffer1_contents.size() == 3 && buffer1_contents[2] == 1 &&
       buffer1_contents[1] == 2.0 && buffer1_contents[0] == "value3")
   {
     std::cerr << "SUCCESS\n";
@@ -2004,7 +2004,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2012,7 +2012,7 @@ void test_circular(void)
 
   std::cerr << "  Testing addx3 on buffer2... ";
 
-  if (buffer2_contents.size() == 3 && buffer2_contents[2] == "value1" &&
+  if(buffer2_contents.size() == 3 && buffer2_contents[2] == "value1" &&
       buffer2_contents[1] == 2 && buffer2_contents[0] == 3.0)
   {
     std::cerr << "SUCCESS\n";
@@ -2023,7 +2023,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer2_contents)
+    for(auto record : buffer2_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2031,7 +2031,7 @@ void test_circular(void)
 
   std::cerr << "  Testing get_earliest ()...";
 
-  if (buffer1_earliest.size() == 3 && buffer1_earliest[0] == 1 &&
+  if(buffer1_earliest.size() == 3 && buffer1_earliest[0] == 1 &&
       buffer1_earliest[1] == 2.0 && buffer1_earliest[2] == "value3")
   {
     std::cerr << "SUCCESS\n";
@@ -2042,7 +2042,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "Contents of earliest std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_earliest)
+    for(auto record : buffer1_earliest)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2052,7 +2052,7 @@ void test_circular(void)
 
   buffer1_contents = buffer1.get_latest(5);
 
-  if (buffer1_contents.size() == 3 && buffer1_contents[2] == 1 &&
+  if(buffer1_contents.size() == 3 && buffer1_contents[2] == 1 &&
       buffer1_contents[1] == 2.0 && buffer1_contents[0] == "value3")
   {
     std::cerr << "SUCCESS\n";
@@ -2063,7 +2063,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2076,7 +2076,7 @@ void test_circular(void)
 
   buffer1_contents = buffer1.get_latest(4);
 
-  if (buffer1_contents.size() == 3 && buffer1_contents[0] == 5.5 &&
+  if(buffer1_contents.size() == 3 && buffer1_contents[0] == 5.5 &&
       buffer1_contents[1] == 5 && buffer1_contents[2] == "value3")
   {
     std::cerr << "SUCCESS\n";
@@ -2087,7 +2087,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2097,7 +2097,7 @@ void test_circular(void)
 
   buffer1_earliest = buffer1.get_earliest(2);
 
-  if (buffer1_earliest.size() == 2 && buffer1_earliest[1] == 5 &&
+  if(buffer1_earliest.size() == 2 && buffer1_earliest[1] == 5 &&
       buffer1_earliest[0] == "value3")
   {
     std::cerr << "SUCCESS\n";
@@ -2108,7 +2108,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_earliest)
+    for(auto record : buffer1_earliest)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2116,7 +2116,7 @@ void test_circular(void)
 
   std::cerr << "  Testing count (3) vs size (3)... ";
 
-  if (buffer1.size() == 3 && buffer1.count() == 3)
+  if(buffer1.size() == 3 && buffer1.count() == 3)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2134,7 +2134,7 @@ void test_circular(void)
 
   std::cerr << "  Testing count (0) vs size (5)... ";
 
-  if (buffer1.size() == 5 && buffer1.count() == 0)
+  if(buffer1.size() == 5 && buffer1.count() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2155,7 +2155,7 @@ void test_circular(void)
 
   std::cerr << "  Testing get()... ";
 
-  if (buffer1.get() == 5)
+  if(buffer1.get() == 5)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2174,7 +2174,7 @@ void test_circular(void)
 
   buffer1_contents = buffer1.get_latest(3);
 
-  if (buffer1_contents.size() == 3 && buffer1_contents[0] == 2 &&
+  if(buffer1_contents.size() == 3 && buffer1_contents[0] == 2 &&
       buffer1_contents[1] == 1 && buffer1_contents[2] == 5)
   {
     std::cerr << "SUCCESS\n";
@@ -2185,7 +2185,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2195,7 +2195,7 @@ void test_circular(void)
 
   buffer1_contents = buffer1.get_latest(4);
 
-  if (buffer1_contents.size() == 4 && buffer1_contents[0] == 2 &&
+  if(buffer1_contents.size() == 4 && buffer1_contents[0] == 2 &&
       buffer1_contents[1] == 1 && buffer1_contents[2] == 5 &&
       buffer1_contents[3] == 4)
   {
@@ -2207,7 +2207,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2217,7 +2217,7 @@ void test_circular(void)
 
   buffer1.clear();
 
-  if (buffer1.size() == 0 && buffer1.count() == 0)
+  if(buffer1.size() == 0 && buffer1.count() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2242,7 +2242,7 @@ void test_circular(void)
 
   buffer1_contents = buffer1.get_latest(5);
 
-  if (buffer1_contents.size() == 4 && buffer1_contents[3] == 2 &&
+  if(buffer1_contents.size() == 4 && buffer1_contents[3] == 2 &&
       buffer1_contents[2] == 1 && buffer1_contents[1] == 5 &&
       buffer1_contents[0] == 4)
   {
@@ -2254,7 +2254,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2262,7 +2262,7 @@ void test_circular(void)
 
   std::cerr << "  Testing inspect... ";
 
-  if (buffer1.inspect(0) == 4 && buffer1.inspect(-1) == 5 &&
+  if(buffer1.inspect(0) == 4 && buffer1.inspect(-1) == 5 &&
       buffer1.inspect(-2) == 1 && buffer1.inspect(-3) == 2)
   {
     std::cerr << "SUCCESS\n";
@@ -2273,7 +2273,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (KnowledgeRecord::Integer i = 0; i < 4; ++i)
+    for(KnowledgeRecord::Integer i = 0; i < 4; ++i)
     {
       std::cerr << "    " << buffer1.inspect(-i) << "\n";
     }
@@ -2283,7 +2283,7 @@ void test_circular(void)
 
   std::vector<KnowledgeRecord> records = buffer1.inspect(-3, 4);
 
-  if (records.size() == 4 && records[0] == 2 && records[1] == 1 &&
+  if(records.size() == 4 && records[0] == 2 && records[1] == 1 &&
       records[2] == 5 && records[3] == 4)
   {
     std::cerr << "SUCCESS\n";
@@ -2294,7 +2294,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2333,7 +2333,7 @@ void test_circular(void)
 
   buffer1_contents = const_buffer1.get_latest(5);
 
-  if (buffer1_contents.size() == 4 && buffer1_contents[3] == 2 &&
+  if(buffer1_contents.size() == 4 && buffer1_contents[3] == 2 &&
       buffer1_contents[2] == 1 && buffer1_contents[1] == 5 &&
       buffer1_contents[0] == 4)
   {
@@ -2345,7 +2345,7 @@ void test_circular(void)
     ++madara_fails;
 
     std::cerr << "  Contents of std::vector<KnowledgeRecord> were:\n";
-    for (auto record : buffer1_contents)
+    for(auto record : buffer1_contents)
     {
       std::cerr << "    " << record << "\n";
     }
@@ -2361,7 +2361,7 @@ void test_circular_consumer(void)
   containers::CircularBuffer producer("buffer", kb, 100);
   containers::CircularBufferConsumer consumer("buffer", kb);
 
-  for (KnowledgeRecord::Integer i = 0; i < 100; ++i)
+  for(KnowledgeRecord::Integer i = 0; i < 100; ++i)
   {
     producer.add(KnowledgeRecord(i));
   }
@@ -2372,17 +2372,17 @@ void test_circular_consumer(void)
 
   bool has_failed = records.size() != 50;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != i)
+    if(records[i] != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2392,7 +2392,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2400,7 +2400,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 50)
+  if(consumer.remaining() == 50)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2417,17 +2417,17 @@ void test_circular_consumer(void)
 
   has_failed = records.size() != 25;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != i + 50)
+    if(records[i] != i + 50)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2437,7 +2437,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2445,7 +2445,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 25)
+  if(consumer.remaining() == 25)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2462,17 +2462,17 @@ void test_circular_consumer(void)
 
   has_failed = records.size() != 25;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != i + 75)
+    if(records[i] != i + 75)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2482,7 +2482,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2490,7 +2490,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 0)
+  if(consumer.remaining() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2503,7 +2503,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing count()...";
 
-  if (consumer.count() == 100)
+  if(consumer.count() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2516,7 +2516,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing size()...";
 
-  if (consumer.size() == 100)
+  if(consumer.size() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2529,14 +2529,14 @@ void test_circular_consumer(void)
 
   std::cerr << "  Adding 25 more elements...\n";
 
-  for (KnowledgeRecord::Integer i = 0; i < 25; ++i)
+  for(KnowledgeRecord::Integer i = 0; i < 25; ++i)
   {
     producer.add(KnowledgeRecord(i + 100));
   }
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 25)
+  if(consumer.remaining() == 25)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2549,7 +2549,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing count()...";
 
-  if (consumer.count() == 100)
+  if(consumer.count() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2562,7 +2562,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing size()...";
 
-  if (consumer.size() == 100)
+  if(consumer.size() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2579,17 +2579,17 @@ void test_circular_consumer(void)
 
   has_failed = records.size() != 5;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != i + 100)
+    if(records[i] != i + 100)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2599,7 +2599,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2607,7 +2607,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 20)
+  if(consumer.remaining() == 20)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2620,7 +2620,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing inspect(0)...";
 
-  if (consumer.inspect(0) == 104)
+  if(consumer.inspect(0) == 104)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2633,7 +2633,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing inspect(-1)...";
 
-  if (consumer.inspect(-1) == 103)
+  if(consumer.inspect(-1) == 103)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2646,7 +2646,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing inspect(-2)...";
 
-  if (consumer.inspect(-2) == 102)
+  if(consumer.inspect(-2) == 102)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2657,14 +2657,14 @@ void test_circular_consumer(void)
     std::cerr << "      inspect(-2) == " << consumer.inspect(-2) << "\n";
   }
 
-  for (KnowledgeRecord::Integer i = 0; i < 5; ++i)
+  for(KnowledgeRecord::Integer i = 0; i < 5; ++i)
   {
     producer.add(KnowledgeRecord(i + 105));
   }
 
   std::cerr << "  Testing inspect(1)...";
 
-  if (consumer.inspect(1) == 105)
+  if(consumer.inspect(1) == 105)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2677,7 +2677,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing inspect(2)...";
 
-  if (consumer.inspect(2) == 106)
+  if(consumer.inspect(2) == 106)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2692,7 +2692,7 @@ void test_circular_consumer(void)
 
   records = consumer.inspect(-2, 5);
 
-  if (records.size() == 5 && records[0] == 102 && records[1] == 103 &&
+  if(records.size() == 5 && records[0] == 102 && records[1] == 103 &&
       records[2] == 104 && records[3] == 105 && records[4] == 106)
   {
     std::cerr << "SUCCESS\n";
@@ -2703,7 +2703,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2715,17 +2715,17 @@ void test_circular_consumer(void)
 
   has_failed = records.size() != 5;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != 109 - i)
+    if(records[i] != 109 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2735,7 +2735,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2743,7 +2743,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 0)
+  if(consumer.remaining() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2761,7 +2761,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing producer.size()...";
 
-  if (producer.size() == 41)
+  if(producer.size() == 41)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2774,7 +2774,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  Testing consumer.size()...";
 
-  if (consumer.size() == 41)
+  if(consumer.size() == 41)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2787,7 +2787,7 @@ void test_circular_consumer(void)
 
   std::cerr << "  producer.add() x 95 times...\n";
 
-  for (KnowledgeRecord::Integer i = 0; i < 95; ++i)
+  for(KnowledgeRecord::Integer i = 0; i < 95; ++i)
   {
     producer.add(KnowledgeRecord(i));
   }
@@ -2798,7 +2798,7 @@ void test_circular_consumer(void)
 
   KnowledgeRecord result = consumer.consume();
 
-  if (result == 54)
+  if(result == 54)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2813,7 +2813,7 @@ void test_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 55)
+  if(result == 55)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2828,7 +2828,7 @@ void test_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 56)
+  if(result == 56)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2843,7 +2843,7 @@ void test_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 57)
+  if(result == 57)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2858,7 +2858,7 @@ void test_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 58)
+  if(result == 58)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2873,7 +2873,7 @@ void test_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 59)
+  if(result == 59)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2888,7 +2888,7 @@ void test_circular_consumer(void)
 
   result = consumer.peek_latest();
 
-  if (result == 94)
+  if(result == 94)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2903,7 +2903,7 @@ void test_circular_consumer(void)
 
   records = consumer.peek_latest(5);
 
-  if (records.size() == 5 && records[0] == 94 && records[1] == 93 &&
+  if(records.size() == 5 && records[0] == 94 && records[1] == 93 &&
       records[2] == 92 && records[3] == 91 && records[4] == 90)
   {
     std::cerr << "SUCCESS\n";
@@ -2914,7 +2914,7 @@ void test_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2931,7 +2931,7 @@ void test_native_circular_consumer(void)
   containers::Integer producer("buffer", kb);
   containers::NativeCircularBufferConsumer consumer("buffer", kb);
 
-  for (int i = 0; i < 100; ++i)
+  for(int i = 0; i < 100; ++i)
   {
     producer = i;
   }
@@ -2942,16 +2942,16 @@ void test_native_circular_consumer(void)
 
   bool has_failed = records.size() != 50;
 
-  for (int i = 0; !has_failed && i < (int)records.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)records.size(); ++i)
   {
-    if (records[i] != i)
+    if(records[i] != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2961,7 +2961,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -2969,7 +2969,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 50)
+  if(consumer.remaining() == 50)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -2986,17 +2986,17 @@ void test_native_circular_consumer(void)
 
   has_failed = records.size() != 25;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != i + 50)
+    if(records[i] != i + 50)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3006,7 +3006,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3014,7 +3014,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 25)
+  if(consumer.remaining() == 25)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3031,17 +3031,17 @@ void test_native_circular_consumer(void)
 
   has_failed = records.size() != 25;
 
-  for (KnowledgeRecord::Integer i = 0;
+  for(KnowledgeRecord::Integer i = 0;
        !has_failed && i < (KnowledgeRecord::Integer)records.size(); ++i)
   {
-    if (records[i] != i + 75)
+    if(records[i] != i + 75)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3051,7 +3051,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3059,7 +3059,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 0)
+  if(consumer.remaining() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3072,7 +3072,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing count()...";
 
-  if (consumer.count() == 100)
+  if(consumer.count() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3085,7 +3085,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing size()...";
 
-  if (consumer.size() == 100)
+  if(consumer.size() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3098,14 +3098,14 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Adding 25 more elements...\n";
 
-  for (int i = 0; i < 25; ++i)
+  for(int i = 0; i < 25; ++i)
   {
     producer = i + 100;
   }
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 25)
+  if(consumer.remaining() == 25)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3118,7 +3118,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing count()...";
 
-  if (consumer.count() == 100)
+  if(consumer.count() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3131,7 +3131,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing size()...";
 
-  if (consumer.size() == 100)
+  if(consumer.size() == 100)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3148,16 +3148,16 @@ void test_native_circular_consumer(void)
 
   has_failed = records.size() != 5;
 
-  for (int i = 0; !has_failed && i < (int)records.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)records.size(); ++i)
   {
-    if (records[i] != i + 100)
+    if(records[i] != i + 100)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3167,7 +3167,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3175,7 +3175,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 20)
+  if(consumer.remaining() == 20)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3188,7 +3188,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing inspect(0)...";
 
-  if (consumer.inspect(0) == 105)
+  if(consumer.inspect(0) == 105)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3201,7 +3201,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing inspect(-1)...";
 
-  if (consumer.inspect(-1) == 104)
+  if(consumer.inspect(-1) == 104)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3214,7 +3214,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing inspect(-2)...";
 
-  if (consumer.inspect(-2) == 103)
+  if(consumer.inspect(-2) == 103)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3225,14 +3225,14 @@ void test_native_circular_consumer(void)
     std::cerr << "      inspect(-2) == " << consumer.inspect(-2) << "\n";
   }
 
-  for (int i = 0; i < 5; ++i)
+  for(int i = 0; i < 5; ++i)
   {
     producer = i + 105;
   }
 
   std::cerr << "  Testing inspect(1)...";
 
-  if (consumer.inspect(1) == 106)
+  if(consumer.inspect(1) == 106)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3245,7 +3245,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing inspect(2)...";
 
-  if (consumer.inspect(2) == 107)
+  if(consumer.inspect(2) == 107)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3260,7 +3260,7 @@ void test_native_circular_consumer(void)
 
   records = consumer.inspect(-2, 5);
 
-  if (records.size() == 5 && records[0] == 103 && records[1] == 104 &&
+  if(records.size() == 5 && records[0] == 103 && records[1] == 104 &&
       records[2] == 105 && records[3] == 106 && records[4] == 107)
   {
     std::cerr << "SUCCESS\n";
@@ -3271,7 +3271,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3283,16 +3283,16 @@ void test_native_circular_consumer(void)
 
   has_failed = records.size() != 5;
 
-  for (int i = 0; !has_failed && i < (int)records.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)records.size(); ++i)
   {
-    if (records[i] != 109 - i)
+    if(records[i] != 109 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3302,7 +3302,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3310,7 +3310,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  Testing remaining()...";
 
-  if (consumer.remaining() == 0)
+  if(consumer.remaining() == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3327,7 +3327,7 @@ void test_native_circular_consumer(void)
 
   std::cerr << "  producer.add() x 95 times...\n";
 
-  for (KnowledgeRecord::Integer i = 0; i < 95; ++i)
+  for(KnowledgeRecord::Integer i = 0; i < 95; ++i)
   {
     producer = i;
   }
@@ -3338,7 +3338,7 @@ void test_native_circular_consumer(void)
 
   KnowledgeRecord result = consumer.consume();
 
-  if (result == 54)
+  if(result == 54)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3353,7 +3353,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 55)
+  if(result == 55)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3368,7 +3368,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 56)
+  if(result == 56)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3383,7 +3383,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 57)
+  if(result == 57)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3398,7 +3398,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 58)
+  if(result == 58)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3413,7 +3413,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.consume();
 
-  if (result == 59)
+  if(result == 59)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3428,7 +3428,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.peek_latest();
 
-  if (result == 94)
+  if(result == 94)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3443,7 +3443,7 @@ void test_native_circular_consumer(void)
 
   records = consumer.peek_latest(5);
 
-  if (records.size() == 5 && records[0] == 94 && records[1] == 93 &&
+  if(records.size() == 5 && records[0] == 94 && records[1] == 93 &&
       records[2] == 92 && records[3] == 91 && records[4] == 90)
   {
     std::cerr << "SUCCESS\n";
@@ -3454,7 +3454,7 @@ void test_native_circular_consumer(void)
     ++madara_fails;
 
     std::cerr << "    size=" << records.size() << "\n";
-    for (auto record : records)
+    for(auto record : records)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3464,7 +3464,7 @@ void test_native_circular_consumer(void)
 
   result = consumer.consume_latest();
 
-  if (result == 94)
+  if(result == 94)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3522,7 +3522,7 @@ void test_circular_any(void)
 
   producer.get(class_result);
 
-  if (class_result.x == 1 && class_result.y == 2)
+  if(class_result.x == 1 && class_result.y == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3534,7 +3534,7 @@ void test_circular_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -3548,16 +3548,16 @@ void test_circular_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3567,7 +3567,7 @@ void test_circular_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3580,16 +3580,16 @@ void test_circular_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    if(classes[i].x != 9 - i && classes[i].y != 9 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3599,7 +3599,7 @@ void test_circular_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3609,7 +3609,7 @@ void test_circular_any(void)
 
   producer.inspect(1, class_result);
 
-  if (class_result.x == 0 && class_result.y == 0)
+  if(class_result.x == 0 && class_result.y == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3621,7 +3621,7 @@ void test_circular_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -3635,16 +3635,16 @@ void test_circular_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3654,7 +3654,7 @@ void test_circular_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3683,7 +3683,7 @@ void test_circulart_any(void)
 
   producer.get(class_result);
 
-  if (class_result.x == 1 && class_result.y == 2)
+  if(class_result.x == 1 && class_result.y == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3695,7 +3695,7 @@ void test_circulart_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -3709,16 +3709,16 @@ void test_circulart_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3728,7 +3728,7 @@ void test_circulart_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3741,16 +3741,16 @@ void test_circulart_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    if(classes[i].x != 9 - i && classes[i].y != 9 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3760,7 +3760,7 @@ void test_circulart_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3770,7 +3770,7 @@ void test_circulart_any(void)
 
   producer.inspect(1, class_result);
 
-  if (class_result.x == 0 && class_result.y == 0)
+  if(class_result.x == 0 && class_result.y == 0)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3782,7 +3782,7 @@ void test_circulart_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -3796,16 +3796,16 @@ void test_circulart_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3815,7 +3815,7 @@ void test_circulart_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3846,7 +3846,7 @@ void test_circular_consumer_any(void)
 
   consumer.consume(class_result);
 
-  if (class_result.x == 1 && class_result.y == 2)
+  if(class_result.x == 1 && class_result.y == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3862,7 +3862,7 @@ void test_circular_consumer_any(void)
 
   consumer.peek_latest(class_result);
 
-  if (class_result.x == 1 && class_result.y == 2)
+  if(class_result.x == 1 && class_result.y == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3874,7 +3874,7 @@ void test_circular_consumer_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -3888,16 +3888,16 @@ void test_circular_consumer_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3907,7 +3907,7 @@ void test_circular_consumer_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3921,16 +3921,16 @@ void test_circular_consumer_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    if(classes[i].x != 9 - i && classes[i].y != 9 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3940,7 +3940,7 @@ void test_circular_consumer_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -3952,7 +3952,7 @@ void test_circular_consumer_any(void)
 
   consumer.inspect(1, class_result);
 
-  if (class_result.x == 9 && class_result.y == 9)
+  if(class_result.x == 9 && class_result.y == 9)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3964,7 +3964,7 @@ void test_circular_consumer_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -3978,16 +3978,16 @@ void test_circular_consumer_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -3997,7 +3997,7 @@ void test_circular_consumer_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -4010,16 +4010,16 @@ void test_circular_consumer_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    if(classes[i].x != 9 - i && classes[i].y != 9 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4029,7 +4029,7 @@ void test_circular_consumer_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -4045,7 +4045,7 @@ void test_circular_consumer_any(void)
 
   consumer.consume_earliest((size_t)1, classes_return, dropped);
 
-  if (dropped == 5)
+  if(dropped == 5)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4082,7 +4082,7 @@ void test_circular_consumert_any(void)
 
   consumer.consume(class_result);
 
-  if (class_result.x == 1 && class_result.y == 2)
+  if(class_result.x == 1 && class_result.y == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4098,7 +4098,7 @@ void test_circular_consumert_any(void)
 
   consumer.peek_latest(class_result);
 
-  if (class_result.x == 1 && class_result.y == 2)
+  if(class_result.x == 1 && class_result.y == 2)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4110,7 +4110,7 @@ void test_circular_consumert_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -4124,16 +4124,16 @@ void test_circular_consumert_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4143,7 +4143,7 @@ void test_circular_consumert_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -4157,16 +4157,16 @@ void test_circular_consumert_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    if(classes[i].x != 9 - i && classes[i].y != 9 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4176,7 +4176,7 @@ void test_circular_consumert_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -4188,7 +4188,7 @@ void test_circular_consumert_any(void)
 
   consumer.inspect(1, class_result);
 
-  if (class_result.x == 9 && class_result.y == 9)
+  if(class_result.x == 9 && class_result.y == 9)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4200,7 +4200,7 @@ void test_circular_consumert_any(void)
     std::cerr << "class_result.y==" << class_result.y << "\n";
   }
 
-  for (int i = 1; i < 10; ++i)
+  for(int i = 1; i < 10; ++i)
   {
     sample.x = i;
     sample.y = i;
@@ -4214,16 +4214,16 @@ void test_circular_consumert_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != i && classes[i].y != i)
+    if(classes[i].x != i && classes[i].y != i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4233,7 +4233,7 @@ void test_circular_consumert_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -4246,16 +4246,16 @@ void test_circular_consumert_any(void)
 
   has_failed = classes.size() != 10;
 
-  for (int i = 0; !has_failed && i < (int)classes.size(); ++i)
+  for(int i = 0; !has_failed && i < (int)classes.size(); ++i)
   {
-    if (classes[i].x != 9 - i && classes[i].y != 9 - i)
+    if(classes[i].x != 9 - i && classes[i].y != 9 - i)
     {
       has_failed = true;
       std::cerr << " Fail: records[" << i << "]=" << records[i] << "...";
     }
   }
 
-  if (!has_failed)
+  if(!has_failed)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4265,7 +4265,7 @@ void test_circular_consumert_any(void)
     ++madara_fails;
 
     std::cerr << "    size=" << classes.size() << "\n";
-    for (auto record : classes)
+    for(auto record : classes)
     {
       std::cerr << "      " << record << "\n";
     }
@@ -4281,7 +4281,7 @@ void test_circular_consumert_any(void)
 
   consumer.consume_earliest((size_t)1, classes_return, dropped);
 
-  if (dropped == 5)
+  if(dropped == 5)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -4325,7 +4325,7 @@ int main(int, char**)
   test_circular_consumert_any();
   test_native_circular_consumer();  // TODO needs to be fixed
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

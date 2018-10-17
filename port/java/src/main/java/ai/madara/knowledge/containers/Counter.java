@@ -310,7 +310,7 @@ public class Counter extends BaseContainer {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeCounter(getCPtr());
 			setCPtr(0);
 		}

@@ -21,7 +21,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1setLevel(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     current->set_level((int)level);
   }
@@ -41,7 +41,7 @@ jint JNICALL Java_ai_madara_logger_Logger_jni_1getLevel(
   jint result(0);
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jint)current->get_level();
   }
@@ -63,7 +63,7 @@ jstring JNICALL Java_ai_madara_logger_Logger_jni_1getTag(
   jstring result = 0;
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_tag().c_str());
   }
@@ -84,7 +84,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1setTag(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_tag = env->GetStringUTFChars(tag, 0);
 
@@ -107,7 +107,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1addTerm(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     current->add_term();
   }
@@ -126,7 +126,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1addSyslog(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     current->add_syslog();
   }
@@ -145,7 +145,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1clear(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     current->clear();
   }
@@ -164,7 +164,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1addFile(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_filename = env->GetStringUTFChars(filename, 0);
 
@@ -187,7 +187,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1log(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_message = env->GetStringUTFChars(message, 0);
 
@@ -210,7 +210,7 @@ void JNICALL Java_ai_madara_logger_Logger_jni_1setTimestampFormat(
 {
   Logger* current = (Logger*)cptr;
 
-  if (current && format)
+  if(current && format)
   {
     const char* str_format = env->GetStringUTFChars(format, 0);
 

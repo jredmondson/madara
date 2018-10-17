@@ -34,7 +34,7 @@ static const char* success_str = "[SUCCESS]";
   do                                   \
   {                                    \
     ++test_count;                      \
-    if (!(cond))                       \
+    if(!(cond))                       \
     {                                  \
       std::cerr << fail_str << " ";    \
       ++fail_count;                    \
@@ -43,10 +43,10 @@ static const char* success_str = "[SUCCESS]";
     {                                  \
       std::cerr << success_str << " "; \
     }                                  \
-    if (print_all_err(__VA_ARGS__))    \
+    if(print_all_err(__VA_ARGS__))    \
       std::cerr << ": ";               \
     std::cerr << #cond << std::endl;   \
-  } while (0);
+  } while(0);
 
 #define test_eq(lhs, rhs, ...)                                            \
   do                                                                      \
@@ -54,7 +54,7 @@ static const char* success_str = "[SUCCESS]";
     auto l = (lhs);                                                       \
     auto r = (rhs);                                                       \
     ++test_count;                                                         \
-    if (!((l) == (r)))                                                    \
+    if(!((l) == (r)))                                                    \
     {                                                                     \
       std::cerr << fail_str << " ";                                       \
       ++fail_count;                                                       \
@@ -63,11 +63,11 @@ static const char* success_str = "[SUCCESS]";
     {                                                                     \
       std::cerr << success_str << " ";                                    \
     }                                                                     \
-    if (print_all_err(__VA_ARGS__))                                       \
+    if(print_all_err(__VA_ARGS__))                                       \
       std::cerr << ": ";                                                  \
     std::cerr << #lhs << " [" << l << "] == " << #rhs << " [" << r << "]" \
               << std::endl;                                               \
-  } while (0);
+  } while(0);
 
 #define test_neq(lhs, rhs, ...)                                           \
   do                                                                      \
@@ -75,7 +75,7 @@ static const char* success_str = "[SUCCESS]";
     auto l = (lhs);                                                       \
     auto r = (rhs);                                                       \
     ++test_count;                                                         \
-    if ((l) == (r))                                                       \
+    if((l) == (r))                                                       \
     {                                                                     \
       std::cerr << fail_str << " ";                                       \
       ++fail_count;                                                       \
@@ -84,11 +84,11 @@ static const char* success_str = "[SUCCESS]";
     {                                                                     \
       std::cerr << success_str << " ";                                    \
     }                                                                     \
-    if (print_all_err(__VA_ARGS__))                                       \
+    if(print_all_err(__VA_ARGS__))                                       \
       std::cerr << " ";                                                   \
     std::cerr << #lhs << " [" << l << "] != " << #rhs << " [" << r << "]" \
               << std::endl;                                               \
-  } while (0);
+  } while(0);
 
 #define tests_finalize()                                                     \
   do                                                                         \
@@ -98,16 +98,16 @@ static const char* success_str = "[SUCCESS]";
     std::cout << ": " << pass_count << " out of " << test_count << " passed" \
               << std::endl;                                                  \
     return fail_count == 0 ? 0 : 1;                                          \
-  } while (0)
+  } while(0)
 
 template<typename T>
 inline std::ostream& operator<<(std::ostream& o, const std::vector<T>& v)
 {
   int count = 0;
   o << "{";
-  for (const auto& cur : v)
+  for(const auto& cur : v)
   {
-    if (count++ > 0)
+    if(count++ > 0)
       o << ", ";
     o << cur;
   }

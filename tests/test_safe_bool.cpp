@@ -16,11 +16,11 @@ int madara_fails = 0;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (argc > 1)
+    if(argc > 1)
     {
       std::cout
           << "\nProgram Summary for " << argv[0]
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
   mk::KnowledgeRecord struthy("true");
   mk::KnowledgeRecord sfalsey("");
 
-  if (truthy)
+  if(truthy)
   {
     std::cout << "SUCCESS  truthy is true" << std::endl;
   }
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     ++madara_fails;
   }
 
-  if (falsey)
+  if(falsey)
   {
     std::cout << "FAIL    falsey is true" << std::endl;
     ++madara_fails;
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     std::cout << "SUCCESS  falsey is false" << std::endl;
   }
 
-  if (truthy && struthy)
+  if(truthy && struthy)
   {
     std::cout << "SUCCESS  truthy && struthy is true" << std::endl;
   }
@@ -72,7 +72,7 @@ int main(int argc, char** argv)
     ++madara_fails;
   }
 
-  if (truthy && sfalsey)
+  if(truthy && sfalsey)
   {
     std::cout << "FAIL    truthy && sfalsey is true" << std::endl;
     ++madara_fails;
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
     std::cout << "SUCCESS  truthy && sfalsey is false" << std::endl;
   }
 
-  if (truthy || struthy)
+  if(truthy || struthy)
   {
     std::cout << "SUCCESS  truthy || sfalsey is true" << std::endl;
   }
@@ -96,7 +96,7 @@ int main(int argc, char** argv)
   bool bool_false = (bool)falsey;
   bool bool_true = (bool)truthy;
 
-  if (bool_true)
+  if(bool_true)
   {
     std::cout << "SUCCESS  bool_true is true" << std::endl;
   }
@@ -106,7 +106,7 @@ int main(int argc, char** argv)
     ++madara_fails;
   }
 
-  if (bool_false)
+  if(bool_false)
   {
     std::cout << "FAIL    bool_false is true" << std::endl;
     ++madara_fails;
@@ -125,7 +125,7 @@ int main(int argc, char** argv)
   // naive Safe Bool returning void* would compile the following:
   // delete truthy;
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

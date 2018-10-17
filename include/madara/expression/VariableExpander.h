@@ -40,7 +40,7 @@ public:
     // this key requires expansion. We do the compilation and error checking
     // here as the key shouldn't change, and this allows us to only have to do
     // this once
-    if (key.find("{") != key.npos)
+    if(key.find("{") != key.npos)
     {
       madara_logger_ptr_log(cur_logger, logger::LOG_DETAILED,
           "%s: Variable %s requires variable expansion.\n",
@@ -52,7 +52,7 @@ public:
 
       utility::tokenizer(key, splitters, tokens, pivot_list);
 
-      if (pivot_list.size() % 2 != 0)
+      if(pivot_list.size() % 2 != 0)
       {
         std::stringstream buffer;
         buffer << print_prefix;
@@ -69,19 +69,19 @@ public:
       unsigned int num_opens = 0;
       unsigned int num_closes = 0;
 
-      for (; pivot != pivot_list.end(); ++pivot)
+      for(; pivot != pivot_list.end(); ++pivot)
       {
-        if (*pivot == "{")
+        if(*pivot == "{")
         {
           ++num_opens;
         }
-        else if (*pivot == "}")
+        else if(*pivot == "}")
         {
           ++num_closes;
         }
       }
 
-      if (num_opens > num_closes)
+      if(num_opens > num_closes)
       {
         std::stringstream buffer;
         buffer << print_prefix;
@@ -92,7 +92,7 @@ public:
 
         throw exceptions::KarlException(buffer.str());
       }
-      else if (num_closes > num_opens)
+      else if(num_closes > num_opens)
       {
         std::stringstream buffer;
         buffer << print_prefix;

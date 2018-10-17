@@ -74,7 +74,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1Barrier__J(
   Barrier* result(0);
   Barrier* source = (Barrier*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new Barrier(*source);
   }
@@ -111,7 +111,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1set(
 {
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
     *current = value;
   else
   {
@@ -134,7 +134,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1getName(
   jstring result = 0;
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -161,16 +161,16 @@ void JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1setName(
 {
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb, (int)id, (int)participants);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars, (int)id, (int)participants);
@@ -199,7 +199,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1toString(
   jstring result = 0;
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->to_string().c_str());
   }
@@ -226,7 +226,7 @@ jdouble JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1toDouble(
   jdouble result(0.0);
 
   Barrier* current = (Barrier*)cptr;
-  if (current)
+  if(current)
   {
     result = current->to_double();
   }
@@ -253,7 +253,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1toLong(
   jlong result(0);
 
   Barrier* current = (Barrier*)cptr;
-  if (current)
+  if(current)
   {
     result = current->to_integer();
   }
@@ -279,7 +279,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1next(
 {
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     current->next();
   }
@@ -304,7 +304,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1isDone(
   jboolean result(0);
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->is_done();
   }
@@ -330,7 +330,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1modify(
 {
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -354,7 +354,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1resize(
 {
   Barrier* current = (Barrier*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resize(id, participants);
   }
@@ -375,7 +375,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -395,7 +395,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1isTrue(
   Barrier* current = (Barrier*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -417,7 +417,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Barrier_jni_1isFalse(
   Barrier* current = (Barrier*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

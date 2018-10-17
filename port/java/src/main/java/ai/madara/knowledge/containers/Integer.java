@@ -306,7 +306,7 @@ public class Integer extends BaseContainer
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeInteger(getCPtr());
       setCPtr(0);

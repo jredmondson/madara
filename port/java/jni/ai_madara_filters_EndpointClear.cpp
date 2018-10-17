@@ -20,7 +20,7 @@ void JNICALL Java_ai_madara_filters_EndpointClear_jni_1addReceiveFilterTo(
   EndpointClear* current = (EndpointClear*)cptr;
   QoSTransportSettings* settings = (QoSTransportSettings*)qosCptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     settings->add_receive_filter(current);
   }
@@ -40,7 +40,7 @@ void JNICALL Java_ai_madara_filters_EndpointClear_jni_1addSendFilterTo(
   EndpointClear* current = (EndpointClear*)cptr;
   QoSTransportSettings* settings = (QoSTransportSettings*)qosCptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     settings->add_send_filter(current);
   }
@@ -60,7 +60,7 @@ void JNICALL Java_ai_madara_filters_EndpointClear_jni_1addRebroadcastFilterTo(
   EndpointClear* current = (EndpointClear*)cptr;
   QoSTransportSettings* settings = (QoSTransportSettings*)qosCptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     settings->add_rebroadcast_filter(current);
   }
@@ -84,7 +84,7 @@ void JNICALL Java_ai_madara_filters_EndpointClear_jni_1setPrefix(
 {
   EndpointClear* current = (EndpointClear*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_prefix = env->GetStringUTFChars(prefix, 0);
 

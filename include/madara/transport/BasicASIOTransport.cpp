@@ -49,7 +49,7 @@ void BasicASIOTransport::close(void)
 int BasicASIOTransport::setup(void)
 {
   // call base setup method to initialize certain common variables
-  if (Base::setup() < 0)
+  if(Base::setup() < 0)
   {
     return -1;
   }
@@ -58,7 +58,7 @@ int BasicASIOTransport::setup(void)
   addresses_.clear();
   addresses_.reserve(this->settings_.hosts.size());
 
-  if (settings_.hosts.size() == 0)
+  if(settings_.hosts.size() == 0)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
         "BasicASIOTransport::setup:"
@@ -68,7 +68,7 @@ int BasicASIOTransport::setup(void)
   }
 
   // convert the string host:port into an asio address
-  for (unsigned int i = 0; i < settings_.hosts.size(); ++i)
+  for(unsigned int i = 0; i < settings_.hosts.size(); ++i)
   {
     try
     {
@@ -92,7 +92,7 @@ int BasicASIOTransport::setup(void)
     }
   }
 
-  if (addresses_.size() == 0)
+  if(addresses_.size() == 0)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "BasicASIOTransport::setup:"
@@ -117,13 +117,13 @@ int BasicASIOTransport::setup(void)
   }
 
   int ret = setup_sockets();
-  if (ret < 0)
+  if(ret < 0)
   {
     return ret;
   }
 
   ret = setup_read_threads();
-  if (ret < 0)
+  if(ret < 0)
   {
     return ret;
   }
@@ -151,7 +151,7 @@ int BasicASIOTransport::setup_socket(udp::socket& socket)
         " default socket buff size is send=%d, rcv=%d\n",
         send_buff_size, rcv_buff_size);
 
-    if (send_buff_size < tar_buff_size)
+    if(send_buff_size < tar_buff_size)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
           "BasicASIOTransport::setup:"
@@ -170,7 +170,7 @@ int BasicASIOTransport::setup_socket(udp::socket& socket)
           send_buff_size, rcv_buff_size);
     }
 
-    if (rcv_buff_size < tar_buff_size)
+    if(rcv_buff_size < tar_buff_size)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
           "BasicASIOTransport::setup:"
@@ -217,12 +217,12 @@ int BasicASIOTransport::setup_write_socket(void)
 int BasicASIOTransport::setup_sockets(void)
 {
   int ret = setup_read_socket();
-  if (ret < 0)
+  if(ret < 0)
   {
     return ret;
   }
   ret = setup_write_socket();
-  if (ret < 0)
+  if(ret < 0)
   {
     return ret;
   }
@@ -232,10 +232,10 @@ int BasicASIOTransport::setup_sockets(void)
 
 int BasicASIOTransport::setup_read_threads()
 {
-  if (!settings_.no_receiving)
+  if(!settings_.no_receiving)
   {
     double hertz = settings_.read_thread_hertz;
-    if (hertz < 0.0)
+    if(hertz < 0.0)
     {
       // we need to maintain backwards compatibility
       // people should be capable of bursting reads especially
@@ -247,7 +247,7 @@ int BasicASIOTransport::setup_read_threads()
         " starting %d threads at %f hertz\n",
         settings_.read_threads, hertz);
 
-    for (uint32_t i = 0; i < settings_.read_threads; ++i)
+    for(uint32_t i = 0; i < settings_.read_threads; ++i)
     {
       std::stringstream thread_name;
       thread_name << "read";

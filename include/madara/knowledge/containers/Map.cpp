@@ -21,9 +21,9 @@ madara::knowledge::containers::Map::Map(const std::string& name,
   context_->to_map(common, contents);
 
   KnowledgeUpdateSettings keep_local(true);
-  if (contents.size() > 0)
+  if(contents.size() > 0)
   {
-    for (std::map<std::string, knowledge::KnowledgeRecord>::iterator i =
+    for(std::map<std::string, knowledge::KnowledgeRecord>::iterator i =
              contents.begin();
          i != contents.end(); ++i)
     {
@@ -45,9 +45,9 @@ madara::knowledge::containers::Map::Map(const std::string& name,
   context_->to_map(common, contents);
 
   KnowledgeUpdateSettings keep_local(true);
-  if (contents.size() > 0)
+  if(contents.size() > 0)
   {
-    for (std::map<std::string, knowledge::KnowledgeRecord>::iterator i =
+    for(std::map<std::string, knowledge::KnowledgeRecord>::iterator i =
              contents.begin();
          i != contents.end(); ++i)
     {
@@ -69,12 +69,12 @@ madara::knowledge::containers::Map::~Map() {}
 
 void madara::knowledge::containers::Map::modify(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    for (InternalMap::const_iterator index = map_.begin(); index != map_.end();
+    for(InternalMap::const_iterator index = map_.begin(); index != map_.end();
          ++index)
     {
       context_->mark_modified(index->second);
@@ -88,7 +88,7 @@ std::string madara::knowledge::containers::Map::get_debug_info(void)
 
   result << "Map: ";
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -99,10 +99,10 @@ std::string madara::knowledge::containers::Map::get_debug_info(void)
 
     bool first(true);
 
-    for (InternalMap::const_iterator index = map_.begin(); index != map_.end();
+    for(InternalMap::const_iterator index = map_.begin(); index != map_.end();
          ++index)
     {
-      if (!first)
+      if(!first)
       {
         result << ", ";
       }
@@ -139,7 +139,7 @@ madara::knowledge::containers::Map::clone(void) const
 
 void madara::knowledge::containers::Map::modify(const std::string& index)
 {
-  if (context_ && name_ != "" && map_.find(index) != map_.end())
+  if(context_ && name_ != "" && map_.find(index) != map_.end())
   {
     ContextGuard context_guard(*context_);
     context_->mark_modified(map_[index]);
@@ -148,7 +148,7 @@ void madara::knowledge::containers::Map::modify(const std::string& index)
 
 void madara::knowledge::containers::Map::operator=(const Map& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
@@ -164,7 +164,7 @@ madara::knowledge::containers::Map::to_record(const std::string& key)
 {
   knowledge::KnowledgeRecord result;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -178,7 +178,7 @@ madara::knowledge::containers::Map::to_record(const std::string& key)
     std::map<std::string, VariableReference>::const_iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, keep_local);
       map_[key] = ref;
@@ -207,7 +207,7 @@ std::vector<std::string> madara::knowledge::containers::Map::sync_keys(void)
 {
   std::vector<std::string> additions;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -219,13 +219,13 @@ std::vector<std::string> madara::knowledge::containers::Map::sync_keys(void)
     context_->to_map(common, contents);
     KnowledgeUpdateSettings keep_local(true);
 
-    for (std::map<std::string, knowledge::KnowledgeRecord>::iterator i =
+    for(std::map<std::string, knowledge::KnowledgeRecord>::iterator i =
              contents.begin();
          i != contents.end(); ++i)
     {
       std::string key = i->first.substr(common.size());
 
-      if (map_.find(key) == map_.end())
+      if(map_.find(key) == map_.end())
       {
         additions.push_back(key);
         map_[key] = context_->get_ref(i->first, keep_local);
@@ -239,7 +239,7 @@ std::vector<std::string> madara::knowledge::containers::Map::sync_keys(void)
 void madara::knowledge::containers::Map::exchange(
     Map& other, bool refresh_keys, bool delete_keys)
 {
-  if (context_ && other.context_)
+  if(context_ && other.context_)
   {
     std::lock(*context_, *other.context_, mutex_, other.mutex_);
 
@@ -248,7 +248,7 @@ void madara::knowledge::containers::Map::exchange(
     MADARA_GUARD_TYPE guard(mutex_, std::adopt_lock),
         guard2(other.mutex_, std::adopt_lock);
 
-    if (refresh_keys)
+    if(refresh_keys)
     {
       other.sync_keys();
       this->sync_keys();
@@ -256,7 +256,7 @@ void madara::knowledge::containers::Map::exchange(
 
     InternalMap leftover(other.map_);
     InternalMap::iterator i = map_.begin();
-    while (i != map_.end())
+    while(i != map_.end())
     {
       // temp = this[i->first]
       knowledge::KnowledgeRecord temp =
@@ -265,7 +265,7 @@ void madara::knowledge::containers::Map::exchange(
       // check if the other map has the key
       InternalMap::iterator other_found = other.map_.find(i->first);
 
-      if (other_found != other.map_.end())
+      if(other_found != other.map_.end())
       {
         // this[i->first] = other[i->first]
         this->context_->set(i->second,
@@ -293,7 +293,7 @@ void madara::knowledge::containers::Map::exchange(
         other.context_->set(ref, temp, other.settings_);
 
         // this[i->first] = zero
-        if (delete_keys)
+        if(delete_keys)
         {
           std::stringstream buffer2;
           buffer2 << this->name_;
@@ -315,9 +315,9 @@ void madara::knowledge::containers::Map::exchange(
     // iterate over the elements in the other.map_ that are not in the current
     // map
 
-    for (i = leftover.begin(); i != leftover.end(); ++i)
+    for(i = leftover.begin(); i != leftover.end(); ++i)
     {
-      if (map_.find(i->first) == map_.end())
+      if(map_.find(i->first) == map_.end())
       {
         std::stringstream buffer;
         buffer << name_;
@@ -332,7 +332,7 @@ void madara::knowledge::containers::Map::exchange(
             other.context_->get(i->second, other.settings_), this->settings_);
 
         // other[i->first] = zero;
-        if (delete_keys)
+        if(delete_keys)
         {
           std::stringstream buffer2;
           buffer2 << other.name_;
@@ -354,7 +354,7 @@ void madara::knowledge::containers::Map::exchange(
 
 void madara::knowledge::containers::Map::clear(bool clear_knowledge)
 {
-  if (context_ && clear_knowledge)
+  if(context_ && clear_knowledge)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -362,13 +362,13 @@ void madara::knowledge::containers::Map::clear(bool clear_knowledge)
     std::vector<std::string> keys;
     this->keys(keys);
 
-    for (size_t i = 0; i < keys.size(); ++i)
+    for(size_t i = 0; i < keys.size(); ++i)
       this->erase(keys[i]);
 
     map_.clear();
   }
 
-  else if (context_)
+  else if(context_)
   {
     MADARA_GUARD_TYPE guard(mutex_);
     map_.clear();
@@ -377,12 +377,12 @@ void madara::knowledge::containers::Map::clear(bool clear_knowledge)
 
 void madara::knowledge::containers::Map::reset(void)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    for (auto entry : map_)
+    for(auto entry : map_)
       context_->clear(entry.first);
 
     map_.clear();
@@ -391,7 +391,7 @@ void madara::knowledge::containers::Map::reset(void)
 
 void madara::knowledge::containers::Map::erase(const std::string& key)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -400,7 +400,7 @@ void madara::knowledge::containers::Map::erase(const std::string& key)
     InternalMap::iterator found = map_.find(key);
 
     // delete the variable if it has been found
-    if (found != map_.end())
+    if(found != map_.end())
     {
       context_->delete_variable(found->second.get_name());
       map_.erase(found);
@@ -411,7 +411,7 @@ void madara::knowledge::containers::Map::erase(const std::string& key)
 void madara::knowledge::containers::Map::set_name(
     const std::string& var_name, KnowledgeBase& knowledge, bool sync)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  if(context_ != &(knowledge.get_context()) || name_ != var_name)
   {
     context_ = &(knowledge.get_context());
 
@@ -422,7 +422,7 @@ void madara::knowledge::containers::Map::set_name(
 
     // the old map will no longer be appropriate
     clear(false);
-    if (sync)
+    if(sync)
       sync_keys();
   }
 }
@@ -430,7 +430,7 @@ void madara::knowledge::containers::Map::set_name(
 void madara::knowledge::containers::Map::set_name(
     const std::string& var_name, Variables& knowledge, bool sync)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name)
+  if(context_ != knowledge.get_context() || name_ != var_name)
   {
     context_ = knowledge.get_context();
 
@@ -441,7 +441,7 @@ void madara::knowledge::containers::Map::set_name(
 
     // the old map will no longer be appropriate
     clear(false);
-    if (sync)
+    if(sync)
       sync_keys();
   }
 }
@@ -451,11 +451,11 @@ void madara::knowledge::containers::Map::set_delimiter(
 {
   delimiter_ = delimiter;
 
-  if (context_)
+  if(context_)
   {
     // the old map will no longer be appropriate
     clear(false);
-    if (sync)
+    if(sync)
       sync_keys();
   }
 }
@@ -471,7 +471,7 @@ bool madara::knowledge::containers::Map::exists(const std::string& key) const
 
   InternalMap::const_iterator found = map_.find(key);
 
-  if (context_ && found != map_.end())
+  if(context_ && found != map_.end())
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -489,9 +489,9 @@ bool madara::knowledge::containers::Map::has_prefix(
 
   InternalMap::const_iterator found = map_.lower_bound(prefix);
 
-  if (found != map_.end())
+  if(found != map_.end())
   {
-    if (madara::utility::begins_with(found->first, prefix))
+    if(madara::utility::begins_with(found->first, prefix))
       result = true;
   }
 
@@ -505,7 +505,7 @@ void madara::knowledge::containers::Map::keys(
   curkeys.resize(map_.size());
   unsigned int j = 0;
 
-  for (std::map<std::string, VariableReference>::const_iterator
+  for(std::map<std::string, VariableReference>::const_iterator
            i = map_.begin();
        i != map_.end(); ++i, ++j)
   {
@@ -518,7 +518,7 @@ int madara::knowledge::containers::Map::read_file(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -532,7 +532,7 @@ int madara::knowledge::containers::Map::read_file(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -551,7 +551,7 @@ int madara::knowledge::containers::Map::read_file(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -565,7 +565,7 @@ int madara::knowledge::containers::Map::read_file(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -584,7 +584,7 @@ int madara::knowledge::containers::Map::set(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -597,7 +597,7 @@ int madara::knowledge::containers::Map::set(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -618,7 +618,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -632,7 +632,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -652,7 +652,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -666,7 +666,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -686,7 +686,7 @@ int madara::knowledge::containers::Map::set_index(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -700,7 +700,7 @@ int madara::knowledge::containers::Map::set_index(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -721,7 +721,7 @@ int madara::knowledge::containers::Map::set_index(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -735,7 +735,7 @@ int madara::knowledge::containers::Map::set_index(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -755,7 +755,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -769,7 +769,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -790,7 +790,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -804,7 +804,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -824,7 +824,7 @@ int madara::knowledge::containers::Map::set(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -838,7 +838,7 @@ int madara::knowledge::containers::Map::set(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -859,7 +859,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -873,7 +873,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -893,7 +893,7 @@ int madara::knowledge::containers::Map::set(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -907,7 +907,7 @@ int madara::knowledge::containers::Map::set(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -927,7 +927,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -941,7 +941,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -961,7 +961,7 @@ int madara::knowledge::containers::Map::set_index(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -975,7 +975,7 @@ int madara::knowledge::containers::Map::set_index(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -995,7 +995,7 @@ int madara::knowledge::containers::Map::set_index(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1009,7 +1009,7 @@ int madara::knowledge::containers::Map::set_index(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -1029,7 +1029,7 @@ int madara::knowledge::containers::Map::set(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1043,7 +1043,7 @@ int madara::knowledge::containers::Map::set(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -1063,7 +1063,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1077,7 +1077,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -1095,7 +1095,7 @@ int madara::knowledge::containers::Map::set(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1109,7 +1109,7 @@ int madara::knowledge::containers::Map::set(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -1129,7 +1129,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1143,7 +1143,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -1163,7 +1163,7 @@ int madara::knowledge::containers::Map::set(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1177,7 +1177,7 @@ int madara::knowledge::containers::Map::set(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -1197,7 +1197,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1211,7 +1211,7 @@ int madara::knowledge::containers::Map::set(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -1231,7 +1231,7 @@ int madara::knowledge::containers::Map::set_file(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1245,7 +1245,7 @@ int madara::knowledge::containers::Map::set_file(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -1266,7 +1266,7 @@ int madara::knowledge::containers::Map::set_file(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1280,7 +1280,7 @@ int madara::knowledge::containers::Map::set_file(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -1298,7 +1298,7 @@ int madara::knowledge::containers::Map::set_jpeg(
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1312,7 +1312,7 @@ int madara::knowledge::containers::Map::set_jpeg(
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings_);
       map_[key] = ref;
@@ -1333,7 +1333,7 @@ int madara::knowledge::containers::Map::set_jpeg(const std::string& key,
 {
   int result = -1;
 
-  if (context_ && key != "")
+  if(context_ && key != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1347,7 +1347,7 @@ int madara::knowledge::containers::Map::set_jpeg(const std::string& key,
     std::map<std::string, VariableReference>::iterator entry =
         map_.find(final_key);
 
-    if (entry == map_.end())
+    if(entry == map_.end())
     {
       VariableReference ref = context_->get_ref(final_key, settings);
       map_[key] = ref;
@@ -1365,7 +1365,7 @@ int madara::knowledge::containers::Map::set_jpeg(const std::string& key,
 void madara::knowledge::containers::Map::set_quality(const std::string& key,
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -1386,21 +1386,21 @@ bool madara::knowledge::containers::Map::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "Map::is_true: checking for truth in all elements\n");
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
     result = true;
 
-    for (InternalMap::const_iterator index = map_.begin(); index != map_.end();
+    for(InternalMap::const_iterator index = map_.begin(); index != map_.end();
          ++index)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
           "Map::is_true: checking index, is_false of %d. \n",
           (int)context_->get(index->second).is_false());
 
-      if (context_->get(index->second).is_false())
+      if(context_->get(index->second).is_false())
       {
         madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
             "Map::is_true: result is false, breaking\n");
@@ -1410,7 +1410,7 @@ bool madara::knowledge::containers::Map::is_true(void) const
       }
     }
 
-    if (map_.size() == 0)
+    if(map_.size() == 0)
       result = false;
   }
 

@@ -78,9 +78,9 @@ public enum LogLevels
 
   public static LogLevels getType(int val)
   {
-    for (LogLevels t : values())
+    for(LogLevels t : values())
     {
-      if (t.value() == val)
+      if(t.value() == val)
         return t;
     }
     return null;

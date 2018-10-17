@@ -24,7 +24,7 @@ madara::expression::CompositeArrayReference::CompositeArrayReference(
 
 std::string madara::expression::CompositeArrayReference::expand_key(void) const
 {
-  if (key_expansion_necessary_)
+  if(key_expansion_necessary_)
   {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "Variable %s requires variable expansion\n", key_.c_str());
@@ -37,12 +37,12 @@ std::string madara::expression::CompositeArrayReference::expand_key(void) const
     builder << *token;
 
     // move the token to the next in the list.
-    for (++token, ++count; token != tokens_.end(); ++token, ++count)
+    for(++token, ++count; token != tokens_.end(); ++token, ++count)
     {
-      if (*token != "")
+      if(*token != "")
       {
         // is the current token a variable to lookup?
-        if (count < pivot_list_.size() && pivot_list_[count] == "}")
+        if(count < pivot_list_.size() && pivot_list_[count] == "}")
         {
           builder << context_.get_record(*token)->to_string();
         }
@@ -71,7 +71,7 @@ madara::expression::CompositeArrayReference::item() const
 {
   size_t index = right_->item().to_integer();
 
-  if (ref_.is_valid())
+  if(ref_.is_valid())
   {
     return ref_.get_record_unsafe()->retrieve_index(index);
   }
@@ -93,7 +93,7 @@ madara::expression::CompositeArrayReference::prune(bool& can_change)
 
   std::string key = expand_key();
 
-  if (key == "nan")
+  if(key == "nan")
   {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "CompositeArrayReference::prune: "
@@ -107,7 +107,7 @@ madara::expression::CompositeArrayReference::prune(bool& can_change)
         "KARL COMPILE ERROR: "
         "Reserved word 'nan' used as an array reference.");
   }
-  else if (key == "inf")
+  else if(key == "inf")
   {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
         "CompositeArrayReference::prune: "
@@ -124,7 +124,7 @@ madara::expression::CompositeArrayReference::prune(bool& can_change)
 
   // we could call item(), but since it is virtual, it incurs unnecessary
   // overhead.
-  if (ref_.is_valid())
+  if(ref_.is_valid())
     return *ref_.get_record_unsafe();
   else
     return context_.get(expand_key());
@@ -138,11 +138,11 @@ madara::expression::CompositeArrayReference::evaluate(
 {
   size_t index = right_->evaluate(settings).to_integer();
 
-  if (ref_.is_valid())
+  if(ref_.is_valid())
   {
     auto ret = ref_.get_record_unsafe();
 
-    if (settings.exception_on_unitialized && !ret->exists ())
+    if(settings.exception_on_unitialized && !ret->exists ())
     {
       std::stringstream buffer;
       buffer << "madara::expression::CompositeArrayReference::evaluate: ";
@@ -157,7 +157,7 @@ madara::expression::CompositeArrayReference::evaluate(
   {
     auto ret = context_.get(expand_key()).retrieve_index(index);
 
-    if (settings.exception_on_unitialized && !ret.exists ())
+    if(settings.exception_on_unitialized && !ret.exists ())
     {
       std::stringstream buffer;
       buffer << "madara::expression::CompositeArrayReference::evaluate: ";
@@ -182,18 +182,18 @@ madara::expression::CompositeArrayReference::dec(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid())
+  if(ref_.is_valid())
   {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return context_.retrieve_index(expand_key(), index, settings);
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record->write_quality != record->quality)
+    if(record->write_quality != record->quality)
       record->quality = record->write_quality;
 
     knowledge::KnowledgeRecord result(record->dec_index(index));
@@ -208,9 +208,9 @@ madara::expression::CompositeArrayReference::dec(
         context_.retrieve_index(expand_key(), index, settings) -
         knowledge::KnowledgeRecord(1));
 
-    if (result.type() == knowledge::KnowledgeRecord::INTEGER)
+    if(result.type() == knowledge::KnowledgeRecord::INTEGER)
       context_.set_index(expand_key(), index, result.to_integer(), settings);
-    else if (result.type() == knowledge::KnowledgeRecord::DOUBLE)
+    else if(result.type() == knowledge::KnowledgeRecord::DOUBLE)
       context_.set_index(expand_key(), index, result.to_double(), settings);
 
     return result;
@@ -224,18 +224,18 @@ madara::expression::CompositeArrayReference::inc(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid())
+  if(ref_.is_valid())
   {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return context_.retrieve_index(expand_key(), index, settings);
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record->write_quality != record->quality)
+    if(record->write_quality != record->quality)
       record->quality = record->write_quality;
 
     knowledge::KnowledgeRecord result(record->inc_index(index));
@@ -250,9 +250,9 @@ madara::expression::CompositeArrayReference::inc(
         context_.retrieve_index(expand_key(), index, settings) +
         knowledge::KnowledgeRecord(1);
 
-    if (result.type() == knowledge::KnowledgeRecord::INTEGER)
+    if(result.type() == knowledge::KnowledgeRecord::INTEGER)
       context_.set_index(expand_key(), index, result.to_integer(), settings);
-    else if (result.type() == knowledge::KnowledgeRecord::DOUBLE)
+    else if(result.type() == knowledge::KnowledgeRecord::DOUBLE)
       context_.set_index(expand_key(), index, result.to_double(), settings);
 
     return result;
@@ -265,9 +265,9 @@ int madara::expression::CompositeArrayReference::set(
 {
   int return_value = 0;
 
-  if (value.type() == knowledge::KnowledgeRecord::INTEGER)
+  if(value.type() == knowledge::KnowledgeRecord::INTEGER)
     return_value = set(value.to_integer(), settings);
-  else if (value.type() == knowledge::KnowledgeRecord::DOUBLE)
+  else if(value.type() == knowledge::KnowledgeRecord::DOUBLE)
     return_value = set(value.to_double(), settings);
 
   return return_value;
@@ -279,18 +279,18 @@ int madara::expression::CompositeArrayReference::set(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid())
+  if(ref_.is_valid())
   {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record->write_quality != record->quality)
+    if(record->write_quality != record->quality)
       record->quality = record->write_quality;
 
     record->set_index(index, value);
@@ -308,18 +308,18 @@ int madara::expression::CompositeArrayReference::set(
 {
   size_t index = size_t(right_->evaluate(settings).to_integer());
 
-  if (ref_.is_valid())
+  if(ref_.is_valid())
   {
     auto record = ref_.get_record_unsafe();
 
     // notice that we assume the context is locked
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     // cheaper to read than write, so check to see if
     // we actually need to update quality and status
-    if (record->write_quality != record->quality)
+    if(record->write_quality != record->quality)
       record->quality = record->write_quality;
 
     record->set_index(index, value);

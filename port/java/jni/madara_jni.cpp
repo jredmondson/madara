@@ -20,7 +20,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
       "Entering OnLoad\n");
 
   JNIEnv* env;
-  if (vm->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK)
+  if(vm->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK)
   {
     return JNI_ERR;
   }
@@ -53,7 +53,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
   jobject thread = env->CallStaticObjectMethod(thread_class, current_thread);
   jobject class_loader = env->CallObjectMethod(thread, get_class_loader);
 
-  if (class_loader != NULL)
+  if(class_loader != NULL)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "madara:JNI_OnLoad: "
@@ -76,7 +76,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
    * We could send exceptions to stderr, but that's a waste of time
    * on Android, and there is no way to redirect to the logger.
    **/
-  if (env->ExceptionCheck())
+  if(env->ExceptionCheck())
   {
     env->ExceptionClear();
   }
@@ -95,7 +95,7 @@ jint JNICALL JNI_OnLoad(JavaVM* vm, void*)
   jclass kr_class = (jclass)env->CallObjectMethod(madara_class_loader,
       find_class, env->NewStringUTF("ai.madara.knowledge.KnowledgeRecord"));
 
-  if (!kr_class || env->ExceptionCheck())
+  if(!kr_class || env->ExceptionCheck())
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
         "madara:JNI_OnLoad: "
@@ -132,7 +132,7 @@ void JNICALL JNI_OnUnload(JavaVM* vm, void*)
   JNIEnv* env;
   vm->GetEnv((void**)&env, JNI_VERSION_1_6);
 
-  if (env)
+  if(env)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "madara:JNI_OnUnload: "
@@ -152,7 +152,7 @@ bool madara_jni_is_attached()
 {
   JNIEnv* env(0);
 
-  if (madara_JVM)
+  if(madara_JVM)
   {
     madara_JVM->GetEnv((void**)&env, JNI_VERSION_1_6);
   }
@@ -163,7 +163,7 @@ bool madara_jni_is_attached()
 JNIEnv* madara_jni_get_env()
 {
   JNIEnv* env(0);
-  if (madara_JVM)
+  if(madara_JVM)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "madara_jni_get_env:"
@@ -171,7 +171,7 @@ JNIEnv* madara_jni_get_env()
 
     madara_JVM->GetEnv((void**)&env, JNI_VERSION_1_6);
 
-    if (env == 0)
+    if(env == 0)
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
           "madara_jni_get_env:"
@@ -201,7 +201,7 @@ JNIEnv* jni_attach()
 
 void jni_detach()
 {
-  if (madara_JVM)
+  if(madara_JVM)
   {
     madara_JVM->DetachCurrentThread();
   }
@@ -211,7 +211,7 @@ jclass madara::utility::java::find_class(JNIEnv* env, const char* name)
 {
   jclass result(0);
 
-  if (env != 0)
+  if(env != 0)
   {
     std::string dot_name = name;
 
@@ -243,7 +243,7 @@ jclass madara::utility::java::find_class(JNIEnv* env, const char* name)
     env->DeleteLocalRef(j_name);
     env->DeleteLocalRef(class_loader);
 
-    if (env->ExceptionCheck())
+    if(env->ExceptionCheck())
     {
       env->ExceptionClear();
 
@@ -258,7 +258,7 @@ jclass madara::utility::java::find_class(JNIEnv* env, const char* name)
 
       env->DeleteLocalRef(local_class);
 
-      if (env->ExceptionCheck())
+      if(env->ExceptionCheck())
       {
         env->ExceptionClear();
 
@@ -266,7 +266,7 @@ jclass madara::utility::java::find_class(JNIEnv* env, const char* name)
       }
     }
 
-    if (result == 0)
+    if(result == 0)
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
           "madara::utility::java::find_class: "

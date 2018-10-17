@@ -86,7 +86,7 @@ public class LogRecord implements RecordFilter {
 	buffer.append("  [2:Operation Type]: ");
 
 	int index = (int) args.get(2).toLong();
-	if (index < opTypes.length) {
+	if(index < opTypes.length) {
 	    buffer.append(opTypes[index]);
 	}
 	buffer.append("\n");

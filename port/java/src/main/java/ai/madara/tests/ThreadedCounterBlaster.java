@@ -82,7 +82,7 @@ public class ThreadedCounterBlaster extends BaseThread
   {
     // increment the counter until it is at least equal to the value
     long value = counter.inc();
-    while (value < target)
+    while(value < target)
       value = counter.inc();
   }
 
@@ -103,7 +103,7 @@ public class ThreadedCounterBlaster extends BaseThread
 
     long numThreads = 1;
 
-    if (args.length > 0)
+    if(args.length > 0)
     {
       // first arg is the number of threads
       try
@@ -118,7 +118,7 @@ public class ThreadedCounterBlaster extends BaseThread
         System.exit(1);
       }
 
-      if (args.length > 1)
+      if(args.length > 1)
       {
         // second arg is the target
         try
@@ -138,7 +138,7 @@ public class ThreadedCounterBlaster extends BaseThread
     // create a threader for running threads
     Threader threader = new Threader(knowledge);
 
-    for (int i = 0; i < numThreads; ++i)
+    for(int i = 0; i < numThreads; ++i)
     {
       threader.run("thread" + i, new ThreadedCounterBlaster());
     }

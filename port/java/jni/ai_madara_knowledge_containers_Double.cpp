@@ -73,7 +73,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Double_jni_1Double__J(
   Double* result(0);
   Double* source = (Double*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new Double(*source);
   }
@@ -110,7 +110,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Double_jni_1set(
 {
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     *current = value;
   }
@@ -135,7 +135,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Double_jni_1getName(
   jstring result = 0;
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -161,16 +161,16 @@ void JNICALL Java_ai_madara_knowledge_containers_Double_jni_1setName(
 {
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -199,7 +199,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Double_jni_1toString(
   jstring result = 0;
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->to_string().c_str());
   }
@@ -226,7 +226,7 @@ jdouble JNICALL Java_ai_madara_knowledge_containers_Double_jni_1toDouble(
   jdouble result(0.0);
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->to_double();
   }
@@ -253,7 +253,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Double_jni_1toLong(
   jlong result(0);
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->to_integer();
   }
@@ -274,7 +274,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Double_jni_1modify(
 {
   Double* current = (Double*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -295,7 +295,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Double_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -315,7 +315,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Double_jni_1isTrue(
   Double* current = (Double*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -337,7 +337,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Double_jni_1isFalse(
   Double* current = (Double*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

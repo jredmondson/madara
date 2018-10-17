@@ -31,7 +31,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1CircularBufferCo
   CircularBufferConsumer* result(0);
   CircularBufferConsumer* source = (CircularBufferConsumer*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new CircularBufferConsumer(*source);
   }
@@ -71,7 +71,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeRecord(
   jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong) new KnowledgeRecord(current->consume());
   }
@@ -100,7 +100,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestR
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -111,9 +111,9 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeEarliestR
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         jobject result = env->CallStaticObjectMethod(
             kr_class, method, (jlong)records[i].clone());
@@ -152,7 +152,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRec
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -163,9 +163,9 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1consumeLatestRec
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         jobject result = env->CallStaticObjectMethod(
             kr_class, method, (jlong)records[i].clone());
@@ -203,7 +203,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecord(
   jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong) new KnowledgeRecord(current->inspect(position));
   }
@@ -232,7 +232,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVec
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -244,9 +244,9 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1inspectRecordVec
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         jobject result = env->CallStaticObjectMethod(
             kr_class, method, (jlong)records[i].clone());
@@ -284,7 +284,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecord(
   jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong) new KnowledgeRecord(current->peek_latest());
   }
@@ -313,7 +313,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -324,9 +324,9 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1peekRecordVector
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         jobject result = env->CallStaticObjectMethod(
             kr_class, method, (jlong)records[i].clone());
@@ -364,7 +364,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1getName(
   jstring result = 0;
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -391,17 +391,17 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setName(
 {
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
 
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
 
@@ -432,7 +432,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1remaining(
   jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->remaining();
   }
@@ -459,7 +459,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resync(
 {
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resync();
   }
@@ -484,7 +484,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1setIndex(
 {
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     current->set_index(index);
   }
@@ -510,7 +510,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1size(
   jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->size();
   }
@@ -538,7 +538,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1count(
   jlong result(0);
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->count();
   }
@@ -565,7 +565,7 @@ Java_ai_madara_knowledge_containers_CircularBufferConsumer_jni_1resize(
 {
   CircularBufferConsumer* current = (CircularBufferConsumer*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resize();
   }

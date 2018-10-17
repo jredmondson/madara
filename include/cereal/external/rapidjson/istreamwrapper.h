@@ -60,7 +60,7 @@ public:
 
     Ch Take() {
         typename StreamType::int_type c = stream_.get();
-        if (CEREAL_RAPIDJSON_LIKELY(c != StreamType::traits_type::eof())) {
+        if(CEREAL_RAPIDJSON_LIKELY(c != StreamType::traits_type::eof())) {
             count_++;
             return static_cast<Ch>(c);
         }
@@ -81,16 +81,16 @@ public:
         CEREAL_RAPIDJSON_ASSERT(sizeof(Ch) == 1); // Only usable for byte stream.
         int i;
         bool hasError = false;
-        for (i = 0; i < 4; ++i) {
+        for(i = 0; i < 4; ++i) {
             typename StreamType::int_type c = stream_.get();
-            if (c == StreamType::traits_type::eof()) {
+            if(c == StreamType::traits_type::eof()) {
                 hasError = true;
                 stream_.clear();
                 break;
             }
             peekBuffer_[i] = static_cast<Ch>(c);
         }
-        for (--i; i >= 0; --i)
+        for(--i; i >= 0; --i)
             stream_.putback(peekBuffer_[i]);
         return !hasError ? peekBuffer_ : 0;
     }

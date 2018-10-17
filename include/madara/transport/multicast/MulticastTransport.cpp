@@ -23,7 +23,7 @@ MulticastTransport::MulticastTransport(const std::string& id,
     bool launch_transport)
   : UdpTransport(id, context, config, false)
 {
-  if (launch_transport)
+  if(launch_transport)
     setup();
 }
 
@@ -52,7 +52,7 @@ int MulticastTransport::setup_read_socket(void)
     return -1;
   }
 
-  if (UdpTransport::setup_read_socket() < 0)
+  if(UdpTransport::setup_read_socket() < 0)
   {
     return -1;
   }
@@ -77,7 +77,7 @@ int MulticastTransport::setup_read_socket(void)
 
 int MulticastTransport::setup_write_socket(void)
 {
-  if (UdpTransport::setup_write_socket() < 0)
+  if(UdpTransport::setup_write_socket() < 0)
   {
     return -1;
   }

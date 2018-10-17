@@ -95,7 +95,7 @@ public class Any extends AnyRef {
 	    throws BadAnyAccess {
 	String factory_name = factory.getClass().getName();
 	String tag = registered_factories.get(factory_name);
-	if (tag == null) {
+	if(tag == null) {
 	    throw new BadAnyAccess("Unknown type tag: " + tag);
 	}
 

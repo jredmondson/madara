@@ -130,7 +130,7 @@ public class QoSTransportSettings extends TransportSettings {
    */
   public void addFilter(BufferFilter filter) throws MadaraDeadObjectException
   {
-    if (filter instanceof MadaraJNI)
+    if(filter instanceof MadaraJNI)
     {
       MadaraJNI superClass = (MadaraJNI)filter;
       jni_addBufferFilter(getCPtr(), superClass.getCPtr());

@@ -51,7 +51,7 @@ bool madara::knowledge::containers::FlexMap::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "Vector::is_true: checking for non-zero value\n");
 
-  if (variable_.is_valid())
+  if(variable_.is_valid())
   {
     result = context_->get(variable_, keep_local).is_true();
   }
@@ -73,7 +73,7 @@ bool madara::knowledge::containers::FlexMap::is_false(void) const
 
   KnowledgeUpdateSettings keep_local(true);
 
-  if (!variable_.is_valid())
+  if(!variable_.is_valid())
   {
     result = context_->get(variable_, keep_local).is_true();
   }
@@ -83,7 +83,7 @@ bool madara::knowledge::containers::FlexMap::is_false(void) const
 
 void madara::knowledge::containers::FlexMap::modify(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
 
@@ -96,7 +96,7 @@ void madara::knowledge::containers::FlexMap::modify(void)
     map.modify();
 
     // modify ourself
-    if (variable_.is_valid())
+    if(variable_.is_valid())
     {
       knowledge.mark_modified(variable_);
     }
@@ -109,7 +109,7 @@ std::string madara::knowledge::containers::FlexMap::get_debug_info(void)
 
   result << "Flex Map: ";
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -143,7 +143,7 @@ madara::knowledge::containers::FlexMap::clone(void) const
 
 void madara::knowledge::containers::FlexMap::operator=(const FlexMap& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
@@ -191,17 +191,17 @@ madara::knowledge::KnowledgeRecord
 madara::knowledge::containers::FlexMap::to_record(
     const KnowledgeRecord& default_value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       this->update_variable();
     }
 
-    if (context_->exists(variable_))
+    if(context_->exists(variable_))
     {
       return context_->get(variable_, settings_);
     }
@@ -214,17 +214,17 @@ madara::knowledge::KnowledgeRecord::Integer
 madara::knowledge::containers::FlexMap::to_integer(
     KnowledgeRecord::Integer default_value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       this->update_variable();
     }
 
-    if (context_->exists(variable_))
+    if(context_->exists(variable_))
     {
       return context_->get(variable_, settings_).to_integer();
     }
@@ -236,17 +236,17 @@ madara::knowledge::containers::FlexMap::to_integer(
 double madara::knowledge::containers::FlexMap::to_double(
     double default_value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       this->update_variable();
     }
 
-    if (context_->exists(variable_))
+    if(context_->exists(variable_))
     {
       return context_->get(variable_, settings_).to_double();
     }
@@ -258,17 +258,17 @@ double madara::knowledge::containers::FlexMap::to_double(
 std::string madara::knowledge::containers::FlexMap::to_string(
     const std::string& default_value) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       this->update_variable();
     }
 
-    if (context_->exists(variable_))
+    if(context_->exists(variable_))
     {
       return context_->get(variable_, settings_).to_string();
     }
@@ -280,7 +280,7 @@ std::string madara::knowledge::containers::FlexMap::to_string(
 void madara::knowledge::containers::FlexMap::to_container(
     BufferVector& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -297,7 +297,7 @@ void madara::knowledge::containers::FlexMap::to_container(
 void madara::knowledge::containers::FlexMap::to_container(
     DoubleVector& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -314,7 +314,7 @@ void madara::knowledge::containers::FlexMap::to_container(
 void madara::knowledge::containers::FlexMap::to_container(
     IntegerVector& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -331,7 +331,7 @@ void madara::knowledge::containers::FlexMap::to_container(
 void madara::knowledge::containers::FlexMap::to_container(
     NativeIntegerVector& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -347,7 +347,7 @@ void madara::knowledge::containers::FlexMap::to_container(
 void madara::knowledge::containers::FlexMap::to_container(
     StringVector& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -363,7 +363,7 @@ void madara::knowledge::containers::FlexMap::to_container(
 
 void madara::knowledge::containers::FlexMap::to_container(Double& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -379,7 +379,7 @@ void madara::knowledge::containers::FlexMap::to_container(Double& target) const
 void madara::knowledge::containers::FlexMap::to_container(
     NativeDoubleVector& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -394,7 +394,7 @@ void madara::knowledge::containers::FlexMap::to_container(
 
 void madara::knowledge::containers::FlexMap::to_container(Integer& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -409,7 +409,7 @@ void madara::knowledge::containers::FlexMap::to_container(Integer& target) const
 
 void madara::knowledge::containers::FlexMap::to_container(String& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -424,7 +424,7 @@ void madara::knowledge::containers::FlexMap::to_container(String& target) const
 
 void madara::knowledge::containers::FlexMap::to_container(Map& target) const
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -443,7 +443,7 @@ operator[](const std::string& key)
 {
   FlexMap map(settings_, delimiter_);
 
-  if (key != "" && context_)
+  if(key != "" && context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -461,7 +461,7 @@ operator[](size_t index)
 {
   FlexMap map(settings_, delimiter_);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -486,7 +486,7 @@ size_t madara::knowledge::containers::FlexMap::size(
 
   size_t result(0);
 
-  if (!first_level_keys_only)
+  if(!first_level_keys_only)
   {
     // get all children
     KnowledgeBase knowledge;
@@ -511,7 +511,7 @@ size_t madara::knowledge::containers::FlexMap::size(
 void madara::knowledge::containers::FlexMap::exchange(
     FlexMap& other, bool refresh_keys, bool delete_keys)
 {
-  if (context_ && other.context_)
+  if(context_ && other.context_)
   {
     std::lock(*context_, *other.context_, mutex_, other.mutex_);
 
@@ -532,7 +532,7 @@ void madara::knowledge::containers::FlexMap::exchange(
 
 void madara::knowledge::containers::FlexMap::clear(void)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -551,14 +551,14 @@ void madara::knowledge::containers::FlexMap::clear(void)
 void madara::knowledge::containers::FlexMap::erase(
     const std::string& key, bool delete_subkeys)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
     context_->delete_variable(name_ + delimiter_ + key, settings_);
 
-    if (delete_subkeys)
+    if(delete_subkeys)
     {
       // use the Map container, which already has clear implemented
       KnowledgeBase knowledge;
@@ -573,7 +573,7 @@ void madara::knowledge::containers::FlexMap::erase(
 void madara::knowledge::containers::FlexMap::set_name(
     const std::string& var_name, KnowledgeBase& knowledge)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  if(context_ != &(knowledge.get_context()) || name_ != var_name)
   {
     context_ = &(knowledge.get_context());
 
@@ -582,7 +582,7 @@ void madara::knowledge::containers::FlexMap::set_name(
 
     name_ = var_name;
 
-    if (context_->exists(var_name, settings_))
+    if(context_->exists(var_name, settings_))
     {
       KnowledgeUpdateSettings keep_local(true);
 
@@ -599,7 +599,7 @@ void madara::knowledge::containers::FlexMap::set_name(
 void madara::knowledge::containers::FlexMap::set_name(
     const std::string& var_name, Variables& knowledge)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name)
+  if(context_ != knowledge.get_context() || name_ != var_name)
   {
     context_ = knowledge.get_context();
 
@@ -608,7 +608,7 @@ void madara::knowledge::containers::FlexMap::set_name(
 
     name_ = var_name;
 
-    if (context_->exists(var_name, settings_))
+    if(context_->exists(var_name, settings_))
     {
       update_variable();
     }
@@ -622,7 +622,7 @@ void madara::knowledge::containers::FlexMap::set_name(
 
 void madara::knowledge::containers::FlexMap::update_variable(void) const
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -655,7 +655,7 @@ bool madara::knowledge::containers::FlexMap::exists(void) const
 
   KnowledgeUpdateSettings keep_local(true);
 
-  if (!variable_.is_valid())
+  if(!variable_.is_valid())
   {
     result = context_->exists(variable_, keep_local);
   }
@@ -668,7 +668,7 @@ bool madara::knowledge::containers::FlexMap::exists(
 {
   bool result(false);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -677,7 +677,7 @@ bool madara::knowledge::containers::FlexMap::exists(
     std::string exact_key = name_ + delimiter_ + key;
     result = context_->exists(exact_key);
 
-    if (!result && first_level_key)
+    if(!result && first_level_key)
     {
       std::vector<std::string> curkeys;
       keys(curkeys);
@@ -700,7 +700,7 @@ void madara::knowledge::containers::FlexMap::keys(
   ContextGuard context_guard(*context_);
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (!first_level_keys_only)
+  if(!first_level_keys_only)
   {
     // use the Map container, which already has clear implemented
     KnowledgeBase knowledge;
@@ -723,12 +723,12 @@ int madara::knowledge::containers::FlexMap::read_file(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -744,12 +744,12 @@ int madara::knowledge::containers::FlexMap::read_file(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -764,12 +764,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -786,12 +786,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -808,12 +808,12 @@ int madara::knowledge::containers::FlexMap::set_index(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -831,12 +831,12 @@ int madara::knowledge::containers::FlexMap::set_index(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -852,12 +852,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -874,12 +874,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -895,12 +895,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -917,12 +917,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -937,12 +937,12 @@ int madara::knowledge::containers::FlexMap::set(double value)
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -958,12 +958,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -979,12 +979,12 @@ int madara::knowledge::containers::FlexMap::set_index(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1000,12 +1000,12 @@ int madara::knowledge::containers::FlexMap::set_index(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1021,12 +1021,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1042,12 +1042,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1063,12 +1063,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1084,12 +1084,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1104,12 +1104,12 @@ int madara::knowledge::containers::FlexMap::set(const std::string& value)
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1125,12 +1125,12 @@ int madara::knowledge::containers::FlexMap::set(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1146,12 +1146,12 @@ int madara::knowledge::containers::FlexMap::set_file(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1167,12 +1167,12 @@ int madara::knowledge::containers::FlexMap::set_file(const unsigned char* value,
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1188,12 +1188,12 @@ int madara::knowledge::containers::FlexMap::set_jpeg(
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1209,12 +1209,12 @@ int madara::knowledge::containers::FlexMap::set_jpeg(const unsigned char* value,
 {
   int result = -1;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }
@@ -1228,12 +1228,12 @@ int madara::knowledge::containers::FlexMap::set_jpeg(const unsigned char* value,
 void madara::knowledge::containers::FlexMap::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    if (!variable_.is_valid())
+    if(!variable_.is_valid())
     {
       update_variable();
     }

@@ -13,7 +13,7 @@ Java_ai_madara_knowledge_containers_BaseContainer_jni_1modifyIfTrue(
   BaseContainer* current = (BaseContainer*)cptr;
   BaseContainer* container = (BaseContainer*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     result = current->modify_if_true(*container);
   }
@@ -37,7 +37,7 @@ Java_ai_madara_knowledge_containers_BaseContainer_jni_1modifyIfFalse(
   BaseContainer* current = (BaseContainer*)cptr;
   BaseContainer* container = (BaseContainer*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     result = current->modify_if_false(*container);
   }

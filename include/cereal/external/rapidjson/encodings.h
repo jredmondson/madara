@@ -100,13 +100,13 @@ struct UTF8 {
 
     template<typename OutputStream>
     static void Encode(OutputStream& os, unsigned codepoint) {
-        if (codepoint <= 0x7F) 
+        if(codepoint <= 0x7F) 
             os.Put(static_cast<Ch>(codepoint & 0xFF));
-        else if (codepoint <= 0x7FF) {
+        else if(codepoint <= 0x7FF) {
             os.Put(static_cast<Ch>(0xC0 | ((codepoint >> 6) & 0xFF)));
             os.Put(static_cast<Ch>(0x80 | ((codepoint & 0x3F))));
         }
-        else if (codepoint <= 0xFFFF) {
+        else if(codepoint <= 0xFFFF) {
             os.Put(static_cast<Ch>(0xE0 | ((codepoint >> 12) & 0xFF)));
             os.Put(static_cast<Ch>(0x80 | ((codepoint >> 6) & 0x3F)));
             os.Put(static_cast<Ch>(0x80 | (codepoint & 0x3F)));
@@ -122,13 +122,13 @@ struct UTF8 {
 
     template<typename OutputStream>
     static void EncodeUnsafe(OutputStream& os, unsigned codepoint) {
-        if (codepoint <= 0x7F) 
+        if(codepoint <= 0x7F) 
             PutUnsafe(os, static_cast<Ch>(codepoint & 0xFF));
-        else if (codepoint <= 0x7FF) {
+        else if(codepoint <= 0x7FF) {
             PutUnsafe(os, static_cast<Ch>(0xC0 | ((codepoint >> 6) & 0xFF)));
             PutUnsafe(os, static_cast<Ch>(0x80 | ((codepoint & 0x3F))));
         }
-        else if (codepoint <= 0xFFFF) {
+        else if(codepoint <= 0xFFFF) {
             PutUnsafe(os, static_cast<Ch>(0xE0 | ((codepoint >> 12) & 0xFF)));
             PutUnsafe(os, static_cast<Ch>(0x80 | ((codepoint >> 6) & 0x3F)));
             PutUnsafe(os, static_cast<Ch>(0x80 | (codepoint & 0x3F)));
@@ -148,13 +148,13 @@ struct UTF8 {
 #define TRANS(mask) result &= ((GetRange(static_cast<unsigned char>(c)) & mask) != 0)
 #define TAIL() COPY(); TRANS(0x70)
         typename InputStream::Ch c = is.Take();
-        if (!(c & 0x80)) {
+        if(!(c & 0x80)) {
             *codepoint = static_cast<unsigned char>(c);
             return true;
         }
 
         unsigned char type = GetRange(static_cast<unsigned char>(c));
-        if (type >= 32) {
+        if(type >= 32) {
             *codepoint = 0;
         } else {
             *codepoint = (0xFF >> type) & static_cast<unsigned char>(c);
@@ -182,7 +182,7 @@ struct UTF8 {
 #define TAIL() COPY(); TRANS(0x70)
         Ch c;
         COPY();
-        if (!(c & 0x80))
+        if(!(c & 0x80))
             return true;
 
         bool result = true;
@@ -223,11 +223,11 @@ struct UTF8 {
     static CharType TakeBOM(InputByteStream& is) {
         CEREAL_RAPIDJSON_STATIC_ASSERT(sizeof(typename InputByteStream::Ch) == 1);
         typename InputByteStream::Ch c = Take(is);
-        if (static_cast<unsigned char>(c) != 0xEFu) return c;
+        if(static_cast<unsigned char>(c) != 0xEFu) return c;
         c = is.Take();
-        if (static_cast<unsigned char>(c) != 0xBBu) return c;
+        if(static_cast<unsigned char>(c) != 0xBBu) return c;
         c = is.Take();
-        if (static_cast<unsigned char>(c) != 0xBFu) return c;
+        if(static_cast<unsigned char>(c) != 0xBFu) return c;
         c = is.Take();
         return c;
     }
@@ -275,7 +275,7 @@ struct UTF16 {
     template<typename OutputStream>
     static void Encode(OutputStream& os, unsigned codepoint) {
         CEREAL_RAPIDJSON_STATIC_ASSERT(sizeof(typename OutputStream::Ch) >= 2);
-        if (codepoint <= 0xFFFF) {
+        if(codepoint <= 0xFFFF) {
             CEREAL_RAPIDJSON_ASSERT(codepoint < 0xD800 || codepoint > 0xDFFF); // Code point itself cannot be surrogate pair 
             os.Put(static_cast<typename OutputStream::Ch>(codepoint));
         }
@@ -291,7 +291,7 @@ struct UTF16 {
     template<typename OutputStream>
     static void EncodeUnsafe(OutputStream& os, unsigned codepoint) {
         CEREAL_RAPIDJSON_STATIC_ASSERT(sizeof(typename OutputStream::Ch) >= 2);
-        if (codepoint <= 0xFFFF) {
+        if(codepoint <= 0xFFFF) {
             CEREAL_RAPIDJSON_ASSERT(codepoint < 0xD800 || codepoint > 0xDFFF); // Code point itself cannot be surrogate pair 
             PutUnsafe(os, static_cast<typename OutputStream::Ch>(codepoint));
         }
@@ -307,11 +307,11 @@ struct UTF16 {
     static bool Decode(InputStream& is, unsigned* codepoint) {
         CEREAL_RAPIDJSON_STATIC_ASSERT(sizeof(typename InputStream::Ch) >= 2);
         typename InputStream::Ch c = is.Take();
-        if (c < 0xD800 || c > 0xDFFF) {
+        if(c < 0xD800 || c > 0xDFFF) {
             *codepoint = static_cast<unsigned>(c);
             return true;
         }
-        else if (c <= 0xDBFF) {
+        else if(c <= 0xDBFF) {
             *codepoint = (static_cast<unsigned>(c) & 0x3FF) << 10;
             c = is.Take();
             *codepoint |= (static_cast<unsigned>(c) & 0x3FF);
@@ -327,9 +327,9 @@ struct UTF16 {
         CEREAL_RAPIDJSON_STATIC_ASSERT(sizeof(typename OutputStream::Ch) >= 2);
         typename InputStream::Ch c;
         os.Put(static_cast<typename OutputStream::Ch>(c = is.Take()));
-        if (c < 0xD800 || c > 0xDFFF)
+        if(c < 0xD800 || c > 0xDFFF)
             return true;
-        else if (c <= 0xDBFF) {
+        else if(c <= 0xDBFF) {
             os.Put(c = is.Take());
             return c >= 0xDC00 && c <= 0xDFFF;
         }
@@ -660,7 +660,7 @@ struct Transcoder {
     template<typename InputStream, typename OutputStream>
     CEREAL_RAPIDJSON_FORCEINLINE static bool Transcode(InputStream& is, OutputStream& os) {
         unsigned codepoint;
-        if (!SourceEncoding::Decode(is, &codepoint))
+        if(!SourceEncoding::Decode(is, &codepoint))
             return false;
         TargetEncoding::Encode(os, codepoint);
         return true;
@@ -669,7 +669,7 @@ struct Transcoder {
     template<typename InputStream, typename OutputStream>
     CEREAL_RAPIDJSON_FORCEINLINE static bool TranscodeUnsafe(InputStream& is, OutputStream& os) {
         unsigned codepoint;
-        if (!SourceEncoding::Decode(is, &codepoint))
+        if(!SourceEncoding::Decode(is, &codepoint))
             return false;
         TargetEncoding::EncodeUnsafe(os, codepoint);
         return true;

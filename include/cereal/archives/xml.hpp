@@ -685,7 +685,7 @@ namespace cereal
         }
 
         //! Searches for a child with the given name in this node
-        /*! @param searchName The name to search for (must be null terminated)
+        /*! @param searchName The name to search for(must be null terminated)
             @return The node if found, nullptr otherwise */
         rapidxml::xml_node<> * search( const char * searchName )
         {

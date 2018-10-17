@@ -77,7 +77,7 @@ Java_ai_madara_knowledge_containers_IntegerVector_jni_1IntegerVector__J(
   containers::IntegerVector* result(0);
   containers::IntegerVector* source = (containers::IntegerVector*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new containers::IntegerVector(*source);
   }
@@ -115,7 +115,7 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1set(
 {
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->set(index, value);
   }
@@ -134,7 +134,7 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1pushback(
 {
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->push_back(Integer(value));
   }
@@ -159,7 +159,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1getName(
   jstring result = 0;
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -185,16 +185,16 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1setName(
 {
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -223,7 +223,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1get(
   jlong result(0);
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (*current)[index];
   }
@@ -251,7 +251,7 @@ Java_ai_madara_knowledge_containers_IntegerVector_jni_1toRecord__JI(
   madara::knowledge::KnowledgeRecord* result(0);
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = new madara::knowledge::KnowledgeRecord(current->to_record(index));
   }
@@ -279,7 +279,7 @@ Java_ai_madara_knowledge_containers_IntegerVector_jni_1toRecord__J(
   madara::knowledge::KnowledgeRecord* result(0);
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = new madara::knowledge::KnowledgeRecord(current->to_record());
   }
@@ -307,7 +307,7 @@ Java_ai_madara_knowledge_containers_IntegerVector_jni_1toArray(
   jclass kr_class = madara::utility::java::find_class(
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", " (J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -318,9 +318,9 @@ Java_ai_madara_knowledge_containers_IntegerVector_jni_1toArray(
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         std::cout << "record[" << i << "] = " << records[i] << "\n";
         jobject result = env->CallStaticObjectMethod(
@@ -352,7 +352,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1size(
   jlong result(0);
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->size();
   }
@@ -378,7 +378,7 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1resize(
 {
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resize(length);
   }
@@ -402,7 +402,7 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1modify(
 {
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -426,7 +426,7 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1modifyIndex(
 {
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify((size_t)index);
   }
@@ -447,7 +447,7 @@ void JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -467,7 +467,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1isTrue(
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -489,7 +489,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_IntegerVector_jni_1isFalse(
   containers::IntegerVector* current = (containers::IntegerVector*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

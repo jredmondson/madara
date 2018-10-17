@@ -604,7 +604,7 @@ public class KnowledgeBase extends MadaraJNI {
      **/
     public void set(String name, Any value) throws MadaraDeadObjectException {
 	String err = jni_setAny(getCPtr(), name, value.handler_, value.data_);
-	if (err != null) {
+	if(err != null) {
 	    throw new RuntimeException("Unexpected BadAnyAccess: " + err);
 	}
     }
@@ -720,7 +720,7 @@ public class KnowledgeBase extends MadaraJNI {
     public void set(String name, Any value, EvalSettings settings) throws MadaraDeadObjectException {
 	String err = jni_setAnySettings(getCPtr(), name, value.handler_, value.data_, settings.getCPtr());
 
-	if (err != null) {
+	if(err != null) {
 	    throw new RuntimeException("Unexpected BadAnyAccess: " + err);
 	}
     }
@@ -787,7 +787,7 @@ public class KnowledgeBase extends MadaraJNI {
      * @throws KnowledgeBaseLockedException If called from a MadaraFunction
      **/
     public void free() {
-	if (manageMemory) {
+	if(manageMemory) {
 	    jni_freeKnowledgeBase(getCPtr());
 	    setCPtr(0);
 	}

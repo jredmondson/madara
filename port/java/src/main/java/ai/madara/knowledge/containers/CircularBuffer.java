@@ -154,7 +154,7 @@ public class CircularBuffer extends MadaraJNI
   {
     Object[] objs = jni_inspectRecordVector(getCPtr(), position, count);
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
+    for(int i = 0; i < objs.length; ++i)
     {
       records[i] = (KnowledgeRecord)objs[i];
     }
@@ -185,7 +185,7 @@ public class CircularBuffer extends MadaraJNI
   {
     Object[] objs = jni_getEarliestRecordVector(getCPtr(), count);
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
+    for(int i = 0; i < objs.length; ++i)
     {
       records[i] = (KnowledgeRecord)objs[i];
     }
@@ -205,7 +205,7 @@ public class CircularBuffer extends MadaraJNI
   {
     Object[] objs = jni_getLatestRecordVector(getCPtr(), count);
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
+    for(int i = 0; i < objs.length; ++i)
     {
       records[i] = (KnowledgeRecord)objs[i];
     }
@@ -258,7 +258,7 @@ public class CircularBuffer extends MadaraJNI
   {
     long [] record_ptrs = new long [records.length];
 
-    for (int i = 0; i < records.length; ++i)
+    for(int i = 0; i < records.length; ++i)
     {
       record_ptrs[i] = records[i].getCPtr();
     }
@@ -337,7 +337,7 @@ public class CircularBuffer extends MadaraJNI
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeCircularBuffer(getCPtr());
       setCPtr(0);

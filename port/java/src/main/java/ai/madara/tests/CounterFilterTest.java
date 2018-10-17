@@ -97,78 +97,78 @@ public class CounterFilterTest
 
 		CounterFilter filter = new CounterFilter();
 
-		for (int i = 0; i < args.length; ++i)
+		for(int i = 0; i < args.length; ++i)
 		{
-			if (args[i].equals("-i") || args[i].equals("--id"))
+			if(args[i].equals("-i") || args[i].equals("--id"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					id = Integer.parseInt(args[i + 1]);
 				}
 				++i;
-			} else if (args[i].equals("-f") || args[i].equals("--log-file"))
+			} else if(args[i].equals("-f") || args[i].equals("--log-file"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					GlobalLogger.addFile(args[i + 1]);
 				}
 				++i;
-			} else if (args[i].equals("-o") || args[i].equals("--host"))
+			} else if(args[i].equals("-o") || args[i].equals("--host"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					curHost = args[i + 1];
 				}
 				++i;
-			} else if (args[i].equals("-l") || args[i].equals("--log-level"))
+			} else if(args[i].equals("-l") || args[i].equals("--log-level"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					int logLevel = Integer.parseInt(args[i + 1]);
 					GlobalLogger.setLevel(logLevel);
 				}
 				++i;
-			} else if (args[i].equals("-s") || args[i].equals("--size"))
+			} else if(args[i].equals("-s") || args[i].equals("--size"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					dataSize = Integer.parseInt(args[i + 1]);
 				}
 				++i;
-			} else if (args[i].equals("-t") || args[i].equals("--time"))
+			} else if(args[i].equals("-t") || args[i].equals("--time"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					activeTime = Double.parseDouble(args[i + 1]);
 				}
 				++i;
-			} else if (args[i].equals("-q") || args[i].equals("--queue-length"))
+			} else if(args[i].equals("-q") || args[i].equals("--queue-length"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					int length = Integer.parseInt(args[i + 1]);
 					settings.setQueueLength(length);
 				}
 				++i;
-			} else if (args[i].equals("-m") || args[i].equals("--multicast"))
+			} else if(args[i].equals("-m") || args[i].equals("--multicast"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					hosts.add(args[i + 1]);
 					settings.setType(TransportType.MULTICAST_TRANSPORT);
 				}
 				++i;
-			} else if (args[i].equals("-b") || args[i].equals("--broadcast"))
+			} else if(args[i].equals("-b") || args[i].equals("--broadcast"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					hosts.add(args[i + 1]);
 					settings.setType(TransportType.BROADCAST_TRANSPORT);
 				}
 				++i;
-			} else if (args[i].equals("-u") || args[i].equals("--udp"))
+			} else if(args[i].equals("-u") || args[i].equals("--udp"))
 			{
-				if (i + 1 < args.length)
+				if(i + 1 < args.length)
 				{
 					hosts.add(args[i + 1]);
 					settings.setType(TransportType.UDP_TRANSPORT);
@@ -194,7 +194,7 @@ public class CounterFilterTest
 			}
 		}
 
-		if (hosts.isEmpty())
+		if(hosts.isEmpty())
 		{
 			hosts.add("239.255.0.1:4150");
 			settings.setType(TransportType.MULTICAST_TRANSPORT);
@@ -202,7 +202,7 @@ public class CounterFilterTest
 
 		settings.setHosts(hosts.toArray(new String[hosts.size()]));
 
-		if (id == 0)
+		if(id == 0)
 		{
 			filter.addSendFilterTo(settings);
 		} else
@@ -212,7 +212,7 @@ public class CounterFilterTest
 
 		KnowledgeBase knowledge = new KnowledgeBase(curHost, settings);
 
-		if (id == 0)
+		if(id == 0)
 		{
 			Threader threader = new Threader(knowledge);
 			Sender sender = new Sender(knowledge, dataSize);

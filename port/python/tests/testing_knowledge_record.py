@@ -11,7 +11,7 @@ print "\nTesting KR functions..."
 # Test double
 kr.set (3.52)
 
-if (kr.exists () and kr.to_double () == 3.52):
+if(kr.exists () and kr.to_double () == 3.52):
   print "  Testing KR set double and exists: SUCCESS"
 else:
   print "  Testing KR set double and exists: FAIL"
@@ -20,7 +20,7 @@ else:
 # Test integer
 kr.set (1)
 
-if (kr.exists () and kr.to_integer () == 1):
+if(kr.exists () and kr.to_integer () == 1):
   print "  Testing KR set long and exists: SUCCESS"
 else:
   print "  Testing KR set long and exists: FAIL"
@@ -30,7 +30,7 @@ else:
 kr.set (madara.from_pylongs ([1, 2, 3, 4]))
 array = kr.to_integers ()
 
-if (kr.exists () and len(array) == 4 and array[0] == 1 and array[1] == 2 and 
+if(kr.exists () and len(array) == 4 and array[0] == 1 and array[1] == 2 and 
   array[2] == 3 and array[3] == 4):
   print "  Testing KR set integer array and value check: SUCCESS"
 else:
@@ -41,7 +41,7 @@ else:
 kr.set (madara.from_pydoubles ([1.1, 2.2, 3.3, 4.4]))
 array = kr.to_doubles ()
 
-if (kr.exists () and len(array) == 4 and array[0] == 1.1 and array[1] == 2.2 
+if(kr.exists () and len(array) == 4 and array[0] == 1.1 and array[1] == 2.2 
   and array[2] == 3.3 and array[3] == 4.4):
   print "  Testing KR set double array and value check: SUCCESS"
 else:
@@ -52,7 +52,7 @@ else:
 kr.set("string")
 string = kr.to_string () 
 
-if (len(string) == 6 and string == 'string'):
+if(len(string) == 6 and string == 'string'):
   print "  Testing KR set string and value check: SUCCESS"
 else:
   print "  Testing KR set string and value check: FAIL"
@@ -62,7 +62,7 @@ else:
 kr.set("100")
 my_value = kr.to_integer ()
 
-if (my_value == 100):
+if(my_value == 100):
   print "  Testing if string to integer conversion works: SUCCESS"
 else:
   print "  Testing if string to integer conversion works: FAIL"
@@ -71,7 +71,7 @@ else:
 # Test string to double conversion
 my_value = kr.to_double ()
 
-if (my_value == 100):
+if(my_value == 100):
   print "  Testing if string to double conversion works: SUCCESS"
 else:
   print "  Testing if string to double conversion works: FAIL"
@@ -81,7 +81,7 @@ else:
 kr.set(1.123)
 my_value = kr.to_string()
 
-if (kr.exists () and my_value == '1.123000'):
+if(kr.exists () and my_value == '1.123000'):
   print "  Testing if double to string conversion works: SUCCESS"
 else:
   print "  Testing if double to string conversion works: FAIL"
@@ -91,7 +91,7 @@ else:
 kr.set(1)
 my_value = kr.to_string()
 
-if (kr.exists () and my_value == '1'):
+if(kr.exists () and my_value == '1'):
   print "  Testing if integer to string conversion works: SUCCESS"
 else:
   print "  Testing if integer to string conversion works: FAIL"
@@ -100,7 +100,7 @@ else:
 # Test integer to double conversion
 kr.set(1)
 
-if (kr.exists () and kr.to_double() == 1.0):
+if(kr.exists () and kr.to_double() == 1.0):
   print "  Testing if integer to double conversion works: SUCCESS"
 else:
   print "  Testing if integer to double conversion works: FAIL"
@@ -111,7 +111,7 @@ kr.set (madara.from_pylongs ([1, 2, 3, 4]))
 array = kr.to_integers ()
 my_value = kr.to_string()
 
-if (kr.exists () and my_value == '1, 2, 3, 4'):
+if(kr.exists () and my_value == '1, 2, 3, 4'):
   print "  Testing if integer array to string conversion works: SUCCESS"
 else:
   print "  Testing if integer array to string conversion works: FAIL"
@@ -122,7 +122,7 @@ kr.set (madara.from_pydoubles ([1.100000, 2.200000, 3.300000, 4.400000]))
 array = kr.to_doubles ()
 my_value = kr.to_string()
 
-if (kr.exists () and my_value == '1.100000, 2.200000, 3.300000, 4.400000'):
+if(kr.exists () and my_value == '1.100000, 2.200000, 3.300000, 4.400000'):
   print "  Testing if double array to string conversion works: SUCCESS"
 else:
   print "  Testing if double array to string conversion works: FAIL"
@@ -134,7 +134,7 @@ else:
 kr.set(1.000)
 kr.clear_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if double gets cleared: SUCCESS"
 else:
   print "  Testing if double gets cleared: FAIL"
@@ -144,7 +144,7 @@ else:
 kr.set(1)
 kr.clear_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if integer gets cleared: SUCCESS"
 else:
   print "  Testing if integer gets cleared: FAIL"
@@ -154,7 +154,7 @@ else:
 kr.set('string')
 kr.clear_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if string gets cleared: SUCCESS"
 else:
   print "  Testing if string gets cleared: FAIL"
@@ -165,7 +165,7 @@ kr.set (madara.from_pydoubles ([1.100000, 2.200000, 3.300000, 4.400000]))
 array = kr.to_doubles ()
 kr.clear_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if double array gets cleared: SUCCESS"
 else:
   print "  Testing if double array gets cleared: FAIL"
@@ -176,7 +176,7 @@ kr.set (madara.from_pylongs ([1, 2, 3, 4]))
 array = kr.to_integers ()
 kr.clear_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if integer array gets cleared: SUCCESS"
 else:
   print "  Testing if integer array gets cleared: FAIL"
@@ -187,7 +187,7 @@ kr.set(1)
 my_value = kr.to_any()
 kr.clear_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if any type gets cleared: SUCCESS"
 else:
   print "  Testing if any type gets cleared: FAIL"
@@ -197,7 +197,7 @@ else:
 kr.set(5.2345)
 kr.set_precision(3)
 
-if (kr.get_precision() == 3):
+if(kr.get_precision() == 3):
   print "  Testing of setting precision: SUCCESS"
 else:
   print "  Testing of setting precision: FAIL"
@@ -208,7 +208,7 @@ kr.set(234.553)
 kr.set_scientific()
 my_value = kr.to_string()
 
-if (my_value == '2.346e+02'):
+if(my_value == '2.346e+02'):
   print "  Testing of setting scientific format: SUCCESS"
 else:
   print "  Testing of setting scientific format: FAIL"
@@ -218,7 +218,7 @@ else:
 kr.set_fixed()
 my_value = kr.to_string()
 
-if (my_value == '234.553'):
+if(my_value == '234.553'):
   print "  Testing of setting fixed format: SUCCESS"
 else:
   print "  Testing of setting fixed format: FAIL"
@@ -232,7 +232,7 @@ kr.clear_value()
 kr.read_file('int.txt')
 my_value2 = kr.to_double()
 
-if (my_value2 == 3.123):
+if(my_value2 == 3.123):
   print "  Testing of write and read files: SUCCESS"
 else:
   print "  Testing of write and read files: FAIL"
@@ -243,7 +243,7 @@ kr.set(madara.from_pylongs([1, 2, 3, 4]))
 kr.inc_index(0)
 kr.dec_index(3)
 
-if (kr.to_integers() == 2, 2, 3, 3):
+if(kr.to_integers() == 2, 2, 3, 3):
   print "  Testing of increment and decrement on integer array: SUCCESS"
 else:
   print "  Testing of increment and decrement on integer array: FAIL"
@@ -254,7 +254,7 @@ kr.set(madara.from_pydoubles([1.1, 2.2, 3.3, 4.4]))
 kr.inc_index(0)
 kr.dec_index(3)
 
-if (kr.to_doubles() == 2.1, 2.2, 3.3, 3.4):
+if(kr.to_doubles() == 2.1, 2.2, 3.3, 3.4):
   print "  Testing of increment and decrement on double array: SUCCESS"
 else:
   print "  Testing of increment and decrement on double array: FAIL"
@@ -264,7 +264,7 @@ else:
 kr.set(madara.from_pylongs([1, 2, 3, 4]))
 kr.resize(6)
 
-if (kr.to_integers() == 1, 2, 3, 4, 0, 0):
+if(kr.to_integers() == 1, 2, 3, 4, 0, 0):
   print "  Testing of resize on integer array: SUCCESS"
 else:
   print "  Testing of resize on integer array: FAIL"
@@ -274,7 +274,7 @@ else:
 kr.set(madara.from_pydoubles([1.1, 2.2, 3.3, 4.4]))
 kr.resize(6)
 
-if (kr.to_doubles() == 1.1, 2.2, 3.3, 4.4, 0, 0):
+if(kr.to_doubles() == 1.1, 2.2, 3.3, 4.4, 0, 0):
   print "  Testing of resize on double array: SUCCESS"
 else:
   print "  Testing of resize on double array: FAIL"
@@ -283,7 +283,7 @@ else:
 # Check if KR is true for int/double/string
 kr.set(3)
 
-if (kr.is_true() > 0):
+if(kr.is_true() > 0):
   print "  Finding out if KR is true: SUCCESS"
 else:
   print "  Finding out if KR is true: FAIL"
@@ -293,7 +293,7 @@ else:
 kr.set(3)
 kr.clear_value()
 
-if (kr.is_true() == 0):
+if(kr.is_true() == 0):
   print "  Finding out if KR is false after clearing: SUCCESS"
 else:
   print "  Finding out if KR is false after clearing: FAIL"
@@ -302,7 +302,7 @@ else:
 # Testing retrieve index for int/double
 kr.set(madara.from_pylongs([1, 2, 3, 4]))
 
-if (kr.retrieve_index(3) == 4):
+if(kr.retrieve_index(3) == 4):
   print "  Retrieve index check: SUCCESS"
 else:
   print "  Retrieve index check: FAIL"
@@ -312,7 +312,7 @@ else:
 kr.set(1)
 kr.reset_value()
 
-if (not kr.exists()):
+if(not kr.exists()):
   print "  Testing if KR gets reset: SUCCESS"
 else:
   print "  Testing if KR gets reset: FAIL"
@@ -321,7 +321,7 @@ else:
 # Find out status of KR
 kr.set(1)
 
-if (kr.status() > 0):
+if(kr.status() > 0):
   print "  Finding out if KR status is true: SUCCESS"
 else:
   print "  Finding out if KR status is true: FAIL"
@@ -330,7 +330,7 @@ else:
 # Test if status is zero after resetting KR 
 kr.reset_value()
 
-if (kr.status() == 0):
+if(kr.status() == 0):
   print "  Finding out if KR status is false: SUCCESS"
 else:
   print "  Finding out if KR status is false: FAIL"
@@ -339,7 +339,7 @@ else:
 # Finding out size of arrays 
 kr.set('hello')
 
-if (kr.size() == 6):
+if(kr.size() == 6):
   print "  Finding out if size method works: SUCCESS"
 else:
   print "  Finding out if size method works: FAIL"
@@ -348,7 +348,7 @@ else:
 # Fragment strings and arrays
 kr.set('This is my string')
 
-if (kr.fragment(0, 6) == 'This is'):
+if(kr.fragment(0, 6) == 'This is'):
   print "  Fragmenting of strings/doubles works: SUCCESS"
 else:
   print "  Fragmenting of strings/doubles works: FAIL"
@@ -359,7 +359,7 @@ else:
 #           [5, 6, 7, 8]))
 
 
-if (madara_fails > 0):
+if(madara_fails > 0):
   print "\nOVERALL: FAIL: " + str(madara_fails) + " number of failed tests\n"
 else:
   print "\nOVERALL: SUCCESS\n"

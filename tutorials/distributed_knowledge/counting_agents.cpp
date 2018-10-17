@@ -64,7 +64,7 @@ int main (int argc, char * argv[])
   settings.hosts[0] = multicast_address;
   
   // Check for command line argument that changes the domain
-  if (argc == 3)
+  if(argc == 3)
   {
     // change the domain from its default to the one provided by the user
     settings.write_domain = argv[2];
@@ -74,7 +74,7 @@ int main (int argc, char * argv[])
   madara::knowledge::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
-  if (argc >= 2)
+  if(argc >= 2)
   {
     // save the first argument into an integer
     madara::knowledge::KnowledgeRecord::Integer new_id;
@@ -90,7 +90,7 @@ int main (int argc, char * argv[])
   }
   
   
-  while (1)
+  while(1)
   {
     knowledge.evaluate (
       /**

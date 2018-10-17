@@ -93,7 +93,7 @@ public:
    **/
   inline madara::knowledge::KnowledgeRecord* get_record(void)
   {
-    if (ref_.is_valid())
+    if(ref_.is_valid())
       return ref_.get_record_unsafe();
     else
       return context_.get_record(expand_key());

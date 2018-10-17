@@ -34,7 +34,7 @@ madara::transport::TransportContext::~TransportContext() {}
 
 void madara::transport::TransportContext::operator=(const TransportContext& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     operation_ = rhs.operation_;
     send_bandwidth_ = rhs.send_bandwidth_;

@@ -74,7 +74,7 @@ public:
   {
     size_t bytes_read = 0;
 
-    if (stream_)
+    if(stream_)
     {
       // seek to the index position in the file
       stream_.seekg((std::streampos)index * frag_size, std::ios::beg);

@@ -79,9 +79,9 @@ public enum TransportType
 
   public static TransportType getType(int val)
   {
-    for (TransportType t : values())
+    for(TransportType t : values())
     {
-      if (t.value() == val)
+      if(t.value() == val)
         return t;
     }
     return null;

@@ -88,7 +88,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1QoSTransportSettings__J(
   jlong result(0);
   QoSTransportSettings* source = (QoSTransportSettings*)old;
 
-  if (source)
+  if(source)
   {
     result = (jlong) new QoSTransportSettings(*source);
   }
@@ -129,7 +129,7 @@ void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilter(
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
   BufferFilter* buffer_filter = (BufferFilter*)filter;
 
-  if (settings && buffer_filter)
+  if(settings && buffer_filter)
   {
     settings->add_filter(buffer_filter);
   }
@@ -156,7 +156,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addBufferFilterObj(
   JavaBufferFilter* buffer_filter =
       new JavaBufferFilter(*madara::logger::global_logger.get(), filter);
 
-  if (settings && buffer_filter)
+  if(settings && buffer_filter)
   {
     settings->add_filter(buffer_filter);
   }
@@ -185,7 +185,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1clearBufferFilters(
       "JNI:QoSTransportSettings::clear_buffer_filters: "
       "Clearing buffer filters\n");
 
-  if (settings)
+  if(settings)
   {
     settings->clear_buffer_filters();
   }
@@ -215,7 +215,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getNumberOfBufferFilters(
       "JNI:QoSTransportSettings::get_number_of_buffer_filters: "
       "Retreiving number of buffer filters\n");
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->get_number_of_buffer_filters();
   }
@@ -234,7 +234,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getNumberOfBufferFilters(
 void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1saveQoS(
     JNIEnv* env, jobject, jlong cptr, jstring filename)
 {
-  if (cptr && filename)
+  if(cptr && filename)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "JNI:QoSTransportSettings::add: "
@@ -260,7 +260,7 @@ void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1saveQoS(
 void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1loadQoS(
     JNIEnv* env, jobject, jlong cptr, jstring filename)
 {
-  if (cptr && filename)
+  if(cptr && filename)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
         "JNI:QoSTransportSettings::load: "
@@ -298,7 +298,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastRecordFilter__J
       "JNI:QoSTransportSettings::add: "
       "Adding Java record filter to rebroadcast queue\n");
 
-  if (settings && filter)
+  if(settings && filter)
   {
     settings->add_rebroadcast_filter((uint32_t)type, filter);
   }
@@ -327,7 +327,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addRebroadcastAggregateFilter
       "JNI:QoSTransportSettings::add: "
       "Adding Java aggregate filter to rebroadcast queue\n");
 
-  if (settings && filter)
+  if(settings && filter)
   {
     settings->add_rebroadcast_filter(filter);
   }
@@ -356,7 +356,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addSendRecordFilter__JILai_ma
       "JNI:QoSTransportSettings::add: "
       "Adding Java record filter to send queue\n");
 
-  if (settings && filter)
+  if(settings && filter)
   {
     settings->add_send_filter((uint32_t)type, filter);
   }
@@ -385,7 +385,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addSendAggregateFilter__JLai_
       "JNI:QoSTransportSettings::add: "
       "Adding Java aggregate filter to send queue\n");
 
-  if (settings && filter)
+  if(settings && filter)
   {
     settings->add_send_filter(filter);
   }
@@ -414,7 +414,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveRecordFilter__JILai
       "JNI:QoSTransportSettings::add: "
       "Adding Java record filter to receive queue\n");
 
-  if (settings && filter)
+  if(settings && filter)
   {
     settings->add_receive_filter((uint32_t)type, filter);
   }
@@ -443,7 +443,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1addReceiveAggregateFilter__JL
       "JNI:QoSTransportSettings::add: "
       "Adding Java aggregate filter to receive queue\n");
 
-  if (settings && filter)
+  if(settings && filter)
   {
     settings->add_receive_filter(filter);
   }
@@ -472,7 +472,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setRebroadcastTtl(
       "JNI:QoSTransportSettings::set_rebroadcast_ttl: "
       "Setting the rebroadcast time-to-live\n");
 
-  if (settings)
+  if(settings)
   {
     settings->set_rebroadcast_ttl((unsigned char)ttl);
   }
@@ -502,7 +502,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getRebroadcastTtl(
       "JNI:QoSTransportSettings::get_rebroadcast_ttl: "
       "Getting the rebroadcast time-to-live\n");
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->get_rebroadcast_ttl();
   }
@@ -533,7 +533,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1enableParticipantTtl(
       "JNI:QoSTransportSettings::enable_participant_ttl: "
       "Modifying participation in rebroadcast operations\n");
 
-  if (settings)
+  if(settings)
   {
     settings->enable_participant_ttl((unsigned char)ttl);
   }
@@ -563,7 +563,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1gettParticpantTtl(
       "JNI:QoSTransportSettings::get_participant_ttl: "
       "Retrieving participant time-to-live in other's rebroadcasts\n");
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->get_participant_ttl();
   }
@@ -594,7 +594,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setSendBandwidthLimit(
       "JNI:QoSTransportSettings::set_send_bandwidth: "
       "Modifying send bandwidth limits\n");
 
-  if (settings)
+  if(settings)
   {
     settings->set_send_bandwidth_limit(limit);
   }
@@ -624,7 +624,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getSendBandwidthLimit(
       "JNI:QoSTransportSettings::get_send_bandwidth: "
       "Retrieving send bandwidth limits\n");
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->get_send_bandwidth_limit();
   }
@@ -651,7 +651,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1setTotalBandwidthLimit(
 {
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->set_total_bandwidth_limit(limit);
   }
@@ -677,7 +677,7 @@ Java_ai_madara_transport_QoSTransportSettings_jni_1getTotalBandwidthLimit(
   jint result(0);
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->get_total_bandwidth_limit();
   }
@@ -703,7 +703,7 @@ void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1setDeadline(
 {
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->set_deadline(limit);
   }
@@ -728,7 +728,7 @@ jint JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1getDeadline(
   jint result(0);
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->get_deadline();
   }
@@ -755,7 +755,7 @@ void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1addTrustedPeer(
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
   const char* host = env->GetStringUTFChars(jhost, 0);
 
-  if (settings)
+  if(settings)
   {
     settings->add_trusted_peer(host);
   }
@@ -782,7 +782,7 @@ void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1addBannedPeer(
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
   const char* host = env->GetStringUTFChars(jhost, 0);
 
-  if (settings)
+  if(settings)
   {
     settings->add_banned_peer(host);
   }
@@ -809,7 +809,7 @@ void JNICALL Java_ai_madara_transport_QoSTransportSettings_jni_1updateDropRate(
 {
   QoSTransportSettings* settings = (QoSTransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->update_drop_rate(
         drop_rate, (int)drop_type, (uint64_t)burstamount);

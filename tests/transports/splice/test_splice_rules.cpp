@@ -19,27 +19,27 @@ madara::transport::QoSTransportSettings settings;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-o" || arg1 == "--host")
+    if(arg1 == "-o" || arg1 == "--host")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-d" || arg1 == "--domain")
+    else if(arg1 == "-d" || arg1 == "--domain")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-i" || arg1 == "--id")
+    else if(arg1 == "-i" || arg1 == "--id")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
@@ -47,18 +47,18 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         int level;
@@ -68,9 +68,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    else if(arg1 == "-p" || arg1 == "--drop-rate")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
@@ -116,7 +116,7 @@ int main(int argc, char** argv)
   wait_settings.max_wait_time = 10;
   wait_settings.delay_sending_modifieds = false;
 
-  if (settings.id == 0)
+  if(settings.id == 0)
     settings.on_data_received_logic =
         "out_of_resources => emergency = 1; emergency => shutdown = 1";
   else
@@ -128,7 +128,7 @@ int main(int argc, char** argv)
   knowledge.set(
       ".id", (Integer)settings.id, madara::knowledge::EvalSettings::SEND);
 
-  if (settings.id == 0)
+  if(settings.id == 0)
   {
     madara::knowledge::CompiledExpression compiled =
         knowledge.compile("heavy_processes = 1 ;> shutdown");

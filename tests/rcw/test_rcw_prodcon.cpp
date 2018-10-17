@@ -29,7 +29,7 @@ public:
 
   void compute(const Transaction&) override
   {
-    if (ready)
+    if(ready)
       return;
     ++buf;
     ready = true;
@@ -51,7 +51,7 @@ public:
 
   void compute(const Transaction&) override
   {
-    if (!ready)
+    if(!ready)
       return;
     test_eq(last_val + 1, buf);
     last_val = buf;

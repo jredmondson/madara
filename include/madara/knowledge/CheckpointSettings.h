@@ -160,7 +160,7 @@ public:
   int encode(char* source, int size, int max_size) const
   {
     // encode from front to back
-    for (filters::BufferFilters::const_iterator i = buffer_filters.begin();
+    for(filters::BufferFilters::const_iterator i = buffer_filters.begin();
          i != buffer_filters.end(); ++i)
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
@@ -175,7 +175,7 @@ public:
           " %d of %d\n",
           size, max_size);
 
-      if (max_size > size + 20)
+      if(max_size > size + 20)
       {
         memmove(source + 20, source, size);
 
@@ -218,7 +218,7 @@ public:
    **/
   int decode(char* source, int size, int max_size) const
   {
-    if (buffer_filters.size() == 0 && !ignore_header_check)
+    if(buffer_filters.size() == 0 && !ignore_header_check)
     {
       // if we don't have buffer filters, do a check to see if we should
       filters::BufferFilterHeader header;
@@ -232,7 +232,7 @@ public:
       std::string header_id(header.id);
 
       // id is either karl or KaRL. If it's anything else, then error
-      if (header_id == "karl" || header_id == "KaRL")
+      if(header_id == "karl" || header_id == "KaRL")
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
             "CheckpointSettings::decode: header: "
@@ -251,11 +251,11 @@ public:
     }
 
     // decode from back to front
-    for (filters::BufferFilters::const_reverse_iterator i =
+    for(filters::BufferFilters::const_reverse_iterator i =
              buffer_filters.rbegin();
          i != buffer_filters.rend(); ++i)
     {
-      if (size > (int)filters::BufferFilterHeader::encoded_size())
+      if(size > (int)filters::BufferFilterHeader::encoded_size())
       {
         filters::BufferFilterHeader header;
         int64_t buffer_size =
@@ -263,7 +263,7 @@ public:
 
         header.read((char*)source, buffer_size);
 
-        if (header.size > (uint64_t)max_size)
+        if(header.size > (uint64_t)max_size)
         {
           std::stringstream buffer;
           buffer << "CheckpointSettings::decode: ";
@@ -278,7 +278,7 @@ public:
             " %s:%s\n",
             header.id, utility::to_string_version(header.version).c_str());
 
-        if (*i == 0)
+        if(*i == 0)
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
               "CheckpointSettings::decode: filter is null somehow\n");
@@ -292,7 +292,7 @@ public:
               "CheckpointSettings::decode: filter is not null\n");
         }
 
-        if (ignore_header_check || header.check_filter(*i))
+        if(ignore_header_check || header.check_filter(*i))
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
               "CheckpointSettings::decode: buffer filter %s is a match\n",
@@ -322,7 +322,7 @@ public:
             " %d of %d (header.size=%d)\n",
             size, max_size, (int)header.size);
 
-        if (size > 0)
+        if(size > 0)
         {
           memmove(source, source + filters::BufferFilterHeader::encoded_size(),
               size);

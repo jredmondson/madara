@@ -33,7 +33,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecordDeep(
   KnowledgeRecord* result(0);
   KnowledgeRecord* source = (KnowledgeRecord*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new KnowledgeRecord(*source);
   }
@@ -105,12 +105,12 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3D(
   jdouble* dblArray = env->GetDoubleArrayElements(data, &isCopy);
 
   // copy elements to STL vector
-  for (int x = 0; x < len; x++)
+  for(int x = 0; x < len; x++)
     dblVector[x] = dblArray[x];
 
   jlong result = (jlong)(new KnowledgeRecord(dblVector));
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseDoubleArrayElements(data, dblArray, JNI_ABORT);
   return result;
 }
@@ -130,12 +130,12 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord___3J(
   jlong* intArray = env->GetLongArrayElements(data, &isCopy);
 
   // copy to STL vector
-  for (int x = 0; x < len; x++)
+  for(int x = 0; x < len; x++)
     intVector[x] = intArray[x];
 
   jlong result = (jlong)(new KnowledgeRecord(intVector));
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseLongArrayElements(data, intArray, JNI_ABORT);
   return result;
 }
@@ -151,7 +151,7 @@ jboolean JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1isValid(
   jboolean result(false);
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
   {
     result = record->is_valid();
   }
@@ -178,7 +178,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongValue(
   jlong result(0);
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
     result = record->to_integer();
   else
   {
@@ -203,7 +203,7 @@ jstring JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1toStringValue(
   jstring result = 0;
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
   {
     result = env->NewStringUTF(record->to_string().c_str());
   }
@@ -230,7 +230,7 @@ jdouble JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleValue(
   jdouble result(0);
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
     result = record->to_double();
   else
   {
@@ -255,7 +255,7 @@ jint JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1getType(
   jint result(0);
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
     result = record->type();
   else
   {
@@ -279,7 +279,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord(
 {
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
     delete record;
 }
 
@@ -295,14 +295,14 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toDoubleArray(
   jdoubleArray result(0);
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
   {
     std::vector<double> vec = record->to_doubles();
 
     jdouble* tmp = new jdouble[vec.size()];
 
     // copy elements to the temporary array
-    for (unsigned int x = 0; x < vec.size(); x++)
+    for(unsigned int x = 0; x < vec.size(); x++)
       tmp[x] = (jdouble)vec[x];
 
     // setup the Java array
@@ -334,14 +334,14 @@ jlongArray JNICALL Java_ai_madara_knowledge_KnowledgeRecord_jni_1toLongArray(
   jlongArray result(0);
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
 
-  if (record)
+  if(record)
   {
     std::vector<KnowledgeRecord::Integer> vec = record->to_integers();
 
     jlong* tmp = new jlong[vec.size()];
 
     // copy to the temporary array
-    for (unsigned int x = 0; x < vec.size(); x++)
+    for(unsigned int x = 0; x < vec.size(); x++)
       tmp[x] = (jlong)vec[x];
 
     // setup the Java array
@@ -374,7 +374,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeList_jni_1freeKnowledgeList(
   jlong* nativeRecords = env->GetLongArrayElements(records, &jniNoCopy);
 
   // iterate over list and free each record
-  for (int x = 0; x < length; x++)
+  for(int x = 0; x < length; x++)
   {
     Java_ai_madara_knowledge_KnowledgeRecord_jni_1freeKnowledgeRecord(
         env, obj, nativeRecords[x]);

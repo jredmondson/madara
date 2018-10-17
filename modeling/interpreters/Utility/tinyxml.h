@@ -293,7 +293,7 @@ protected:
 	}
 	inline static bool IsWhiteSpace( int c )
 	{
-		if ( c < 256 )
+		if( c < 256 )
 			return IsWhiteSpace( (char) c );
 		return false;	// Again, only truly correct for English/Latin...but usually works.
 	}
@@ -327,7 +327,7 @@ protected:
 	inline static const char* GetChar( const char* p, char* _value, int* length, TiXmlEncoding encoding )
 	{
 		assert( p );
-		if ( encoding == TIXML_ENCODING_UTF8 )
+		if( encoding == TIXML_ENCODING_UTF8 )
 		{
 			*length = utf8ByteTable[ *((const unsigned char*)p) ];
 			assert( *length >= 0 && *length < 5 );
@@ -337,14 +337,14 @@ protected:
 			*length = 1;
 		}
 
-		if ( *length == 1 )
+		if( *length == 1 )
 		{
-			if ( *p == '&' )
+			if( *p == '&' )
 				return GetEntity( p, _value, length, encoding );
 			*_value = *p;
 			return p+1;
 		}
-		else if ( *length )
+		else if( *length )
 		{
 			//strncpy( _value, p, *length );	// lots of compilers don't like this function (unsafe),
 												// and the null terminator isn't needed
@@ -381,9 +381,9 @@ protected:
 	static int IsAlphaNum( unsigned char anyByte, TiXmlEncoding encoding );
 	inline static int ToLower( int v, TiXmlEncoding encoding )
 	{
-		if ( encoding == TIXML_ENCODING_UTF8 )
+		if( encoding == TIXML_ENCODING_UTF8 )
 		{
-			if ( v < 128 ) return tolower( v );
+			if( v < 128 ) return tolower( v );
 			return v;
 		}
 		else
@@ -989,7 +989,7 @@ public:
 	int QueryFloatAttribute( const char* name, float* _value ) const {
 		double d;
 		int result = QueryDoubleAttribute( name, &d );
-		if ( result == TIXML_SUCCESS ) {
+		if( result == TIXML_SUCCESS ) {
 			*_value = (float)d;
 		}
 		return result;
@@ -999,7 +999,7 @@ public:
 	/// QueryStringAttribute examines the attribute - see QueryIntAttribute().
 	int QueryStringAttribute( const char* name, std::string* _value ) const {
 		const char* cstr = Attribute( name );
-		if ( cstr ) {
+		if( cstr ) {
 			*_value = std::string( cstr );
 			return TIXML_SUCCESS;
 		}
@@ -1017,12 +1017,12 @@ public:
 	template< typename T > int QueryValueAttribute( const std::string& name, T* outValue ) const
 	{
 		const TiXmlAttribute* node = attributeSet.Find( name );
-		if ( !node )
+		if( !node )
 			return TIXML_NO_ATTRIBUTE;
 
 		std::stringstream sstream( node->ValueStr() );
 		sstream >> *outValue;
-		if ( !sstream.fail() )
+		if( !sstream.fail() )
 			return TIXML_SUCCESS;
 		return TIXML_WRONG_TYPE;
 	}
@@ -1030,7 +1030,7 @@ public:
 	int QueryValueAttribute( const std::string& name, std::string* outValue ) const
 	{
 		const TiXmlAttribute* node = attributeSet.Find( name );
-		if ( !node )
+		if( !node )
 			return TIXML_NO_ATTRIBUTE;
 		*outValue = node->ValueStr();
 		return TIXML_SUCCESS;
@@ -1568,16 +1568,16 @@ private:
 
 	@verbatim
 	TiXmlElement* root = document.FirstChildElement( "Document" );
-	if ( root )
+	if( root )
 	{
 		TiXmlElement* element = root->FirstChildElement( "Element" );
-		if ( element )
+		if( element )
 		{
 			TiXmlElement* child = element->FirstChildElement( "Child" );
-			if ( child )
+			if( child )
 			{
 				TiXmlElement* child2 = child->NextSiblingElement( "Child" );
-				if ( child2 )
+				if( child2 )
 				{
 					// Finally do something useful.
 	@endverbatim
@@ -1589,7 +1589,7 @@ private:
 	@verbatim
 	TiXmlHandle docHandle( &document );
 	TiXmlElement* child2 = docHandle.FirstChild( "Document" ).FirstChild( "Element" ).Child( "Child", 1 ).ToElement();
-	if ( child2 )
+	if( child2 )
 	{
 		// do something useful
 	@endverbatim
@@ -1605,10 +1605,10 @@ private:
 
 	@verbatim
 	int i=0; 
-	while ( true )
+	while( true )
 	{
 		TiXmlElement* child = docHandle.FirstChild( "Document" ).FirstChild( "Element" ).Child( "Child", i ).ToElement();
-		if ( !child )
+		if( !child )
 			break;
 		// do something
 		++i;

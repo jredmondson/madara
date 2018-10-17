@@ -115,7 +115,7 @@ public class LZ4BufferFilter extends MadaraJNI implements BufferFilter
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeLz4BufferFilter(getCPtr());
       setCPtr(0);

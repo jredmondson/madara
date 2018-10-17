@@ -34,16 +34,16 @@ madara::expression::CompositeReturnRightNode::prune(bool& can_change)
   madara::knowledge::KnowledgeRecord return_value;
 
   unsigned int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
   {
     bool value_changes = false;
     madara::knowledge::KnowledgeRecord value;
-    if (j + 1 == nodes_.size())
+    if(j + 1 == nodes_.size())
       return_value = (*i)->prune(value_changes);
     else
       (*i)->prune(value_changes);
 
-    if (!value_changes && dynamic_cast<LeafNode*>(*i) == 0)
+    if(!value_changes && dynamic_cast<LeafNode*>(*i) == 0)
     {
       delete *i;
       *i = new LeafNode(*(this->logger_), value);
@@ -65,9 +65,9 @@ madara::expression::CompositeReturnRightNode::evaluate(
   madara::knowledge::KnowledgeRecord return_value;
 
   int j = 0;
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i, ++j)
   {
-    if (j + 1 == (int)nodes_.size())
+    if(j + 1 == (int)nodes_.size())
       return_value = (*i)->evaluate(settings);
     else
       (*i)->evaluate(settings);

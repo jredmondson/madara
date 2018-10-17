@@ -70,9 +70,9 @@ public enum DropType
 
   public static DropType getType(int val)
   {
-    for (DropType t : values())
+    for(DropType t : values())
     {
-      if (t.value() == val)
+      if(t.value() == val)
         return t;
     }
     return null;

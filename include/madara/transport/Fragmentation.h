@@ -65,7 +65,7 @@ public:
    * different from sizeof (MessageHeader) because of compiler
    * optimizations for word boundaries
    **/
-  virtual uint32_t encoded_size(void) const;
+  virtual uint32_t encoded_size(void) const override;
 
   /**
    * Returns the size of the encoded MessageHeader class, which may be
@@ -88,7 +88,8 @@ public:
    *                              buffer to read
    * @return    current buffer position for next read
    **/
-  virtual const char* read(const char* buffer, int64_t& buffer_remaining);
+  virtual const char* read(
+      const char* buffer, int64_t& buffer_remaining) override;
 
   /**
    * Assignment operator for regular message header
@@ -103,14 +104,14 @@ public:
    *                              buffer to read
    * @return    current buffer position for next write
    **/
-  virtual char* write(char* buffer, int64_t& buffer_remaining);
+  virtual char* write(char* buffer, int64_t& buffer_remaining) override;
 
   /**
    * Compares the fields of this instance to another instance
    * @param     other      the other instance to compare against
    * @return    true if equal, false otherwise
    **/
-  virtual bool equals(const MessageHeader& other);
+  virtual bool equals(const MessageHeader& other) override;
 
   /**
    * Tests the buffer for a reduced message identifier

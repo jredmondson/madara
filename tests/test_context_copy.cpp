@@ -36,7 +36,7 @@ void test_copy(void)
 
   // TEST 1: Copy everything to destination
   dest.copy(source, copy_set, false);
-  if (dest.get("name") == "John Smith" && dest.get("age") == Integer(20) &&
+  if(dest.get("name") == "John Smith" && dest.get("age") == Integer(20) &&
       dest.get("occupation") == "Explorer" &&
       dest.get("spouse") == "Pocahontas" &&
       dest.get("kids.0") == "Thomas Rolfe")
@@ -57,7 +57,7 @@ void test_copy(void)
   copy_set["name"] = true;
 
   dest.copy(source, copy_set, true);
-  if (dest.get("name") == "John Smith" && !dest.exists("age") &&
+  if(dest.get("name") == "John Smith" && !dest.exists("age") &&
       !dest.exists("occupation") && !dest.exists("spouse") &&
       !dest.exists("kids.0"))
   {
@@ -77,7 +77,7 @@ void test_copy(void)
   copy_set["age"] = true;
 
   dest.copy(source, copy_set, false);
-  if (dest.get("name") == "John Smith" && dest.get("age") == Integer(20) &&
+  if(dest.get("name") == "John Smith" && dest.get("age") == Integer(20) &&
       !dest.exists("occupation") && !dest.exists("spouse") &&
       !dest.exists("kids.0"))
   {
@@ -132,7 +132,7 @@ void test_copy_knowledgereqs(void)
 
   dest.copy(source, reqs);
 
-  if (dest.get("agent.0.name") == "John Smith" &&
+  if(dest.get("agent.0.name") == "John Smith" &&
       dest.get("agent.0.age") == Integer(20) &&
       dest.get("agent.0.occupation") == "Explorer" &&
       dest.get("agent.0.spouse") == "Pocahontas" &&
@@ -160,7 +160,7 @@ void test_copy_knowledgereqs(void)
 
   dest.copy(source, reqs);
 
-  if (dest.get("agent.0.name") == "John Smith" &&
+  if(dest.get("agent.0.name") == "John Smith" &&
       dest.get("agent.0.age") == Integer(20) &&
       dest.get("agent.0.occupation") == "Explorer" &&
       dest.get("agent.0.spouse") == "Pocahontas" &&
@@ -187,7 +187,7 @@ void test_copy_knowledgereqs(void)
 
   dest.copy(source, reqs);
 
-  if (dest.get("agent.0.name") == "John Smith" &&
+  if(dest.get("agent.0.name") == "John Smith" &&
       dest.get("agent.0.age") == Integer(20) &&
       dest.get("agent.0.occupation") == "Explorer" &&
       dest.get("agent.0.spouse") == "Pocahontas" &&
@@ -214,7 +214,7 @@ void test_copy_knowledgereqs(void)
 
   dest.copy(source, reqs);
 
-  if (dest.get("agent.0.name").is_false() &&
+  if(dest.get("agent.0.name").is_false() &&
       dest.get("agent.0.age").is_false() &&
       dest.get("agent.0.occupation").is_false() &&
       dest.get("agent.0.spouse").is_false() &&
@@ -248,7 +248,7 @@ void test_copy_knowledgereqs(void)
       "Testing copy with existing elements, clear=false, "
       "predicate=agent*drink: ");
 
-  if (dest.get("agent.0.name").is_false() &&
+  if(dest.get("agent.0.name").is_false() &&
       dest.get("agent.0.age").is_false() &&
       dest.get("agent.0.occupation").is_false() &&
       dest.get("agent.0.spouse").is_false() &&
@@ -284,7 +284,7 @@ void test_copy_knowledgereqs(void)
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
       "Testing copy with existing elements, clear=false, predicate=agent: ");
 
-  if (dest.get("agent.0.name") == "John Smith" &&
+  if(dest.get("agent.0.name") == "John Smith" &&
       dest.get("agent.0.age") == Integer(20) &&
       dest.get("agent.0.occupation") == "Explorer" &&
       dest.get("agent.0.spouse") == "Pocahontas" &&
@@ -312,7 +312,7 @@ int main(int, char**)
   test_copy();
   test_copy_knowledgereqs();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

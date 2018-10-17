@@ -33,19 +33,19 @@ madara::expression::SystemCallWriteFile::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
   {
     bool arg_can_change = false;
     result = (*i)->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
     {
       delete *i;
       *i = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size() != 2)
+  if(nodes_.size() != 2)
   {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallWriteFile: "
@@ -71,7 +71,7 @@ madara::expression::SystemCallWriteFile::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 2)
+  if(nodes_.size() == 2)
   {
     // copying strings wastes execution time, so we hold the
     // knowledge::KnowledgeRecord instead of the resulting string filename.
@@ -88,7 +88,7 @@ madara::expression::SystemCallWriteFile::evaluate(
 
     ssize_t bytes_written = contents->to_file(filename->to_string());
 
-    if (bytes_written <= 0)
+    if(bytes_written <= 0)
     {
       madara_logger_ptr_log(logger_, logger::LOG_MINOR,
           "madara::expression::SystemCallWriteFile: "

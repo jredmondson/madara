@@ -15,7 +15,7 @@ template<typename T>
 madara::utility::Refcounter<T>::Refcounter(T* ptr, bool increase_count)
   : ptr_(new Shim(ptr))
 {
-  if (increase_count)
+  if(increase_count)
     increment();
 }
 
@@ -47,7 +47,7 @@ void madara::utility::Refcounter<T>::operator=(T* ptr)
 template<typename T>
 void madara::utility::Refcounter<T>::operator=(const Refcounter& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     decrement();
     ptr_ = rhs.ptr_;
@@ -115,7 +115,7 @@ const T* madara::utility::Refcounter<T>::operator->(void)const
 template<typename T>
 void madara::utility::Refcounter<T>::increment(void)
 {
-  if (ptr_)
+  if(ptr_)
     ++ptr_->refcount_;
 }
 
@@ -123,10 +123,10 @@ void madara::utility::Refcounter<T>::increment(void)
 template<typename T>
 void madara::utility::Refcounter<T>::decrement(void)
 {
-  if (ptr_)
+  if(ptr_)
   {
     --ptr_->refcount_;
-    if (ptr_->refcount_ <= 0)
+    if(ptr_->refcount_ <= 0)
     {
       delete ptr_;
       ptr_ = 0;

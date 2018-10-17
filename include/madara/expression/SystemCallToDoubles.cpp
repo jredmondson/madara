@@ -34,12 +34,12 @@ madara::expression::SystemCallToDoubles::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0)
+  if(nodes_.size() > 0)
   {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
     {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
@@ -55,7 +55,7 @@ madara::knowledge::KnowledgeRecord
 madara::expression::SystemCallToDoubles::evaluate(
     const madara::knowledge::KnowledgeUpdateSettings& settings)
 {
-  if (nodes_.size() > 0)
+  if(nodes_.size() > 0)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "System call to_doubles is converting an argument\n");

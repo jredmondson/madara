@@ -70,7 +70,7 @@ public:
   {
     std::vector<madara::knowledge::KnowledgeRecord> args;
     args.reserve(nodes_.size());
-    for (const auto& node : nodes_)
+    for(const auto& node : nodes_)
     {
       args.emplace_back(node->evaluate(settings));
     }

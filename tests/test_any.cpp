@@ -178,7 +178,7 @@ void test_any()
   Any aC(ns::C{1, 2.5, "asdf", {10, 20, 30}, {1.1, 2.2, 3.3}, {}, {4, 7, 9},
       {{"x", 13}, {"y", 14}}, ns::Z});
   auto fields = aC.list_fields();
-  for (const auto& cur : fields)
+  for(const auto& cur : fields)
   {
     std::cerr << "Field " << cur.name() << " " << (void*)&cur.handler() << " "
               << cur.type_name() << " " << cur.data() << " " << aC(cur)
@@ -554,7 +554,7 @@ void test_capn()
   LOG("Got schema node reader");
   capnp::SchemaLoader loader;
   std::map<std::string, capnp::Schema> schemas;
-  for (auto schema : schema_reader.getNodes())
+  for(auto schema : schema_reader.getNodes())
   {
     log("INFO  Loading schema %s\n", schema.getDisplayName());
     schemas[schema.getDisplayName()] = loader.load(schema);
@@ -754,7 +754,7 @@ void test_example()
   // Iterate over each field, and print. Note that printing Anys always works,
   // as it falls back to serializing to JSON if no other printing support is
   // available.
-  for (const AnyField& field : any.list_fields())
+  for(const AnyField& field : any.list_fields())
   {
     std::cerr << field.name() << ": " << any(field) << std::endl;
   }
@@ -762,7 +762,7 @@ void test_example()
   // Iterate over each elements, and print. Best to get size and AnyRef first.
   AnyRef arr = any("ev")[0]("dv");
   size_t n = arr.size();
-  for (size_t i = 0; i < n; ++i)
+  for(size_t i = 0; i < n; ++i)
   {
     std::cout << i << ": " << arr[i] << std::endl;
   }
@@ -807,7 +807,7 @@ int main(int, char**)
 
   test_capn();
 
-  if (madara_tests_fail_count > 0)
+  if(madara_tests_fail_count > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";

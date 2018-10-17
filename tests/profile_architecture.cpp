@@ -29,13 +29,13 @@ std::string profile_file =
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-f" || arg1 == "--profile")
+    if(arg1 == "-f" || arg1 == "--profile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         profile_file = argv[i + 1];
 
       ++i;
@@ -71,7 +71,7 @@ std::string to_legible_hertz(uint64_t hertz)
 
   double freq = (double)hertz / ghz_mark;
 
-  if (freq >= 1)
+  if(freq >= 1)
   {
     buffer << std::setprecision(2) << std::fixed;
     buffer << freq;
@@ -81,7 +81,7 @@ std::string to_legible_hertz(uint64_t hertz)
 
   freq = (double)hertz / mhz_mark;
 
-  if (freq >= 1)
+  if(freq >= 1)
   {
     buffer << std::setprecision(2) << std::fixed;
     buffer << freq;
@@ -91,7 +91,7 @@ std::string to_legible_hertz(uint64_t hertz)
 
   freq = (double)hertz / khz_mark;
 
-  if (freq >= 1)
+  if(freq >= 1)
   {
     buffer << std::setprecision(2) << std::fixed;
     buffer << freq;
@@ -118,16 +118,16 @@ void warmup(madara::knowledge::KnowledgeBase& knowledge)
   knowledge.compile("++var3");
   knowledge.compile("++var4");
 
-  for (unsigned int i = 0; i < 50000; ++i)
+  for(unsigned int i = 0; i < 50000; ++i)
     knowledge.evaluate("++var2");
 
-  for (unsigned int i = 0; i < 50000; ++i)
+  for(unsigned int i = 0; i < 50000; ++i)
     knowledge.evaluate("var2 += 1");
 }
 
 void compile_expressions(madara::knowledge::KnowledgeBase& knowledge)
 {
-  for (unsigned int i = 0; i < tests.size(); ++i)
+  for(unsigned int i = 0; i < tests.size(); ++i)
   {
     // keep track of time
     uint64_t measured(0);
@@ -141,14 +141,14 @@ void compile_expressions(madara::knowledge::KnowledgeBase& knowledge)
 
     compile_times[i] = measured;
 
-    if (tests[i].size() > 18)
+    if(tests[i].size() > 18)
       tests[i].resize(18);
   }
 }
 
 void evaluate_expressions(madara::knowledge::KnowledgeBase& knowledge)
 {
-  for (unsigned int i = 0; i < tests.size(); ++i)
+  for(unsigned int i = 0; i < tests.size(); ++i)
   {
     // set the min time to the max possible
     min_times[i] = 0 - 1;
@@ -164,7 +164,7 @@ void evaluate_expressions(madara::knowledge::KnowledgeBase& knowledge)
         "  [%d] Evaluating %s\n", i, tests[i].c_str());
 
     // try to establish min/max times with 10 runs
-    for (unsigned int j = 0; j < 100; ++j)
+    for(unsigned int j = 0; j < 100; ++j)
     {
       madara::utility::Timer<std::chrono::steady_clock> timer;
 
@@ -181,7 +181,7 @@ void evaluate_expressions(madara::knowledge::KnowledgeBase& knowledge)
 
     // get an overall_timer for 1000 of the ops for a useful average
     overall_timer.start();
-    for (unsigned int j = 0; j < 10000; ++j)
+    for(unsigned int j = 0; j < 10000; ++j)
     {
       knowledge.evaluate(compiled_expressions[i], defaults);
     }
@@ -205,7 +205,7 @@ void print_results(void)
   //                    std::setw (13) << "Min eval time" << "|" <<
   //                    std::setw (13) << "Max eval time" << "|" <<
   //                    std::setw (13) << "Avg eval time" << "|\n\n";
-  for (unsigned int i = 0; i < tests.size(); ++i)
+  for(unsigned int i = 0; i < tests.size(); ++i)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "%-18s|%-13llu|%-13llu|%-13llu|%-13llu\n",
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
 
   madara::utility::tokenizer(expressions_text, splitters, tests, pivot_list);
 
-  if (tests.size() > 0)
+  if(tests.size() > 0)
   {
     // resize all the vectors that rely on the size of this list of expressions
     max_times.resize(tests.size());

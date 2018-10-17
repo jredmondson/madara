@@ -34,13 +34,13 @@ Integer readers(0);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--counters")
+    if(arg1 == "-c" || arg1 == "--counters")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> counters;
@@ -48,18 +48,18 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         int level;
@@ -69,9 +69,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-r" || arg1 == "--readers")
+    else if(arg1 == "-r" || arg1 == "--readers")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> readers;
@@ -79,9 +79,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-t" || arg1 == "--target")
+    else if(arg1 == "-t" || arg1 == "--target")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> target;
@@ -89,9 +89,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-w" || arg1 == "--max-wait")
+    else if(arg1 == "-w" || arg1 == "--max-wait")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> max_wait;
@@ -99,9 +99,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-z" || arg1 == "--hertz")
+    else if(arg1 == "-z" || arg1 == "--hertz")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> hertz;
@@ -109,9 +109,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-sz" || arg1 == "--second-hertz")
+    else if(arg1 == "-sz" || arg1 == "--second-hertz")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> second_hertz;
@@ -221,7 +221,7 @@ int main(int argc, char** argv)
   // create a threader for running threads
   threads::Threader threader(knowledge);
 
-  for (Integer i = 0; i < counters; ++i)
+  for(Integer i = 0; i < counters; ++i)
   {
     std::stringstream buffer;
     buffer << "thread";
@@ -240,7 +240,7 @@ int main(int argc, char** argv)
   knowledge.print("After 5s, count is {counter}.\n");
   knowledge.print("Changing hertz to second hertz.\n");
 
-  for (Integer i = 0; i < counters; ++i)
+  for(Integer i = 0; i < counters; ++i)
   {
     std::stringstream buffer;
     buffer << "thread";
@@ -250,7 +250,7 @@ int main(int argc, char** argv)
   }
 
   // wait for the counter to reach the target number
-  while (*counter < target)
+  while(*counter < target)
   {
     // sleep for half a second and try again
     utility::sleep(0.5);

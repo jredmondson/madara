@@ -164,14 +164,14 @@ private:
         unsigned Peek() { return codepoint_; }
         unsigned Take() {
             unsigned c = codepoint_;
-            if (c) // No further decoding when '\0'
+            if(c) // No further decoding when '\0'
                 Decode();
             return c;
         }
 
     private:
         void Decode() {
-            if (!Encoding::Decode(ss_, &codepoint_))
+            if(!Encoding::Decode(ss_, &codepoint_))
                 codepoint_ = 0;
         }
 
@@ -209,7 +209,7 @@ private:
         *atomCountStack.template Push<unsigned>() = 0;
 
         unsigned codepoint;
-        while (ds.Peek() != 0) {
+        while(ds.Peek() != 0) {
             switch (codepoint = ds.Take()) {
                 case '^':
                     anchorBegin_ = true;
@@ -220,8 +220,8 @@ private:
                     break;
 
                 case '|':
-                    while (!operatorStack.Empty() && *operatorStack.template Top<Operator>() < kAlternation)
-                        if (!Eval(operandStack, *operatorStack.template Pop<Operator>(1)))
+                    while(!operatorStack.Empty() && *operatorStack.template Top<Operator>() < kAlternation)
+                        if(!Eval(operandStack, *operatorStack.template Pop<Operator>(1)))
                             return;
                     *operatorStack.template Push<Operator>() = kAlternation;
                     *atomCountStack.template Top<unsigned>() = 0;
@@ -233,10 +233,10 @@ private:
                     break;
 
                 case ')':
-                    while (!operatorStack.Empty() && *operatorStack.template Top<Operator>() != kLeftParenthesis)
-                        if (!Eval(operandStack, *operatorStack.template Pop<Operator>(1)))
+                    while(!operatorStack.Empty() && *operatorStack.template Top<Operator>() != kLeftParenthesis)
+                        if(!Eval(operandStack, *operatorStack.template Pop<Operator>(1)))
                             return;
-                    if (operatorStack.Empty())
+                    if(operatorStack.Empty())
                         return;
                     operatorStack.template Pop<Operator>(1);
                     atomCountStack.template Pop<unsigned>(1);
@@ -244,37 +244,37 @@ private:
                     break;
 
                 case '?':
-                    if (!Eval(operandStack, kZeroOrOne))
+                    if(!Eval(operandStack, kZeroOrOne))
                         return;
                     break;
 
                 case '*':
-                    if (!Eval(operandStack, kZeroOrMore))
+                    if(!Eval(operandStack, kZeroOrMore))
                         return;
                     break;
 
                 case '+':
-                    if (!Eval(operandStack, kOneOrMore))
+                    if(!Eval(operandStack, kOneOrMore))
                         return;
                     break;
 
                 case '{':
                     {
                         unsigned n, m;
-                        if (!ParseUnsigned(ds, &n))
+                        if(!ParseUnsigned(ds, &n))
                             return;
 
-                        if (ds.Peek() == ',') {
+                        if(ds.Peek() == ',') {
                             ds.Take();
-                            if (ds.Peek() == '}')
+                            if(ds.Peek() == '}')
                                 m = kInfinityQuantifier;
-                            else if (!ParseUnsigned(ds, &m) || m < n)
+                            else if(!ParseUnsigned(ds, &m) || m < n)
                                 return;
                         }
                         else
                             m = n;
 
-                        if (!EvalQuantifier(operandStack, n, m) || ds.Peek() != '}')
+                        if(!EvalQuantifier(operandStack, n, m) || ds.Peek() != '}')
                             return;
                         ds.Take();
                     }
@@ -288,7 +288,7 @@ private:
                 case '[':
                     {
                         SizeType range;
-                        if (!ParseRange(ds, &range))
+                        if(!ParseRange(ds, &range))
                             return;
                         SizeType s = NewState(kRegexInvalidState, kRegexInvalidState, kRangeCharacterClass);
                         GetState(s).rangeStart = range;
@@ -298,7 +298,7 @@ private:
                     break;
 
                 case '\\': // Escape character
-                    if (!CharacterEscape(ds, &codepoint))
+                    if(!CharacterEscape(ds, &codepoint))
                         return; // Unsupported escape character
                     // fall through to default
 
@@ -308,19 +308,19 @@ private:
             }
         }
 
-        while (!operatorStack.Empty())
-            if (!Eval(operandStack, *operatorStack.template Pop<Operator>(1)))
+        while(!operatorStack.Empty())
+            if(!Eval(operandStack, *operatorStack.template Pop<Operator>(1)))
                 return;
 
         // Link the operand to matching state.
-        if (operandStack.GetSize() == sizeof(Frag)) {
+        if(operandStack.GetSize() == sizeof(Frag)) {
             Frag* e = operandStack.template Pop<Frag>(1);
             Patch(e->out, NewState(kRegexInvalidState, kRegexInvalidState, 0));
             root_ = e->start;
 
 #if CEREAL_RAPIDJSON_REGEX_VERBOSE
             printf("root: %d\n", root_);
-            for (SizeType i = 0; i < stateCount_ ; i++) {
+            for(SizeType i = 0; i < stateCount_ ; i++) {
                 State& s = GetState(i);
                 printf("[%2d] out: %2d out1: %2d c: '%c'\n", i, s.out, s.out1, (char)s.codepoint);
             }
@@ -330,7 +330,7 @@ private:
 
         // Preallocate buffer for SearchWithAnchoring()
         CEREAL_RAPIDJSON_ASSERT(stateSet_ == 0);
-        if (stateCount_ > 0) {
+        if(stateCount_ > 0) {
             stateSet_ = static_cast<unsigned*>(states_.GetAllocator().Malloc(GetStateSetSize()));
             state0_.template Reserve<SizeType>(stateCount_);
             state1_.template Reserve<SizeType>(stateCount_);
@@ -352,21 +352,21 @@ private:
     }
 
     void ImplicitConcatenation(Stack<Allocator>& atomCountStack, Stack<Allocator>& operatorStack) {
-        if (*atomCountStack.template Top<unsigned>())
+        if(*atomCountStack.template Top<unsigned>())
             *operatorStack.template Push<Operator>() = kConcatenation;
         (*atomCountStack.template Top<unsigned>())++;
     }
 
     SizeType Append(SizeType l1, SizeType l2) {
         SizeType old = l1;
-        while (GetState(l1).out != kRegexInvalidState)
+        while(GetState(l1).out != kRegexInvalidState)
             l1 = GetState(l1).out;
         GetState(l1).out = l2;
         return old;
     }
 
     void Patch(SizeType l, SizeType s) {
-        for (SizeType next; l != kRegexInvalidState; l = next) {
+        for(SizeType next; l != kRegexInvalidState; l = next) {
             next = GetState(l).out;
             GetState(l).out = s;
         }
@@ -385,7 +385,7 @@ private:
                 return true;
 
             case kAlternation:
-                if (operandStack.GetSize() >= sizeof(Frag) * 2) {
+                if(operandStack.GetSize() >= sizeof(Frag) * 2) {
                     Frag e2 = *operandStack.template Pop<Frag>(1);
                     Frag e1 = *operandStack.template Pop<Frag>(1);
                     SizeType s = NewState(e1.start, e2.start, 0);
@@ -395,7 +395,7 @@ private:
                 return false;
 
             case kZeroOrOne:
-                if (operandStack.GetSize() >= sizeof(Frag)) {
+                if(operandStack.GetSize() >= sizeof(Frag)) {
                     Frag e = *operandStack.template Pop<Frag>(1);
                     SizeType s = NewState(kRegexInvalidState, e.start, 0);
                     *operandStack.template Push<Frag>() = Frag(s, Append(e.out, s), e.minIndex);
@@ -404,7 +404,7 @@ private:
                 return false;
 
             case kZeroOrMore:
-                if (operandStack.GetSize() >= sizeof(Frag)) {
+                if(operandStack.GetSize() >= sizeof(Frag)) {
                     Frag e = *operandStack.template Pop<Frag>(1);
                     SizeType s = NewState(kRegexInvalidState, e.start, 0);
                     Patch(e.out, s);
@@ -415,7 +415,7 @@ private:
 
             default: 
                 CEREAL_RAPIDJSON_ASSERT(op == kOneOrMore);
-                if (operandStack.GetSize() >= sizeof(Frag)) {
+                if(operandStack.GetSize() >= sizeof(Frag)) {
                     Frag e = *operandStack.template Pop<Frag>(1);
                     SizeType s = NewState(kRegexInvalidState, e.start, 0);
                     Patch(e.out, s);
@@ -430,36 +430,36 @@ private:
         CEREAL_RAPIDJSON_ASSERT(n <= m);
         CEREAL_RAPIDJSON_ASSERT(operandStack.GetSize() >= sizeof(Frag));
 
-        if (n == 0) {
-            if (m == 0)                             // a{0} not support
+        if(n == 0) {
+            if(m == 0)                             // a{0} not support
                 return false;
-            else if (m == kInfinityQuantifier)
+            else if(m == kInfinityQuantifier)
                 Eval(operandStack, kZeroOrMore);    // a{0,} -> a*
             else {
                 Eval(operandStack, kZeroOrOne);         // a{0,5} -> a?
-                for (unsigned i = 0; i < m - 1; i++)
+                for(unsigned i = 0; i < m - 1; i++)
                     CloneTopOperand(operandStack);      // a{0,5} -> a? a? a? a? a?
-                for (unsigned i = 0; i < m - 1; i++)
+                for(unsigned i = 0; i < m - 1; i++)
                     Eval(operandStack, kConcatenation); // a{0,5} -> a?a?a?a?a?
             }
             return true;
         }
 
-        for (unsigned i = 0; i < n - 1; i++)        // a{3} -> a a a
+        for(unsigned i = 0; i < n - 1; i++)        // a{3} -> a a a
             CloneTopOperand(operandStack);
 
-        if (m == kInfinityQuantifier)
+        if(m == kInfinityQuantifier)
             Eval(operandStack, kOneOrMore);         // a{3,} -> a a a+
-        else if (m > n) {
+        else if(m > n) {
             CloneTopOperand(operandStack);          // a{3,5} -> a a a a
             Eval(operandStack, kZeroOrOne);         // a{3,5} -> a a a a?
-            for (unsigned i = n; i < m - 1; i++)
+            for(unsigned i = n; i < m - 1; i++)
                 CloneTopOperand(operandStack);      // a{3,5} -> a a a a? a?
-            for (unsigned i = n; i < m; i++)
+            for(unsigned i = n; i < m; i++)
                 Eval(operandStack, kConcatenation); // a{3,5} -> a a aa?a?
         }
 
-        for (unsigned i = 0; i < n - 1; i++)
+        for(unsigned i = 0; i < n - 1; i++)
             Eval(operandStack, kConcatenation);     // a{3} -> aaa, a{3,} -> aaa+, a{3.5} -> aaaa?a?
 
         return true;
@@ -472,10 +472,10 @@ private:
         SizeType count = stateCount_ - src.minIndex; // Assumes top operand contains states in [src->minIndex, stateCount_)
         State* s = states_.template Push<State>(count);
         memcpy(s, &GetState(src.minIndex), count * sizeof(State));
-        for (SizeType j = 0; j < count; j++) {
-            if (s[j].out != kRegexInvalidState)
+        for(SizeType j = 0; j < count; j++) {
+            if(s[j].out != kRegexInvalidState)
                 s[j].out += count;
-            if (s[j].out1 != kRegexInvalidState)
+            if(s[j].out1 != kRegexInvalidState)
                 s[j].out1 += count;
         }
         *operandStack.template Push<Frag>() = Frag(src.start + count, src.out + count, src.minIndex + count);
@@ -485,10 +485,10 @@ private:
     template <typename InputStream>
     bool ParseUnsigned(DecodedStream<InputStream>& ds, unsigned* u) {
         unsigned r = 0;
-        if (ds.Peek() < '0' || ds.Peek() > '9')
+        if(ds.Peek() < '0' || ds.Peek() > '9')
             return false;
-        while (ds.Peek() >= '0' && ds.Peek() <= '9') {
-            if (r >= 429496729 && ds.Peek() > '5') // 2^32 - 1 = 4294967295
+        while(ds.Peek() >= '0' && ds.Peek() <= '9') {
+            if(r >= 429496729 && ds.Peek() > '5') // 2^32 - 1 = 4294967295
                 return false; // overflow
             r = r * 10 + (ds.Take() - '0');
         }
@@ -504,10 +504,10 @@ private:
         SizeType start = kRegexInvalidRange;
         SizeType current = kRegexInvalidRange;
         unsigned codepoint;
-        while ((codepoint = ds.Take()) != 0) {
-            if (isBegin) {
+        while((codepoint = ds.Take()) != 0) {
+            if(isBegin) {
                 isBegin = false;
-                if (codepoint == '^') {
+                if(codepoint == '^') {
                     negate = true;
                     continue;
                 }
@@ -515,31 +515,31 @@ private:
 
             switch (codepoint) {
             case ']':
-                if (start == kRegexInvalidRange)
+                if(start == kRegexInvalidRange)
                     return false;   // Error: nothing inside []
-                if (step == 2) { // Add trailing '-'
+                if(step == 2) { // Add trailing '-'
                     SizeType r = NewRange('-');
                     CEREAL_RAPIDJSON_ASSERT(current != kRegexInvalidRange);
                     GetRange(current).next = r;
                 }
-                if (negate)
+                if(negate)
                     GetRange(start).start |= kRangeNegationFlag;
                 *range = start;
                 return true;
 
             case '\\':
-                if (ds.Peek() == 'b') {
+                if(ds.Peek() == 'b') {
                     ds.Take();
                     codepoint = 0x0008; // Escape backspace character
                 }
-                else if (!CharacterEscape(ds, &codepoint))
+                else if(!CharacterEscape(ds, &codepoint))
                     return false;
                 // fall through to default
 
             default:
                 switch (step) {
                 case 1:
-                    if (codepoint == '-') {
+                    if(codepoint == '-') {
                         step++;
                         break;
                     }
@@ -548,9 +548,9 @@ private:
                 case 0:
                     {
                         SizeType r = NewRange(codepoint);
-                        if (current != kRegexInvalidRange)
+                        if(current != kRegexInvalidRange)
                             GetRange(current).next = r;
-                        if (start == kRegexInvalidRange)
+                        if(start == kRegexInvalidRange)
                             start = r;
                         current = r;
                     }
@@ -615,21 +615,21 @@ private:
 
         bool matched = AddState(*current, root_);
         unsigned codepoint;
-        while (!current->Empty() && (codepoint = ds.Take()) != 0) {
+        while(!current->Empty() && (codepoint = ds.Take()) != 0) {
             std::memset(stateSet_, 0, stateSetSize);
             next->Clear();
             matched = false;
-            for (const SizeType* s = current->template Bottom<SizeType>(); s != current->template End<SizeType>(); ++s) {
+            for(const SizeType* s = current->template Bottom<SizeType>(); s != current->template End<SizeType>(); ++s) {
                 const State& sr = GetState(*s);
-                if (sr.codepoint == codepoint ||
+                if(sr.codepoint == codepoint ||
                     sr.codepoint == kAnyCharacterClass || 
                     (sr.codepoint == kRangeCharacterClass && MatchRange(sr.rangeStart, codepoint)))
                 {
                     matched = AddState(*next, sr.out) || matched;
-                    if (!anchorEnd && matched)
+                    if(!anchorEnd && matched)
                         return true;
                 }
-                if (!anchorBegin)
+                if(!anchorBegin)
                     AddState(*next, root_);
             }
             internal::Swap(current, next);
@@ -647,11 +647,11 @@ private:
         CEREAL_RAPIDJSON_ASSERT(index != kRegexInvalidState);
 
         const State& s = GetState(index);
-        if (s.out1 != kRegexInvalidState) { // Split
+        if(s.out1 != kRegexInvalidState) { // Split
             bool matched = AddState(l, s.out);
             return AddState(l, s.out1) || matched;
         }
-        else if (!(stateSet_[index >> 5] & (1 << (index & 31)))) {
+        else if(!(stateSet_[index >> 5] & (1 << (index & 31)))) {
             stateSet_[index >> 5] |= (1 << (index & 31));
             *l.template PushUnsafe<SizeType>() = index;
         }
@@ -660,9 +660,9 @@ private:
 
     bool MatchRange(SizeType rangeIndex, unsigned codepoint) const {
         bool yes = (GetRange(rangeIndex).start & kRangeNegationFlag) == 0;
-        while (rangeIndex != kRegexInvalidRange) {
+        while(rangeIndex != kRegexInvalidRange) {
             const Range& r = GetRange(rangeIndex);
-            if (codepoint >= (r.start & ~kRangeNegationFlag) && codepoint <= r.end)
+            if(codepoint >= (r.start & ~kRangeNegationFlag) && codepoint <= r.end)
                 return yes;
             rangeIndex = r.next;
         }

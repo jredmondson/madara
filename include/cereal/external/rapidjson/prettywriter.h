@@ -128,14 +128,14 @@ public:
         CEREAL_RAPIDJSON_ASSERT(!Base::level_stack_.template Top<typename Base::Level>()->inArray);
         bool empty = Base::level_stack_.template Pop<typename Base::Level>(1)->valueCount == 0;
 
-        if (!empty) {
+        if(!empty) {
             Base::os_->Put('\n');
             WriteIndent();
         }
         bool ret = Base::WriteEndObject();
         (void)ret;
         CEREAL_RAPIDJSON_ASSERT(ret == true);
-        if (Base::level_stack_.Empty()) // end of json text
+        if(Base::level_stack_.Empty()) // end of json text
             Base::os_->Flush();
         return true;
     }
@@ -152,14 +152,14 @@ public:
         CEREAL_RAPIDJSON_ASSERT(Base::level_stack_.template Top<typename Base::Level>()->inArray);
         bool empty = Base::level_stack_.template Pop<typename Base::Level>(1)->valueCount == 0;
 
-        if (!empty && !(formatOptions_ & kFormatSingleLineArray)) {
+        if(!empty && !(formatOptions_ & kFormatSingleLineArray)) {
             Base::os_->Put('\n');
             WriteIndent();
         }
         bool ret = Base::WriteEndArray();
         (void)ret;
         CEREAL_RAPIDJSON_ASSERT(ret == true);
-        if (Base::level_stack_.Empty()) // end of json text
+        if(Base::level_stack_.Empty()) // end of json text
             Base::os_->Flush();
         return true;
     }
@@ -189,24 +189,24 @@ public:
 protected:
     void PrettyPrefix(Type type) {
         (void)type;
-        if (Base::level_stack_.GetSize() != 0) { // this value is not at root
+        if(Base::level_stack_.GetSize() != 0) { // this value is not at root
             typename Base::Level* level = Base::level_stack_.template Top<typename Base::Level>();
 
-            if (level->inArray) {
-                if (level->valueCount > 0) {
+            if(level->inArray) {
+                if(level->valueCount > 0) {
                     Base::os_->Put(','); // add comma if it is not the first element in array
-                    if (formatOptions_ & kFormatSingleLineArray)
+                    if(formatOptions_ & kFormatSingleLineArray)
                         Base::os_->Put(' ');
                 }
 
-                if (!(formatOptions_ & kFormatSingleLineArray)) {
+                if(!(formatOptions_ & kFormatSingleLineArray)) {
                     Base::os_->Put('\n');
                     WriteIndent();
                 }
             }
             else {  // in object
-                if (level->valueCount > 0) {
-                    if (level->valueCount % 2 == 0) {
+                if(level->valueCount > 0) {
+                    if(level->valueCount % 2 == 0) {
                         Base::os_->Put(',');
                         Base::os_->Put('\n');
                     }
@@ -218,10 +218,10 @@ protected:
                 else
                     Base::os_->Put('\n');
 
-                if (level->valueCount % 2 == 0)
+                if(level->valueCount % 2 == 0)
                     WriteIndent();
             }
-            if (!level->inArray && level->valueCount % 2 == 0)
+            if(!level->inArray && level->valueCount % 2 == 0)
                 CEREAL_RAPIDJSON_ASSERT(type == kStringType);  // if it's in object, then even number should be a name
             level->valueCount++;
         }

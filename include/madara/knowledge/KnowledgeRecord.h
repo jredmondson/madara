@@ -158,7 +158,7 @@ public:
   void set_toi(uint64_t new_toi)
   {
     toi_ = new_toi;
-    if (has_history())
+    if(has_history())
     {
       buf_->back().set_toi(new_toi);
     }
@@ -937,7 +937,7 @@ public:
    **/
   ConstAnyRef get_any_ref() const
   {
-    if (type_ == ANY)
+    if(type_ == ANY)
     {
       return *any_value_;
     }
@@ -1061,31 +1061,31 @@ public:
    **/
   Any to_any() const
   {
-    if (type_ == ANY)
+    if(type_ == ANY)
     {
       return *any_value_;
     }
-    else if (type_ == INTEGER)
+    else if(type_ == INTEGER)
     {
       return Any(int_value_);
     }
-    else if (type_ == DOUBLE)
+    else if(type_ == DOUBLE)
     {
       return Any(double_value_);
     }
-    else if (type_ == INTEGER_ARRAY)
+    else if(type_ == INTEGER_ARRAY)
     {
       return Any(*int_array_);
     }
-    else if (type_ == DOUBLE_ARRAY)
+    else if(type_ == DOUBLE_ARRAY)
     {
       return Any(*double_array_);
     }
-    else if (is_string_type())
+    else if(is_string_type())
     {
       return Any(*str_value_);
     }
-    else if (is_binary_file_type())
+    else if(is_binary_file_type())
     {
       return Any(*file_value_);
     }
@@ -1625,12 +1625,12 @@ public:
    **/
   size_t get_history_size() const
   {
-    if (type_ == BUFFER)
+    if(type_ == BUFFER)
     {
       return buf_->size();
     }
 
-    if (exists())
+    if(exists())
     {
       return 1;
     }
@@ -1644,7 +1644,7 @@ public:
    **/
   size_t get_history_capacity() const
   {
-    if (type_ == BUFFER)
+    if(type_ == BUFFER)
     {
       return buf_->capacity();
     }
@@ -1666,11 +1666,11 @@ public:
    **/
   void set_history_capacity(size_t size)
   {
-    if (type_ == BUFFER)
+    if(type_ == BUFFER)
     {
-      if (size == 0)
+      if(size == 0)
       {
-        if (!buf_->empty())
+        if(!buf_->empty())
         {
           *this = std::move(buf_->back());
         }
@@ -1684,14 +1684,14 @@ public:
         buf_->reserve(size);
       }
     }
-    else if (size > 0)
+    else if(size > 0)
     {
       KnowledgeRecord tmp = *this;
 
       new (&buf_) std::shared_ptr<CircBuf>(std::make_shared<CircBuf>(size));
       type_ = BUFFER;
 
-      if (tmp.exists())
+      if(tmp.exists())
       {
         buf_->push_back(std::move(tmp));
       }
@@ -1709,11 +1709,11 @@ public:
 private:
   size_t absolute_index(ssize_t index) const
   {
-    if (type_ != BUFFER)
+    if(type_ != BUFFER)
     {
       return 0;
     }
-    if (index >= 0)
+    if(index >= 0)
     {
       return buf_->front_index() + index;
     }
@@ -1727,16 +1727,16 @@ public:
   template<typename Func>
   size_t for_history_range(Func&& func, size_t index, size_t count) const
   {
-    if (type_ != BUFFER)
+    if(type_ != BUFFER)
     {
       func(*this);
       return 1;
     }
     size_t front = buf_->front_index();
-    if (index < front)
+    if(index < front)
     {
       size_t diff = front - index;
-      if (count > diff)
+      if(count > diff)
       {
         count -= diff;
       }
@@ -1746,11 +1746,11 @@ public:
       }
       index = front;
     }
-    if (count > buf_->size())
+    if(count > buf_->size())
     {
       count = buf_->size();
     }
-    for (size_t i = index, end = index + count; i < end; ++i)
+    for(size_t i = index, end = index + count; i < end; ++i)
     {
       func((*buf_)[i]);
     }
@@ -2009,7 +2009,7 @@ public:
    **/
   size_t get_history_newest_index() const
   {
-    if (!has_history())
+    if(!has_history())
     {
       throw exceptions::IndexException(
           "KnowledgeRecord::get_history_newest_index: "
@@ -2024,7 +2024,7 @@ public:
    **/
   size_t get_history_oldest_index() const
   {
-    if (!has_history())
+    if(!has_history())
     {
       throw exceptions::IndexException(
           "KnowledgeRecord::get_history_oldest_index: "
@@ -2073,7 +2073,7 @@ private:
       bool Overwrite = false, typename... Args>
   std::shared_ptr<const T>& emplace_shared_val(Args&&... args)
   {
-    if (has_history() && !Overwrite)
+    if(has_history() && !Overwrite)
     {
       KnowledgeRecord tmp;
       tmp.copy_metadata(*this);
@@ -2140,7 +2140,7 @@ uint32_t max_quality(const KnowledgeMap& records);
 template<typename Impl, typename ValImpl, typename RefImpl>
 inline KnowledgeRecord BasicConstAny<Impl, ValImpl, RefImpl>::to_record() const
 {
-  if (!supports_to_record())
+  if(!supports_to_record())
   {
     return KnowledgeRecord(std::move(clone()));
   }

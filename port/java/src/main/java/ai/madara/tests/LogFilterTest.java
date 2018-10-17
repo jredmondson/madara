@@ -75,7 +75,7 @@ public class LogFilterTest
     KnowledgeBase knowledge = new KnowledgeBase("", settings);
     
     System.out.println ("Beginning to loop.");
-    for (int i = 0; i < 60; ++i)
+    for(int i = 0; i < 60; ++i)
     {
       System.out.println ("Sending an update.");
       knowledge.set(".base", i);

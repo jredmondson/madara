@@ -335,7 +335,7 @@ public class Collection extends BaseContainer {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeCollection(getCPtr());
 			setCPtr(0);
 		}

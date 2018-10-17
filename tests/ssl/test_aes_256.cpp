@@ -24,7 +24,7 @@ int main(int, char**)
   memset(buffer, 1, 256);
 
   std::cout << "Testing encode/decode from single buffer filter\n";
-  for (size_t i = 0; i < messages.size(); ++i)
+  for(size_t i = 0; i < messages.size(); ++i)
   {
     int encode_length(0);
 
@@ -39,7 +39,7 @@ int main(int, char**)
     results.push_back((char*)buffer);
 
     std::cout << "  Encoding test " << i << " is a ";
-    if (messages[i] == results[i])
+    if(messages[i] == results[i])
     {
       std::cout << "SUCCESS.";
     }
@@ -60,7 +60,7 @@ int main(int, char**)
   filter2.generate_key("testPassword#214");
 
   std::cout << "Testing encode/decode from paired buffer filter\n";
-  for (size_t i = 0; i < messages.size(); ++i)
+  for(size_t i = 0; i < messages.size(); ++i)
   {
     int encode_length(0);
 
@@ -75,7 +75,7 @@ int main(int, char**)
     results.push_back((char*)buffer);
 
     std::cout << "  Encoding test " << i << " is a ";
-    if (messages[i] == results[i])
+    if(messages[i] == results[i])
     {
       std::cout << "SUCCESS.";
     }

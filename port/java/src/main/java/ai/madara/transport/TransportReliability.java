@@ -73,9 +73,9 @@ public enum TransportReliability
 
   public static TransportReliability getReliability(int val)
   {
-    for (TransportReliability t : values())
+    for(TransportReliability t : values())
     {
-      if (t.value() == val)
+      if(t.value() == val)
         return t;
     }
     return null;

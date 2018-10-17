@@ -47,7 +47,7 @@ public:
 #if CEREAL_RAPIDJSON_HAS_CXX11_RVALUE_REFS
     GenericStringBuffer(GenericStringBuffer&& rhs) : stack_(std::move(rhs.stack_)) {}
     GenericStringBuffer& operator=(GenericStringBuffer&& rhs) {
-        if (&rhs != this)
+        if(&rhs != this)
             stack_ = std::move(rhs.stack_);
         return *this;
     }

@@ -22,7 +22,7 @@ namespace filters
 {
 inline bool BufferFilterHeader::check_filter(filters::BufferFilter* filter)
 {
-  if (filter != 0)
+  if(filter != 0)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "CheckpointSettings::check_filter: header: "
@@ -39,7 +39,7 @@ inline bool BufferFilterHeader::check_filter(filters::BufferFilter* filter)
 
 inline void BufferFilterHeader::read(filters::BufferFilter* filter)
 {
-  if (filter != 0)
+  if(filter != 0)
   {
     // the only thing not filled in is size, which comes from encode/decode
     version = filter->get_version();
@@ -59,7 +59,7 @@ inline void BufferFilterHeader::read(filters::BufferFilter* filter)
 inline const char* BufferFilterHeader::read(
     const char* buffer, int64_t& buffer_remaining)
 {
-  if (buffer_remaining >= 20)
+  if(buffer_remaining >= 20)
   {
     memcpy(&size, buffer, 8);
     strncpy(id, buffer + 8, 8);
@@ -86,7 +86,7 @@ inline const char* BufferFilterHeader::read(
 
 inline char* BufferFilterHeader::write(char* buffer, int64_t& buffer_remaining)
 {
-  if (buffer_remaining >= 20)
+  if(buffer_remaining >= 20)
   {
     uint64_t new_size = utility::endian_swap(size);
     uint32_t new_version = utility::endian_swap(version);

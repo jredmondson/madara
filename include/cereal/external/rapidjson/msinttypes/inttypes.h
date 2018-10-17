@@ -294,7 +294,7 @@ imaxdiv_t __cdecl imaxdiv(intmax_t numer, intmax_t denom)
    result.quot = numer / denom;
    result.rem = numer % denom;
 
-   if (numer < 0 && result.rem > 0) {
+   if(numer < 0 && result.rem > 0) {
       // did division wrong; must fix up
       ++result.quot;
       result.rem -= denom;

@@ -39,10 +39,10 @@ madara::expression::CompositeImpliesNode::prune(bool& can_change)
   madara::knowledge::KnowledgeRecord left_value;
   madara::knowledge::KnowledgeRecord right_value;
 
-  if (this->left_)
+  if(this->left_)
   {
     left_value = this->left_->prune(left_child_can_change);
-    if (!left_child_can_change && dynamic_cast<LeafNode*>(left_) == 0)
+    if(!left_child_can_change && dynamic_cast<LeafNode*>(left_) == 0)
     {
       delete this->left_;
       this->left_ = new LeafNode(*(this->logger_), left_value);
@@ -60,10 +60,10 @@ madara::expression::CompositeImpliesNode::prune(bool& can_change)
         "Implies has no condition (left) expression\n");
   }
 
-  if (this->right_)
+  if(this->right_)
   {
     right_value = this->right_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0)
+    if(!right_child_can_change && dynamic_cast<LeafNode*>(right_) == 0)
     {
       delete this->right_;
       this->right_ = new LeafNode(*(this->logger_), right_value);
@@ -96,7 +96,7 @@ madara::expression::CompositeImpliesNode::evaluate(
   madara::knowledge::KnowledgeRecord left_value = left_->evaluate(settings);
 
   // only evaluate right if left evaluates to non-zero
-  if (left_value.is_true())
+  if(left_value.is_true())
     right_->evaluate(settings);
 
   return left_value;

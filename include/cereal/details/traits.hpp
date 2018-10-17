@@ -31,7 +31,7 @@
 #define CEREAL_DETAILS_TRAITS_HPP_
 
 #ifndef __clang__
-#if (__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
+#if(__GNUC__ == 4 && __GNUC_MINOR__ <= 7)
 #define CEREAL_OLDER_GCC
 #endif // gcc 4.7 or earlier
 #endif // __clang__
@@ -182,8 +182,8 @@ namespace cereal
     /*! This creates a class derived from std::integral_constant that will be true if
         the type has the proper member function for the given archive.
 
-        @param name The name of the function to test for (e.g. serialize, load, save)
-        @param test_name The name to give the test for the function being tested for (e.g. serialize, versioned_serialize)
+        @param name The name of the function to test for(e.g. serialize, load, save)
+        @param test_name The name to give the test for the function being tested for(e.g. serialize, versioned_serialize)
         @param versioned Either blank or the macro CEREAL_MAKE_VERSIONED_TEST */
     #ifdef CEREAL_OLDER_GCC
     #define CEREAL_MAKE_HAS_MEMBER_TEST(name, test_name, versioned)                                                                         \

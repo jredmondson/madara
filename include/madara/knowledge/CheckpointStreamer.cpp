@@ -47,7 +47,7 @@ public:
   {
     std::pair<const char*, const KnowledgeRecord*> ret{nullptr, nullptr};
 
-    if (iter_ == vec_->end())
+    if(iter_ == vec_->end())
     {
       return ret;
     }
@@ -78,7 +78,7 @@ void CheckpointStreamer::thread_main(CheckpointStreamer* self)
 
   self->settings_.variables_lister = nullptr;
 
-  while (self->keep_running_.test_and_set())
+  while(self->keep_running_.test_and_set())
   {
     {
       ContextGuard context_guard(*self->context_);
@@ -93,7 +93,7 @@ void CheckpointStreamer::thread_main(CheckpointStreamer* self)
           self->out_buffer.size());
     }
 
-    if (self->out_buffer.size() > 0)
+    if(self->out_buffer.size() > 0)
     {
       CheckpointStreamerLister lister{self->out_buffer};
       self->settings_.variables_lister = &lister;

@@ -34,12 +34,12 @@ madara::expression::SystemCallToString::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
   {
     bool arg_can_change = false;
     result = (*i)->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
     {
       delete *i;
       *i = new LeafNode(*(this->logger_), result);
@@ -57,16 +57,16 @@ madara::expression::SystemCallToString::evaluate(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0)
+  if(nodes_.size() > 0)
   {
     std::string delimiter = ", ";
 
-    if (nodes_.size() > 1)
+    if(nodes_.size() > 1)
     {
       // user wants to use a special delimiter
       delimiter = nodes_[1]->evaluate(settings).to_string(delimiter);
 
-      if (nodes_.size() > 2)
+      if(nodes_.size() > 2)
       {
         madara_logger_ptr_log(logger_, logger::LOG_ERROR,
             "madara::expression::SystemCallToString: "

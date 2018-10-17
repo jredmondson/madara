@@ -162,7 +162,7 @@ public class CircularBufferConsumer extends MadaraJNI {
 	public KnowledgeRecord[] inspect(int position, int count) throws MadaraDeadObjectException {
 		Object[] objs = jni_inspectRecordVector(getCPtr(), position, count);
 		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-		for (int i = 0; i < objs.length; ++i) {
+		for(int i = 0; i < objs.length; ++i) {
 			records[i] = (KnowledgeRecord) objs[i];
 		}
 		return records;
@@ -190,7 +190,7 @@ public class CircularBufferConsumer extends MadaraJNI {
 	public KnowledgeRecord[] consumeEarliest(int count) throws MadaraDeadObjectException {
 		Object[] objs = jni_consumeEarliestRecordVector(getCPtr(), count);
 		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-		for (int i = 0; i < objs.length; ++i) {
+		for(int i = 0; i < objs.length; ++i) {
 			records[i] = (KnowledgeRecord) objs[i];
 		}
 		return records;
@@ -208,7 +208,7 @@ public class CircularBufferConsumer extends MadaraJNI {
 	public KnowledgeRecord[] consumeLatest(int count) throws MadaraDeadObjectException {
 		Object[] objs = jni_consumeLatestRecordVector(getCPtr(), count);
 		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-		for (int i = 0; i < objs.length; ++i) {
+		for(int i = 0; i < objs.length; ++i) {
 			records[i] = (KnowledgeRecord) objs[i];
 		}
 		return records;
@@ -236,7 +236,7 @@ public class CircularBufferConsumer extends MadaraJNI {
 	public KnowledgeRecord[] peekLatest(int count) throws MadaraDeadObjectException {
 		Object[] objs = jni_peekRecordVector(getCPtr(), count);
 		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-		for (int i = 0; i < objs.length; ++i) {
+		for(int i = 0; i < objs.length; ++i) {
 			records[i] = (KnowledgeRecord) objs[i];
 		}
 		return records;
@@ -341,7 +341,7 @@ public class CircularBufferConsumer extends MadaraJNI {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeCircularBufferConsumer(getCPtr());
 			setCPtr(0);
 		}

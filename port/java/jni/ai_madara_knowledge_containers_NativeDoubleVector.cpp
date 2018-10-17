@@ -76,7 +76,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1NativeDoubleVector__
   NativeDoubleVector* result(0);
   NativeDoubleVector* source = (NativeDoubleVector*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new NativeDoubleVector(*source);
   }
@@ -114,7 +114,7 @@ void JNICALL Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1set(
 {
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->set(index, value);
   }
@@ -134,7 +134,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1pushback(
 {
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->push_back(value);
   }
@@ -160,7 +160,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1getName(
   jstring result = 0;
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -187,16 +187,16 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1setName(
 {
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -226,7 +226,7 @@ jdouble JNICALL Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1get(
 
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
     result = (*current)[index];
   else
   {
@@ -253,7 +253,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toRecord__JI(
 
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
     result = new madara::knowledge::KnowledgeRecord(current->to_record(index));
   else
   {
@@ -280,7 +280,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toRecord__J(
 
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
     result = new madara::knowledge::KnowledgeRecord(current->to_record());
   else
   {
@@ -307,7 +307,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toArray(
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", " (J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -318,9 +318,9 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1toArray(
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         std::cout << "record[" << i << "] = " << records[i] << "\n";
         jobject result = env->CallStaticObjectMethod(
@@ -358,7 +358,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1size(
 
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
     result = (jlong)current->size();
   else
   {
@@ -382,7 +382,7 @@ void JNICALL Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1resize(
 {
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
     current->resize(length);
   else
   {
@@ -404,7 +404,7 @@ void JNICALL Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1modify(
 {
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
 
-  if (current)
+  if(current)
     current->modify();
   else
   {
@@ -425,7 +425,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -446,7 +446,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isTrue(
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -469,7 +469,7 @@ Java_ai_madara_knowledge_containers_NativeDoubleVector_jni_1isFalse(
   NativeDoubleVector* current = (NativeDoubleVector*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

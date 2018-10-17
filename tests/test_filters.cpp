@@ -33,9 +33,9 @@ madara::knowledge::KnowledgeRecord decrement_primitives(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size() > 0)
+  if(args.size() > 0)
   {
-    if (args[0].type() == madara::knowledge::KnowledgeRecord::INTEGER ||
+    if(args[0].type() == madara::knowledge::KnowledgeRecord::INTEGER ||
         args[0].type() == madara::knowledge::KnowledgeRecord::DOUBLE)
     {
       result = --args[0];
@@ -76,7 +76,7 @@ void test_fragments_to_files_filter(void)
 
   // std::cerr << "  crc: " << crc << "\n";
   // std::cerr << "  fragments: " << crc << "\n";
-  // for (auto entry : args)
+  // for(auto entry : args)
   // {
   //   std::cerr << "    " << entry.first << "=" << entry.second << "\n";
   // }
@@ -90,7 +90,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing FragmentsToFilesFilter::filter... ";
 
-  if (utility::file_exists("files/images/manaus.jpg"))
+  if(utility::file_exists("files/images/manaus.jpg"))
   {
     std::cerr << "SUCCESS\n";
   }
@@ -113,7 +113,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing FileRequester with 1 less fragment... ";
 
-  if (requester.needs_request())
+  if(requester.needs_request())
   {
     std::cerr << "SUCCESS\n";
   }
@@ -133,7 +133,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing FileRequester with all fragments... ";
 
-  if (!requester.needs_request())
+  if(!requester.needs_request())
   {
     std::cerr << "SUCCESS\n";
   }
@@ -151,7 +151,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing build_fragment_request with 0 fragments... ";
 
-  if (requester.build_fragment_request().size() == 9)
+  if(requester.build_fragment_request().size() == 9)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -165,7 +165,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing needs_request with 0 fragments... ";
 
-  if (requester.needs_request())
+  if(requester.needs_request())
   {
     std::cerr << "SUCCESS\n";
   }
@@ -181,7 +181,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing build_fragment_request with max_fragments... ";
 
-  if (requester.build_fragment_request().size() == 4)
+  if(requester.build_fragment_request().size() == 4)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -195,7 +195,7 @@ void test_fragments_to_files_filter(void)
 
   std::cerr << "  Testing needs_request with max_fragments... ";
 
-  if (requester.needs_request())
+  if(requester.needs_request())
   {
     std::cerr << "SUCCESS\n";
   }
@@ -236,7 +236,7 @@ void test_dynamic_predicate_filter(void)
 
   filter.filter(map, context, vars);
 
-  if (map.size() == 3)
+  if(map.size() == 3)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -244,7 +244,7 @@ void test_dynamic_predicate_filter(void)
   {
     std::cerr << "FAIL\n";
     std::cerr << map.size() << " elements (should be 3):\n";
-    for (auto element : map)
+    for(auto element : map)
     {
       std::cerr << "  " << element.first << "\n";
     }
@@ -280,7 +280,7 @@ void test_dynamic_prefix_filter(void)
 
   filter.filter(map, context, vars);
 
-  if (map.size() == 4)
+  if(map.size() == 4)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -320,7 +320,7 @@ void test_dynamic_prefix_int_convert(void)
 
   filter.filter(map, context, vars);
 
-  if (map.size() == 8 && map["agent.0.field1"] == "field1" &&
+  if(map.size() == 8 && map["agent.0.field1"] == "field1" &&
       map["agent.0.field2"] == "field2" && map["agent.2.field1"] == "field1" &&
       map["agent.2.field2"] == "field2" && map["agent.1.field1"] == 0 &&
       map["agent.1.field2"] == 0 && map["agent.3.field1"] == 0 &&
@@ -332,7 +332,7 @@ void test_dynamic_prefix_int_convert(void)
   {
     std::cerr << "FAIL\n";
 
-    for (auto entry : map)
+    for(auto entry : map)
     {
       std::cerr << "  " << entry.first << "=" << entry.second << "\n";
     }
@@ -370,7 +370,7 @@ void test_prefix_int_convert(void)
 
   filter.filter(map, context, vars);
 
-  if (map.size() == 8 && map["agent.0.field1"] == "field1" &&
+  if(map.size() == 8 && map["agent.0.field1"] == "field1" &&
       map["agent.0.field2"] == "field2" && map["agent.2.field1"] == "field1" &&
       map["agent.2.field2"] == "field2" && map["agent.1.field1"] == 0 &&
       map["agent.1.field2"] == 0 && map["agent.3.field1"] == 0 &&
@@ -382,7 +382,7 @@ void test_prefix_int_convert(void)
   {
     std::cerr << "FAIL\n";
 
-    for (auto entry : map)
+    for(auto entry : map)
     {
       std::cerr << "  " << entry.first << "=" << entry.second << "\n";
     }
@@ -426,7 +426,7 @@ void test_variable_map_filter(void)
 
   filter.filter(map, context, vars);
 
-  if (map.size() == 8 && map["agent.0.field1"] == 1 &&
+  if(map.size() == 8 && map["agent.0.field1"] == 1 &&
       map["agent.0.field2"] == 2 && map["agent.1.field1"] == 3 &&
       map["agent.1.field2"] == 4 && map["agent.2.field1"] == 5 &&
       map["agent.2.field2"] == 6 && map["agent.3.field1"] == 7 &&
@@ -438,7 +438,7 @@ void test_variable_map_filter(void)
   {
     std::cerr << "FAIL\n";
 
-    for (auto entry : map)
+    for(auto entry : map)
     {
       std::cerr << "  " << entry.first << "=" << entry.second << "\n";
     }
@@ -521,7 +521,7 @@ int main(int, char**)
 
   std::cerr << "The result of the filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result << " (";
-  if (integer_result == madara::knowledge::KnowledgeRecord::Integer(12))
+  if(integer_result == madara::knowledge::KnowledgeRecord::Integer(12))
     std::cerr << "SUCCESS)\n";
   else
   {
@@ -530,7 +530,7 @@ int main(int, char**)
   }
 
   std::cerr << "  double result = " << double_result << " (";
-  if (double_result == 15.0)
+  if(double_result == 15.0)
     std::cerr << "SUCCESS)\n";
   else
   {
@@ -539,7 +539,7 @@ int main(int, char**)
   }
 
   std::cerr << "  string result = " << string_result << " (";
-  if (string_result == "This string should not change.")
+  if(string_result == "This string should not change.")
     std::cerr << "SUCCESS)\n";
   else
   {
@@ -557,7 +557,7 @@ int main(int, char**)
   std::cerr << "Running filter on string type (should delete string)\n";
 
   std::cerr << "  string result = " << string_result << " (";
-  if (string_result == madara::knowledge::KnowledgeRecord::Integer(0))
+  if(string_result == madara::knowledge::KnowledgeRecord::Integer(0))
     std::cerr << "SUCCESS)\n";
   else
   {
@@ -565,7 +565,7 @@ int main(int, char**)
     ++madara_fails;
   }
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

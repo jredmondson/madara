@@ -22,7 +22,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1get_1tag(
   return catch_wrap(env, [&]() {
     AnyRef a{make_anyref(handler, data)};
     auto s = a.tag();
-    if (s)
+    if(s)
     {
       jstring ret = env->NewStringUTF(s);
       env->SetObjectArrayElement(out, 0, ret);
@@ -665,7 +665,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1free(
     const TypeHandlers* h = reinterpret_cast<const TypeHandlers*>(handler);
     void* d = reinterpret_cast<void*>(data);
 
-    if (h && d)
+    if(h && d)
     {
       h->destruct(d);
     }
@@ -695,7 +695,7 @@ Java_ai_madara_knowledge_KnowledgeRecord_jni_1toAny(
     JNIEnv* env, jclass, jlong cptr, jlongArray out)
 {
   KnowledgeRecord* record = (KnowledgeRecord*)cptr;
-  if (!record)
+  if(!record)
   {
     madara::utility::java::throw_dead_obj_exception(env,
         "KnowledgeRecord::toAny: "
@@ -718,7 +718,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setAny(
     JNIEnv* env, jclass, jlong cptr, jstring name, jlong handler, jlong data)
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
-  if (!knowledge)
+  if(!knowledge)
   {
     // user has tried to use a deleted object. Clean up and throw
     madara::utility::java::throw_dead_obj_exception(
@@ -743,14 +743,14 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setAnySettings(JNIEnv* env, jclass,
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)settings_ptr;
-  if (!knowledge)
+  if(!knowledge)
   {
     // user has tried to use a deleted object. Clean up and throw
     madara::utility::java::throw_dead_obj_exception(
         env, "KnowledgeBase::setAny: KB object is released already");
     return nullptr;
   }
-  if (!settings)
+  if(!settings)
   {
     madara::utility::java::throw_dead_obj_exception(
         env, "KnowledgeBase::setAny: settings object is released already");
@@ -814,7 +814,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1register_1tag(
     JavaUTFString tagstr(env, tag);
 
     std::unique_ptr<std::string> new_tag(new std::string(tagstr.chars()));
-    if (AnyRegistry::register_type<GenericCapnObject>(new_tag->c_str()))
+    if(AnyRegistry::register_type<GenericCapnObject>(new_tag->c_str()))
     {
       // OK to leak this; will be needed for rest of process execution
       new_tag.release();

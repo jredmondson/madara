@@ -19,10 +19,10 @@ inline int madara::transport::Base::check_transport(void)
   madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
       "transport::check_transport: checking for valid transport\n");
 
-  if (!is_valid_)
+  if(!is_valid_)
     return -2;
 
-  if (shutting_down_)
+  if(shutting_down_)
     return -1;
 
   return 0;

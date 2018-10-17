@@ -195,7 +195,7 @@ public:
   operator Tracked<U>() const
   {
     Tracked<U> ret(get());
-    if (!is_dirty())
+    if(!is_dirty())
       ret.clear_dirty();
     return ret;
   }
@@ -743,10 +743,10 @@ public:
   /// Has anything about this vector changed?
   bool is_dirty() const
   {
-    if (all_dirty_)
+    if(all_dirty_)
       return true;
-    for (const uint64_t& cur : dirty_)
-      if (cur)
+    for(const uint64_t& cur : dirty_)
+      if(cur)
         return true;
     return false;
   }
@@ -756,7 +756,7 @@ public:
   {
     all_dirty_ = false;
     size_dirty_ = false;
-    for (uint64_t& cur : dirty_)
+    for(uint64_t& cur : dirty_)
       cur = 0;
   }
 
@@ -780,7 +780,7 @@ public:
   bool is_dirty(size_t i) const
   {
     std::pair<size_t, uint64_t> x = to_dirty_bit(i);
-    if (x.first >= dirty_.size())
+    if(x.first >= dirty_.size())
       return false;
     return (dirty_.at(x.first) & x.second) != 0;
   }

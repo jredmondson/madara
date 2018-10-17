@@ -34,7 +34,7 @@ madara::knowledge::KnowledgeRecord madara::expression::CompositeForLoop::item(
     void) const
 {
   madara::knowledge::KnowledgeRecord record;
-  record.set_value("for (;;)");
+  record.set_value("for(;;)");
   return record;
 }
 
@@ -65,7 +65,7 @@ madara::expression::CompositeForLoop::evaluate(
   precondition_->evaluate(settings);
 
   madara::knowledge::KnowledgeRecord::Integer count = 0;
-  while (condition_->evaluate(settings).is_true())
+  while(condition_->evaluate(settings).is_true())
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "CompositeForLoop::evaluate: Executing loop body\n");

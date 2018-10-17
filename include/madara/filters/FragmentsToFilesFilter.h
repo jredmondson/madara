@@ -60,7 +60,7 @@ public:
         "attempting to map %s -> %s\n",
         variable_prefix.c_str(), directory.c_str())
 
-        if (variable_prefix != "" && directory != "")
+        if(variable_prefix != "" && directory != "")
     {
       map_[variable_prefix] = directory;
     }
@@ -75,7 +75,7 @@ public:
   {
     auto found = map_.find(variable_prefix);
 
-    if (found != map_.end())
+    if(found != map_.end())
     {
       return found->second;
     }

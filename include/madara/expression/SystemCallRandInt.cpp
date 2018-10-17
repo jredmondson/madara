@@ -33,19 +33,19 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallRandInt::prune(
 
   madara::knowledge::KnowledgeRecord result;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
   {
     bool arg_can_change = false;
     result = (*i)->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
     {
       delete *i;
       *i = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size() > 3)
+  if(nodes_.size() > 3)
   {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallRandInt: "
@@ -74,15 +74,15 @@ madara::expression::SystemCallRandInt::evaluate(
   int64_t floor(0), ceiling(1);
   bool update_srand = true;
 
-  if (nodes_.size() > 0)
+  if(nodes_.size() > 0)
   {
     floor = nodes_[0]->evaluate(settings).to_integer();
 
-    if (nodes_.size() > 1)
+    if(nodes_.size() > 1)
     {
       ceiling = nodes_[1]->evaluate(settings).to_integer();
 
-      if (nodes_.size() > 2)
+      if(nodes_.size() > 2)
       {
         update_srand = nodes_[2]->evaluate(settings).to_integer() != 0;
       }

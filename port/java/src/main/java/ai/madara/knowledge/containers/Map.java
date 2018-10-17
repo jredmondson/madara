@@ -365,7 +365,7 @@ public class Map extends BaseContainer
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeMap(getCPtr());
       setCPtr(0);

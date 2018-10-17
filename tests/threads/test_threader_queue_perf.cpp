@@ -36,13 +36,13 @@ Integer consumers(1);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--consumers")
+    if(arg1 == "-c" || arg1 == "--consumers")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> consumers;
@@ -50,18 +50,18 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -71,9 +71,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--producers")
+    else if(arg1 == "-p" || arg1 == "--producers")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> producers;
@@ -81,9 +81,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-q" || arg1 == "--queue-length")
+    else if(arg1 == "-q" || arg1 == "--queue-length")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> queue_length;
@@ -91,9 +91,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-t" || arg1 == "--target")
+    else if(arg1 == "-t" || arg1 == "--target")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> target;
@@ -101,9 +101,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-w" || arg1 == "--max-wait")
+    else if(arg1 == "-w" || arg1 == "--max-wait")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> max_wait;
@@ -111,9 +111,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-z" || arg1 == "--hertz")
+    else if(arg1 == "-z" || arg1 == "--hertz")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> hertz;
@@ -178,7 +178,7 @@ public:
     // dequeue until terminate
     madara::knowledge::KnowledgeRecord job = jobs.dequeue(false);
 
-    if (job.is_valid())
+    if(job.is_valid())
     {
       // Update the global counter of jobs done.
       ++jobs_completed;
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
   // explicitly set random seed to right now for randomizer engine
   madara::utility::rand_int(0, 1, true);
 
-  for (Integer i = 0; i < producers; ++i)
+  for(Integer i = 0; i < producers; ++i)
   {
     std::stringstream buffer;
     buffer << "producer";
@@ -267,7 +267,7 @@ int main(int argc, char** argv)
     threader.run(hertz, buffer.str(), new Producer(), true);
   }
 
-  for (Integer i = 0; i < consumers; ++i)
+  for(Integer i = 0; i < consumers; ++i)
   {
     std::stringstream buffer;
     buffer << "consumer";
@@ -282,7 +282,7 @@ int main(int argc, char** argv)
   // awaken all threads to start work
   threader.resume();
 
-  while (jobs_completed < target)
+  while(jobs_completed < target)
   {
     // sleep until we have the target number of jobs completed
     utility::sleep(0.5);

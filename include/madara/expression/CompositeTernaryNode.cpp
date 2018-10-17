@@ -25,7 +25,7 @@ madara::expression::CompositeTernaryNode::CompositeTernaryNode(
 // Dtor
 madara::expression::CompositeTernaryNode::~CompositeTernaryNode(void)
 {
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
     delete *i;
 }
 

@@ -80,7 +80,7 @@ public class JavaLockPerformance
     {
       try
 	{
-		while (counter.inc() < target);
+		while(counter.inc() < target);
 	} catch (MadaraDeadObjectException e)
 	{
 		// TODO Auto-generated catch block
@@ -101,7 +101,7 @@ public class JavaLockPerformance
     @Override
     public void run()
     {
-      while (counter.incrementAndGet() < target);
+      while(counter.incrementAndGet() < target);
     }
   }
 
@@ -121,7 +121,7 @@ public class JavaLockPerformance
     @Override
     public void run()
     {
-      while (incAndGet() < target);
+      while(incAndGet() < target);
     }
   }
 
@@ -138,7 +138,7 @@ public class JavaLockPerformance
     public void run()
     {
       boolean run = true;
-      while (run)
+      while(run)
       {
 			  lock.lock();
 			  try {

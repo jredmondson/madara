@@ -265,7 +265,7 @@ public class String extends BaseContainer {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeString(getCPtr());
 			setCPtr(0);
 		}

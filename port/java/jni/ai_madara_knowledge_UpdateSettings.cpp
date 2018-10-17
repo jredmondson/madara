@@ -32,7 +32,7 @@ jlong JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1updateSettings__J(
   jlong result(0);
   UpdateSettings* source = (UpdateSettings*)original;
 
-  if (source)
+  if(source)
   {
     result = (jlong) new UpdateSettings(*source);
   }
@@ -58,7 +58,7 @@ void JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1setAlwaysOverwrite(
 {
   UpdateSettings* current = (UpdateSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->always_overwrite = alwaysOverwrite;
   }
@@ -84,7 +84,7 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getAlwaysOverwrite(
   jboolean result(0);
   UpdateSettings* current = (UpdateSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jboolean)current->always_overwrite;
   }
@@ -111,7 +111,7 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1setTreatGlobalsAsLocals(
 {
   UpdateSettings* current = (UpdateSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->treat_globals_as_locals = treatGlobalsAsLocals;
   }
@@ -137,7 +137,7 @@ Java_ai_madara_knowledge_UpdateSettings_jni_1getTreatGlobalsAsLocals(
   jboolean result(0);
   UpdateSettings* current = (UpdateSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jboolean)current->treat_globals_as_locals;
   }
@@ -163,7 +163,7 @@ void JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1setClockIncrement(
 {
   UpdateSettings* current = (UpdateSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->clock_increment = defaultClockIncrement;
   }
@@ -188,7 +188,7 @@ jlong JNICALL Java_ai_madara_knowledge_UpdateSettings_jni_1getClockIncrement(
   jlong result(0);
   UpdateSettings* current = (UpdateSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->clock_increment;
   }

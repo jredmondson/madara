@@ -24,7 +24,7 @@ madara::logger::Logger::Logger(bool log_to_terminal)
     tag_("madara"),
     timestamp_format_("")
 {
-  if (log_to_terminal)
+  if(log_to_terminal)
   {
     add_term();
   }
@@ -52,7 +52,7 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
   std::string ret_string = buf;
   const int MGT_DIGIT_PRECISION = 6;
 
-  while (!done)
+  while(!done)
   {
     /**
      * Take the ts_str (key string) and repeatedly search the incoming
@@ -66,14 +66,14 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
      *
      **/
     found = ret_string.find(ts_str.c_str(), found + offset, ts_str.length());
-    if (found == std::string::npos)
+    if(found == std::string::npos)
     {
       done = true;
       continue;
     }
 
     offset = 1;
-    if (ts_str == MADARA_GET_TIME_MGT_)
+    if(ts_str == MADARA_GET_TIME_MGT_)
     {
       /// insert mgt text here
       /// get_time returns nsecs. need to convert into seconds.
@@ -90,7 +90,7 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
           ret_string.find(ts_str), ts_str.length(), mgt_str.str());
       continue;
     }
-    else if (ts_str == MADARA_THREAD_NAME_)
+    else if(ts_str == MADARA_THREAD_NAME_)
     {
     // insert thread name into message buffer copy
 #ifndef MADARA_NO_THREAD_LOCAL
@@ -102,7 +102,7 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
 #endif
       continue;
     }
-    else if (ts_str == MADARA_THREAD_HERTZ_)
+    else if(ts_str == MADARA_THREAD_HERTZ_)
     {
     // insert thread hertz value into message buffer copy
 #ifndef MADARA_NO_THREAD_LOCAL
@@ -122,7 +122,7 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
 
 void madara::logger::Logger::log(int level, const char* message, ...)
 {
-  if ((madara::logger::Logger::get_thread_level() >= 0 &&
+  if((madara::logger::Logger::get_thread_level() >= 0 &&
        level <= get_thread_level()) ||
       level <= level_)
   {
@@ -135,7 +135,7 @@ void madara::logger::Logger::log(int level, const char* message, ...)
     char* begin = (char*)buffer;
     size_t remaining_buffer = sizeof(buffer);
 
-    if (this->timestamp_format_.size() > 0)
+    if(this->timestamp_format_.size() > 0)
     {
       /**
        * Prepare string to log for the timestamp prefix.
@@ -191,13 +191,13 @@ void madara::logger::Logger::log(int level, const char* message, ...)
     MADARA_GUARD_TYPE guard(mutex_);
 
 #ifdef _MADARA_ANDROID_
-    if (this->term_added_ || this->syslog_added_)
+    if(this->term_added_ || this->syslog_added_)
     {
-      if (level == LOG_ERROR)
+      if(level == LOG_ERROR)
       {
         __android_log_write(ANDROID_LOG_ERROR, tag_.c_str(), buffer);
       }
-      else if (level == LOG_WARNING)
+      else if(level == LOG_WARNING)
       {
         __android_log_write(ANDROID_LOG_WARN, tag_.c_str(), buffer);
       }
@@ -207,16 +207,16 @@ void madara::logger::Logger::log(int level, const char* message, ...)
       }
     }
 #else  // end if _USING_ANDROID_
-    if (this->term_added_ || this->syslog_added_)
+    if(this->term_added_ || this->syslog_added_)
     {
       fprintf(stderr, "%s", buffer);
     }
 #endif
 
     int file_num = 0;
-    for (FileVectors::iterator i = files_.begin(); i != files_.end(); ++i)
+    for(FileVectors::iterator i = files_.begin(); i != files_.end(); ++i)
     {
-      if (level >= LOG_DETAILED)
+      if(level >= LOG_DETAILED)
       {
         fprintf(stderr, "Logger::log: writing to file num %d", file_num);
 

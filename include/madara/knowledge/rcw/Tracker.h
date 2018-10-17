@@ -80,7 +80,7 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (get_value(*tracked_) != get_value(orig_))
+    if(get_value(*tracked_) != get_value(orig_))
     {
       Tracker::force_push(kb);
     }
@@ -178,7 +178,7 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (get_value(*tracked_) != V())
+    if(get_value(*tracked_) != V())
     {
       Tracker::force_push(kb);
     }
@@ -235,7 +235,7 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (is_dirty(*tracked_))
+    if(is_dirty(*tracked_))
     {
       Tracker::force_push(kb);
     }
@@ -291,7 +291,7 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (is_dirty(*tracked_))
+    if(is_dirty(*tracked_))
     {
       Tracker::force_push(kb);
     }
@@ -349,7 +349,7 @@ private:
     orig_size_ = val.size();
     size_t n = orig_size_;
     tracked_->resize(n);
-    for (size_t i = 0; i < n; ++i)
+    for(size_t i = 0; i < n; ++i)
     {
       set_value(*tracked_, i, (V)val[i]);
       clear_dirty(*tracked_, i);
@@ -358,16 +358,16 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (can_write)
+    if(can_write)
     {
       size_t n = tracked_->size();
-      if (tracked_->size() != orig_size_)
+      if(tracked_->size() != orig_size_)
       {
         get_mut().resize(n);
       }
-      for (size_t i = 0; i < n; ++i)
+      for(size_t i = 0; i < n; ++i)
       {
-        if (is_dirty(*tracked_, i))
+        if(is_dirty(*tracked_, i))
         {
           set_index(kb, i, get_value(*tracked_, i));
         }
@@ -378,14 +378,14 @@ private:
 
   virtual void force_push(KnowledgeBase& kb)
   {
-    if (can_write)
+    if(can_write)
     {
       size_t n = tracked_->size();
-      if (tracked_->size() != orig_size_)
+      if(tracked_->size() != orig_size_)
       {
         get_mut().resize(n);
       }
-      for (size_t i = 0; i < n; ++i)
+      for(size_t i = 0; i < n; ++i)
       {
         set_index(kb, i, get_value(*tracked_, i));
       }
@@ -432,7 +432,7 @@ private:
 
   virtual void pull()
   {
-    if (can_read)
+    if(can_read)
     {
       V val = knowledge_cast<V>(get());
       set_value(*tracked_, val);
@@ -446,20 +446,20 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (can_write)
+    if(can_write)
     {
-      if (is_all_dirty(*tracked_))
+      if(is_all_dirty(*tracked_))
       {
         return Tracker::force_push(kb);
       }
       size_t n = tracked_->size();
-      if (is_size_dirty(*tracked_) && n < get().size())
+      if(is_size_dirty(*tracked_) && n < get().size())
       {
         get_mut().resize(n);
       }
-      for (size_t i = 0; i < n; ++i)
+      for(size_t i = 0; i < n; ++i)
       {
-        if (is_dirty(*tracked_, i))
+        if(is_dirty(*tracked_, i))
         {
           set_index(kb, i, get_value(*tracked_, i));
         }
@@ -470,7 +470,7 @@ private:
 
   virtual void force_push(KnowledgeBase& kb)
   {
-    if (can_write)
+    if(can_write)
     {
       set(kb, knowledge_cast(get_value(*tracked_)));
       post_set(kb);

@@ -34,12 +34,12 @@ madara::expression::SystemCallSetPrecision::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() > 0)
+  if(nodes_.size() > 0)
   {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
     {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
@@ -57,7 +57,7 @@ madara::expression::SystemCallSetPrecision::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() > 0)
+  if(nodes_.size() > 0)
   {
     int64_t new_precision = nodes_[0]->evaluate(settings).to_integer();
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,

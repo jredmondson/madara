@@ -98,7 +98,7 @@ class_<T> define_basic_any(const char* name, const char* doc, I init)
       Py_buffer pybuf;
       int err = PyBuffer_FillInfo(&pybuf, 0, (char*)buf.begin(),
           buf.size(), true, PyBUF_CONTIG_RO);
-      if (err == -1)
+      if(err == -1)
       {
         PyErr_Print();
         throw madara::exceptions::MadaraException("Bad python buffer");
@@ -184,7 +184,7 @@ class_<T> define_basic_any(const char* name, const char* doc, I init)
       .def("list_fields",
           +[](const T& a) {
             std::vector<std::string> ret;
-            for (const auto& cur : a.list_fields())
+            for(const auto& cur : a.list_fields())
             {
               ret.emplace_back(cur.name());
             }
@@ -269,7 +269,7 @@ void define_knowledge(void)
       "Any", "A class that can store any type in a KnowledgeRecord", no_init)
       .def("__init__", make_constructor(+[](object obj) {
         extract<const char*> exstr(obj);
-        if (exstr.check())
+        if(exstr.check())
         {
           return std::make_shared<Any>(Any::construct(exstr()));
         }
@@ -284,7 +284,7 @@ void define_knowledge(void)
       .def("replace",
           +[](Any& a, object obj) {
             extract<const char*> exstr(obj);
-            if (exstr.check())
+            if(exstr.check())
             {
               a.emplace(exstr());
               return;
@@ -334,7 +334,7 @@ void define_knowledge(void)
             capnp::StructSchema schema = schema_loader.load(reader).asStruct();
 
             std::unique_ptr<std::string> copy(new std::string(a));
-            if (Any::register_schema(copy->c_str(), schema))
+            if(Any::register_schema(copy->c_str(), schema))
             {
               // Schema is registered, and name will be needed for remainder of
               // process execution. OK to leak the copy.
@@ -477,7 +477,7 @@ void define_knowledge(void)
       .def("next",
           +[](PyCheckpointReader& r) {
             auto pair = r.reader_->next();
-            if (pair.first.empty())
+            if(pair.first.empty())
             {
               PyErr_SetNone(PyExc_StopIteration);
               throw_error_already_set();
