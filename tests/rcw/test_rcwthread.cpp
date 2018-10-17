@@ -17,11 +17,11 @@ namespace rcw = madara::knowledge::rcw;
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (true)
+    if(true)
     {
     }
     else
@@ -147,7 +147,7 @@ public:
 
     std::cout << "tvec.size(): " << tvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : tvec)
+    for(auto& cur : tvec)
     {
       std::cout << cur << " ";
     }
@@ -155,7 +155,7 @@ public:
 
     std::cout << "uvec.size(): " << uvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : uvec)
+    for(auto& cur : uvec)
     {
       std::cout << *cur << " ";
     }
@@ -163,7 +163,7 @@ public:
 
     std::cout << "pvec.size(): " << pvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : pvec)
+    for(auto& cur : pvec)
     {
       std::cout << cur << " ";
     }
@@ -171,7 +171,7 @@ public:
 
     std::cout << "strvec.size(): " << strvec.size() << std::endl;
     std::cout << "   ";
-    for (auto& cur : strvec)
+    for(auto& cur : strvec)
     {
       std::cout << cur << " ";
     }
@@ -223,7 +223,7 @@ void test_rcwthread(void)
 
   threads::BaseThread* thread = &my_thread;
   thread->init(knowledge);
-  for (int x = 0; x < 10; ++x)
+  for(int x = 0; x < 10; ++x)
   {
     thread->run();
 

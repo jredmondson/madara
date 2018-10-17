@@ -9,43 +9,43 @@ typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 std::string madara::transport::types_to_string(int id)
 {
-  if (NO_TRANSPORT == id)
+  if(NO_TRANSPORT == id)
   {
     return "None";
   }
-  if (SPLICE == id)
+  if(SPLICE == id)
   {
     return "Splice DDS";
   }
-  if (NDDS == id)
+  if(NDDS == id)
   {
     return "RTI DDS";
   }
-  if (UDP == id)
+  if(UDP == id)
   {
     return "UDP";
   }
-  if (TCP == id)
+  if(TCP == id)
   {
     return "TCP (unsupported)";
   }
-  if (MULTICAST == id)
+  if(MULTICAST == id)
   {
     return "UDP Multicast";
   }
-  if (BROADCAST == id)
+  if(BROADCAST == id)
   {
     return "UDP Broadcast";
   }
-  if (REGISTRY_SERVER == id)
+  if(REGISTRY_SERVER == id)
   {
     return "UDP Registry Server";
   }
-  if (REGISTRY_CLIENT == id)
+  if(REGISTRY_CLIENT == id)
   {
     return "UDP Registry Client";
   }
-  if (ZMQ == id)
+  if(ZMQ == id)
   {
     return "0MQ";
   }
@@ -81,7 +81,7 @@ madara::transport::TransportSettings::TransportSettings(
     read_domains_(settings.read_domains_)
 {
   hosts.resize(settings.hosts.size());
-  for (unsigned int i = 0; i < settings.hosts.size(); ++i)
+  for(unsigned int i = 0; i < settings.hosts.size(); ++i)
     hosts[i] = settings.hosts[i];
 }
 
@@ -110,7 +110,7 @@ void madara::transport::TransportSettings::operator=(
   max_send_hertz = settings.max_send_hertz;
 
   hosts.resize(settings.hosts.size());
-  for (unsigned int i = 0; i < settings.hosts.size(); ++i)
+  for(unsigned int i = 0; i < settings.hosts.size(); ++i)
     hosts[i] = settings.hosts[i];
 
   no_sending = settings.no_sending;
@@ -123,10 +123,10 @@ void madara::transport::TransportSettings::operator=(
 
 madara::transport::TransportSettings::~TransportSettings()
 {
-  for (OriginatorFragmentMap::iterator originator = fragment_map.begin();
+  for(OriginatorFragmentMap::iterator originator = fragment_map.begin();
        originator != fragment_map.end(); ++originator)
   {
-    for (ClockFragmentMap::iterator clock = originator->second.begin();
+    for(ClockFragmentMap::iterator clock = originator->second.begin();
          clock != originator->second.end(); ++clock)
     {
       delete_fragments(clock->second);
@@ -168,7 +168,7 @@ void madara::transport::TransportSettings::load(
   containers::StringVector kb_hosts(prefix + ".hosts", knowledge);
 
   hosts.resize(kb_hosts.size());
-  for (unsigned int i = 0; i < hosts.size(); ++i)
+  for(unsigned int i = 0; i < hosts.size(); ++i)
     hosts[i] = kb_hosts[i];
 
   containers::Map kb_read_domains(prefix + ".read_domains", knowledge);
@@ -176,7 +176,7 @@ void madara::transport::TransportSettings::load(
   std::vector<std::string> keys;
   kb_read_domains.keys(keys);
 
-  for (unsigned int i = 0; i < keys.size(); ++i)
+  for(unsigned int i = 0; i < keys.size(); ++i)
   {
     read_domains_[keys[i]] = 1;
   }
@@ -221,7 +221,7 @@ void madara::transport::TransportSettings::load_text(
   containers::StringVector kb_hosts(prefix + ".hosts", knowledge);
 
   hosts.resize(kb_hosts.size());
-  for (unsigned int i = 0; i < hosts.size(); ++i)
+  for(unsigned int i = 0; i < hosts.size(); ++i)
     hosts[i] = kb_hosts[i];
 
   containers::Map kb_read_domains(prefix + ".read_domains", knowledge);
@@ -229,7 +229,7 @@ void madara::transport::TransportSettings::load_text(
   std::vector<std::string> keys;
   kb_read_domains.keys(keys);
 
-  for (unsigned int i = 0; i < keys.size(); ++i)
+  for(unsigned int i = 0; i < keys.size(); ++i)
   {
     read_domains_[keys[i]] = 1;
   }
@@ -273,7 +273,7 @@ void madara::transport::TransportSettings::save(
   knowledge.set(prefix + ".read_thread_hertz", read_thread_hertz);
   knowledge.set(prefix + ".max_send_hertz", max_send_hertz);
 
-  for (size_t i = 0; i < hosts.size(); ++i)
+  for(size_t i = 0; i < hosts.size(); ++i)
     kb_hosts.set(i, hosts[i]);
 
   knowledge.set(prefix + ".no_sending", Integer(no_sending));
@@ -282,7 +282,7 @@ void madara::transport::TransportSettings::save(
 
   knowledge::containers::Map kb_read_domains(
       prefix + ".read_domains", knowledge);
-  for (std::map<std::string, int>::const_iterator i = read_domains_.begin();
+  for(std::map<std::string, int>::const_iterator i = read_domains_.begin();
        i != read_domains_.end(); ++i)
   {
     kb_read_domains.set(
@@ -325,7 +325,7 @@ void madara::transport::TransportSettings::save_text(
   knowledge.set(prefix + ".read_thread_hertz", read_thread_hertz);
   knowledge.set(prefix + ".max_send_hertz", max_send_hertz);
 
-  for (size_t i = 0; i < hosts.size(); ++i)
+  for(size_t i = 0; i < hosts.size(); ++i)
     kb_hosts.set(i, hosts[i]);
 
   knowledge.set(prefix + ".no_sending", Integer(no_sending));
@@ -334,7 +334,7 @@ void madara::transport::TransportSettings::save_text(
 
   knowledge::containers::Map kb_read_domains(
       prefix + ".read_domains", knowledge);
-  for (std::map<std::string, int>::const_iterator i = read_domains_.begin();
+  for(std::map<std::string, int>::const_iterator i = read_domains_.begin();
        i != read_domains_.end(); ++i)
   {
     kb_read_domains.set(

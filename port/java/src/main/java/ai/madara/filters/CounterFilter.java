@@ -145,7 +145,7 @@ public class CounterFilter extends MadaraJNI {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeCounterFilter(getCPtr());
 			setCPtr(0);
 		}

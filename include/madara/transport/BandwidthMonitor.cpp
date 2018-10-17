@@ -21,7 +21,7 @@ madara::transport::BandwidthMonitor::~BandwidthMonitor() {}
 void madara::transport::BandwidthMonitor::operator=(const BandwidthMonitor& rhs)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (this != &rhs)
+  if(this != &rhs)
   {
     messages_ = rhs.messages_;
     utilization_ = rhs.utilization_;
@@ -66,7 +66,7 @@ bool madara::transport::BandwidthMonitor::is_bandwidth_violated(int64_t limit)
 {
   bool result = false;
 
-  if (limit >= 0 && uint64_t(limit) > get_utilization())
+  if(limit >= 0 && uint64_t(limit) > get_utilization())
     result = true;
 
   return result;

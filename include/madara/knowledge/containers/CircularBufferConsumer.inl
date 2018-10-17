@@ -24,7 +24,7 @@ inline CircularBufferConsumer::CircularBufferConsumer()
 
 inline void CircularBufferConsumer::check_name(const char* func) const
 {
-  if (name_ == "")
+  if(name_ == "")
   {
     throw exceptions::NameException(
         std::string("CircularBufferConsumer::") + func + ": name is empty.");
@@ -34,7 +34,7 @@ inline void CircularBufferConsumer::check_name(const char* func) const
 inline void CircularBufferConsumer::check_context(const char* func) const
 {
   check_name(func);
-  if (!context_)
+  if(!context_)
   {
     throw exceptions::ContextException(std::string("CircularBufferConsumer::") +
                                        func + ": context is not set.");
@@ -44,30 +44,30 @@ inline void CircularBufferConsumer::check_context(const char* func) const
 inline void CircularBufferConsumer::check_all(const char* func) const
 {
   std::string reason = "";
-  if (context_ == 0)
+  if(context_ == 0)
   {
     reason = "context has not been set";
   }
 
-  if (name_ == "")
+  if(name_ == "")
   {
-    if (reason.size() > 0)
+    if(reason.size() > 0)
     {
       reason += " and ";
     }
     reason = "name has not been set";
   }
 
-  if (buffer_.size() == 0)
+  if(buffer_.size() == 0)
   {
-    if (reason.size() > 0)
+    if(reason.size() > 0)
     {
       reason += " and ";
     }
     reason = "size == 0";
   }
 
-  if (reason != "")
+  if(reason != "")
   {
     std::stringstream message;
     message << "CircularBufferConsumer::" << func << ": ";
@@ -113,11 +113,11 @@ CircularBufferConsumer::increment(
     KnowledgeRecord::Integer base, KnowledgeRecord::Integer value) const
 {
   KnowledgeRecord::Integer result = base + value;
-  if (buffer_.size() > 0 && base + value >= 0)
+  if(buffer_.size() > 0 && base + value >= 0)
   {
     return (result) % (KnowledgeRecord::Integer)buffer_.size();
   }
-  else if (buffer_.size() > 0)
+  else if(buffer_.size() > 0)
   {
     return (KnowledgeRecord::Integer)buffer_.size() + result;
   }
@@ -138,7 +138,7 @@ void CircularBufferConsumer::consume(T& value) const
 
   ContextGuard context_guard(*context_);
 
-  if (remaining() > 0)
+  if(remaining() > 0)
     value = consume().to_any<T>();
   else
     throw exceptions::IndexException(
@@ -155,14 +155,14 @@ inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::consume(
 
   KnowledgeRecord::Integer index_diff = *index_ - local_index_;
 
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer cur = increment(local_index_, 1);
 
-  if (remaining() > 0)
+  if(remaining() > 0)
   {
     ++local_index_;
     return context_->get(buffer_.vector_[(size_t)(cur)]);
@@ -182,14 +182,14 @@ inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::consume(
 
   dropped = get_dropped();
 
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer cur = increment(local_index_, 1);
 
-  if (remaining() > 0)
+  if(remaining() > 0)
   {
     ++local_index_;
     return context_->get(buffer_.vector_[(size_t)(cur)]);
@@ -214,14 +214,14 @@ inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::inspect(
 
   // If buffer overflowed, update local index to last valid value - 1
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer requested_index = local_index_ + position;
 
-  if (0 <= requested_index &&
+  if(0 <= requested_index &&
       (*index_ - (KnowledgeRecord::Integer)buffer_.size()) <= requested_index &&
       requested_index <= *index_)
   {
@@ -249,10 +249,10 @@ void CircularBufferConsumer::inspect(KnowledgeRecord::Integer position,
   uint64_t latest_toi = 0;
 
   // iterate over the returned records
-  for (auto record : inspect(position, count))
+  for(auto record : inspect(position, count))
   {
     // add them to the values if valid and increasing toi
-    if (record.is_valid() && record.toi() >= latest_toi)
+    if(record.is_valid() && record.toi() >= latest_toi)
     {
       latest_toi = record.toi();
       values.push_back(record.to_any<T>());
@@ -269,14 +269,14 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::inspect(
 
   // If buffer overflowed, update local index to last valid value - 1
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
   }
 
   KnowledgeRecord::Integer requested_index = local_index_ + position;
 
-  if (0 <= requested_index &&
+  if(0 <= requested_index &&
       (*index_ - (KnowledgeRecord::Integer)buffer_.size()) <= requested_index &&
       requested_index <= *index_)
   {
@@ -285,7 +285,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::inspect(
 
     std::vector<KnowledgeRecord> result;
 
-    for (size_t i = 0; i < count; ++i, index = increment(index, 1))
+    for(size_t i = 0; i < count; ++i, index = increment(index, 1))
     {
       result.push_back(buffer_[(size_t)index]);
     }
@@ -343,7 +343,7 @@ inline void CircularBufferConsumer::resize(void)
 
 inline void CircularBufferConsumer::resync(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
 
@@ -360,7 +360,7 @@ inline void CircularBufferConsumer::resync(void)
 inline void CircularBufferConsumer::set_name(
     const std::string& name, KnowledgeBase& knowledge)
 {
-  if (name != "")
+  if(name != "")
   {
     ContextGuard context_guard(knowledge);
     name_ = name;
@@ -379,7 +379,7 @@ inline void CircularBufferConsumer::set_name(
 inline void CircularBufferConsumer::set_name(
     const std::string& name, Variables& knowledge)
 {
-  if (name != "")
+  if(name != "")
   {
     ContextGuard context_guard(*knowledge.get_context());
     name_ = name;
@@ -407,10 +407,10 @@ void CircularBufferConsumer::consume_latest(
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : consume_latest(count))
+  for(auto record : consume_latest(count))
   {
     // add them to the values
-    if (record.is_valid())
+    if(record.is_valid())
       values.push_back(record.to_any<T>());
   }
 }
@@ -422,10 +422,10 @@ void CircularBufferConsumer::consume_latest(
   dropped = get_dropped();
 
   // iterate over the returned records
-  for (auto record : consume_latest(count))
+  for(auto record : consume_latest(count))
   {
     // add them to the values
-    if (record.is_valid())
+    if(record.is_valid())
       values.push_back(record.to_any<T>());
   }
 }
@@ -443,7 +443,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_latest(
 
   count = std::min(count, (size_t)(*index_ - local_index_));
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }
@@ -469,7 +469,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_latest(
 
   count = std::min(count, (size_t)(*index_ - local_index_));
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }
@@ -486,10 +486,10 @@ void CircularBufferConsumer::consume_earliest(
 {
   uint64_t latest_toi = 0;
   // iterate over the returned records
-  for (auto record : consume_earliest(count))
+  for(auto record : consume_earliest(count))
   {
     // add them to the values if valid
-    if (record.is_valid() && record.toi() >= latest_toi)
+    if(record.is_valid() && record.toi() >= latest_toi)
     {
       latest_toi = record.toi();
       values.push_back(record.to_any<T>());
@@ -505,10 +505,10 @@ void CircularBufferConsumer::consume_earliest(
 
   uint64_t latest_toi = 0;
   // iterate over the returned records
-  for (auto record : consume_earliest(count))
+  for(auto record : consume_earliest(count))
   {
     // add them to the values if valid and increasing toi
-    if (record.is_valid() && record.toi() >= latest_toi)
+    if(record.is_valid() && record.toi() >= latest_toi)
     {
       latest_toi = record.toi();
       values.push_back(record.to_any<T>());
@@ -527,7 +527,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_earliest(
   KnowledgeRecord::Integer index_diff = (*index_ - local_index_);
 
   // If buffer overflowed, update local index to last valid value - 1
-  if (index_diff > (KnowledgeRecord::Integer)buffer_.size())
+  if(index_diff > (KnowledgeRecord::Integer)buffer_.size())
   {
     local_index_ = *index_ - (KnowledgeRecord::Integer)buffer_.size();
     index_diff = (KnowledgeRecord::Integer)buffer_.size();
@@ -541,7 +541,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_earliest(
           ? increment(local_index_, 1)
           : increment(*index_, -(KnowledgeRecord::Integer)(buffer_.size()) + 1);
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, 1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }
@@ -571,7 +571,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_earliest(
           ? increment(local_index_, 1)
           : increment(*index_, -(KnowledgeRecord::Integer)(buffer_.size()) + 1);
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, 1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }
@@ -590,7 +590,7 @@ inline size_t CircularBufferConsumer::get_dropped(void) const
   size_t difference = remaining();
   size_t buffer_size = size();
 
-  if (difference > buffer_size)
+  if(difference > buffer_size)
   {
     return difference - buffer_size;
   }
@@ -605,10 +605,10 @@ void CircularBufferConsumer::peek_latest(
     size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : peek_latest(count))
+  for(auto record : peek_latest(count))
   {
     // add them to the values
-    if (record.is_valid())
+    if(record.is_valid())
       values.push_back(record.to_any<T>());
   }
 }
@@ -626,7 +626,7 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::peek_latest(
 
   KnowledgeRecord::Integer cur = *index_ % buffer_.size();
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }
@@ -641,7 +641,7 @@ void CircularBufferConsumer::peek_latest(T& value) const
 
   ContextGuard context_guard(*context_);
 
-  if (count() > 0)
+  if(count() > 0)
     value = peek_latest().to_any<T>();
   else
     throw exceptions::IndexException(
@@ -659,7 +659,7 @@ inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::peek_latest(
   KnowledgeRecord::Integer index = *index_;
   index = increment(index, 0);
 
-  if (count() > 0)
+  if(count() > 0)
     return context_->get(buffer_.vector_[(size_t)index]);
   else
     return KnowledgeRecord();

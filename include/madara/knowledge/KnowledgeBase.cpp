@@ -24,7 +24,7 @@ KnowledgeRecord KnowledgeBase::wait(
 {
   KnowledgeRecord result;
 
-  if (context_)
+  if(context_)
   {
     /**
      * The only situation this can be useful will be if the thread safe
@@ -41,7 +41,7 @@ KnowledgeRecord KnowledgeBase::wait(
     KnowledgeRecord last_value;
 
     // print the post statement at highest log level (cannot be masked)
-    if (settings.pre_print_statement != "")
+    if(settings.pre_print_statement != "")
       context_->print(settings.pre_print_statement, logger::LOG_ALWAYS);
 
     {
@@ -63,7 +63,7 @@ KnowledgeRecord KnowledgeBase::wait(
     }
 
     // wait for expression to be true
-    while (!last_value.to_integer() &&
+    while(!last_value.to_integer() &&
            (settings.max_wait_time < 0 || !enforcer.is_done()))
     {
       madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
@@ -72,7 +72,7 @@ KnowledgeRecord KnowledgeBase::wait(
 
       // Unlike the other wait statements, we allow for a time based wait.
       // To do this, we allow a user to specify a
-      if (settings.poll_frequency > 0)
+      if(settings.poll_frequency > 0)
       {
         enforcer.sleep_until_next();
       }
@@ -101,9 +101,9 @@ KnowledgeRecord KnowledgeBase::wait(
       }
 
       context_->signal();
-    }  // end while (!last)
+    }  // end while(!last)
 
-    if (enforcer.is_done())
+    if(enforcer.is_done())
     {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "KnowledgeBase::wait:"
@@ -111,12 +111,12 @@ KnowledgeRecord KnowledgeBase::wait(
     }
 
     // print the post statement at highest log level (cannot be masked)
-    if (settings.post_print_statement != "")
+    if(settings.post_print_statement != "")
       context_->print(settings.post_print_statement, logger::LOG_ALWAYS);
 
     return last_value;
   }
-  else if (impl_.get())
+  else if(impl_.get())
   {
     result = impl_->wait(expression, settings);
   }

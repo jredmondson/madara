@@ -135,13 +135,13 @@ namespace cereal
         // First phase of lookup - match base type index
         auto const & baseMap = StaticObject<PolymorphicCasters>::getInstance().map;
         auto baseIter = baseMap.find( baseIndex );
-        if (baseIter == baseMap.end())
+        if(baseIter == baseMap.end())
           return false;
 
         // Second phase - find a match from base to derived
         auto & derivedMap = baseIter->second;
         auto derivedIter = derivedMap.find( derivedIndex );
-        if (derivedIter == derivedMap.end())
+        if(derivedIter == derivedMap.end())
           return false;
 
         return true;
@@ -490,7 +490,7 @@ namespace cereal
         auto key = std::string(binding_name<T>::name());
         auto lb = map.lower_bound(key);
 
-        if (lb != map.end() && lb->first == key)
+        if(lb != map.end() && lb->first == key)
           return;
 
         typename InputBindingMap<Archive>::Serializers serializers;
@@ -609,7 +609,7 @@ namespace cereal
         auto key = std::type_index(typeid(T));
         auto lb = map.lower_bound(key);
 
-        if (lb != map.end() && lb->first == key)
+        if(lb != map.end() && lb->first == key)
           return;
 
         typename OutputBindingMap<Archive>::Serializers serializers;

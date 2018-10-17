@@ -106,7 +106,7 @@ public:
     : python_function(func), type(PYTHON_CALLABLE)
   {
     // Check to make sure its a callable object
-    if (0 == PyObject_HasAttrString(func.ptr(), "__call__"))
+    if(0 == PyObject_HasAttrString(func.ptr(), "__call__"))
     {
       // If not, lets throw an exception to warn the user
       PyErr_SetString(PyExc_TypeError, "Handler must be a callable object");

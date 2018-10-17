@@ -358,7 +358,7 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     int decode_result = (uint32_t)settings.filter_decode(
         (char*)buffer, total_size, settings.queue_length);
 
-    if (decode_result <= 0)
+    if(decode_result <= 0)
     {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"

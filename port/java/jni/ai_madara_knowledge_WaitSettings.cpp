@@ -35,7 +35,7 @@ jlong JNICALL Java_ai_madara_knowledge_WaitSettings_jni_1waitSettings__J(
   jlong result(0);
   WaitSettings* source = (WaitSettings*)original;
 
-  if (source)
+  if(source)
   {
     result = (jlong) new WaitSettings(*source);
   }
@@ -61,7 +61,7 @@ void JNICALL Java_ai_madara_knowledge_WaitSettings_jni_1setPollFrequency(
 {
   WaitSettings* current = (WaitSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->poll_frequency = pollFreq;
   }
@@ -86,7 +86,7 @@ jdouble JNICALL Java_ai_madara_knowledge_WaitSettings_jni_1getPollFrequency(
   jdouble result(0);
   WaitSettings* current = (WaitSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jdouble)current->poll_frequency;
   }
@@ -112,7 +112,7 @@ void JNICALL Java_ai_madara_knowledge_WaitSettings_jni_1setMaxWaitTime(
 {
   WaitSettings* current = (WaitSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->max_wait_time = maxWaitTime;
   }
@@ -137,7 +137,7 @@ jdouble JNICALL Java_ai_madara_knowledge_WaitSettings_jni_1getMaxWaitTime(
   jdouble result(0);
   WaitSettings* current = (WaitSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jdouble)current->max_wait_time;
   }

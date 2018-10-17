@@ -90,11 +90,11 @@ private:
   void update_elems()
   {
     const size_t n = tracked_->size();
-    if (elems_.size() == n)
+    if(elems_.size() == n)
       return;
-    if (elems_.size() > n)
+    if(elems_.size() > n)
     {
-      for (size_t i = n; i < elems_.size(); ++i)
+      for(size_t i = n; i < elems_.size(); ++i)
       {
         get_mut(elems_[i]).clear_value();
       }
@@ -105,7 +105,7 @@ private:
     elems_.reserve(n);
     name << prefix_ << ".";
     const auto pos = name.tellp();
-    for (size_t i = elems_.size(); i < n; ++i)
+    for(size_t i = elems_.size(); i < n; ++i)
     {
       name << i;
       elems_.push_back(kb_.get_ref(name.str()));
@@ -118,9 +118,9 @@ private:
     const size_t n = get().to_integer();
     tracked_->resize(n);
     update_elems();
-    for (size_t i = 0; i < n; ++i)
+    for(size_t i = 0; i < n; ++i)
     {
-      if (can_read)
+      if(can_read)
       {
         V val = knowledge_cast<V>(get(elems_[i]));
         set_value(*tracked_, i, val);
@@ -135,23 +135,23 @@ private:
 
   virtual void push(KnowledgeBase& kb)
   {
-    if (can_write)
+    if(can_write)
     {
       const size_t n = tracked_->size();
-      if (is_all_dirty(*tracked_))
+      if(is_all_dirty(*tracked_))
       {
         return force_push(kb);
       }
-      if (is_size_dirty(*tracked_))
+      if(is_size_dirty(*tracked_))
       {
         set(kb, n);
         post_set(kb);
       }
 
       update_elems();
-      for (size_t i = 0; i < n; ++i)
+      for(size_t i = 0; i < n; ++i)
       {
-        if (is_dirty(*tracked_, i))
+        if(is_dirty(*tracked_, i))
         {
           set(kb, elems_[i], knowledge_cast(get_value(*tracked_, i)));
           post_set(kb, elems_[i]);
@@ -162,14 +162,14 @@ private:
 
   virtual void force_push(KnowledgeBase& kb)
   {
-    if (can_write)
+    if(can_write)
     {
       const size_t n = tracked_->size();
       set(kb, n);
       post_set(kb);
 
       update_elems();
-      for (size_t i = 0; i < n; ++i)
+      for(size_t i = 0; i < n; ++i)
       {
         set(kb, elems_[i], knowledge_cast(tracked_->at(i)));
         post_set(kb, elems_[i]);

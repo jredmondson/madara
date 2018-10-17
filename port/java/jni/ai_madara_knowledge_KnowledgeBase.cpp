@@ -45,17 +45,17 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2IL
   const char* nativeDomain = env->GetStringUTFChars(domain, 0);
   KnowledgeBase* knowledge(0);
 
-  if (nativeHost && nativeDomain)
+  if(nativeHost && nativeDomain)
   {
     knowledge = new KnowledgeBase(nativeHost, transport, nativeDomain);
   }
 
-  if (nativeHost)
+  if(nativeHost)
   {
     env->ReleaseStringUTFChars(host, nativeHost);
   }
 
-  if (nativeDomain)
+  if(nativeDomain)
   {
     env->ReleaseStringUTFChars(domain, nativeDomain);
   }
@@ -72,9 +72,9 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1KnowledgeBase__Ljava_lang_String_2J(
       (madara::transport::TransportSettings*)csettings;
   KnowledgeBase* knowledge(0);
 
-  if (settings)
+  if(settings)
   {
-    if (nativeHost)
+    if(nativeHost)
     {
       knowledge = new KnowledgeBase(nativeHost, *settings);
       env->ReleaseStringUTFChars(host, nativeHost);
@@ -94,7 +94,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1KnowledgeBase__J(
   KnowledgeBase* result(0);
   KnowledgeBase* source = (KnowledgeBase*)original;
 
-  if (source)
+  if(source)
   {
     result = new KnowledgeBase(*source);
   }
@@ -115,7 +115,7 @@ jstring JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1getID(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   jstring result = 0;
 
-  if (knowledge)
+  if(knowledge)
   {
     std::string id = knowledge->get_id();
     result = env->NewStringUTF(id.c_str());
@@ -137,7 +137,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1attachLogger(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   Logger* logger = (Logger*)logger_ptr;
 
-  if (knowledge && logger)
+  if(knowledge && logger)
   {
     knowledge->attach_logger(*logger);
   }
@@ -158,7 +158,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1attachTransport(
   transport::TransportSettings* settings =
       (transport::TransportSettings*)settings_ptr;
 
-  if (knowledge && native_id && settings)
+  if(knowledge && native_id && settings)
   {
     knowledge->attach_transport(native_id, *settings);
   }
@@ -177,7 +177,7 @@ jstring JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1debugModifieds(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   jstring result = 0;
 
-  if (knowledge)
+  if(knowledge)
   {
     result = env->NewStringUTF(knowledge->debug_modifieds().c_str());
   }
@@ -197,7 +197,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1closeTransports(
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->close_transport();
   }
@@ -216,7 +216,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1getLogger(
   Logger* result(0);
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     result = &(knowledge->get_logger());
   }
@@ -245,7 +245,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluate__JLjava_lang_String_2J(
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)evalSettings;
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     result =
         knowledge->evaluate(std::string(nativeExpression), *settings).clone();
@@ -278,7 +278,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluate__JJJ(
 
   jlong result(0);
 
-  if (knowledge && compiled && settings)
+  if(knowledge && compiled && settings)
   {
     result = (jlong)knowledge->evaluate(*compiled, *settings).clone();
   }
@@ -307,7 +307,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluateNoReturn__JLjava_lang_String
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)evalSettings;
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->evaluate(std::string(nativeExpression), *settings);
   }
@@ -335,7 +335,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1evaluateNoReturn__JJJ(
   CompiledExpression* compiled = (CompiledExpression*)expression;
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)evalSettings;
 
-  if (knowledge && compiled && settings)
+  if(knowledge && compiled && settings)
   {
     knowledge->evaluate(*compiled, *settings);
   }
@@ -362,7 +362,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1compile(
 
   CompiledExpression* result(0);
 
-  if (knowledge)
+  if(knowledge)
   {
     result = new CompiledExpression(
         knowledge->compile(std::string(nativeExpression)));
@@ -394,7 +394,7 @@ madara::knowledge::KnowledgeRecord default_madara_return_function(
 
   jlong ret;
   jlong* argsArrayNative = new jlong[args.size()];
-  for (unsigned int x = 0; x < args.size(); x++)
+  for(unsigned int x = 0; x < args.size(); x++)
   {
     argsArrayNative[x] = (jlong) & (args[x]);
   }
@@ -408,7 +408,7 @@ madara::knowledge::KnowledgeRecord default_madara_return_function(
 
   delete[] argsArrayNative;
 
-  if (ret == 0)
+  if(ret == 0)
   {
     return madara::knowledge::KnowledgeRecord(0);
   }
@@ -432,16 +432,16 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
-    if (!knowledgeBaseClass)
+    if(!knowledgeBaseClass)
     {
       knowledgeBaseClass = (jclass)env->NewGlobalRef(env->GetObjectClass(obj));
       callbackMethod = env->GetStaticMethodID(
           knowledgeBaseClass, "callBack", " (Ljava/lang/String;J[JJ)J");
     }
 
-    if (!jvm)
+    if(!jvm)
     {
       env->GetJavaVM(&jvm);
     }
@@ -491,7 +491,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1defineFunction__JLjava_lang_String_2
 
   const char* nativeName = env->GetStringUTFChars(name, 0);
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->define_function(std::string(nativeName), func);
   }
@@ -515,7 +515,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1clear(
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->clear();
   }
@@ -536,7 +536,7 @@ jboolean JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1exists(
 
   const char* nativeName = env->GetStringUTFChars(name, 0);
 
-  if (knowledge)
+  if(knowledge)
   {
     result = (jboolean)knowledge->exists(nativeName);
   }
@@ -567,7 +567,7 @@ jstring JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toString(
   const char* nativeKeyvalDelimiter =
       env->GetStringUTFChars(keyvalDelimiter, 0);
 
-  if (knowledge && nativeArrayDelimiter && nativeRecordDelimiter &&
+  if(knowledge && nativeArrayDelimiter && nativeRecordDelimiter &&
       nativeKeyvalDelimiter)
   {
     std::string stringkb;
@@ -605,7 +605,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1get(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
   madara::knowledge::KnowledgeRecord* result(0);
-  if (knowledge)
+  if(knowledge)
   {
     result = knowledge->get(nativeVar).clone();
   }
@@ -633,7 +633,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setInteger(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   const char* nativeVar = env->GetStringUTFChars(var, 0);
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set(nativeVar, Integer(value));
   }
@@ -659,7 +659,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setDouble(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   const char* nativeVar = env->GetStringUTFChars(var, 0);
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set(nativeVar, (double)value);
   }
@@ -686,7 +686,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setString(
   const char* nativeVar = env->GetStringUTFChars(var, 0);
   const char* nativeValue = env->GetStringUTFChars(value, 0);
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set(nativeVar, nativeValue);
   }
@@ -720,24 +720,24 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerArray(
   std::vector<madara::knowledge::KnowledgeRecord::Integer> intVector(len);
 
   // copy elements to the STL vector
-  for (int x = 0; x < len; x++)
+  for(int x = 0; x < len; x++)
     intVector[x] = intArray[x];
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set(nativeVar, intVector);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    if (isCopy)
+    if(isCopy)
       env->ReleaseLongArrayElements(value, intArray, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
     madara::utility::java::throw_dead_obj_exception(
         env, "KnowledgeBase::setIntegerArray: KB object is released already");
   }
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseLongArrayElements(value, intArray, JNI_ABORT);
   env->ReleaseStringUTFChars(var, nativeVar);
 }
@@ -759,17 +759,17 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleArray(
   std::vector<double> dblVector(len);
 
   // copy elements to the STL vector
-  for (int x = 0; x < len; x++)
+  for(int x = 0; x < len; x++)
     dblVector[x] = dblArray[x];
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set(std::string(nativeVar), dblVector);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    if (isCopy)
+    if(isCopy)
       env->ReleaseDoubleArrayElements(value, dblArray, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -777,7 +777,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleArray(
         env, "KnowledgeBase::setDoubleArray: KB object is released already");
   }
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseDoubleArrayElements(value, dblArray, JNI_ABORT);
   env->ReleaseStringUTFChars(var, nativeVar);
 }
@@ -796,7 +796,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setFile(
   // copy file contents
   memcpy(dest, source, (size_t)len);
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set_file(std::string(nativeVar), dest, (size_t)len);
   }
@@ -805,7 +805,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setFile(
     // user has tried to use a deleted object. Clean up and throw
 
     delete[] dest;
-    if (isCopy)
+    if(isCopy)
       env->ReleaseByteArrayElements(value, source, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -815,7 +815,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setFile(
 
   delete[] dest;
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseByteArrayElements(value, source, JNI_ABORT);
 
   env->ReleaseStringUTFChars(var, nativeVar);
@@ -836,7 +836,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImage(
   // copy image contents
   memcpy(dest, source, (size_t)len);
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->set_jpeg(std::string(nativeVar), dest, (size_t)len);
   }
@@ -845,7 +845,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImage(
     // user has tried to use a deleted object. Clean up and throw
 
     delete[] dest;
-    if (isCopy)
+    if(isCopy)
       env->ReleaseByteArrayElements(value, source, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -855,7 +855,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImage(
 
   delete[] dest;
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseByteArrayElements(value, source, JNI_ABORT);
 
   env->ReleaseStringUTFChars(var, nativeVar);
@@ -869,7 +869,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerSettings(
   const char* nativeVar = env->GetStringUTFChars(var, 0);
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)settings_ptr;
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set(nativeVar, Integer(value), *settings);
   }
@@ -899,7 +899,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleSettings(
   const char* nativeVar = env->GetStringUTFChars(var, 0);
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)settings_ptr;
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set(nativeVar, value, *settings);
   }
@@ -930,7 +930,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setStringSettings(
   const char* nativeValue = env->GetStringUTFChars(value, 0);
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)settings_ptr;
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set(nativeVar, nativeValue, *settings);
   }
@@ -968,17 +968,17 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerArraySettings(JNIEnv* env,
   std::vector<madara::knowledge::KnowledgeRecord::Integer> intVector(len);
 
   // copy elements to STL vector
-  for (int x = 0; x < len; x++)
+  for(int x = 0; x < len; x++)
     intVector[x] = intArray[x];
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set(std::string(nativeVar), intVector, *settings);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    if (isCopy)
+    if(isCopy)
       env->ReleaseLongArrayElements(value, intArray, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -987,7 +987,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setIntegerArraySettings(JNIEnv* env,
         "KB or settings objects are released already");
   }
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseLongArrayElements(value, intArray, JNI_ABORT);
   env->ReleaseStringUTFChars(var, nativeVar);
 }
@@ -1011,17 +1011,17 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleArraySettings(
   std::vector<double> dblVector(len);
 
   // copy elements to STL vector
-  for (int x = 0; x < len; x++)
+  for(int x = 0; x < len; x++)
     dblVector[x] = dblArray[x];
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set(std::string(nativeVar), dblVector, *settings);
   }
   else
   {
     // user has tried to use a deleted object. Clean up and throw
-    if (isCopy)
+    if(isCopy)
       env->ReleaseDoubleArrayElements(value, dblArray, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -1030,7 +1030,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setDoubleArraySettings(
         "KB or settings objects are released already");
   }
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseDoubleArrayElements(value, dblArray, JNI_ABORT);
   env->ReleaseStringUTFChars(var, nativeVar);
 }
@@ -1049,7 +1049,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setFileSettings(
   unsigned char* dest = new unsigned char[len];
   memcpy(dest, source, (size_t)len);
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set_file(nativeVar, dest, (size_t)len, *settings);
   }
@@ -1057,7 +1057,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setFileSettings(
   {
     // user has tried to use a deleted object. Clean up and throw
     delete[] dest;
-    if (isCopy)
+    if(isCopy)
       env->ReleaseByteArrayElements(value, source, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -1068,7 +1068,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setFileSettings(
 
   delete[] dest;
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseByteArrayElements(value, source, JNI_ABORT);
 
   env->ReleaseStringUTFChars(var, nativeVar);
@@ -1090,7 +1090,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImageSettings(
   // copy image to buffer
   memcpy(dest, source, (size_t)len);
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->set_jpeg(std::string(nativeVar), dest, (size_t)len, *settings);
   }
@@ -1098,7 +1098,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImageSettings(
   {
     // user has tried to use a deleted object. Clean up and throw
     delete[] dest;
-    if (isCopy)
+    if(isCopy)
       env->ReleaseByteArrayElements(value, source, JNI_ABORT);
     env->ReleaseStringUTFChars(var, nativeVar);
 
@@ -1109,7 +1109,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1setImageSettings(
 
   delete[] dest;
 
-  if (isCopy)
+  if(isCopy)
     env->ReleaseByteArrayElements(value, source, JNI_ABORT);
 
   env->ReleaseStringUTFChars(var, nativeVar);
@@ -1126,7 +1126,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1sendModifieds__J(
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->send_modifieds();
   }
@@ -1151,7 +1151,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1sendModifieds__JJ(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   knowledge::EvalSettings* settings = (knowledge::EvalSettings*)evalSettings;
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     knowledge->send_modifieds("KnowledgeBase::send_modifieds", *settings);
   }
@@ -1171,7 +1171,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1clearModifieds(
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->clear_modifieds();
   }
@@ -1196,7 +1196,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1print__JLjava_lang_String_2(
   const char* printable = env->GetStringUTFChars(statement, 0);
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->print(printable);
   }
@@ -1222,7 +1222,7 @@ MADARA_EXPORT void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1print__J(
 {
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->print();
   }
@@ -1249,7 +1249,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1wait__JLjava_lang_String_2J(
   knowledge::WaitSettings* settings = (knowledge::WaitSettings*)waitSettings;
   madara::knowledge::KnowledgeRecord* result(0);
 
-  if (knowledge && settings)
+  if(knowledge && settings)
   {
     result = knowledge->wait(nativeExpression, *settings).clone();
   }
@@ -1281,7 +1281,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1wait__JJJ(
   knowledge::WaitSettings* settings = (knowledge::WaitSettings*)waitSettings;
   madara::knowledge::KnowledgeRecord* result(0);
 
-  if (knowledge && compiled && settings)
+  if(knowledge && compiled && settings)
   {
     result = knowledge->wait(*compiled, *settings).clone();
   }
@@ -1311,7 +1311,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1waitNoReturn__JLjava_lang_String_2J(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   knowledge::WaitSettings* settings = (knowledge::WaitSettings*)waitSettings;
 
-  if (knowledge)
+  if(knowledge)
   {
     knowledge->wait(nativeExpression, *settings);
   }
@@ -1339,7 +1339,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1waitNoReturn__JJJ(
   CompiledExpression* compiled = (CompiledExpression*)expression;
   knowledge::WaitSettings* settings = (knowledge::WaitSettings*)waitSettings;
 
-  if (knowledge && compiled && settings)
+  if(knowledge && compiled && settings)
   {
     knowledge->wait(*compiled, *settings);
   }
@@ -1380,7 +1380,7 @@ jlongArray JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeList(
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
   jlongArray ret(0);
 
-  if (knowledge)
+  if(knowledge)
   {
     std::vector<madara::knowledge::KnowledgeRecord> returnVector;
 
@@ -1389,7 +1389,7 @@ jlongArray JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeList(
     jlongArray ret = env->NewLongArray((jsize)returnVector.size());
     jlong* tmp = new jlong[(jsize)returnVector.size()];
 
-    for (unsigned int x = 0; x < returnVector.size(); x++)
+    for(unsigned int x = 0; x < returnVector.size(); x++)
     {
       tmp[x] = (jlong) new madara::knowledge::KnowledgeRecord(returnVector[x]);
     }
@@ -1429,7 +1429,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeMap(
 
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     std::map<std::string, madara::knowledge::KnowledgeRecord> recordsMap;
 
@@ -1449,7 +1449,7 @@ void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toKnowledgeMap(
     int counter = 0;
 
     // populate the Java objects
-    for (iter = recordsMap.begin(); iter != recordsMap.end(); ++iter)
+    for(iter = recordsMap.begin(); iter != recordsMap.end(); ++iter)
     {
       env->SetObjectArrayElement(
           keysArray, counter, env->NewStringUTF(iter->first.c_str()));
@@ -1494,7 +1494,7 @@ MADARA_EXPORT void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toMap(
 
   KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
 
-  if (knowledge)
+  if(knowledge)
   {
     std::map<std::string, madara::knowledge::KnowledgeRecord> recordsMap;
     std::vector<std::string> nextKeys;
@@ -1516,7 +1516,7 @@ MADARA_EXPORT void JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1toMap(
     int counter = 0;
 
     // populate the Java objects
-    for (iter = recordsMap.begin(); iter != recordsMap.end(); ++iter)
+    for(iter = recordsMap.begin(); iter != recordsMap.end(); ++iter)
     {
       env->SetObjectArrayElement(
           keysArray, counter, env->NewStringUTF(iter->first.c_str()));
@@ -1572,7 +1572,7 @@ jlong JNICALL Java_ai_madara_knowledge_KnowledgeBase_jni_1saveAsKarl(
 {
   int64_t result(0);
 
-  if (cptr && filename)
+  if(cptr && filename)
   {
     const char* nativeFilename = env->GetStringUTFChars(filename, 0);
     KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
@@ -1604,7 +1604,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1saveContext(
 {
   int64_t result(0);
 
-  if (cptr && filename)
+  if(cptr && filename)
   {
     const char* nativeFilename = env->GetStringUTFChars(filename, 0);
     KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
@@ -1636,7 +1636,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1saveCheckpoint(
 {
   int64_t result(0);
 
-  if (cptr && filename)
+  if(cptr && filename)
   {
     const char* nativeFilename = env->GetStringUTFChars(filename, 0);
     KnowledgeBase* knowledge = (KnowledgeBase*)cptr;
@@ -1670,7 +1670,7 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1loadContext(JNIEnv* env, jobject,
 {
   int64_t result(0);
 
-  if (cptr && filename)
+  if(cptr && filename)
   {
     const char* nativeFilename = env->GetStringUTFChars(filename, 0);
     KnowledgeBase* knowledge = (KnowledgeBase*)cptr;

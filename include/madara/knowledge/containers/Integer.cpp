@@ -58,7 +58,7 @@ std::string madara::knowledge::containers::Integer::get_debug_info_(void)
 void madara::knowledge::containers::Integer::exchange(
     containers::Integer& other)
 {
-  if (context_ && other.context_)
+  if(context_ && other.context_)
   {
     ContextGuard context_guard(*context_, std::adopt_lock);
     ContextGuard other_context_guard(*other.context_, std::adopt_lock);

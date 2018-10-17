@@ -78,7 +78,7 @@ madara::knowledge::containers::Barrier::~Barrier() {}
 
 void madara::knowledge::containers::Barrier::operator=(const Barrier& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
@@ -95,13 +95,13 @@ void madara::knowledge::containers::Barrier::operator=(const Barrier& rhs)
 
 void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
     std::stringstream buffer;
-    if (participants_ > 0)
+    if(participants_ > 0)
     {
       // barrier logic is that everyone else is at least to your barrier
       buffer << name_;
@@ -111,7 +111,7 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
       buffer << id_;
 
       // add all other barrierer variables
-      for (size_t i = 1; i < participants_; ++i)
+      for(size_t i = 1; i < participants_; ++i)
       {
         buffer << " && ";
         buffer << name_;
@@ -130,11 +130,11 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
         "Barrier::build_aggregate_barrier: building barrier string of %s\n",
         buffer.str().c_str());
   }
-  else if (name_ == "")
+  else if(name_ == "")
   {
     context_->print("ERROR: Container::Barrier needs a name.\n", 0);
   }
-  else if (!context_)
+  else if(!context_)
   {
     context_->print("ERROR: Container::Barrier needs a context.\n", 0);
   }
@@ -142,7 +142,7 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
 
 void madara::knowledge::containers::Barrier::build_var(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -161,11 +161,11 @@ void madara::knowledge::containers::Barrier::build_var(void)
 
     variable_ = context_->get_ref(buffer.str(), no_harm);
   }
-  else if (name_ == "")
+  else if(name_ == "")
   {
     context_->print("ERROR: Container::Barrier needs a name.\n", 0);
   }
-  else if (!context_)
+  else if(!context_)
   {
     context_->print("ERROR: Container::Barrier needs a context.\n", 0);
   }
@@ -249,7 +249,7 @@ void madara::knowledge::containers::Barrier::set_name(
 void madara::knowledge::containers::Barrier::resize(
     size_t id, size_t participants)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -265,7 +265,7 @@ void madara::knowledge::containers::Barrier::resize(
 madara::knowledge::containers::Barrier::type
 madara::knowledge::containers::Barrier::operator=(type value)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -280,7 +280,7 @@ madara::knowledge::containers::Barrier::to_record(void) const
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -295,7 +295,7 @@ madara::knowledge::containers::Barrier::to_integer(void) const
 {
   madara::knowledge::KnowledgeRecord::Integer result(0);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -307,7 +307,7 @@ madara::knowledge::containers::Barrier::to_integer(void) const
 
 void madara::knowledge::containers::Barrier::next(void)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -319,7 +319,7 @@ bool madara::knowledge::containers::Barrier::is_done(void)
 {
   bool result = false;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -329,7 +329,7 @@ bool madara::knowledge::containers::Barrier::is_done(void)
 
     result = barrier_result() == 1;
 
-    if (!result)
+    if(!result)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "Barrier::is_true: barrier is not true, remarking barrier "
@@ -351,7 +351,7 @@ bool madara::knowledge::containers::Barrier::is_done(void)
 
 void madara::knowledge::containers::Barrier::set(type value)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     context_->set(variable_, value, settings_);
   }
@@ -359,7 +359,7 @@ void madara::knowledge::containers::Barrier::set(type value)
 
 void madara::knowledge::containers::Barrier::modify(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     context_->mark_modified(variable_);
   }
@@ -371,7 +371,7 @@ std::string madara::knowledge::containers::Barrier::get_debug_info(void)
 
   result << "Barrier: ";
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -382,7 +382,7 @@ std::string madara::knowledge::containers::Barrier::get_debug_info(void)
     std::string prefix = name_ + ".";
 
     // add all other barrierer variables
-    for (size_t i = 0; i < participants_; ++i)
+    for(size_t i = 0; i < participants_; ++i)
     {
       std::stringstream temp_buffer;
       temp_buffer << prefix;
@@ -420,7 +420,7 @@ double madara::knowledge::containers::Barrier::to_double(void) const
 {
   double result(0.0);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -434,7 +434,7 @@ std::string madara::knowledge::containers::Barrier::to_string(void) const
 {
   std::string result;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -447,7 +447,7 @@ std::string madara::knowledge::containers::Barrier::to_string(void) const
 void madara::knowledge::containers::Barrier::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -462,7 +462,7 @@ bool madara::knowledge::containers::Barrier::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "Barrier::is_true: checking barrier result for truth\n");
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);

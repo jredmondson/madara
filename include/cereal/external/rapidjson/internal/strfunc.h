@@ -29,7 +29,7 @@ namespace internal {
 template <typename Ch>
 inline SizeType StrLen(const Ch* s) {
     const Ch* p = s;
-    while (*p) ++p;
+    while(*p) ++p;
     return SizeType(p - s);
 }
 
@@ -39,9 +39,9 @@ bool CountStringCodePoint(const typename Encoding::Ch* s, SizeType length, SizeT
     GenericStringStream<Encoding> is(s);
     const typename Encoding::Ch* end = s + length;
     SizeType count = 0;
-    while (is.src_ < end) {
+    while(is.src_ < end) {
         unsigned codepoint;
-        if (!Encoding::Decode(is, &codepoint))
+        if(!Encoding::Decode(is, &codepoint))
             return false;
         count++;
     }

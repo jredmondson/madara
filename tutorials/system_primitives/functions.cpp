@@ -24,7 +24,7 @@ madara::knowledge::KnowledgeRecord
              madara::knowledge::Variables &)
 {
   // if the args list is greater than zero, is an integer, and is not 0
-  if (args.size () > 0 && 
+  if(args.size () > 0 && 
     args[0].type () == madara::knowledge::KnowledgeRecord::INTEGER &&
     args[0].to_integer () != 0)
   {
@@ -70,7 +70,7 @@ madara::knowledge::KnowledgeRecord
   madara::knowledge::KnowledgeRecord result;
 
   // if we've been provided with an argument, check if it is true
-  if (args.size () == 1)
+  if(args.size () == 1)
     return madara::knowledge::KnowledgeRecord (args[0].is_true ());
 
   return result;
@@ -84,7 +84,7 @@ madara::knowledge::KnowledgeRecord
              madara::knowledge::Variables &)
 {
   // if we've been provided with an argument, check if it is true
-  if (args.size () == 1)
+  if(args.size () == 1)
     return madara::knowledge::KnowledgeRecord (
       args[0].to_double () < 0.5 && args[0].to_double () >= 0);
   // if the user didn't provide an argument, return false

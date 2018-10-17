@@ -20,7 +20,7 @@ void madara::filters::PeerDiscovery::filter(
     const transport::TransportContext& transport_context,
     knowledge::Variables& vars)
 {
-  if (!initialized_)
+  if(!initialized_)
   {
     peers_.set_name(prefix_, vars);
     initialized_ = true;
@@ -31,17 +31,17 @@ void madara::filters::PeerDiscovery::filter(
 
   peers_.set(originator, cur_time);
 
-  if (heart_beat_ > 0 && last_clear_ != cur_time)
+  if(heart_beat_ > 0 && last_clear_ != cur_time)
   {
     std::vector<std::string> keys;
     peers_.sync_keys();
 
     peers_.keys(keys);
 
-    for (size_t i = 0; i < keys.size(); ++i)
+    for(size_t i = 0; i < keys.size(); ++i)
     {
       // if the current originator is old, erase it
-      if (cur_time - peers_[keys[i]].to_integer() > heart_beat_)
+      if(cur_time - peers_[keys[i]].to_integer() > heart_beat_)
       {
         peers_.erase(keys[i]);
       }

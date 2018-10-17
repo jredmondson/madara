@@ -24,13 +24,13 @@ WorkerThread::WorkerThread(const std::string& name, BaseThread* thread,
     double hertz)
   : name_(name), thread_(thread), control_(control), data_(data), hertz_(hertz)
 {
-  if (thread)
+  if(thread)
   {
     std::stringstream base_string;
 
     knowledge::KnowledgeBase* kb = &control;
     knowledge::KnowledgeRecord debug_to_kb = control_.get(".debug_to_kb");
-    if (debug_to_kb.exists())
+    if(debug_to_kb.exists())
     {
       base_string << debug_to_kb.to_string() << ".";
       kb = &data;
@@ -69,7 +69,7 @@ WorkerThread::~WorkerThread() noexcept
 {
   try
   {
-    if (me_.joinable())
+    if(me_.joinable())
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
           "WorkerThread::~WorkerThread(%s):"
@@ -91,7 +91,7 @@ WorkerThread::~WorkerThread() noexcept
   void
   WorkerThread::operator= (const WorkerThread & input)
   {
-    if (this != &input)
+    if(this != &input)
     {
       this->name_ = input.name_;
       this->thread_ = input.thread_;
@@ -153,7 +153,7 @@ int WorkerThread::svc(void)
       " checking thread existence\n",
       name_.c_str());
 
-  if (thread_)
+  if(thread_)
   {
     started_ = 1;
 
@@ -198,19 +198,19 @@ int WorkerThread::svc(void)
       madara::logger::Logger::set_thread_hertz(hertz_);
 #endif
 
-      if (debug)
+      if(debug)
       {
         start_time_ = utility::get_time();
       }
 
-      while (control_.get(terminated).is_false())
+      while(control_.get(terminated).is_false())
       {
         madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
             "WorkerThread(%s)::svc:"
             " thread checking for pause\n",
             name_.c_str());
 
-        if (control_.get(paused).is_false())
+        if(control_.get(paused).is_false())
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
               "WorkerThread(%s)::svc:"
@@ -222,7 +222,7 @@ int WorkerThread::svc(void)
             int64_t start_time = 0, end_time = 0;
             debug = debug_.is_true();
 
-            if (debug)
+            if(debug)
             {
               start_time = utility::get_time();
               ++executions_;
@@ -230,18 +230,18 @@ int WorkerThread::svc(void)
 
             thread_->run();
 
-            if (debug)
+            if(debug)
             {
               end_time = utility::get_time();
 
               // update duration information
               last_duration = end_time - start_time;
-              if (min_duration == -1 || last_duration < min_duration)
+              if(min_duration == -1 || last_duration < min_duration)
               {
                 min_duration = last_duration;
                 min_duration_changed = true;
               }
-              if (last_duration > max_duration)
+              if(last_duration > max_duration)
               {
                 max_duration = last_duration;
                 max_duration_changed = true;
@@ -255,11 +255,11 @@ int WorkerThread::svc(void)
                 end_time_ = end_time;
 
                 last_duration_ = last_duration;
-                if (max_duration_changed)
+                if(max_duration_changed)
                 {
                   max_duration_ = max_duration;
                 }
-                if (min_duration_changed)
+                if(min_duration_changed)
                 {
                   min_duration_ = min_duration;
                 }
@@ -276,17 +276,17 @@ int WorkerThread::svc(void)
           }
         }
 
-        if (one_shot)
+        if(one_shot)
           break;
 
         // check for a change in frequency/hertz
-        if (new_hertz_ != hertz_)
+        if(new_hertz_ != hertz_)
         {
           change_frequency(
               *new_hertz_, current, frequency, next_epoch, one_shot, blaster);
         }
 
-        if (!blaster)
+        if(!blaster)
         {
           current = utility::get_time_value();
 
@@ -295,7 +295,7 @@ int WorkerThread::svc(void)
               " thread checking for next hertz epoch\n",
               name_.c_str());
 
-          if (current < next_epoch)
+          if(current < next_epoch)
             utility::sleep(next_epoch - current);
 
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,

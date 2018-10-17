@@ -27,7 +27,7 @@ const std::pair<const char* const, capnp::StructSchema>&
 AnyRegistry::lookup_schema(const char* tag)
 {
   auto iter = schemas.find(tag);
-  if (iter == schemas.end())
+  if(iter == schemas.end())
   {
     throw exceptions::BadAnyAccess(
         std::string("Type ") + tag + " is not registered");
@@ -38,13 +38,13 @@ AnyRegistry::lookup_schema(const char* tag)
 Any AnyRegistry::construct(const char* tag)
 {
   auto biter = type_builders.find(tag);
-  if (biter != type_builders.end())
+  if(biter != type_builders.end())
   {
     auto handler = biter->second;
     return Any(handler, handler->construct_default());
   }
   auto siter = schemas.find(tag);
-  if (siter != schemas.end())
+  if(siter != schemas.end())
   {
     return Any(type<RegCapnObject>{}, siter->first, siter->second);
   }

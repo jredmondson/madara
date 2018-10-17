@@ -18,7 +18,7 @@ int main(int, char**)
           "", madara::transport::Types::NO_TRANSPORT);
   TEST_NE((unsigned long)knowledge1, (unsigned long)NULL);
   // Terminal failure lets get out of her..
-  if (knowledge1 == NULL)
+  if(knowledge1 == NULL)
   {
     std::cerr << "DYNAMIC OBJECT CREATION: FAILURE.\n";
     return madara_tests_fail_count;
@@ -56,7 +56,7 @@ int main(int, char**)
   madara::knowledge::KnowledgeRecord testRecord1(123);
   retval = knowledge.set("testRecord1", testRecord1);
   TEST_EQ(retval, 0);
-  if (retval == 0)
+  if(retval == 0)
     knowledge.print("Success\n");
   else
     knowledge.print("Fail\n");
@@ -110,7 +110,7 @@ int main(int, char**)
   knowledge.set_log_level(7);
   int logLevel = knowledge.get_log_level();
   TEST_EQ(logLevel, 7);
-  if (logLevel == 7)
+  if(logLevel == 7)
     knowledge.print("Success\n");
   else
     knowledge.print("Fail\n");
@@ -119,7 +119,7 @@ int main(int, char**)
   knowledge.attach_logger(localLogger);
   logger::Logger* localLoggerCopy = &(knowledge.get_logger());
   TEST_EQ(localLoggerCopy, &localLogger);
-  if (localLoggerCopy == &localLogger)
+  if(localLoggerCopy == &localLogger)
     knowledge.print("Success\n");
   else
     knowledge.print("Fail\n");
@@ -135,7 +135,7 @@ int main(int, char**)
   delete knowledge1;
 
   std::cerr << "\nTOTAL TESTS RUN: 11\n";
-  if (madara_tests_fail_count > 0)
+  if(madara_tests_fail_count > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";

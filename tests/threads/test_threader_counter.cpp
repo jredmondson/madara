@@ -32,13 +32,13 @@ Integer readers(0);
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--counters")
+    if(arg1 == "-c" || arg1 == "--counters")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> counters;
@@ -46,9 +46,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         int level;
@@ -58,18 +58,18 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-r" || arg1 == "--readers")
+    else if(arg1 == "-r" || arg1 == "--readers")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> readers;
@@ -77,9 +77,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-t" || arg1 == "--target")
+    else if(arg1 == "-t" || arg1 == "--target")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> target;
@@ -87,9 +87,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-w" || arg1 == "--max-wait")
+    else if(arg1 == "-w" || arg1 == "--max-wait")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> max_wait;
@@ -136,9 +136,9 @@ public:
    **/
   virtual void run(void)
   {
-    while (*counter < target)
+    while(*counter < target)
     {
-      if (paused != 0)
+      if(paused != 0)
       {
 #ifndef _MADARA_NO_KARL_
         std::string finished = "!" + paused.get_name();
@@ -177,7 +177,7 @@ int main(int argc, char** argv)
   // create a threader for running threads
   threads::Threader threader(knowledge);
 
-  for (Integer i = 0; i < counters; ++i)
+  for(Integer i = 0; i < counters; ++i)
   {
     std::stringstream buffer;
     buffer << "thread";
@@ -191,7 +191,7 @@ int main(int argc, char** argv)
   threader.resume();
 
   // wait for the counter to reach the target number
-  while (*counter < target)
+  while(*counter < target)
   {
     // sleep for half a second and try again
     utility::sleep(0.5);

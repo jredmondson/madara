@@ -140,7 +140,7 @@ void test_primitive_encoding(void)
             << std::endl;
 
   std::cerr << "\nRESULT: ";
-  if (header_decoded && string_decoded && int_decoded && double_decoded)
+  if(header_decoded && string_decoded && int_decoded && double_decoded)
   {
     std::cerr << "SUCCESS\n";
   }
@@ -204,7 +204,7 @@ void test_image_encoding(void)
 
   std::cerr << "  Testing bytes written (" << buffer_written << ")...";
 
-  if (dest_header.encoded_size() == buffer_written)
+  if(dest_header.encoded_size() == buffer_written)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -223,7 +223,7 @@ void test_image_encoding(void)
 
   std::cerr << "  Testing bytes read (" << buffer_read << ")...";
 
-  if (buffer_written == buffer_read)
+  if(buffer_written == buffer_read)
     std::cerr << "SUCCESS\n";
   else
   {
@@ -244,7 +244,7 @@ void test_image_encoding(void)
 
   std::cerr << "  Testing bytes written (" << buffer_written << ")...";
 
-  if (string_source.get_encoded_size("string") +
+  if(string_source.get_encoded_size("string") +
           image_source.get_encoded_size("image") +
           int_source.get_encoded_size("int") +
           double_source.get_encoded_size("double") ==
@@ -271,7 +271,7 @@ void test_image_encoding(void)
 
   std::cerr << "  Checking amount read (" << buffer_read << ")... ";
 
-  if (string_source.get_encoded_size("string") +
+  if(string_source.get_encoded_size("string") +
           image_source.get_encoded_size("image") +
           int_source.get_encoded_size("int") +
           double_source.get_encoded_size("double") ==
@@ -285,7 +285,7 @@ void test_image_encoding(void)
 
   std::cerr << "  Checking keys read... ";
 
-  if (string_key_read == "string" && image_key_read == "image" &&
+  if(string_key_read == "string" && image_key_read == "image" &&
       int_key_read == "int" && double_key_read == "double")
     std::cerr << "SUCCESS\n";
   else
@@ -344,7 +344,7 @@ void test_key_id_encoding(void)
   // read the records from the buffer
   reader = dest.read(reader, temp_id, buffer_remaining);
 
-  if (temp_id == HELLO_WORLD && dest.is_string_type() &&
+  if(temp_id == HELLO_WORLD && dest.is_string_type() &&
       dest.to_string() == "hello world")
   {
     std::cerr << "SUCCESS\n";
@@ -363,7 +363,7 @@ void test_key_id_encoding(void)
   // read the records from the buffer
   reader = dest.read(reader, temp_id, buffer_remaining);
 
-  if (temp_id == CUSTOM_SIZE && dest.is_integer_type() &&
+  if(temp_id == CUSTOM_SIZE && dest.is_integer_type() &&
       dest.to_integer() == 10)
   {
     std::cerr << "SUCCESS\n";
@@ -382,7 +382,7 @@ void test_key_id_encoding(void)
   // read the records from the buffer
   reader = dest.read(reader, temp_id, buffer_remaining);
 
-  if (temp_id == CUSTOM_DISTANCE && dest.is_double_type() &&
+  if(temp_id == CUSTOM_DISTANCE && dest.is_double_type() &&
       dest.to_double() == 5.5)
   {
     std::cerr << "SUCCESS\n";
@@ -403,7 +403,7 @@ int main(int, char**)
   test_primitive_encoding();
   test_key_id_encoding();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

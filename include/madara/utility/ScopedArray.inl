@@ -15,7 +15,7 @@ template<typename T>
 madara::utility::ScopedArray<T>::ScopedArray(T* ptr, bool increase_count)
   : ptr_(ptr ? new Shim(ptr) : 0)
 {
-  if (increase_count)
+  if(increase_count)
     increment();
 }
 
@@ -41,7 +41,7 @@ void madara::utility::ScopedArray<T>::operator=(T* ptr)
 {
   decrement();
 
-  if (ptr)
+  if(ptr)
     ptr_ = new Shim(ptr);
   else
     ptr_ = 0;
@@ -51,7 +51,7 @@ void madara::utility::ScopedArray<T>::operator=(T* ptr)
 template<typename T>
 void madara::utility::ScopedArray<T>::operator=(const ScopedArray& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     decrement();
     ptr_ = rhs.ptr_;
@@ -91,7 +91,7 @@ const T* madara::utility::ScopedArray<T>::get(void) const
 template<typename T>
 void madara::utility::ScopedArray<T>::increment(void)
 {
-  if (ptr_)
+  if(ptr_)
     ++ptr_->refcount_;
 }
 
@@ -99,10 +99,10 @@ void madara::utility::ScopedArray<T>::increment(void)
 template<typename T>
 void madara::utility::ScopedArray<T>::decrement(void)
 {
-  if (ptr_)
+  if(ptr_)
   {
     --ptr_->refcount_;
-    if (ptr_->refcount_ <= 0)
+    if(ptr_->refcount_ <= 0)
     {
       delete ptr_;
       ptr_ = 0;

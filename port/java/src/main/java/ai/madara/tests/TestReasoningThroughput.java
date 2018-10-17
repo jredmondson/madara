@@ -95,7 +95,7 @@ public class TestReasoningThroughput
       Timer timer = new Timer ();
 
       timer.start ();
-      for (int x = 0; x < ITERATIONS; ++x)
+      for(int x = 0; x < ITERATIONS; ++x)
       {
         knowledge.evaluateNoReturn ("++.var1");
       }
@@ -126,13 +126,13 @@ public class TestReasoningThroughput
       long actualIterations = ITERATIONS > 1000 ? ITERATIONS / 1000 : 1;
 
       StringBuilder sb = new StringBuilder ();
-      for (int x = 0; x < maxSize; x++)
+      for(int x = 0; x < maxSize; x++)
         sb.append ("++.var1;");
 
       final String eval = sb.toString ();
 
       timer.start ();
-      for (int x = 0; x < actualIterations; ++x)
+      for(int x = 0; x < actualIterations; ++x)
       {
         knowledge.evaluateNoReturn (eval);
       }
@@ -160,7 +160,7 @@ public class TestReasoningThroughput
       Timer timer = new Timer ();
 
       timer.start ();
-      for (int x = 0; x < ITERATIONS; ++x)
+      for(int x = 0; x < ITERATIONS; ++x)
       {
         knowledge.evaluateNoReturn ("1 => ++.var1");
       }
@@ -191,13 +191,13 @@ public class TestReasoningThroughput
       long actualIterations = ITERATIONS > 1000 ? ITERATIONS / 1000 : 1;
 
       StringBuilder sb = new StringBuilder ();
-      for (int x = 0; x < maxSize; x++)
+      for(int x = 0; x < maxSize; x++)
         sb.append ("1 => ++.var1;");
 
       final String eval = sb.toString ();
 
       timer.start ();
-      for (int x = 0; x < actualIterations; ++x)
+      for(int x = 0; x < actualIterations; ++x)
       {
         knowledge.evaluateNoReturn (eval);
       }
@@ -227,7 +227,7 @@ public class TestReasoningThroughput
       CompiledExpression ce = knowledge.compile ("++.var1");
 
       timer.start ();
-      for (int x = 0; x < ITERATIONS; ++x)
+      for(int x = 0; x < ITERATIONS; ++x)
       {
         knowledge.evaluateNoReturn (ce);
       }
@@ -260,13 +260,13 @@ public class TestReasoningThroughput
       long actualIterations = ITERATIONS > 1000 ? ITERATIONS / 1000 : 1;
 
       StringBuilder sb = new StringBuilder ();
-      for (int x = 0; x < maxSize; x++)
+      for(int x = 0; x < maxSize; x++)
         sb.append ("++.var1;");
 
       CompiledExpression ce = knowledge.compile (sb.toString ());
 
       timer.start ();
-      for (int x = 0; x < actualIterations; ++x)
+      for(int x = 0; x < actualIterations; ++x)
       {
         knowledge.evaluateNoReturn (ce);
       }
@@ -298,7 +298,7 @@ public class TestReasoningThroughput
       CompiledExpression ce = knowledge.compile ("1 => ++.var1");
 
       timer.start ();
-      for (int x = 0; x < ITERATIONS; ++x)
+      for(int x = 0; x < ITERATIONS; ++x)
       {
         knowledge.evaluateNoReturn (ce);
       }
@@ -331,13 +331,13 @@ public class TestReasoningThroughput
       long actualIterations = ITERATIONS > 1000 ? ITERATIONS / 1000 : 1;
 
       StringBuilder sb = new StringBuilder ();
-      for (int x = 0; x < maxSize; x++)
+      for(int x = 0; x < maxSize; x++)
         sb.append ("1 => ++.var1;");
 
       CompiledExpression ce = knowledge.compile (sb.toString ());
 
       timer.start ();
-      for (int x = 0; x < actualIterations; ++x)
+      for(int x = 0; x < actualIterations; ++x)
       {
         knowledge.evaluateNoReturn (ce);
       }
@@ -466,7 +466,7 @@ public class TestReasoningThroughput
 
       int var1 = 0;
       timer.start ();
-      for (int x = 0; x < ITERATIONS; ++x)
+      for(int x = 0; x < ITERATIONS; ++x)
         ++var1;
       timer.stop ();
 
@@ -496,15 +496,15 @@ public class TestReasoningThroughput
   public static String toLegibleHertz (final long hertz)
   {
     double freq = (double) hertz / GHZ;
-    if (freq >= 1)
+    if(freq >= 1)
       return "" + (Math.round (freq * 100.0) / 100.0) + " ghz";
 
     freq = (double) hertz / MHZ;
-    if (freq >= 1)
+    if(freq >= 1)
       return "" + (Math.round (freq * 100.0) / 100.0) + " mhz";
 
     freq = (double) hertz / KHZ;
-    if (freq >= 1)
+    if(freq >= 1)
       return "" + (Math.round (freq * 100.0) / 100.0) + " khz";
 
     freq = (double) hertz;
@@ -529,17 +529,17 @@ public class TestReasoningThroughput
     tests.add (new LoopedSI ());
     tests.add (new OptimalReinforcement ());
 
-    for (int x = 0; x < RUNCOUNT; ++x)
+    for(int x = 0; x < RUNCOUNT; ++x)
     {
-      for (Test test : tests)
+      for(Test test : tests)
       {
         test.elapsed += test.test (knowledge);
       }
     }
 
-    for (Test test : tests)
+    for(Test test : tests)
     {
-      if (test.elapsed == 0)
+      if(test.elapsed == 0)
         test.elapsed = 1;
 
       test.hertz = (1000000000 * EVALUATIONS) / test.elapsed;
@@ -548,7 +548,7 @@ public class TestReasoningThroughput
     System.out.println ("\n\nTotal time taken for each Test with " + ITERATIONS + " iterations * " + RUNCOUNT + " tests was:");
     System.out.println ("=========================================================================");
 
-    for (Test test : tests)
+    for(Test test : tests)
     {
       System.out.println (String.format (" %s\t\t%30s ns", test.name (), formatNumber (test.elapsed)));
     }
@@ -557,7 +557,7 @@ public class TestReasoningThroughput
     System.out.println ("\n\nAverage time taken per rule evaluation was:");
     System.out.println ("=========================================================================");
 
-    for (Test test : tests)
+    for(Test test : tests)
     {
       System.out.println (String.format (" %s\t\t%30s ns", test.name (), formatNumber (test.elapsed / EVALUATIONS)));
     }
@@ -566,7 +566,7 @@ public class TestReasoningThroughput
     System.out.println ("\n\nHertz for each Test with " + ITERATIONS + " iterations * " + RUNCOUNT + " tests was:");
     System.out.println ("=========================================================================");
 
-    for (Test test : tests)
+    for(Test test : tests)
     {
       System.out.println (String.format (" %s\t\t%33s", test.name (), toLegibleHertz (test.hertz)));
     }

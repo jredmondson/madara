@@ -301,7 +301,7 @@ public class Queue extends MadaraJNI {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeQueue(getCPtr());
 			setCPtr(0);
 		}

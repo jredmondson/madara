@@ -240,7 +240,7 @@ std::string to_legible_hertz(uint64_t hertz)
 
   double freq = (double)hertz / ghz_mark;
 
-  if (freq >= 1)
+  if(freq >= 1)
   {
     buffer << std::setprecision(2) << std::fixed;
     buffer << freq;
@@ -250,7 +250,7 @@ std::string to_legible_hertz(uint64_t hertz)
 
   freq = (double)hertz / mhz_mark;
 
-  if (freq >= 1)
+  if(freq >= 1)
   {
     buffer << std::setprecision(2) << std::fixed;
     buffer << freq;
@@ -260,7 +260,7 @@ std::string to_legible_hertz(uint64_t hertz)
 
   freq = (double)hertz / khz_mark;
 
-  if (freq >= 1)
+  if(freq >= 1)
   {
     buffer << std::setprecision(2) << std::fixed;
     buffer << freq;
@@ -291,7 +291,7 @@ int main(int argc, char* argv[])
 
   increment_var = knowledge.get_ref(".var1");
 
-  if (num_runs == 0 || num_iterations == 0)
+  if(num_runs == 0 || num_iterations == 0)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "\nERROR: num_runs (%d) and num_iterations (%d) cannot be set to 0:\n",
@@ -443,10 +443,10 @@ int main(int argc, char* argv[])
       "Testing throughput for MADARA v%s\n",
       madara::utility::get_version().c_str());
 
-  for (uint32_t i = 0; i < num_runs; ++i)
+  for(uint32_t i = 0; i < num_runs; ++i)
   {
     // run tests
-    for (int j = 0; j < num_test_types; ++j)
+    for(int j = 0; j < num_test_types; ++j)
     {
       results[j] += test_functions[j](knowledge, num_iterations);
     }
@@ -458,12 +458,12 @@ int main(int argc, char* argv[])
 
   uint64_t evaluations = num_iterations * num_runs;
 
-  for (int i = 0; i < num_test_types; ++i)
+  for(int i = 0; i < num_test_types; ++i)
   {
     // avoid blowing up with a division by zero on fast processors. Culprit here
     // is the C++ optimization of the for loop which simply sets a register to
     // the max increment, so time taken is often 0 ns.
-    if (results[i] == 0)
+    if(results[i] == 0)
       results[i] = 1;
 
     averages[i] = (1000000000 * evaluations) / results[i];
@@ -477,7 +477,7 @@ int main(int argc, char* argv[])
       "========================================================================"
       "=\n");
 
-  for (int i = 0; i < num_test_types; ++i)
+  for(int i = 0; i < num_test_types; ++i)
   {
     std::stringstream buffer;
 
@@ -507,7 +507,7 @@ int main(int argc, char* argv[])
       "========================================================================"
       "=\n");
 
-  for (int i = 0; i < num_test_types; ++i)
+  for(int i = 0; i < num_test_types; ++i)
   {
     std::stringstream buffer;
 
@@ -537,7 +537,7 @@ int main(int argc, char* argv[])
       "========================================================================"
       "=\n");
 
-  for (int i = 0; i < num_test_types; ++i)
+  for(int i = 0; i < num_test_types; ++i)
   {
     std::stringstream buffer;
     buffer << " ";
@@ -585,7 +585,7 @@ uint64_t test_simple_reinforcement(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
 #ifndef _MADARA_NO_KARL_
     // test literals in conditionals
@@ -617,7 +617,7 @@ uint64_t test_container_assignment(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     var1 = i;
   }
@@ -645,7 +645,7 @@ uint64_t test_container_increment(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     ++var1;
   }
@@ -675,7 +675,7 @@ uint64_t test_staged_container_assignment(
 
   var1.read();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     var1 = i;
   }
@@ -708,7 +708,7 @@ uint64_t test_staged_container_increment(
 
   var1.read();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     ++var1;
   }
@@ -739,7 +739,7 @@ uint64_t test_compiled_sr(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // test literals in conditionals
     knowledge.evaluate(
@@ -772,7 +772,7 @@ uint64_t test_compiled_sa(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // test literals in conditionals
     knowledge.evaluate(
@@ -806,7 +806,7 @@ uint64_t test_compiled_sfi(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // test literals in conditionals
     knowledge.evaluate(
@@ -840,7 +840,7 @@ uint64_t test_extern_call(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // test literals in conditionals
     knowledge.evaluate(
@@ -916,7 +916,7 @@ uint64_t test_large_reinforcement(
   unsigned max_size = iterations > 1000 ? 1000 : iterations;
   unsigned actual_iterations = iterations > 1000 ? iterations / 1000 : 1;
 
-  for (uint32_t i = 0; i < max_size; ++i)
+  for(uint32_t i = 0; i < max_size; ++i)
   {
     buffer << "++.var1;";
   }
@@ -924,7 +924,7 @@ uint64_t test_large_reinforcement(
   timer.start();
 
   // execute that chain of reinforcements
-  for (uint32_t i = 0; i < actual_iterations; ++i)
+  for(uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate(
         buffer.str(), madara::knowledge::EvalSettings(false, false, false));
 
@@ -956,7 +956,7 @@ uint64_t test_compiled_lr(
   unsigned max_size = iterations > 1000 ? 1000 : iterations;
   unsigned actual_iterations = iterations > 1000 ? iterations / 1000 : 1;
 
-  for (uint32_t i = 0; i < max_size; ++i)
+  for(uint32_t i = 0; i < max_size; ++i)
   {
     buffer << "++.var1;";
   }
@@ -968,7 +968,7 @@ uint64_t test_compiled_lr(
   timer.start();
 
   // execute that chain of reinforcements
-  for (uint32_t i = 0; i < actual_iterations; ++i)
+  for(uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate(
         ce, madara::knowledge::EvalSettings(false, false, false));
 
@@ -1001,7 +1001,7 @@ uint64_t test_compiled_la(
   unsigned max_size = iterations > 1000 ? 1000 : iterations;
   unsigned actual_iterations = iterations > 1000 ? iterations / 1000 : 1;
 
-  for (uint32_t i = 0; i < max_size; ++i)
+  for(uint32_t i = 0; i < max_size; ++i)
   {
     buffer << "var1=";
     buffer << i;
@@ -1015,7 +1015,7 @@ uint64_t test_compiled_la(
   timer.start();
 
   // execute that chain of reinforcements
-  for (uint32_t i = 0; i < actual_iterations; ++i)
+  for(uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate(
         ce, madara::knowledge::EvalSettings(false, false, false));
 
@@ -1048,7 +1048,7 @@ uint64_t test_compiled_lfi(
   unsigned max_size = iterations > 1000 ? 1000 : iterations;
   unsigned actual_iterations = iterations > 1000 ? iterations / 1000 : 1;
 
-  for (uint32_t i = 0; i < max_size; ++i)
+  for(uint32_t i = 0; i < max_size; ++i)
   {
     buffer << "inc ();";
   }
@@ -1060,7 +1060,7 @@ uint64_t test_compiled_lfi(
   timer.start();
 
   // execute that chain of reinforcements
-  for (uint32_t i = 0; i < actual_iterations; ++i)
+  for(uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate(
         ce, madara::knowledge::EvalSettings(false, false, false));
 
@@ -1129,7 +1129,7 @@ uint64_t test_simple_inference(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // test literals in conditionals
     knowledge.evaluate(
@@ -1158,7 +1158,7 @@ uint64_t test_normal_set(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     knowledge.set("var1", i);
   }
@@ -1182,7 +1182,7 @@ uint64_t test_get_ref(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     madara::knowledge::VariableReference variable = knowledge.get_ref("var1");
     (void)variable;
@@ -1208,7 +1208,7 @@ uint64_t test_get_expand_ref(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     madara::knowledge::VariableReference variable = knowledge.get_ref(
         "var1", madara::knowledge::KnowledgeReferenceSettings(true));
@@ -1236,7 +1236,7 @@ uint64_t test_var_ref_set(
 
   madara::knowledge::VariableReference variable = knowledge.get_ref("var1");
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     knowledge.set(variable, i);
   }
@@ -1266,7 +1266,7 @@ uint64_t test_variables_inc_var_ref(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     knowledge.evaluate(ce);
   }
@@ -1298,7 +1298,7 @@ uint64_t test_stl_inc_atomic(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     ++counter;
   }
@@ -1328,7 +1328,7 @@ uint64_t test_stl_inc_recursive(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     critical_section.lock();
     ++counter;
@@ -1360,7 +1360,7 @@ uint64_t test_stl_inc_mutex(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     critical_section.lock();
     ++counter;
@@ -1392,7 +1392,7 @@ uint64_t test_compiled_si(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // test literals in conditionals
     knowledge.evaluate(
@@ -1465,7 +1465,7 @@ uint64_t test_large_inference(
   unsigned max_size = iterations > 1000 ? 1000 : iterations;
   unsigned actual_iterations = iterations > 1000 ? iterations / 1000 : 1;
 
-  for (uint32_t i = 0; i < max_size; ++i)
+  for(uint32_t i = 0; i < max_size; ++i)
   {
     buffer << "1 => ++.var1;";
   }
@@ -1473,7 +1473,7 @@ uint64_t test_large_inference(
   timer.start();
 
   // execute that chain of reinforcements
-  for (uint32_t i = 0; i < actual_iterations; ++i)
+  for(uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate(
         buffer.str(), madara::knowledge::EvalSettings(false, false, false));
 
@@ -1504,7 +1504,7 @@ uint64_t test_compiled_li(
   unsigned max_size = iterations > 1000 ? 1000 : iterations;
   unsigned actual_iterations = iterations > 1000 ? iterations / 1000 : 1;
 
-  for (uint32_t i = 0; i < max_size; ++i)
+  for(uint32_t i = 0; i < max_size; ++i)
   {
     buffer << "1 => ++.var1;";
   }
@@ -1516,7 +1516,7 @@ uint64_t test_compiled_li(
   timer.start();
 
   // execute that chain of reinforcements
-  for (uint32_t i = 0; i < actual_iterations; ++i)
+  for(uint32_t i = 0; i < actual_iterations; ++i)
     knowledge.evaluate(
         ce, madara::knowledge::EvalSettings(false, false, false));
 
@@ -1587,12 +1587,12 @@ uint64_t test_optimal_inference(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // we use a global var that can be changed from the command
     // line to trick the compiler into not optimizing out this
     // loop
-    if (conditional)
+    if(conditional)
       ++var1;
   }
 
@@ -1619,7 +1619,7 @@ uint64_t test_optimal_assignment(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // I'm going to have to admit defeat. I can't use __asm because
     // it's non-portable. The compiler will compile this away
@@ -1670,7 +1670,7 @@ uint64_t test_optimal_reinforcement(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // I'm going to have to admit defeat. I can't use __asm because
     // it's non-portable. The compiler will compile this away
@@ -1721,10 +1721,10 @@ uint64_t test_volatile_inference(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // guarded increment of the volatile variable
-    if (conditional)
+    if(conditional)
       ++var1;
   }
 
@@ -1752,7 +1752,7 @@ uint64_t test_volatile_reinforcement(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // increment the volatile variable
     ++var1;
@@ -1782,7 +1782,7 @@ uint64_t test_virtual_reinforcement(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // increment the volatile variable
     var1->evaluate();
@@ -1814,7 +1814,7 @@ uint64_t test_volatile_assignment(
 
   timer.start();
 
-  for (uint32_t i = 0; i < iterations; ++i)
+  for(uint32_t i = 0; i < iterations; ++i)
   {
     // increment the volatile variable
     var1 = madara::knowledge::KnowledgeRecord::Integer(i);
@@ -1832,17 +1832,17 @@ uint64_t test_volatile_assignment(
 // handle command line arguments
 void handle_arguments(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-c" || arg1 == "--conditional")
+    if(arg1 == "-c" || arg1 == "--conditional")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::string arg2(argv[i + 1]);
 
-        if (arg2 == "false")
+        if(arg2 == "false")
         {
           conditional = false;
         }
@@ -1854,18 +1854,18 @@ void handle_arguments(int argc, char* argv[])
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -1875,9 +1875,9 @@ void handle_arguments(int argc, char* argv[])
 
       ++i;
     }
-    else if (arg1 == "-n" || arg1 == "--iterations")
+    else if(arg1 == "-n" || arg1 == "--iterations")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> num_iterations;
@@ -1885,9 +1885,9 @@ void handle_arguments(int argc, char* argv[])
 
       ++i;
     }
-    else if (arg1 == "-r" || arg1 == "--runs")
+    else if(arg1 == "-r" || arg1 == "--runs")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> num_runs;
@@ -1895,9 +1895,9 @@ void handle_arguments(int argc, char* argv[])
 
       ++i;
     }
-    else if (arg1 == "-s" || arg1 == "--step")
+    else if(arg1 == "-s" || arg1 == "--step")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> step;

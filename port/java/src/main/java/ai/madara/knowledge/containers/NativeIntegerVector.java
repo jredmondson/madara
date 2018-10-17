@@ -301,7 +301,7 @@ public class NativeIntegerVector extends BaseContainer {
 	public KnowledgeRecord[] toArray() throws MadaraDeadObjectException {
 		Object[] objs = jni_toArray(getCPtr());
 		KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-		for (int i = 0; i < objs.length; ++i) {
+		for(int i = 0; i < objs.length; ++i) {
 			records[i] = (KnowledgeRecord) objs[i];
 		}
 		return records;
@@ -323,7 +323,7 @@ public class NativeIntegerVector extends BaseContainer {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeNativeIntegerVector(getCPtr());
 			setCPtr(0);
 		}

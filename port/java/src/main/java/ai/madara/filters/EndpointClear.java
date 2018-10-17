@@ -118,7 +118,7 @@ public class EndpointClear extends MadaraJNI
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeEndpointClear(getCPtr());
       setCPtr(0);

@@ -101,7 +101,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeNegateNode&)
 {
-  if (stack_.size() >= 1)
+  if(stack_.size() >= 1)
     stack_.push(-stack_.pop());
   else
   {
@@ -119,7 +119,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositePredecrementNode& node)
 {
-  if (stack_.size() >= 1)
+  if(stack_.size() >= 1)
   {
     madara::knowledge::KnowledgeRecord old_value = stack_.pop();
     try
@@ -127,7 +127,7 @@ void madara::expression::EvaluationVisitor::visit(
       VariableNode* right = dynamic_cast<VariableNode*>(node.right());
 
       madara::knowledge::KnowledgeRecord new_value = --old_value;
-      if (right)
+      if(right)
       {
         new_value = right->dec();
       }
@@ -151,7 +151,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositePreincrementNode& node)
 {
-  if (stack_.size() >= 1)
+  if(stack_.size() >= 1)
   {
     madara::knowledge::KnowledgeRecord old_value = stack_.pop();
     try
@@ -159,7 +159,7 @@ void madara::expression::EvaluationVisitor::visit(
       VariableNode* right = dynamic_cast<VariableNode*>(node.right());
 
       madara::knowledge::KnowledgeRecord new_value = ++old_value;
-      if (right)
+      if(right)
       {
         new_value = right->inc();
       }
@@ -183,7 +183,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeNotNode&)
 {
-  if (stack_.size() >= 1)
+  if(stack_.size() >= 1)
     stack_.push(!stack_.pop());
   else
   {
@@ -198,7 +198,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeAddNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
     stack_.push(stack_.pop() + stack_.pop());
   else
   {
@@ -213,7 +213,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeAssignmentNode& node)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     // for an assignment to be valid, we need a variable to the left
     // and an expression tree to the right.
@@ -242,7 +242,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeAndNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -262,7 +262,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeOrNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -282,7 +282,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeBothNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right_v = stack_.pop();
     madara::knowledge::KnowledgeRecord left_v = stack_.pop();
@@ -304,7 +304,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeSequentialNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right_v = stack_.pop();
     madara::knowledge::KnowledgeRecord left_v = stack_.pop();
@@ -338,7 +338,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeEqualityNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -358,7 +358,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeInequalityNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -379,7 +379,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeGreaterThanEqualNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -399,7 +399,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeGreaterThanNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -419,7 +419,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeLessThanEqualNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -439,7 +439,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeLessThanNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord right = stack_.pop();
     madara::knowledge::KnowledgeRecord left = stack_.pop();
@@ -459,7 +459,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeSubtractNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
   {
     madara::knowledge::KnowledgeRecord rhs = stack_.pop();
     stack_.push(stack_.pop() - rhs);
@@ -477,7 +477,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeDivideNode&)
 {
-  if (stack_.size() >= 2 && stack_.top())
+  if(stack_.size() >= 2 && stack_.top())
   {
     madara::knowledge::KnowledgeRecord rhs = stack_.pop();
     stack_.push(stack_.pop() / rhs);
@@ -496,7 +496,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeMultiplyNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
     stack_.push(stack_.pop() * stack_.pop());
   else
   {
@@ -511,7 +511,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeModulusNode&)
 {
-  if (stack_.size() >= 2 && stack_.top())
+  if(stack_.size() >= 2 && stack_.top())
   {
     madara::knowledge::KnowledgeRecord rhs = stack_.pop();
     stack_.push(stack_.pop() / rhs);
@@ -530,7 +530,7 @@ void madara::expression::EvaluationVisitor::visit(
 void madara::expression::EvaluationVisitor::visit(
     const madara::expression::CompositeImpliesNode&)
 {
-  if (stack_.size() >= 2)
+  if(stack_.size() >= 2)
     stack_.push(stack_.pop() ? stack_.pop() : 0);
   else
   {
@@ -544,7 +544,7 @@ void madara::expression::EvaluationVisitor::visit(
 /// print a total for the evaluation
 int64_t madara::expression::EvaluationVisitor::total(void)
 {
-  if (!stack_.is_empty())
+  if(!stack_.is_empty())
     return stack_.top();
   else
     return 0;

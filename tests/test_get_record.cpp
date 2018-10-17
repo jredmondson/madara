@@ -44,7 +44,7 @@ int main()
       MismatchedTypeException, get<std::vector<double>>(kr_int_arr););
   EXPECT_EXCEPTION(MismatchedTypeException, get<int>(kr_int_arr););
 
-  if (madara_tests_fail_count > 0)
+  if(madara_tests_fail_count > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";

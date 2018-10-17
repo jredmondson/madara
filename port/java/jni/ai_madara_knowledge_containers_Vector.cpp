@@ -76,7 +76,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1Vector__J(
   Vector* result(0);
   Vector* source = (Vector*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new Vector(*source);
   }
@@ -114,7 +114,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1setString__JILjava_lang_String_2
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_value = env->GetStringUTFChars(value, 0);
 
@@ -142,7 +142,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1setDouble__JID(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->set(index, value);
   }
@@ -166,10 +166,10 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1set__JIJJ(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     // set integer
-    if (type == 0)
+    if(type == 0)
     {
       current->set(index, (madara::knowledge::KnowledgeRecord::Integer)value);
     }
@@ -179,38 +179,38 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1set__JIJJ(
       madara::knowledge::KnowledgeRecord* record =
           (madara::knowledge::KnowledgeRecord*)value;
 
-      if (record)
+      if(record)
       {
-        if (record->type() == madara::knowledge::KnowledgeRecord::DOUBLE)
+        if(record->type() == madara::knowledge::KnowledgeRecord::DOUBLE)
         {
           current->set(index, record->to_double());
         }
-        else if (record->type() ==
+        else if(record->type() ==
                  madara::knowledge::KnowledgeRecord::DOUBLE_ARRAY)
         {
           current->set(index, record->to_doubles());
         }
-        else if (record->type() == madara::knowledge::KnowledgeRecord::INTEGER)
+        else if(record->type() == madara::knowledge::KnowledgeRecord::INTEGER)
         {
           current->set(index, record->to_integer());
         }
-        else if (record->type() ==
+        else if(record->type() ==
                  madara::knowledge::KnowledgeRecord::INTEGER_ARRAY)
         {
           current->set(index, record->to_integers());
         }
-        else if (record->is_binary_file_type())
+        else if(record->is_binary_file_type())
         {
           size_t size;
           unsigned char* buffer = record->to_unmanaged_buffer(size);
           current->set_file(index, buffer, size);
           delete[] buffer;
         }
-        else if (record->type() == madara::knowledge::KnowledgeRecord::STRING)
+        else if(record->type() == madara::knowledge::KnowledgeRecord::STRING)
         {
           current->set(index, record->to_string());
         }
-        else if (record->is_string_type())
+        else if(record->is_string_type())
         {
           current->set(index, record->to_string());
         }
@@ -232,7 +232,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1pushbackRecord(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     madara::knowledge::KnowledgeRecord* record =
         (madara::knowledge::KnowledgeRecord*)value_ptr;
@@ -254,7 +254,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1pushbackLong(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->push_back(madara::knowledge::KnowledgeRecord(value));
   }
@@ -273,7 +273,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1pushbackDouble(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->push_back(madara::knowledge::KnowledgeRecord((double)value));
   }
@@ -293,7 +293,7 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackDoubleArray(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     jsize len = env->GetArrayLength(data);
     jboolean isCopy;
@@ -302,12 +302,12 @@ Java_ai_madara_knowledge_containers_Vector_jni_1pushbackDoubleArray(
     jdouble* dblArray = env->GetDoubleArrayElements(data, &isCopy);
 
     // copy elements to STL vector
-    for (int x = 0; x < len; x++)
+    for(int x = 0; x < len; x++)
       dblVector[x] = dblArray[x];
 
     current->push_back(madara::knowledge::KnowledgeRecord(dblVector));
 
-    if (isCopy)
+    if(isCopy)
       env->ReleaseDoubleArrayElements(data, dblArray, JNI_ABORT);
   }
   else
@@ -330,7 +330,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1pushbackLongArray(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     jsize len = env->GetArrayLength(data);
     jboolean isCopy;
@@ -339,12 +339,12 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1pushbackLongArray(
     jlong* longArray = env->GetLongArrayElements(data, &isCopy);
 
     // copy elements to STL vector
-    for (int x = 0; x < len; x++)
+    for(int x = 0; x < len; x++)
       dblVector[x] = longArray[x];
 
     current->push_back(madara::knowledge::KnowledgeRecord(dblVector));
 
-    if (isCopy)
+    if(isCopy)
       env->ReleaseLongArrayElements(data, longArray, JNI_ABORT);
   }
   else
@@ -367,7 +367,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1pushbackString(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* nativeData = env->GetStringUTFChars(data, 0);
     current->push_back(madara::knowledge::KnowledgeRecord(nativeData));
@@ -394,7 +394,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1getName(
   jstring result = 0;
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -420,16 +420,16 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1setName(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -458,7 +458,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1get(
   madara::knowledge::KnowledgeRecord* result(0);
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = new madara::knowledge::KnowledgeRecord(current->to_record(index));
   }
@@ -484,7 +484,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1resize(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resize(length, true);
   }
@@ -509,7 +509,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1size(
   jlong result(0);
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->size();
   }
@@ -536,7 +536,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1toRecord(
   madara::knowledge::KnowledgeRecord* result(0);
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     result = new madara::knowledge::KnowledgeRecord(current->to_record(index));
   }
@@ -564,7 +564,7 @@ jobjectArray JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1toArray(
       env, "ai/madara/knowledge/KnowledgeRecord");
   jobjectArray list = 0;
 
-  if (kr_class && cptr != 0)
+  if(kr_class && cptr != 0)
   {
     jmethodID method = env->GetStaticMethodID(
         kr_class, "fromPointer", "(J)Lai/madara/knowledge/KnowledgeRecord;");
@@ -575,9 +575,9 @@ jobjectArray JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1toArray(
 
     list = env->NewObjectArray((jsize)records.size(), kr_class, 0);
 
-    if (method)
+    if(method)
     {
-      for (jsize i = 0; i < size; ++i)
+      for(jsize i = 0; i < size; ++i)
       {
         std::cout << "record[" << i << "] = " << records[i] << "\n";
         jobject result = env->CallStaticObjectMethod(
@@ -613,7 +613,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1modify(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -637,7 +637,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1modifyIndex(
 {
   Vector* current = (Vector*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify((size_t)index);
   }
@@ -658,7 +658,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -678,7 +678,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1isTrue(
   containers::Vector* current = (containers::Vector*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -700,7 +700,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Vector_jni_1isFalse(
   containers::Vector* current = (containers::Vector*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

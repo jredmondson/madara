@@ -105,7 +105,7 @@ public class ThreadedCounter extends BaseThread
     long numThreads = 1;
     double hertz = 300000;
 
-    if (args.length > 0)
+    if(args.length > 0)
     {
       // first arg is the number of threads
       try
@@ -120,7 +120,7 @@ public class ThreadedCounter extends BaseThread
         System.exit(1);
       }
 
-      if (args.length > 1)
+      if(args.length > 1)
       {
         // second arg is the target
         try
@@ -135,7 +135,7 @@ public class ThreadedCounter extends BaseThread
           System.exit(1);
         }
 
-        if (args.length > 2)
+        if(args.length > 2)
         {
           // second arg is the target
           try
@@ -161,7 +161,7 @@ public class ThreadedCounter extends BaseThread
     System.err.println("  threads:" + numThreads);
     System.err.println("  hertz:" + hertz);
 
-    for (int i = 0; i < numThreads; ++i)
+    for(int i = 0; i < numThreads; ++i)
     {
       threader.startPaused(hertz, "thread" + i, new ThreadedCounter());
     }

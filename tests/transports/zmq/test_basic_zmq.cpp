@@ -12,13 +12,13 @@ std::string address("tcp://127.0.0.1:30000");
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg(argv[i]);
 
     std::cerr << "arg[" << i << "] = " << arg << std::endl;
 
-    if (arg == "-i" && i + 1 < argc)
+    if(arg == "-i" && i + 1 < argc)
     {
       std::cerr << "setting id to argv[" << (i + 1) << "] (" << argv[i + 1]
                 << ")\n";
@@ -29,7 +29,7 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg == "-a" && i + 1 < argc)
+    else if(arg == "-a" && i + 1 < argc)
     {
       address = argv[i + 1];
       ++i;
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
 
   std::cerr << "context is " << context << std::endl;
 
-  if (id == 0)
+  if(id == 0)
   {
     int option = 0;
     std::cerr << "initializing pusher.\n";
@@ -66,7 +66,7 @@ int main(int argc, char** argv)
     zmq_setsockopt(socket, ZMQ_RCVBUF, (void*)&option, sizeof(int));
 
     int rc = zmq_bind(socket, address.c_str());
-    if (rc == 0)
+    if(rc == 0)
     {
       std::cerr << "->Successfully bound to " << address << "\n";
       strcpy(update, "this is an update.");
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
 
     rc = zmq_unbind(socket, address.c_str());
 
-    if (rc == 0)
+    if(rc == 0)
     {
       std::cerr << "->unbound from " << address << "\n";
     }
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 
     std::cerr << "closing socket\n";
 
-    // std::this_thread::sleep_for (std::chrono::seconds (2));
+    // std::this_thread::sleep_for(std::chrono::seconds (2));
 
     zmq_close(socket);
   }
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 
     int rc = zmq_connect(socket, address.c_str());
 
-    if (rc == 0)
+    if(rc == 0)
     {
       std::cerr << "->Successfully connected to " << address << "\n";
       int length = zmq_recv(socket, (void*)update, 40, 0);

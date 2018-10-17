@@ -75,10 +75,10 @@ public class ProfileArchitecture
     knowledge.compile ("++var3");
     knowledge.compile ("++var4");
 
-    for (int x = 0; x < 50000; ++x)
+    for(int x = 0; x < 50000; ++x)
       knowledge.evaluate ("++var2").free ();
 
-    for (int x = 0; x < 50000; ++x)
+    for(int x = 0; x < 50000; ++x)
       knowledge.evaluate ("var2 += 1").free ();
   }
 
@@ -87,7 +87,7 @@ public class ProfileArchitecture
     System.out.println ("Compiling all expressions...");
     Timer timer = new Timer ();
 
-    for (Test test : tests)
+    for(Test test : tests)
     {
       timer.start ();
       test.expression = knowledge.compile (test.test);
@@ -104,14 +104,14 @@ public class ProfileArchitecture
     EvalSettings defaultSettings = new EvalSettings (); //Make sure default eval settings are created
 
     int i = 0;
-    for (Test test : tests)
+    for(Test test : tests)
     {
       test.maxTime = Long.MIN_VALUE;
       test.minTime = Long.MAX_VALUE;
 
       System.out.println ("  [" + i++ + "] Evaluating " + test.test);
 
-      for (int j = 0; j < 100; ++j)
+      for(int j = 0; j < 100; ++j)
       {
         Timer timer = new Timer ();
         timer.start ();
@@ -125,7 +125,7 @@ public class ProfileArchitecture
 
       Timer timer = new Timer ();
       timer.start ();
-      for (int j = 0; j < 10000; ++j)
+      for(int j = 0; j < 10000; ++j)
       {
         knowledge.evaluate (test.expression, defaultSettings).free ();
       }
@@ -139,7 +139,7 @@ public class ProfileArchitecture
     System.out.println ("\n\n");
     System.out.println (String.format ("%18s | %13s | %13s | %13s | %13s", "Expression", "Compile time", "Min eval time", "Max eval time", "Avg eval time"));
 
-    for (Test test : tests)
+    for(Test test : tests)
     {
       System.out.println (String.format ("%18s   %13d   %13d   %13d   %13d", test.test.subSequence (0, Math.min (test.test.length (),18)), test.compileTime, test.minTime, test.maxTime, test.averageTime));
     }
@@ -151,11 +151,11 @@ public class ProfileArchitecture
 
     BufferedReader br = new BufferedReader (new FileReader (profile_file));
     String line = null;
-    while ( (line = br.readLine ()) != null)
+    while( (line = br.readLine ()) != null)
       tests.add (new Test (line));
     br.close ();
 
-    if (tests.size () > 0)
+    if(tests.size () > 0)
     {
       warmup (knowledge);
       compileExpressions (knowledge);

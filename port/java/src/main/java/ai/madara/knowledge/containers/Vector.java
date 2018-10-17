@@ -382,7 +382,7 @@ public class Vector extends BaseContainer
   {
     Object[] objs = jni_toArray(getCPtr());
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
+    for(int i = 0; i < objs.length; ++i)
     {
       records[i] = (KnowledgeRecord)objs[i];
     }
@@ -395,7 +395,7 @@ public class Vector extends BaseContainer
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeVector(getCPtr());
       setCPtr(0);

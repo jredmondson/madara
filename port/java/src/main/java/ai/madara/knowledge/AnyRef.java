@@ -67,13 +67,13 @@ public class AnyRef {
     }
 
     protected static void err(String error) throws BadAnyAccess {
-	if (error != null) {
+	if(error != null) {
 	    throw new BadAnyAccess(error);
 	}
     }
 
     protected static void err_unchecked(String error) {
-	if (error != null) {
+	if(error != null) {
 	    throw new RuntimeException(error);
 	}
     }
@@ -307,7 +307,7 @@ public class AnyRef {
     public String toString() {
 	String[] out = new String[1];
 	String e = jni_to(handler_, data_, out);
-	if (e != null) {
+	if(e != null) {
 	    return "[toString error: " + e + "]";
 	}
 	return out[0];
@@ -380,7 +380,7 @@ public class AnyRef {
     protected static java.util.Map<String, String> registered_factories = new java.util.HashMap<String, String>();
 
     protected void print_hex(byte[] data) {
-	for (byte cur : data) {
+	for(byte cur : data) {
 	    System.err.print(String.format("%02x", cur));
 	}
     }
@@ -416,11 +416,11 @@ public class AnyRef {
 	String tag = registered_factories.get(factory_name);
 	String my_tag = getTag();
 
-	if (my_tag == null) {
+	if(my_tag == null) {
 	    throw new BadAnyAccess("Any is holding an unregistered type");
-	} else if (tag == null) {
+	} else if(tag == null) {
 	    throw new BadAnyAccess("Cap'n Proto message type not registered");
-	} else if (!tag.equals(my_tag)) {
+	} else if(!tag.equals(my_tag)) {
 	    throw new BadAnyAccess("Mismatched tags: expected " + my_tag + " requested reader for tag " + tag);
 	}
 

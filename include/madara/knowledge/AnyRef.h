@@ -117,7 +117,7 @@ public:
   template<typename T>
   T* ptr(type<T> t) const
   {
-    if (!impl().try_type(t))
+    if(!impl().try_type(t))
     {
       return nullptr;
     }

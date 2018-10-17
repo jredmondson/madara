@@ -68,12 +68,12 @@ public class KnowledgeMap extends AbstractMap<String, KnowledgeRecord>
   {
     this.freeable = freeable;
 
-    if (keys == null || vals == null || keys.length != vals.length)
+    if(keys == null || vals == null || keys.length != vals.length)
       return;
 
     mySet = new HashSet<Map.Entry<String, KnowledgeRecord>>();
 
-    for (int x = 0; x < keys.length; x++)
+    for(int x = 0; x < keys.length; x++)
     {
       mySet.add(new KnowledgeMapEntry(keys[x], vals[x], freeable));
     }
@@ -94,11 +94,11 @@ public class KnowledgeMap extends AbstractMap<String, KnowledgeRecord>
    */
   public void free()
   {
-    if (!freeable)
+    if(!freeable)
       return;
     long[] ptrs = new long[mySet == null ? 0 : mySet.size()];
     int pos = 0;
-    for (Map.Entry<String, KnowledgeRecord> entry : mySet)
+    for(Map.Entry<String, KnowledgeRecord> entry : mySet)
     {
       ptrs[pos++] = entry.getValue().getCPtr();
     }

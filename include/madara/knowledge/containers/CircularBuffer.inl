@@ -24,7 +24,7 @@ inline CircularBuffer::CircularBuffer(const KnowledgeUpdateSettings& settings)
 
 inline void CircularBuffer::check_name(const char* func) const
 {
-  if (name_ == "")
+  if(name_ == "")
   {
     throw exceptions::NameException(
         std::string("CircularBuffer::") + func + ": name is empty.");
@@ -34,7 +34,7 @@ inline void CircularBuffer::check_name(const char* func) const
 inline void CircularBuffer::check_context(const char* func) const
 {
   check_name(func);
-  if (!context_)
+  if(!context_)
   {
     throw exceptions::ContextException(
         std::string("CircularBuffer::") + func + ": context is not set.");
@@ -44,30 +44,30 @@ inline void CircularBuffer::check_context(const char* func) const
 inline void CircularBuffer::check_all(const char* func) const
 {
   std::string reason = "";
-  if (context_ == 0)
+  if(context_ == 0)
   {
     reason = "context has not been set";
   }
 
-  if (name_ == "")
+  if(name_ == "")
   {
-    if (reason.size() > 0)
+    if(reason.size() > 0)
     {
       reason += " and ";
     }
     reason = "name has not been set";
   }
 
-  if (buffer_.size() == 0)
+  if(buffer_.size() == 0)
   {
-    if (reason.size() > 0)
+    if(reason.size() > 0)
     {
       reason += " and ";
     }
     reason = "size == 0";
   }
 
-  if (reason != "")
+  if(reason != "")
   {
     std::stringstream message;
     message << "CircularBuffer::" << func << ": ";
@@ -104,7 +104,7 @@ inline CircularBuffer::CircularBuffer(const std::string& name,
 
   ContextGuard context_guard(knowledge);
   set_name(name, knowledge);
-  if (size >= 0)
+  if(size >= 0)
   {
     buffer_.resize(size);
   }
@@ -118,7 +118,7 @@ inline CircularBuffer::CircularBuffer(const std::string& name,
 
   ContextGuard context_guard(*knowledge.get_context());
   set_name(name, knowledge);
-  if (size >= 0)
+  if(size >= 0)
   {
     buffer_.resize(size);
   }
@@ -148,11 +148,11 @@ inline madara::knowledge::KnowledgeRecord::Integer CircularBuffer::increment(
     KnowledgeRecord::Integer base, KnowledgeRecord::Integer value) const
 {
   KnowledgeRecord::Integer result = base + value;
-  if (buffer_.size() > 0 && base + value >= 0)
+  if(buffer_.size() > 0 && base + value >= 0)
   {
     return (result) % (KnowledgeRecord::Integer)buffer_.size();
   }
-  else if (buffer_.size() > 0)
+  else if(buffer_.size() > 0)
   {
     return (KnowledgeRecord::Integer)buffer_.size() + result;
   }
@@ -191,7 +191,7 @@ inline void CircularBuffer::add(const knowledge::KnowledgeRecord& record)
 template<typename T>
 void CircularBuffer::add(const std::vector<T>& records)
 {
-  for (auto record : records)
+  for(auto record : records)
   {
     add(record);
   }
@@ -205,7 +205,7 @@ inline void CircularBuffer::add(const std::vector<KnowledgeRecord>& records)
 
   KnowledgeRecord::Integer index = *index_;
 
-  for (auto record : records)
+  for(auto record : records)
   {
     index = increment(index, 1);
 
@@ -232,7 +232,7 @@ inline madara::knowledge::KnowledgeRecord CircularBuffer::get(void) const
   KnowledgeRecord::Integer index = *index_;
   index = increment(index, 0);
 
-  if (count() > 0)
+  if(count() > 0)
     return context_->get(buffer_.vector_[(size_t)index], settings_);
   else
     return KnowledgeRecord();
@@ -252,7 +252,7 @@ inline madara::knowledge::KnowledgeRecord CircularBuffer::inspect(
 
   KnowledgeRecord::Integer inserted = (KnowledgeRecord::Integer)count();
 
-  if ((position <= 0 && -position < inserted) ||
+  if((position <= 0 && -position < inserted) ||
       (position > 0 && inserted == (KnowledgeRecord::Integer)size() &&
           position < inserted))
   {
@@ -276,7 +276,7 @@ void CircularBuffer::inspect(KnowledgeRecord::Integer position, size_t count,
     std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : inspect(position, count))
+  for(auto record : inspect(position, count))
   {
     // add them to the values
     values.push_back(record.to_any<T>());
@@ -292,7 +292,7 @@ inline std::vector<KnowledgeRecord> CircularBuffer::inspect(
 
   KnowledgeRecord::Integer inserted = (KnowledgeRecord::Integer)this->count();
 
-  if ((position <= 0 && -position < inserted) ||
+  if((position <= 0 && -position < inserted) ||
       (position > 0 && inserted == (KnowledgeRecord::Integer)size() &&
           position < inserted))
   {
@@ -301,7 +301,7 @@ inline std::vector<KnowledgeRecord> CircularBuffer::inspect(
 
     std::vector<KnowledgeRecord> result;
 
-    for (size_t i = 0; i < count; ++i, index = increment(index, 1))
+    for(size_t i = 0; i < count; ++i, index = increment(index, 1))
     {
       result.push_back(buffer_[(size_t)index]);
     }
@@ -370,7 +370,7 @@ inline void CircularBuffer::set_quality(
 inline void CircularBuffer::set_name(
     const std::string& name, KnowledgeBase& knowledge)
 {
-  if (name != "")
+  if(name != "")
   {
     ContextGuard context_guard(knowledge);
     name_ = name;
@@ -378,7 +378,7 @@ inline void CircularBuffer::set_name(
     index_.set_name(name + ".index", knowledge);
     buffer_.set_name(name, knowledge);
     size_ref_ = buffer_.get_size_ref();
-    if (buffer_.size() == 0 && index_ != -1)
+    if(buffer_.size() == 0 && index_ != -1)
     {
       index_ = -1;
     }
@@ -393,7 +393,7 @@ inline void CircularBuffer::set_name(
 inline void CircularBuffer::set_name(
     const std::string& name, Variables& knowledge)
 {
-  if (name != "")
+  if(name != "")
   {
     ContextGuard context_guard(*knowledge.get_context());
     name_ = name;
@@ -401,7 +401,7 @@ inline void CircularBuffer::set_name(
     index_.set_name(name + ".index", knowledge);
     buffer_.set_name(name, knowledge);
     size_ref_ = buffer_.get_size_ref();
-    if (buffer_.size() == 0 && index_ != -1)
+    if(buffer_.size() == 0 && index_ != -1)
     {
       index_ = -1;
     }
@@ -423,7 +423,7 @@ template<typename T>
 void CircularBuffer::get_latest(size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : get_latest(count))
+  for(auto record : get_latest(count))
   {
     // add them to the values
     values.push_back(record.to_any<T>());
@@ -443,7 +443,7 @@ inline std::vector<KnowledgeRecord> CircularBuffer::get_latest(
 
   KnowledgeRecord::Integer cur = *index_ % buffer_.size();
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, -1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, -1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }
@@ -455,7 +455,7 @@ template<typename T>
 void CircularBuffer::get_earliest(size_t count, std::vector<T>& values) const
 {
   // iterate over the returned records
-  for (auto record : get_earliest(count))
+  for(auto record : get_earliest(count))
   {
     // add them to the values
     values.push_back(record.to_any<T>());
@@ -476,7 +476,7 @@ inline std::vector<KnowledgeRecord> CircularBuffer::get_earliest(
   KnowledgeRecord::Integer cur =
       this->count() < buffer_.size() ? 0 : increment(*index_, 1);
 
-  for (size_t i = 0; i < count; ++i, cur = increment(cur, 1))
+  for(size_t i = 0; i < count; ++i, cur = increment(cur, 1))
   {
     result.push_back(buffer_[(size_t)cur]);
   }

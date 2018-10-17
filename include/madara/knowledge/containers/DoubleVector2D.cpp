@@ -45,17 +45,17 @@ madara::knowledge::containers::DoubleVector2D::~DoubleVector2D() {}
 
 void madara::knowledge::containers::DoubleVector2D::modify(void)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
 
     Indices dimensions = size();
 
-    if (dimensions.x > 0 && dimensions.y > 0)
+    if(dimensions.x > 0 && dimensions.y > 0)
     {
-      for (size_t i = 0; i < dimensions.x; ++i)
+      for(size_t i = 0; i < dimensions.x; ++i)
       {
-        for (size_t j = 0; j < dimensions.y; ++j)
+        for(size_t j = 0; j < dimensions.y; ++j)
         {
           context_->mark_modified(vector_[i][j]);
         }
@@ -72,7 +72,7 @@ std::string madara::knowledge::containers::DoubleVector2D::get_debug_info(void)
 
   result << "DoubleVector2D: ";
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
@@ -82,13 +82,13 @@ std::string madara::knowledge::containers::DoubleVector2D::get_debug_info(void)
     result << " [" << dimensions.x << "," << dimensions.y << "]";
     result << " = [";
 
-    if (dimensions.x > 0 && dimensions.y > 0)
+    if(dimensions.x > 0 && dimensions.y > 0)
     {
-      for (size_t i = 0; i < dimensions.x; ++i)
+      for(size_t i = 0; i < dimensions.x; ++i)
       {
         result << context_->get(vector_[i][0]).to_string();
 
-        for (size_t j = 1; j < dimensions.y; ++j)
+        for(size_t j = 1; j < dimensions.y; ++j)
         {
           result << ", " << context_->get(vector_[i][j]).to_string();
         }
@@ -120,10 +120,10 @@ madara::knowledge::containers::DoubleVector2D::clone(void) const
 
 void madara::knowledge::containers::DoubleVector2D::modify(const Indices& index)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
-    if (index.x < vector_.size() && index.y < vector_[index.x].size())
+    if(index.x < vector_.size() && index.y < vector_[index.x].size())
       context_->mark_modified(vector_[index.x][index.y]);
   }
 }
@@ -131,7 +131,7 @@ void madara::knowledge::containers::DoubleVector2D::modify(const Indices& index)
 void madara::knowledge::containers::DoubleVector2D::operator=(
     const DoubleVector2D& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
@@ -149,7 +149,7 @@ madara::knowledge::containers::DoubleVector2D::get_size_ref(void)
 {
   VariableReference ref;
 
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     KnowledgeUpdateSettings keep_local(true);
     std::stringstream buffer;
@@ -169,7 +169,7 @@ madara::knowledge::containers::DoubleVector2D::get_size_ref(void)
 void madara::knowledge::containers::DoubleVector2D::resize(
     const Dimensions& dimensions, bool delete_vars)
 {
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     ContextGuard context_guard(*context_);
 
@@ -179,7 +179,7 @@ void madara::knowledge::containers::DoubleVector2D::resize(
 
     bool is_reset = dimensions.x == 0 && dimensions.y == 0;
 
-    if (!size_.is_valid())
+    if(!size_.is_valid())
     {
       size_ = get_size_ref();
     }
@@ -192,7 +192,7 @@ void madara::knowledge::containers::DoubleVector2D::resize(
         "DoubleVector2D::resize: old size is [%d,%d]\n", (int)old_size.x,
         (int)old_size.y);
 
-    if (is_reset)
+    if(is_reset)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
           "DoubleVector2D::resize: new size is being reset to size in KB\n");
@@ -216,7 +216,7 @@ void madara::knowledge::containers::DoubleVector2D::resize(
     // correct the vector for the new size
     vector_.resize(new_size.x);
 
-    for (size_t i = 0; i < new_size.x; ++i)
+    for(size_t i = 0; i < new_size.x; ++i)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
           "DoubleVector2D::resize: resizing vector_[%d] to %d.\n", (int)i,
@@ -229,7 +229,7 @@ void madara::knowledge::containers::DoubleVector2D::resize(
       size_t start = old_size.y;
 
       // if you've gained rows and this is a new row, reset start to 0
-      if (is_reset || (old_size.x < new_size.x && i >= old_size.x))
+      if(is_reset || (old_size.x < new_size.x && i >= old_size.x))
       {
         start = 0;
       }
@@ -239,7 +239,7 @@ void madara::knowledge::containers::DoubleVector2D::resize(
           (int)start, (int)new_size.y);
 
       // create new VariableReferences
-      for (size_t j = start; j < new_size.y; ++j)
+      for(size_t j = start; j < new_size.y; ++j)
       {
         std::stringstream var_name;
         var_name << this->name_;
@@ -253,20 +253,20 @@ void madara::knowledge::containers::DoubleVector2D::resize(
     }
 
     // delete if we need to delete
-    if ((new_size.x < old_size.x || new_size.y < old_size.y) && delete_vars)
+    if((new_size.x < old_size.x || new_size.y < old_size.y) && delete_vars)
     {
       madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
           "DoubleVector2D::resize: deleting refs: rows: 0->%d.\n",
           (int)old_size.x);
 
       // delete within the old rows
-      for (size_t i = 0; i < old_size.x; ++i)
+      for(size_t i = 0; i < old_size.x; ++i)
       {
         // by default, delete from new col size to old col size
         size_t start = new_size.y;
 
         // the exception is when we are deleting the entire row
-        if (old_size.x > new_size.x && i >= new_size.x)
+        if(old_size.x > new_size.x && i >= new_size.x)
         {
           start = 0;
         }
@@ -276,7 +276,7 @@ void madara::knowledge::containers::DoubleVector2D::resize(
             (int)start, (int)old_size.x);
 
         // delete old columns
-        for (size_t j = start; j < old_size.y; ++j)
+        for(size_t j = start; j < old_size.y; ++j)
         {
           std::stringstream var_name;
           var_name << this->name_;
@@ -301,7 +301,7 @@ madara::knowledge::containers::DoubleVector2D::size(void) const
 {
   Indices cur_size;
 
-  if (context_)
+  if(context_)
   {
     KnowledgeRecord record;
     // lock the KnowledgeBase during access
@@ -323,7 +323,7 @@ void madara::knowledge::containers::DoubleVector2D::set_name(
     const std::string& var_name, KnowledgeBase& knowledge,
     const Indices& dimensions)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  if(context_ != &(knowledge.get_context()) || name_ != var_name)
   {
     context_ = &(knowledge.get_context());
 
@@ -343,7 +343,7 @@ void madara::knowledge::containers::DoubleVector2D::set_name(
     const std::string& var_name, Variables& knowledge,
     const Indices& dimensions)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name)
+  if(context_ != knowledge.get_context() || name_ != var_name)
   {
     context_ = knowledge.get_context();
 
@@ -360,7 +360,7 @@ void madara::knowledge::containers::DoubleVector2D::set_name(
     const std::string& var_name, ThreadSafeContext& knowledge,
     const Indices& dimensions)
 {
-  if (context_ != &knowledge || name_ != var_name)
+  if(context_ != &knowledge || name_ != var_name)
   {
     context_ = &knowledge;
 
@@ -377,7 +377,7 @@ void madara::knowledge::containers::DoubleVector2D::set_delimiter(
     const std::string& delimiter)
 {
   delimiter_ = delimiter;
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
@@ -396,7 +396,7 @@ void madara::knowledge::containers::DoubleVector2D::copy_to(
 {
   KnowledgeUpdateSettings keep_local(true);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
@@ -404,10 +404,10 @@ void madara::knowledge::containers::DoubleVector2D::copy_to(
 
     target.resize(dimensions.x);
 
-    for (size_t i = 0; i < dimensions.x; ++i)
+    for(size_t i = 0; i < dimensions.x; ++i)
     {
       target[i].resize(dimensions.y);
-      for (size_t j = 0; j < dimensions.y; ++j)
+      for(size_t j = 0; j < dimensions.y; ++j)
       {
         target[i][j] = context_->get(vector_[i][j], keep_local).to_double();
       }
@@ -423,11 +423,11 @@ madara::knowledge::containers::DoubleVector2D::type
 
   KnowledgeUpdateSettings keep_local(true);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    if (index.x < vector_.size() && index.y < vector_[index.x].size())
+    if(index.x < vector_.size() && index.y < vector_[index.x].size())
     {
       result = context_->get(vector_[index.x][index.y], keep_local).to_double();
     }
@@ -441,11 +441,11 @@ bool madara::knowledge::containers::DoubleVector2D::exists(
 {
   bool result(false);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    if (index.x < vector_.size() && index.y < vector_[index.x].size())
+    if(index.x < vector_.size() && index.y < vector_[index.x].size())
     {
       result = context_->exists(vector_[index.x][index.y]);
     }
@@ -459,11 +459,11 @@ int madara::knowledge::containers::DoubleVector2D::set(
 {
   int result = -1;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    if (index.x < vector_.size() && index.y < vector_[index.x].size())
+    if(index.x < vector_.size() && index.y < vector_[index.x].size())
     {
       result = context_->set(vector_[index.x][index.y], value, settings_);
     }
@@ -477,13 +477,13 @@ int madara::knowledge::containers::DoubleVector2D::set(
 {
   int result = 0;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    for (size_t i = 0; i < value.size() && i < vector_.size(); ++i)
+    for(size_t i = 0; i < value.size() && i < vector_.size(); ++i)
     {
-      for (size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j)
+      for(size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j)
       {
         context_->set(vector_[i][j], value[i][j], settings_);
       }
@@ -498,11 +498,11 @@ int madara::knowledge::containers::DoubleVector2D::set(
 {
   int result = -1;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    if (index.x < vector_.size() && index.y < vector_[index.x].size())
+    if(index.x < vector_.size() && index.y < vector_[index.x].size())
     {
       result = context_->set(vector_[index.x][index.y], value, settings);
     }
@@ -517,13 +517,13 @@ int madara::knowledge::containers::DoubleVector2D::set(
 {
   int result = 0;
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    for (size_t i = 0; i < value.size() && i < vector_.size(); ++i)
+    for(size_t i = 0; i < value.size() && i < vector_.size(); ++i)
     {
-      for (size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j)
+      for(size_t j = 0; j < value[i].size() && j < vector_[i].size(); ++j)
       {
         context_->set(vector_[i][j], value[i][j], settings);
       }
@@ -537,11 +537,11 @@ void madara::knowledge::containers::DoubleVector2D::set_quality(
     const Indices& index, uint32_t quality,
     const KnowledgeReferenceSettings& settings)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
-    if (index.x < vector_.size() && index.y < vector_[index.x].size())
+    if(index.x < vector_.size() && index.y < vector_[index.x].size())
       context_->set_quality(
           vector_[index.x][index.y].get_name(), quality, true, settings);
   }
@@ -554,7 +554,7 @@ bool madara::knowledge::containers::DoubleVector2D::is_true(void) const
   madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
       "DoubleVector2D::is_true: Checking for truth\n");
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
 
@@ -564,15 +564,15 @@ bool madara::knowledge::containers::DoubleVector2D::is_true(void) const
         "DoubleVector2D::is_true: context was not null. Result changed to %d\n",
         (int)result);
 
-    for (size_t i = 0; i < vector_.size(); ++i)
+    for(size_t i = 0; i < vector_.size(); ++i)
     {
-      for (size_t j = 0; j < vector_[i].size(); ++i)
+      for(size_t j = 0; j < vector_[i].size(); ++i)
       {
         madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
             "DoubleVector2D::is_true: checking [%d,%d], is_false of %d. \n",
             (int)i, (int)j, (int)context_->get(vector_[i][j]).is_false());
 
-        if (context_->get(vector_[i][j]).is_false())
+        if(context_->get(vector_[i][j]).is_false())
         {
           madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
               "DoubleVector2D::is_true: result is false, breaking\n");
@@ -583,7 +583,7 @@ bool madara::knowledge::containers::DoubleVector2D::is_true(void) const
       }
     }
 
-    if (vector_.size() == 0)
+    if(vector_.size() == 0)
       result = false;
   }
 

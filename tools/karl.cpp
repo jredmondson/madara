@@ -358,9 +358,9 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
-    else if (arg1 == "-fql" || arg1 == "--fragment-queue-length")
+    else if(arg1 == "-fql" || arg1 == "--fragment-queue-length")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.fragment_queue_length;

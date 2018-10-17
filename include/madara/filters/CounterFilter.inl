@@ -14,7 +14,7 @@ madara::filters::CounterFilter::get_elapsed()
 {
   madara::knowledge::KnowledgeRecord::Integer result(0);
 
-  if (initialized_)
+  if(initialized_)
   {
     result = last_message_ - first_message_;
   }
@@ -26,7 +26,7 @@ double madara::filters::CounterFilter::get_throughput()
 {
   double result(0);
 
-  if (initialized_)
+  if(initialized_)
   {
     // convert elapsed time into seconds
     double elapsed = (double)(last_message_ - first_message_);

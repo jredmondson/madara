@@ -49,9 +49,9 @@ public:
     uint64_t ToBias() const { return (u_ & kSignMask) ? ~u_ + 1 : u_ | kSignMask; }
 
     static unsigned EffectiveSignificandSize(int order) {
-        if (order >= -1021)
+        if(order >= -1021)
             return 53;
-        else if (order <= -1074)
+        else if(order <= -1074)
             return 0;
         else
             return static_cast<unsigned>(order) + 1074;

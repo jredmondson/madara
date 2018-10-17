@@ -73,7 +73,7 @@ jlong JNICALL Java_ai_madara_threads_Threader_jni_1Threader__J(
   Threader* result(0);
   KnowledgeBase* knowledge = (KnowledgeBase*)kb;
 
-  if (knowledge)
+  if(knowledge)
   {
     result = new Threader(*knowledge);
   }
@@ -110,7 +110,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1run(JNIEnv* env, jobject,
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
@@ -138,7 +138,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1runhz(JNIEnv* env, jobject,
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
@@ -166,7 +166,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1pauseThread(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
@@ -194,7 +194,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1pause(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     current->pause();
   }
@@ -218,7 +218,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1waitThread(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
@@ -246,7 +246,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1wait(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     current->wait();
   }
@@ -270,7 +270,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1terminateThread(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
@@ -298,7 +298,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1terminate(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     current->terminate();
   }
@@ -322,7 +322,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1resumeThread(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
@@ -350,7 +350,7 @@ void JNICALL Java_ai_madara_threads_Threader_jni_1resume(
 {
   Threader* current = (Threader*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resume();
   }

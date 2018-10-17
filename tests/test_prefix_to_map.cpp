@@ -23,7 +23,7 @@ int madara_fails = 0;
 
 void print_map(const knowledge::KnowledgeMap& kmap)
 {
-  for (knowledge::KnowledgeMap::const_iterator i = kmap.begin();
+  for(knowledge::KnowledgeMap::const_iterator i = kmap.begin();
        i != kmap.end(); ++i)
   {
     std::cout << i->first << " -> " << i->second << std::endl;
@@ -49,7 +49,7 @@ void test_prefix_to_map(void)
 
   print_map(kmap);
 
-  if (kmap.size() == 3 && kmap["test.a"] == "a" && kmap["test.b"] == "b" &&
+  if(kmap.size() == 3 && kmap["test.a"] == "a" && kmap["test.b"] == "b" &&
       kmap["test.c"] == "c")
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -66,7 +66,7 @@ void test_prefix_to_map(void)
 
   print_map(kmap2);
 
-  if (kmap2.size() == 1 && kmap2["astart.x"] == "x")
+  if(kmap2.size() == 1 && kmap2["astart.x"] == "x")
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 2: extracting astart. prefix copy is SUCCESS.\n");
@@ -82,7 +82,7 @@ void test_prefix_to_map(void)
 
   print_map(kmap3);
 
-  if (kmap3.size() == 2 && kmap3["zend.z"] == "z" && kmap3["zend.zz"] == "zz")
+  if(kmap3.size() == 2 && kmap3["zend.z"] == "z" && kmap3["zend.zz"] == "zz")
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 3: extracting zend. prefix copy is SUCCESS.\n");
@@ -98,7 +98,7 @@ void test_prefix_to_map(void)
 
   print_map(kmap4);
 
-  if (kmap4.size() == 8)
+  if(kmap4.size() == 8)
   {
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
         "TEST 4: extracting empty prefix copy is SUCCESS.\n");
@@ -115,7 +115,7 @@ int main(int, char**)
 {
   test_prefix_to_map();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

@@ -41,7 +41,7 @@ jlong JNICALL Java_ai_madara_transport_TransportSettings_jni_1Settings__J(
   jlong result(0);
   TransportSettings* source = (TransportSettings*)cptr;
 
-  if (source)
+  if(source)
   {
     result = (jlong) new TransportSettings(*source);
   }
@@ -60,7 +60,7 @@ jlong JNICALL Java_ai_madara_transport_TransportSettings_jni_1Settings__J(
 void JNICALL Java_ai_madara_transport_TransportSettings_jni_1save(
     JNIEnv* env, jobject, jlong cptr, jstring filename)
 {
-  if (cptr && filename)
+  if(cptr && filename)
   {
     const char* nativeFilename = env->GetStringUTFChars(filename, 0);
     TransportSettings* settings = (TransportSettings*)cptr;
@@ -87,7 +87,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1save(
 void JNICALL Java_ai_madara_transport_TransportSettings_jni_1load(
     JNIEnv* env, jobject, jlong cptr, jstring filename)
 {
-  if (cptr && filename)
+  if(cptr && filename)
   {
     const char* nativeFilename = env->GetStringUTFChars(filename, 0);
     TransportSettings* settings = (TransportSettings*)cptr;
@@ -118,7 +118,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setWriteDomain(
 
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->write_domain = nativeDomains;
   }
@@ -145,7 +145,7 @@ jstring JNICALL Java_ai_madara_transport_TransportSesttings_jni_1getWriteDomain(
   jstring result = 0;
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = env->NewStringUTF(settings->write_domain.c_str());
   }
@@ -171,7 +171,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setQueueLength(
 {
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->queue_length = queueLength;
   }
@@ -196,7 +196,7 @@ jint JNICALL Java_ai_madara_transport_TransportSettings_jni_1getQueueLength(
   jint result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->queue_length;
   }
@@ -217,7 +217,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setResendAttempts(
 {
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->resend_attempts = resends;
   }
@@ -237,7 +237,7 @@ jint JNICALL Java_ai_madara_transport_TransportSettings_jni_1getResendAttempts(
   jint result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->resend_attempts;
   }
@@ -263,7 +263,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setType(
 {
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->type = type;
   }
@@ -288,7 +288,7 @@ jint JNICALL Java_ai_madara_transport_TransportSettings_jni_1getType(
   jint result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->type;
   }
@@ -314,7 +314,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setReliability(
 {
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->reliability = reliability;
   }
@@ -339,7 +339,7 @@ jint JNICALL Java_ai_madara_transport_TransportSettings_jni_1getReliability(
   jint result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->reliability;
   }
@@ -365,7 +365,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setId(
 {
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->id = id;
   }
@@ -390,7 +390,7 @@ jint JNICALL Java_ai_madara_transport_TransportSettings_jni_1getId(
   jint result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->id;
   }
@@ -416,7 +416,7 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setProcesses(
 {
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->processes = processes;
   }
@@ -441,7 +441,7 @@ jint JNICALL Java_ai_madara_transport_TransportSettings_jni_1getProcesses(
   jint result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = (jint)settings->processes;
   }
@@ -470,7 +470,7 @@ Java_ai_madara_transport_TransportSettings_jni_1setOnDataReceivedLogic(
       env->GetStringUTFChars(onDataReceivedLogic, 0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->on_data_received_logic = nativeOnDataReceivedLogic;
   }
@@ -498,7 +498,7 @@ Java_ai_madara_transport_TransportSettings_jni_1getOnDataReceivedLogic(
   jstring result = 0;
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     result = env->NewStringUTF(settings->on_data_received_logic.c_str());
   }
@@ -525,11 +525,11 @@ void JNICALL Java_ai_madara_transport_TransportSettings_jni_1setHosts(
   int hostsLen = env->GetArrayLength(hosts);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     settings->hosts.resize(hostsLen);
 
-    for (int x = 0; x < hostsLen; x++)
+    for(int x = 0; x < hostsLen; x++)
     {
       jstring jhost = (jstring)env->GetObjectArrayElement(hosts, x);
       const char* curHost = env->GetStringUTFChars(jhost, 0);
@@ -558,7 +558,7 @@ jobjectArray JNICALL Java_ai_madara_transport_TransportSettings_jni_1getHosts(
   jobjectArray result(0);
   TransportSettings* settings = (TransportSettings*)cptr;
 
-  if (settings)
+  if(settings)
   {
     jclass string_class =
         madara::utility::java::find_class(env, "java/lang/String");
@@ -567,7 +567,7 @@ jobjectArray JNICALL Java_ai_madara_transport_TransportSettings_jni_1getHosts(
     result = env->NewObjectArray(
         (jsize)settings->hosts.size(), string_class, empty_string);
 
-    for (unsigned int x = 0; x < settings->hosts.size(); x++)
+    for(unsigned int x = 0; x < settings->hosts.size(); x++)
     {
       jstring temp_string = env->NewStringUTF(settings->hosts[x].c_str());
 

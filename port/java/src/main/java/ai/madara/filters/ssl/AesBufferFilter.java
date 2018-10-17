@@ -132,7 +132,7 @@ public class AesBufferFilter extends MadaraJNI implements BufferFilter {
 	 * called before an instance gets garbage collected
 	 */
 	public void free() {
-		if (manageMemory) {
+		if(manageMemory) {
 			jni_freeAesBufferFilter(getCPtr());
 			setCPtr(0);
 		}

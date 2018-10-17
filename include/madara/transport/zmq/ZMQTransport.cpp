@@ -27,10 +27,10 @@ madara::transport::ZMQTransport::ZMQTransport(const std::string& id,
   // keep track of references to context so management is automatic
   zmq_context.add_ref();
 
-  if (launch_transport)
+  if(launch_transport)
     setup();
 
-  if (config.debug_to_kb_prefix != "")
+  if(config.debug_to_kb_prefix != "")
   {
     knowledge::KnowledgeBase kb;
     kb.use(context);
@@ -55,12 +55,12 @@ void madara::transport::ZMQTransport::close(void)
 {
   this->invalidate_transport();
 
-  if (write_socket_ != 0)
+  if(write_socket_ != 0)
   {
     int result = zmq_close(write_socket_);
     write_socket_ = 0;
 
-    if (result != 0)
+    if(result != 0)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
           "ZMQTransport::close:"
@@ -101,7 +101,7 @@ int madara::transport::ZMQTransport::setup(void)
   // call base setup method to initialize certain common variables
   Base::setup();
 
-  if (settings_.hosts.size() > 0)
+  if(settings_.hosts.size() > 0)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
         "ZMQTransport::setup:"
@@ -109,7 +109,7 @@ int madara::transport::ZMQTransport::setup(void)
 
     write_socket_ = zmq_socket(zmq_context.get_context(), ZMQ_PUB);
 
-    if (write_socket_ == NULL)
+    if(write_socket_ == NULL)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
           "ZMQTransport::setup:"
@@ -120,9 +120,9 @@ int madara::transport::ZMQTransport::setup(void)
           zmq_strerror(zmq_errno()));
     }
 
-    for (size_t i = 0; i < settings_.hosts.size(); ++i)
+    for(size_t i = 0; i < settings_.hosts.size(); ++i)
     {
-      if (!utility::begins_with(settings_.hosts[i], "tcp://") &&
+      if(!utility::begins_with(settings_.hosts[i], "tcp://") &&
           !utility::begins_with(settings_.hosts[i], "ipc://") &&
           !utility::begins_with(settings_.hosts[i], "inproc://") &&
           !utility::begins_with(settings_.hosts[i], "pgm://") &&
@@ -144,7 +144,7 @@ int madara::transport::ZMQTransport::setup(void)
 
     int bind_result = zmq_bind(write_socket_, settings_.hosts[0].c_str());
 
-    if (bind_result != 0)
+    if(bind_result != 0)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
           "ZMQTransport::setup:"
@@ -178,7 +178,7 @@ int madara::transport::ZMQTransport::setup(void)
     int result =
         zmq_setsockopt(write_socket_, ZMQ_SNDBUF, (void*)&buff_size, opt_len);
 
-    if (result == 0)
+    if(result == 0)
     {
       result = zmq_getsockopt(
           write_socket_, ZMQ_SNDBUF, (void*)&send_buff_size, &opt_len);
@@ -203,7 +203,7 @@ int madara::transport::ZMQTransport::setup(void)
     result =
         zmq_setsockopt(write_socket_, ZMQ_SNDTIMEO, (void*)&timeout, opt_len);
 
-    if (result == 0)
+    if(result == 0)
     {
       result = zmq_getsockopt(
           write_socket_, ZMQ_SNDTIMEO, (void*)&timeout, &opt_len);
@@ -221,10 +221,10 @@ int madara::transport::ZMQTransport::setup(void)
           zmq_strerror(zmq_errno()));
     }
 
-    if (!settings_.no_receiving)
+    if(!settings_.no_receiving)
     {
       double hertz = settings_.read_thread_hertz;
-      if (hertz < 0.0)
+      if(hertz < 0.0)
       {
         hertz = 0.0;
       }
@@ -234,7 +234,7 @@ int madara::transport::ZMQTransport::setup(void)
           " starting %d threads at %f hertz\n",
           settings_.read_threads, hertz);
 
-      for (uint32_t i = 0; i < settings_.read_threads; ++i)
+      for(uint32_t i = 0; i < settings_.read_threads; ++i)
       {
         std::stringstream thread_name;
         thread_name << "read";
@@ -256,11 +256,11 @@ long madara::transport::ZMQTransport::send_data(
   long result(0);
   const char* print_prefix = "ZMQTransport::send_data";
 
-  if (!settings_.no_sending)
+  if(!settings_.no_sending)
   {
     result = prep_send(orig_updates, print_prefix);
 
-    if (settings_.hosts.size() > 0 && result > 0)
+    if(settings_.hosts.size() > 0 && result > 0)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
           "ZMQTransport::send:"
@@ -271,17 +271,17 @@ long madara::transport::ZMQTransport::send_data(
       result = (long)zmq_send(
           write_socket_, (void*)buffer_.get_ptr(), (size_t)result, 0);
 
-      if (result > 0)
+      if(result > 0)
       {
-        if (settings_.debug_to_kb_prefix != "")
+        if(settings_.debug_to_kb_prefix != "")
         {
           sent_data_ += result;
           ++sent_packets_;
-          if (sent_data_max_ < result)
+          if(sent_data_max_ < result)
           {
             sent_data_max_ = result;
           }
-          if (sent_data_min_ > result || sent_data_min_ == 0)
+          if(sent_data_min_ > result || sent_data_min_ == 0)
           {
             sent_data_min_ = result;
           }

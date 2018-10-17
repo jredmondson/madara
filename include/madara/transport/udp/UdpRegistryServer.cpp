@@ -15,7 +15,7 @@ madara::transport::UdpRegistryServer::UdpRegistryServer(const std::string& id,
   endpoints_.set_name(
       "domain." + config.write_domain + ".endpoints", knowledge_);
 
-  if (launch_transport)
+  if(launch_transport)
     setup();
 }
 
@@ -32,7 +32,7 @@ int madara::transport::UdpRegistryServer::setup(void)
 long madara::transport::UdpRegistryServer::send_data(
     const madara::knowledge::KnowledgeMap& orig_updates)
 {
-  if (!settings_.no_sending)
+  if(!settings_.no_sending)
   {
     this->endpoints_.sync_keys();
 
@@ -40,7 +40,7 @@ long madara::transport::UdpRegistryServer::send_data(
     this->addresses_.resize(server_count_);
     this->endpoints_.keys(hosts);
 
-    for (auto& host : hosts)
+    for(auto& host : hosts)
     {
       auto addr_parts = utility::parse_address(std::move(host));
       auto addr = ip::address::from_string(addr_parts.first);

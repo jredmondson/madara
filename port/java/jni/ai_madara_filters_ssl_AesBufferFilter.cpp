@@ -98,7 +98,7 @@ Java_ai_madara_filters_ssl_AesBufferFilter_jni_1AesBufferFilter__J(
 
 #ifdef _USE_SSL_
   AESBufferFilter* input = (AESBufferFilter*)cptr;
-  if (input != 0)
+  if(input != 0)
   {
     result = (jlong) new AESBufferFilter(*input);
   }
@@ -149,7 +149,7 @@ jlong JNICALL Java_ai_madara_filters_ssl_AesBufferFilter_jni_1encode(
 #ifdef _USE_SSL_
   AESBufferFilter* current = (AESBufferFilter*)cptr;
 
-  if (current)
+  if(current)
   {
     char* elements = (char*)env->GetByteArrayElements(buffer, 0);
 
@@ -191,7 +191,7 @@ jlong JNICALL Java_ai_madara_filters_ssl_AesBufferFilter_jni_1decode(
 #ifdef _USE_SSL_
   AESBufferFilter* current = (AESBufferFilter*)cptr;
 
-  if (current)
+  if(current)
   {
     char* elements = (char*)env->GetByteArrayElements(buffer, 0);
 
@@ -232,7 +232,7 @@ jint JNICALL Java_ai_madara_filters_ssl_AesBufferFilter_jni_1generateKey(
 #ifdef _USE_SSL_
   AESBufferFilter* current = (AESBufferFilter*)cptr;
 
-  if (current && password)
+  if(current && password)
   {
     const char* nativePassword = env->GetStringUTFChars(password, 0);
 

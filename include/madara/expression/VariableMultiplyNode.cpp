@@ -19,7 +19,7 @@ madara::expression::VariableMultiplyNode::VariableMultiplyNode(
 {
   var_ = dynamic_cast<VariableNode*>(lhs);
 
-  if (!var_)
+  if(!var_)
     array_ = dynamic_cast<CompositeArrayReference*>(lhs);
 }
 
@@ -38,9 +38,9 @@ madara::expression::VariableMultiplyNode::item() const
 {
   knowledge::KnowledgeRecord value;
 
-  if (var_)
+  if(var_)
     value = var_->item();
-  else if (array_)
+  else if(array_)
     value = array_->item();
 
   return value;
@@ -56,7 +56,7 @@ madara::expression::VariableMultiplyNode::prune(bool& can_change)
   bool right_child_can_change = false;
   madara::knowledge::KnowledgeRecord right_value;
 
-  if (this->var_ != 0 || this->array_ != 0)
+  if(this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
   else
   {
@@ -69,10 +69,10 @@ madara::expression::VariableMultiplyNode::prune(bool& can_change)
                                     "Node has no variable left-hand side\n");
   }
 
-  if (this->rhs_)
+  if(this->rhs_)
   {
     right_value = this->rhs_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0)
+    if(!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0)
     {
       delete this->rhs_;
       this->rhs_ = new LeafNode(*(this->logger_), right_value);
@@ -102,12 +102,12 @@ madara::expression::VariableMultiplyNode::evaluate(
 {
   madara::knowledge::KnowledgeRecord rhs;
 
-  if (rhs_)
+  if(rhs_)
     rhs = rhs_->evaluate(settings);
   else
     rhs = value_;
 
-  if (var_)
+  if(var_)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::VariableMultiplyNode::evaluate: "
@@ -118,7 +118,7 @@ madara::expression::VariableMultiplyNode::evaluate(
     var_->set(result, settings);
     return result;
   }
-  else if (array_)
+  else if(array_)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::VariableMultiplyNode::evaluate: "

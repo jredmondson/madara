@@ -45,7 +45,7 @@ madara::transport::SpliceDDSTransport::SpliceDDSTransport(const std::string& id,
   // set the data plane for the read threads
   read_threads_.set_data_plane(knowledge_);
 
-  if (launch_transport)
+  if(launch_transport)
     setup();
 }
 madara::transport::SpliceDDSTransport::~SpliceDDSTransport()
@@ -61,25 +61,25 @@ void madara::transport::SpliceDDSTransport::close(void)
 
   read_threads_.wait();
 
-  // if (subscriber_.in ())
+  // if(subscriber_.in ())
   //{
   //  subscriber_->delete_datareader (update_reader_);
   //}
 
-  // if (publisher_.in ())
+  // if(publisher_.in ())
   //{
   //  publisher_->delete_datawriter (update_writer_);
   //  publisher_->delete_datawriter (latency_update_writer_);
   //}
 
-  // if (domain_participant_.in ())
+  // if(domain_participant_.in ())
   //{
   //  domain_participant_->delete_subscriber (subscriber_);
   //  domain_participant_->delete_publisher (publisher_);
   //  domain_participant_->delete_topic (update_topic_);
   //}
 
-  // if (domain_factory_.in ())
+  // if(domain_factory_.in ())
   //  domain_factory_->delete_participant (domain_participant_);
 
   update_reader_ = 0;
@@ -131,7 +131,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
       domain_, part_qos_, NULL, DDS::STATUS_MASK_NONE);
 
   // if dp == NULL, we've got an error
-  if (domain_participant_ == NULL)
+  if(domain_participant_ == NULL)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
         "\nSpliceDDSTransport::setup:"
@@ -142,7 +142,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
 
   domain_participant_->get_default_topic_qos(topic_qos_);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     topic_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
     topic_qos_.history.depth = this->settings_.queue_length;
@@ -163,7 +163,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
   //  Register Update type
   status = this->update_type_support_.register_type(
       domain_participant_, "Knowledge::Update");
-  if (int ret = check_status(
+  if(int ret = check_status(
                     status, "Knowledge::UpdateTypeSupport::register_type") < 0)
     return ret;
 
@@ -182,18 +182,18 @@ int madara::transport::SpliceDDSTransport::setup(void)
       madara::utility::dds_topicify(settings_.write_domain).c_str(),
       "Knowledge::Update", topic_qos_, NULL, DDS::STATUS_MASK_NONE);
 
-  if (int ret =
+  if(int ret =
           check_handle(update_topic_,
               "DDS::DomainParticipant::create_topic (KnowledgeUpdate)") < 0)
     return ret;
 
   // Get default qos for publisher
   status = domain_participant_->get_default_publisher_qos(pub_qos_);
-  if (int ret = check_status(status,
+  if(int ret = check_status(status,
                     "DDS::DomainParticipant::get_default_publisher_qos") < 0)
     return ret;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     pub_qos_.presentation.access_scope = DDS::TOPIC_PRESENTATION_QOS;
     pub_qos_.presentation.coherent_access = true;
@@ -211,17 +211,17 @@ int madara::transport::SpliceDDSTransport::setup(void)
   pub_qos_.partition.name[0] = DDS::string_dup(partition_);
   publisher_ = domain_participant_->create_publisher(
       pub_qos_, NULL, DDS::STATUS_MASK_NONE);
-  if (int ret = check_handle(
+  if(int ret = check_handle(
                     publisher_, "DDS::DomainParticipant::create_publisher") < 0)
     return ret;
 
   // Create subscriber
   status = domain_participant_->get_default_subscriber_qos(sub_qos_);
-  if (int ret = check_status(status,
+  if(int ret = check_status(status,
                     "DDS::DomainParticipant::get_default_subscriber_qos") < 0)
     return ret;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     sub_qos_.presentation.access_scope = DDS::TOPIC_PRESENTATION_QOS;
     sub_qos_.presentation.coherent_access = true;
@@ -239,11 +239,11 @@ int madara::transport::SpliceDDSTransport::setup(void)
       //    sub_qos_, &sub_listener_, DDS::DATA_AVAILABLE_STATUS |
       //    DDS::DATA_ON_READERS_STATUS);
       sub_qos_, NULL, DDS::STATUS_MASK_NONE);
-  if (int ret = check_handle(subscriber_,
+  if(int ret = check_handle(subscriber_,
                     "DDS::DomainParticipant::create_subscriber") < 0)
     return ret;
 
-  if (!subscriber_ || !publisher_)
+  if(!subscriber_ || !publisher_)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
         "SpliceDDSTransport::setup:"
@@ -256,11 +256,11 @@ int madara::transport::SpliceDDSTransport::setup(void)
   publisher_->get_default_datawriter_qos(datawriter_qos_);
   publisher_->copy_from_topic_qos(datawriter_qos_, topic_qos_);
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
-        " Enabling reliable transport for (%s) datawriters\n",
+        " Enabling reliable transport for(%s) datawriters\n",
         madara::utility::dds_topicify(settings_.write_domain).c_str());
 
     datawriter_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
@@ -275,7 +275,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
-        " Enabling unreliable transport for (%s) datawriters\n",
+        " Enabling unreliable transport for(%s) datawriters\n",
         madara::utility::dds_topicify(settings_.write_domain).c_str());
   }
 
@@ -287,24 +287,24 @@ int madara::transport::SpliceDDSTransport::setup(void)
   // Create Update writer
   datawriter_ = publisher_->create_datawriter(
       update_topic_, datawriter_qos_, NULL, DDS::STATUS_MASK_NONE);
-  if (int ret = check_handle(datawriter_,
+  if(int ret = check_handle(datawriter_,
                     "DDS::Publisher::create_datawriter (Update)") < 0)
     return ret;
   update_writer_ =
       dynamic_cast<Knowledge::UpdateDataWriter_ptr>(datawriter_.in());
-  if (int ret = check_handle(update_writer_,
+  if(int ret = check_handle(update_writer_,
                     "Knowledge::UpdateDataWriter_ptr::narrow") < 0)
     return ret;
 
   // Create Latency Update writer for Read Thread
   latencywriter_ = publisher_->create_datawriter(
       update_topic_, datawriter_qos_, NULL, DDS::STATUS_MASK_NONE);
-  if (int ret = check_handle(latencywriter_,
+  if(int ret = check_handle(latencywriter_,
                     "DDS::Publisher::create_datawriter (Update)") < 0)
     return ret;
   latency_update_writer_ =
       dynamic_cast<Knowledge::UpdateDataWriter_ptr>(latencywriter_.in());
-  if (int ret = check_handle(latency_update_writer_,
+  if(int ret = check_handle(latency_update_writer_,
                     "Knowledge::UpdateDataWriter_ptr::narrow") < 0)
     return ret;
 
@@ -312,17 +312,17 @@ int madara::transport::SpliceDDSTransport::setup(void)
   status = subscriber_->get_default_datareader_qos(datareader_qos_);
   subscriber_->copy_from_topic_qos(datareader_qos_, topic_qos_);
   // publisher_->copy_from_topic_qos(datawriter_qos_, topic_qos_);
-  if (int ret = check_status(
+  if(int ret = check_status(
                     status, "DDS::Subscriber::get_default_datareader_qos") < 0)
     return ret;
 
   datareader_qos_.reader_data_lifecycle.enable_invalid_samples = FALSE;
 
-  if (madara::transport::RELIABLE == this->settings_.reliability)
+  if(madara::transport::RELIABLE == this->settings_.reliability)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
-        " Enabling reliable transport for (%s) datareaders\n",
+        " Enabling reliable transport for(%s) datareaders\n",
         madara::utility::dds_topicify(settings_.write_domain).c_str());
 
     datareader_qos_.reliability.kind = DDS::RELIABLE_RELIABILITY_QOS;
@@ -338,7 +338,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_DETAILED,
         "SpliceDDSTransport::setup:"
-        " Enabling unreliable transport for (%s) datareaders\n",
+        " Enabling unreliable transport for(%s) datareaders\n",
         madara::utility::dds_topicify(settings_.write_domain).c_str());
   }
 
@@ -357,19 +357,19 @@ int madara::transport::SpliceDDSTransport::setup(void)
   // way of doing this, since we require subscription information and they
   // have so far not implemented on_subscription_matched.
 
-  if (int ret = check_handle(datareader_,
+  if(int ret = check_handle(datareader_,
                     "DDS::Subscriber::create_datareader (Update)") < 0)
     return ret;
   update_reader_ =
       dynamic_cast<Knowledge::UpdateDataReader_ptr>(datareader_.in());
-  if (int ret = check_handle(update_reader_,
+  if(int ret = check_handle(update_reader_,
                     "Knowledge::UpdateDataReader_ptr::narrow") < 0)
     return ret;
 
-  if (!settings_.no_receiving)
+  if(!settings_.no_receiving)
   {
     double hertz = settings_.read_thread_hertz;
-    if (hertz < 0.0)
+    if(hertz < 0.0)
     {
       hertz = 0.0;
     }
@@ -379,7 +379,7 @@ int madara::transport::SpliceDDSTransport::setup(void)
         " starting %d threads at %f hertz\n",
         settings_.read_threads, hertz);
 
-    for (uint32_t i = 0; i < settings_.read_threads; ++i)
+    for(uint32_t i = 0; i < settings_.read_threads; ++i)
     {
       std::stringstream thread_name;
       thread_name << "read";
@@ -400,7 +400,7 @@ long madara::transport::SpliceDDSTransport::send_data(
 {
   long result = 0;
 
-  if (!settings_.no_sending)
+  if(!settings_.no_sending)
   {
     result = prep_send(updates, "SpliceDDSTransport::send_data:");
 
@@ -443,7 +443,7 @@ long madara::transport::SpliceDDSTransport::send_data(
 int madara::transport::SpliceDDSTransport::check_handle(
     void* handle, const char* info)
 {
-  if (!handle)
+  if(!handle)
   {
     madara_logger_log(context_.get_logger(), logger::LOG_ERROR,
         "SpliceDDSTransport::check_handle:"
@@ -460,7 +460,7 @@ int madara::transport::SpliceDDSTransport::check_status(
     DDS::ReturnCode_t status, const char* info)
 {
   // if the status is okay, then return without issue
-  if ((status == DDS::RETCODE_OK) || (status == DDS::RETCODE_NO_DATA))
+  if((status == DDS::RETCODE_OK) || (status == DDS::RETCODE_NO_DATA))
     return 0;
 
   madara_logger_log(context_.get_logger(), logger::LOG_ERROR,

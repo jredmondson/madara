@@ -83,7 +83,7 @@ public class TransportContext extends MadaraJNI
   public void addRecord(String key, KnowledgeRecord record)
   {
     KnowledgeRecord value = record;
-    if (value != null && !value.isNew())
+    if(value != null && !value.isNew())
       value = record.clone();
     jni_addRecord(getCPtr(), key, record == null ? 0 : record.getCPtr());
   }

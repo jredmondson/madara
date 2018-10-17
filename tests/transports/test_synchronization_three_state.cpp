@@ -35,7 +35,7 @@ std::string build_wait()
   std::stringstream buffer;
   buffer << "(S" << id << ".init = 1)";
 
-  for (int i = 0; i < processes; ++i)
+  for(int i = 0; i < processes; ++i)
     buffer << " && S" << i << ".init";
 
   return buffer.str();
@@ -46,7 +46,7 @@ std::string build_state_print()
   std::stringstream buffer;
   buffer << " ";
 
-  for (int i = 0; i < processes; ++i)
+  for(int i = 0; i < processes; ++i)
     buffer << " {S" << i << "}";
 
   buffer << "\n";
@@ -121,14 +121,14 @@ int main(int, char**)
   // knowledge.evaluate ("S{.self}=.init");
   knowledge.set("S{.self}", value, madara::knowledge::EvalSettings::SEND);
 
-  if (id == 0)
+  if(id == 0)
   {
     expression =
         // if we are the bottom process, (id == 0), then logic is
-        // if (S+1)     % 3 == R       then S        = (S-1)          % 3
+        // if(S+1)     % 3 == R       then S        = (S-1)          % 3
         "(S{.self}+1) % 3 == S{.right} => S{.self} = (S{.self}+3-1) % 3";
   }
-  else if (id == processes - 1)
+  else if(id == processes - 1)
   {
     // top process logic
     expression =
@@ -161,7 +161,7 @@ int main(int, char**)
   default_eval.delay_sending_modifieds = false;
 
   // termination is done via signalling from the user (Control+C)
-  while (!terminated)
+  while(!terminated)
   {
     knowledge.wait(compiled, wait_settings);
 

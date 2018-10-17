@@ -192,7 +192,7 @@ private:
       K&& key, const KnowledgeReferenceSettings& settings)
   {
     auto rec = with(std::forward<K>(key), settings);
-    if (rec)
+    if(rec)
     {
       return (rec->*Get)();
     }
@@ -207,7 +207,7 @@ private:
       K&& key, const KnowledgeReferenceSettings& settings) const
   {
     auto rec = with(std::forward<K>(key), settings);
-    if (rec)
+    if(rec)
     {
       return (rec->*Get)();
     }
@@ -1780,7 +1780,7 @@ public:
   {
     MADARA_GUARD_TYPE guard(mutex_);
     const KnowledgeRecord* ptr = with(key, settings);
-    if (ptr)
+    if(ptr)
     {
       return invoke_(std::forward<Callable>(callable), *ptr);
     }

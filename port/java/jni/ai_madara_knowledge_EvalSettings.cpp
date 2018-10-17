@@ -49,7 +49,7 @@ jlong JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1evalSettings__J(
   jlong result(0);
   EvalSettings* source = (EvalSettings*)original;
 
-  if (source)
+  if(source)
   {
     result = (jlong) new EvalSettings(*source);
   }
@@ -76,7 +76,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1setDelaySendingModifieds(
 {
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->delay_sending_modifieds = delaySendingModifieds;
   }
@@ -102,7 +102,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getDelaySendingModifieds(
   jboolean result(0);
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jboolean)current->delay_sending_modifieds;
   }
@@ -130,7 +130,7 @@ void JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1setPrePrintStatement(
 
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->pre_print_statement = nativePrePrint;
   }
@@ -157,7 +157,7 @@ jstring JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1getPrePrintStatement(
   jstring result = 0;
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->pre_print_statement.c_str());
   }
@@ -185,7 +185,7 @@ void JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1setPostPrintStatement(
 
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->post_print_statement = std::string(nativePostPrint);
   }
@@ -214,7 +214,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getPostPrintStatement(
   jstring result = 0;
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->post_print_statement.c_str());
   }
@@ -240,7 +240,7 @@ void JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1setAlwaysOverwrite(
 {
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->always_overwrite = alwaysOverwrite;
   }
@@ -265,7 +265,7 @@ jboolean JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1getAlwaysOverwrite(
   jboolean result(0);
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jboolean)current->always_overwrite;
   }
@@ -291,7 +291,7 @@ void JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1setTreatGlobalsAsLocals(
 {
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->treat_globals_as_locals = treatGlobalsAsLocals;
   }
@@ -317,7 +317,7 @@ Java_ai_madara_knowledge_EvalSettings_jni_1getTreatGlobalsAsLocals(
   jboolean result(0);
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jboolean)current->treat_globals_as_locals;
   }
@@ -343,7 +343,7 @@ void JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1setClockIncrement(
 {
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     current->clock_increment = defaultClockIncrement;
   }
@@ -368,7 +368,7 @@ jlong JNICALL Java_ai_madara_knowledge_EvalSettings_jni_1getClockIncrement(
   jlong result(0);
   EvalSettings* current = (EvalSettings*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->clock_increment;
   }

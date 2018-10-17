@@ -165,7 +165,7 @@ public class ContainerTest extends BaseTest {
 
 		System.out.println("  Printing " + my_array.length + " array elements");
 
-		for (int i = 0; i < my_array.length; ++i) {
+		for(int i = 0; i < my_array.length; ++i) {
 			Assert.assertEquals(my_array[i].toString(), list.get(i).toString());
 		}
 
@@ -218,7 +218,7 @@ public class ContainerTest extends BaseTest {
 		KnowledgeRecord[] init_values = new KnowledgeRecord[10];
 		KnowledgeRecord[] records;
 
-		for (long i = 0; i < 10; ++i)
+		for(long i = 0; i < 10; ++i)
 			init_values[(int) i] = new KnowledgeRecord(i);
 
 		producer.add(init_values[0]);
@@ -231,7 +231,7 @@ public class ContainerTest extends BaseTest {
 		Assert.assertEquals(records.length, 10);
 
 		// clean up
-		for (KnowledgeRecord record : records) {
+		for(KnowledgeRecord record : records) {
 			record.free();
 		}
 
@@ -240,12 +240,12 @@ public class ContainerTest extends BaseTest {
 		Assert.assertEquals(records.length, 10);
 
 		// clean up
-		for (KnowledgeRecord record : records) {
+		for(KnowledgeRecord record : records) {
 			record.free();
 		}
 
 		// clean up
-		for (KnowledgeRecord record : init_values) {
+		for(KnowledgeRecord record : init_values) {
 			record.free();
 		}
 	}
@@ -268,7 +268,7 @@ public class ContainerTest extends BaseTest {
 		KnowledgeRecord[] init_values = new KnowledgeRecord[10];
 		KnowledgeRecord[] records;
 
-		for (long i = 0; i < 10; ++i)
+		for(long i = 0; i < 10; ++i)
 			init_values[(int) i] = new KnowledgeRecord(i);
 
 		producer.add(init_values[0]);
@@ -281,7 +281,7 @@ public class ContainerTest extends BaseTest {
 		Assert.assertEquals(records.length, 10);
 
 		// clean up
-		for (KnowledgeRecord record : records) {
+		for(KnowledgeRecord record : records) {
 			record.free();
 		}
 
@@ -292,12 +292,12 @@ public class ContainerTest extends BaseTest {
 		Assert.assertEquals(records.length, 10);
 
 		// clean up
-		for (KnowledgeRecord record : records) {
+		for(KnowledgeRecord record : records) {
 			record.free();
 		}
 
 		// clean up
-		for (KnowledgeRecord record : init_values) {
+		for(KnowledgeRecord record : init_values) {
 			record.free();
 		}
 

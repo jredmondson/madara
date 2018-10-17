@@ -37,7 +37,7 @@
 //  public:
 //    bool operator< (const Process & right)
 //    {
-//      if (this->getOrder () < right->getOrder ())
+//      if(this->getOrder () < right->getOrder ())
 //        return true;
 //
 //      return this->getId () < right->getId ();
@@ -76,7 +76,7 @@ Component::Component()
 
 Component::~Component()
 {
-	if ( m_project ) {
+	if( m_project ) {
 		m_project->finalizeObjects();
 		finalize( m_project );
 		m_project = NULL;
@@ -116,7 +116,7 @@ void Component::invoke( Project& project, const std::set<FCO>& setModels, long l
 		Object focus;
 		invokeEx( project, focus, setModels, lParam );
 	#else
-		if ( m_bIsInteractive )
+		if( m_bIsInteractive )
 			AfxMessageBox("This BON2 Component does not support the obsolete invoke mechanism!");
 	#endif
 }
@@ -126,21 +126,21 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
                                       TiXmlElement & xml_setup)
 {
   // did the user set debug mode?
-  if (current->isDebug ())
+  if(current->isDebug ())
   {
     TiXmlElement element ("debug");
     xml_setup.InsertEndChild (element);
   }
   
   // did the user set realtime scheduling?
-  if (current->isRealtime ())
+  if(current->isRealtime ())
   {
     TiXmlElement element ("realtime");
     xml_setup.InsertEndChild (element);
   }
 
   // does the user want timing information printed?
-  if (current->isTiming ())
+  if(current->isTiming ())
   {
     TiXmlElement element ("timing");
     xml_setup.InsertEndChild (element);
@@ -150,7 +150,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   // get the transport
   std::set<KATS_BON::TransportRef> transports = current->getTransportRef ();
   std::set<KATS_BON::TransportRef>::iterator tbegin = transports.begin();
-  if (tbegin != transports.end ())
+  if(tbegin != transports.end ())
   {
     KATS_BON::TransportRef tref = *tbegin;
     KATS_BON::Transport transport = tref->getTransport ();
@@ -161,7 +161,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
 
     // check to see if the user initialized the reference to an
     // actual transport
-    if (ref_ptr)
+    if(ref_ptr)
     {
       std::stringstream buffer;
       buffer << "transports/";
@@ -177,7 +177,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   // get the host name
   std::set<KATS_BON::HostRef> hosts = current->getHostRef ();
   std::set<KATS_BON::HostRef>::iterator hbegin = hosts.begin();
-  if (hbegin != hosts.end ())
+  if(hbegin != hosts.end ())
   {
     KATS_BON::HostRef href = *hbegin;
     KATS_BON::Host host = href->getHost ();
@@ -189,11 +189,11 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
     // check to see if the user initialized the reference to an
     // actual instance. If not, we use the reference's name as
     // a convenience
-    if (ref_ptr)
+    if(ref_ptr)
     {
       // we have a real reference
       TiXmlText text (host->getName ().c_str ());
-      if (host->getOverride () != "")
+      if(host->getOverride () != "")
       {
         text.SetValue (host->getOverride ().c_str ());
       }
@@ -218,7 +218,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   // get the domain name
   std::set<KATS_BON::DomainRef> domains = current->getDomainRef ();
   std::set<KATS_BON::DomainRef>::iterator dbegin = domains.begin();
-  if (dbegin != domains.end ())
+  if(dbegin != domains.end ())
   {
     KATS_BON::DomainRef dref = *dbegin;
     KATS_BON::Domain domain = dref->getDomain ();
@@ -230,11 +230,11 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
     // check to see if the user initialized the reference to an
     // actual instance. If not, we use the reference's name as
     // a convenience
-    if (ref_ptr)
+    if(ref_ptr)
     {
       // we have a real reference
       TiXmlText text (domain->getName ().c_str ());
-      if (domain->getOverride () != "")
+      if(domain->getOverride () != "")
       {
         text.SetValue (domain->getOverride ().c_str ());
       }
@@ -261,7 +261,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   std::set<KATS_BON::BarrierRef>::iterator bbegin = barriers.begin();
   size_t barrier_count = 0;
   bool override_processes = false;
-  if (bbegin != barriers.end ())
+  if(bbegin != barriers.end ())
   {
     KATS_BON::BarrierRef bref = *bbegin;
     KATS_BON::Barrier barrier = bref->getBarrier ();
@@ -273,7 +273,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
     // check to see if the user initialized the reference to an
     // actual instance. If not, we use the reference's name as
     // a convenience
-    if (ref_ptr)
+    if(ref_ptr)
     {
       // set the override_processes based on the boolean attribute
 
@@ -281,7 +281,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
       barrier_count = barrier->getReferredBy ().size ();
 
       // we have a real reference
-      if (barrier->getOverride () != "")
+      if(barrier->getOverride () != "")
         element.SetAttribute ("name", barrier->getOverride ().c_str ());
       else
         element.SetAttribute ("name", barrier->getName ().c_str ());
@@ -296,7 +296,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
  
   // did the user set an id in the process ring?
-  if (current->getId () != "")
+  if(current->getId () != "")
   {
     std::stringstream buffer;
     buffer << current->getId ();
@@ -313,7 +313,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set the number of processes in the barrier?
-  if (override_processes || current->getProcesses () != "")
+  if(override_processes || current->getProcesses () != "")
   {
     std::stringstream buffer;
     buffer << current->getProcesses ();
@@ -321,7 +321,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
     TiXmlElement element ("processes");
     TiXmlText text (buffer.str ().c_str ());
 
-    if (override_processes)
+    if(override_processes)
     {
       std::stringstream buffer;
       buffer << barrier_count;
@@ -339,7 +339,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set an log level?
-  if (current->getLogLevel () != "")
+  if(current->getLogLevel () != "")
   {
     std::stringstream buffer;
     buffer << current->getLogLevel ();
@@ -356,7 +356,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a stderr redirect?
-  if (current->getDuplicates () != "")
+  if(current->getDuplicates () != "")
   {
     TiXmlElement element ("duplicates");
     TiXmlText text (current->getDuplicates ().c_str ());
@@ -369,7 +369,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a delay?
-  if (current->getDelay () != "")
+  if(current->getDelay () != "")
   {
     std::stringstream buffer;
     buffer << current->getDelay ();
@@ -386,7 +386,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
   
   // did the user set a precondition?
-  if (current->getPrecondition () != "")
+  if(current->getPrecondition () != "")
   {
     TiXmlElement element ("precondition");
     TiXmlText text (current->getPrecondition ().c_str ());
@@ -399,7 +399,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a postdelay?
-  if (current->getPostDelay () != "")
+  if(current->getPostDelay () != "")
   {
     TiXmlElement element ("postdelay");
     TiXmlText text (current->getPostDelay ().c_str ());
@@ -412,7 +412,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a postlaunch?
-  if (current->getPostLaunch () != "")
+  if(current->getPostLaunch () != "")
   {
     TiXmlElement element ("postlaunch");
     TiXmlText text (current->getPostLaunch ().c_str ());
@@ -425,7 +425,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a postcondition?
-  if (current->getPostcondition () != "")
+  if(current->getPostcondition () != "")
   {
     TiXmlElement element ("postcondition");
     TiXmlText text (current->getPostcondition ().c_str ());
@@ -438,7 +438,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // what is the working directory?
-  if (current->getWorkingDir () != "")
+  if(current->getWorkingDir () != "")
   {
     TiXmlElement element ("workingdir");
     TiXmlText text (current->getWorkingDir ().c_str ());
@@ -453,10 +453,10 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   // get the kill settings
   std::set<KATS_BON::Kill> kills = current->getKill ();
   std::set<KATS_BON::Kill>::iterator kbegin = kills.begin();
-  if (kbegin != kills.end ())
+  if(kbegin != kills.end ())
   {
     KATS_BON::Kill kill = *kbegin;
-    if (kill->getTime () != "")
+    if(kill->getTime () != "")
     {
       TiXmlElement element ("kill");
       TiXmlElement time ("time");
@@ -473,7 +473,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
       element.InsertEndChild (time);
 
       // has a signal been defined?
-      if (kill->getSignal () != "")
+      if(kill->getSignal () != "")
       {
         TiXmlElement signal ("signal");
 
@@ -495,7 +495,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a stdin redirect?
-  if (current->getStdin () != "")
+  if(current->getStdin () != "")
   {
     TiXmlElement element ("stdin");
     TiXmlText text (current->getStdin ().c_str ());
@@ -508,7 +508,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a stderr redirect?
-  if (current->getStderr () != "")
+  if(current->getStderr () != "")
   {
     TiXmlElement element ("stderr");
     TiXmlText text (current->getStderr ().c_str ());
@@ -521,7 +521,7 @@ void Component::process_process_base (KATS_BON::ProcessBase & current,
   }
 
   // did the user set a stdout redirect?
-  if (current->getStdout () != "")
+  if(current->getStdout () != "")
   {
     TiXmlElement element ("stdout");
 
@@ -543,7 +543,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
 
   // if the user has actually redirect pasted a group into this ref,
   // then create a new xml element
-  if (group.getCounted (false))
+  if(group.getCounted (false))
   {
     TiXmlElement xml_setup ("group");
 
@@ -554,31 +554,31 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
     xml_setup.SetAttribute ("file", buffer.str ());
 
     // do we want to override the group's settings?
-    if (current->isOverrideSettings ())
+    if(current->isOverrideSettings ())
     {
       // did the user set debug mode?
-      if (current->isDebug ())
+      if(current->isDebug ())
       {
         TiXmlElement element ("debug");
         xml_setup.InsertEndChild (element);
       }
       
       // did the user set realtime scheduling?
-      if (current->isRealtime ())
+      if(current->isRealtime ())
       {
         TiXmlElement element ("realtime");
         xml_setup.InsertEndChild (element);
       }
 
       // does the user want timing information printed?
-      if (current->isTiming ())
+      if(current->isTiming ())
       {
         TiXmlElement element ("timing");
         xml_setup.InsertEndChild (element);
       }
 
       // did the user set an id in the process ring?
-      if (current->getId () != "")
+      if(current->getId () != "")
       {
         std::stringstream buffer;
         buffer << current->getId ();
@@ -595,7 +595,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set the number of processes in the barrier?
-      if (current->getProcesses () != "")
+      if(current->getProcesses () != "")
       {
         std::stringstream buffer;
         buffer << current->getProcesses ();
@@ -612,7 +612,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set an log level?
-      if (current->getLogLevel () != "")
+      if(current->getLogLevel () != "")
       {
         std::stringstream buffer;
         buffer << current->getLogLevel ();
@@ -629,7 +629,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a delay?
-      if (current->getDelay () != "")
+      if(current->getDelay () != "")
       {
         std::stringstream buffer;
         buffer << current->getDelay ();
@@ -646,7 +646,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
       
       // did the user set a host?
-      if (current->getOverrideHost () != "")
+      if(current->getOverrideHost () != "")
       {
         TiXmlElement element ("host");
         TiXmlText text (current->getOverrideHost ().c_str ());
@@ -659,7 +659,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a host?
-      if (current->getOverrideDomain () != "")
+      if(current->getOverrideDomain () != "")
       {
         TiXmlElement element ("domain");
         TiXmlText text (current->getOverrideDomain ().c_str ());
@@ -672,7 +672,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a barrier?
-      if (current->getOverrideBarrier () != "")
+      if(current->getOverrideBarrier () != "")
       {
         TiXmlElement element ("barrier");
         TiXmlText text (current->getOverrideBarrier ().c_str ());
@@ -686,7 +686,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
  
       // did the user set a precondition?
-      if (current->getPrecondition () != "")
+      if(current->getPrecondition () != "")
       {
         TiXmlElement element ("precondition");
         TiXmlText text (current->getPrecondition ().c_str ());
@@ -699,7 +699,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a postdelay?
-      if (current->getPostDelay () != "")
+      if(current->getPostDelay () != "")
       {
         TiXmlElement element ("postdelay");
         TiXmlText text (current->getPostDelay ().c_str ());
@@ -712,7 +712,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a postlaunch?
-      if (current->getPostLaunch () != "")
+      if(current->getPostLaunch () != "")
       {
         TiXmlElement element ("postlaunch");
         TiXmlText text (current->getPostLaunch ().c_str ());
@@ -725,7 +725,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a postcondition?
-      if (current->getPostcondition () != "")
+      if(current->getPostcondition () != "")
       {
         TiXmlElement element ("postcondition");
         TiXmlText text (current->getPostcondition ().c_str ());
@@ -738,7 +738,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // what is the working directory?
-      if (current->getWorkingDir () != "")
+      if(current->getWorkingDir () != "")
       {
         TiXmlElement element ("workingdir");
         TiXmlText text (current->getWorkingDir ().c_str ());
@@ -751,7 +751,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a stdin redirect?
-      if (current->getStdin () != "")
+      if(current->getStdin () != "")
       {
         TiXmlElement element ("stdin");
         TiXmlText text (current->getStdin ().c_str ());
@@ -764,7 +764,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a stderr redirect?
-      if (current->getStderr () != "")
+      if(current->getStderr () != "")
       {
         TiXmlElement element ("stderr");
         TiXmlText text (current->getStderr ().c_str ());
@@ -777,7 +777,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a stderr redirect?
-      if (current->getDuplicates () != "")
+      if(current->getDuplicates () != "")
       {
         TiXmlElement element ("duplicates");
         TiXmlText text (current->getDuplicates ().c_str ());
@@ -790,7 +790,7 @@ void Component::process_group_ref (KATS_BON::GroupRef & current,
       }
 
       // did the user set a stdout redirect?
-      if (current->getStdout () != "")
+      if(current->getStdout () != "")
       {
         TiXmlElement element ("stdout");
 
@@ -818,7 +818,7 @@ void Component::process_process (KATS_BON::Process & current,
   process_process_base (current, xml_setup);
 
   // what is the executable?
-  if (current->getExecutable () != "")
+  if(current->getExecutable () != "")
   {
     TiXmlElement element ("executable");
     TiXmlText text (current->getExecutable ().c_str ());
@@ -831,7 +831,7 @@ void Component::process_process (KATS_BON::Process & current,
   }
 
   // what is the working directory?
-  if (current->getCommandLine () != "")
+  if(current->getCommandLine () != "")
   {
     TiXmlElement element ("commandline");
     TiXmlText text (current->getCommandLine ().c_str ());
@@ -878,7 +878,7 @@ void Component::process_process_group (KATS_BON::Group & current)
   TiXmlElement xml_setup ("setup");
 
   // did the user set parallel process launch?
-  if (current->isParallel ())
+  if(current->isParallel ())
   {
     TiXmlElement element ("parallel");
     xml_setup.InsertEndChild (element);
@@ -895,18 +895,18 @@ void Component::process_process_group (KATS_BON::Group & current)
 
   std::vector <KATS_BON::Ordered> sorted_candidates;
 
-  for (std::set <KATS_BON::Ordered>::iterator ordered_i = ordereds.begin ();
+  for(std::set <KATS_BON::Ordered>::iterator ordered_i = ordereds.begin ();
                         ordered_i != ordereds.end (); ++ordered_i)
   {
     //process_process (*process_i, xml_group);
-    if ((*ordered_i)->isEnabled ())
+    if((*ordered_i)->isEnabled ())
       sorted_candidates.push_back (*ordered_i);
   }
 
   std::sort (sorted_candidates.begin (), sorted_candidates.end (),
     Comparison);
 
-  for (size_t i = 0; i < sorted_candidates.size (); ++i)
+  for(size_t i = 0; i < sorted_candidates.size (); ++i)
   {
     // this is probably not the most efficient way to handle this
     // but it is also not likely to take that long and is easy to follow
@@ -918,13 +918,13 @@ void Component::process_process_group (KATS_BON::Group & current)
     KATS_BON::Observer observer = sorted_candidates[i];
 
     // check to see if the cast resulted in a valid reference counted object
-    if (process.getCounted (false))
+    if(process.getCounted (false))
       process_process (process, xml_group);
-    else if (group_ref.getCounted (false))
+    else if(group_ref.getCounted (false))
       process_group_ref (group_ref, xml_group);
-    else if (sleep.getCounted (false))
+    else if(sleep.getCounted (false))
       process_sleep (sleep, xml_group);
-    else if (observer.getCounted (false))
+    else if(observer.getCounted (false))
       process_observer (observer, xml_group);
   }
 
@@ -1011,7 +1011,7 @@ void Component::process_transports_folder (KATS_BON::Transports & current)
 	using namespace GMEConsole;
 	Console::Out::WriteLine("....Iterating through process groups...");
   std::set<KATS_BON::Transport> groups = current->getTransport ();
-  for (std::set<KATS_BON::Transport>::iterator group = groups.begin(); group != groups.end(); ++group)
+  for(std::set<KATS_BON::Transport>::iterator group = groups.begin(); group != groups.end(); ++group)
   {
     process_transport (*group);
   }
@@ -1022,7 +1022,7 @@ void Component::process_processes_folder (KATS_BON::Processes & process_folder)
 	using namespace GMEConsole;
 	Console::Out::WriteLine("....Iterating through process groups...");
   std::set<KATS_BON::Group> groups = process_folder->getGroup ();
-  for (std::set<KATS_BON::Group>::iterator group = groups.begin(); group != groups.end(); ++group)
+  for(std::set<KATS_BON::Group>::iterator group = groups.begin(); group != groups.end(); ++group)
   {
     process_process_group (*group);
   }
@@ -1051,16 +1051,16 @@ void Component::invokeEx( Project& project, FCO& currentFCO, const std::set<FCO>
 	Console::Out::WriteLine("..Iterating through Processes folders...");
 
   std::set<BON::Folder> rootFolders = project->getRootFolder ()->getChildFolders ();
-  for (std::set<BON::Folder>::iterator folder = rootFolders.begin(); folder != rootFolders.end(); ++folder)
+  for(std::set<BON::Folder>::iterator folder = rootFolders.begin(); folder != rootFolders.end(); ++folder)
   {
-    if ((*folder)->getFolderMeta ().name () == "Processes")
+    if((*folder)->getFolderMeta ().name () == "Processes")
     {
       KATS_BON::Processes process_folder = (*folder);
       Console::Out::WriteLine(CString ("....Processing ") +
         process_folder->getName ().c_str () + " folder...");
       process_processes_folder (process_folder);
     }
-    else if ((*folder)->getFolderMeta ().name () == "Transports")
+    else if((*folder)->getFolderMeta ().name () == "Transports")
     {
       KATS_BON::Transports transports_folder = (*folder);
       Console::Out::WriteLine(CString ("....Processing ") +
@@ -1078,7 +1078,7 @@ void Component::invokeEx( Project& project, FCO& currentFCO, const std::set<FCO>
 
 void Component::objectInvokeEx( Project& project, Object& currentObject, const std::set<Object>& setSelectedObjects, long lParam )
 	{
-		if ( m_bIsInteractive )
+		if( m_bIsInteractive )
 			AfxMessageBox("This BON2 Component does not support objectInvokeEx method!");
 	}
 

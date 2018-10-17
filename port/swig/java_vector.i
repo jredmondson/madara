@@ -86,14 +86,14 @@ int SWIG_JavaVectorIn##JFUNCNAME (JNIEnv *jenv, JNITYPE **jarr,
                                   std::vector<CTYPE> *output_container, 
                                   JNITYPE##Array input) 
 {
-  if (!input) {
+  if(!input) {
     SWIG_JavaThrowException(jenv, SWIG_JavaNullPointerException, "null array");
     return 0;
   }
   jsize sz;
   sz = JCALL1(GetArrayLength, jenv, input);
   *jarr = JCALL2(Get##JAVATYPE##ArrayElements, jenv, input, 0);
-  if (!*jarr)
+  if(!*jarr)
     return 0; 
  try {
    //*output_container =  new std::vector<CTYPE>;
@@ -104,7 +104,7 @@ int SWIG_JavaVectorIn##JFUNCNAME (JNIEnv *jenv, JNITYPE **jarr,
                             "std::vector allocation failed");
     return 0;
  }
- for (int i=0; i<sz; i++)
+ for(int i=0; i<sz; i++)
     JAVA_TYPEMAP_CONTAINER_APPEND(CTYPE);
   return 1;
 }
@@ -117,8 +117,8 @@ void SWIG_JavaVectorArgout##JFUNCNAME (JNIEnv *jenv, JNITYPE *jarr,
   jsize sz = JCALL1(GetArrayLength, jenv, input);
   JNITYPE *jarrptr = jarr; 
   std::vector<CTYPE>::const_iterator elt = input_container.begin();
-  while (elt != input_container.end()) {
-    if (0 == sz--)
+  while(elt != input_container.end()) {
+    if(0 == sz--)
       // bail out if no more space in Java array
       // XXX: should throw exception?
       break;
@@ -134,15 +134,15 @@ JNITYPE##Array SWIG_JavaVectorOut##JFUNCNAME (JNIEnv *jenv,
                                               jsize sz) 
 {
   JNITYPE##Array jresult = JCALL1(New##JAVATYPE##Array, jenv, sz);
-  if (!jresult)
+  if(!jresult)
     return NULL;
   JNITYPE *arr = JCALL2(Get##JAVATYPE##ArrayElements, jenv, jresult, 0);
-  if (!arr)
+  if(!arr)
     return NULL;
   JNITYPE *jarrptr = arr; 
   std::vector<CTYPE>::const_iterator elt = input_container.begin();
-  while (elt != input_container.end()) {
-    if (0 == sz--)
+  while(elt != input_container.end()) {
+    if(0 == sz--)
       // bail out if no more space in Java array
       // XXX: should throw exception?
       break;
@@ -217,7 +217,7 @@ JAVA_VECTOR_IMPL(double, jdouble, Double, Double)     /* double[] */
 %typemap(in) std::vector<CTYPE> (JNITYPE *jarr)
 {
   printf("hello");
-  if (!SWIG_JavaVectorIn##JFUNCNAME(jenv, &jarr, &$1, $input)) 
+  if(!SWIG_JavaVectorIn##JFUNCNAME(jenv, &jarr, &$1, $input)) 
     return $null; 
 }
 %typemap(argout) std::vector<CTYPE>

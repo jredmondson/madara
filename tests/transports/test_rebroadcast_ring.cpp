@@ -40,68 +40,68 @@ madara::knowledge::CompiledExpression id0_wait;
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-m" || arg1 == "--multicast")
+    if(arg1 == "-m" || arg1 == "--multicast")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::MULTICAST;
       }
       ++i;
     }
-    else if (arg1 == "-b" || arg1 == "--broadcast")
+    else if(arg1 == "-b" || arg1 == "--broadcast")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::BROADCAST;
       }
       ++i;
     }
-    else if (arg1 == "-u" || arg1 == "--udp")
+    else if(arg1 == "-u" || arg1 == "--udp")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = madara::transport::UDP;
       }
       ++i;
     }
-    else if (arg1 == "-o" || arg1 == "--host")
+    else if(arg1 == "-o" || arg1 == "--host")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--payload")
+    else if(arg1 == "-p" || arg1 == "--payload")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         filename = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-d" || arg1 == "--domain")
+    else if(arg1 == "-d" || arg1 == "--domain")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-t" || arg1 == "--target")
+    else if(arg1 == "-t" || arg1 == "--target")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         target_location = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-i" || arg1 == "--id")
+    else if(arg1 == "-i" || arg1 == "--id")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.id;
@@ -110,9 +110,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         int level;
@@ -122,22 +122,22 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-r" || arg1 == "--reduced")
+    else if(arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
     }
-    else if (arg1 == "-e" || arg1 == "--rebroadcasts")
+    else if(arg1 == "-e" || arg1 == "--rebroadcasts")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int hops;
         std::stringstream buffer(argv[i + 1]);
@@ -149,9 +149,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-q" || arg1 == "--queue-length")
+    else if(arg1 == "-q" || arg1 == "--queue-length")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
@@ -159,9 +159,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-z" || arg1 == "--target-id")
+    else if(arg1 == "-z" || arg1 == "--target-id")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> target_id;
@@ -169,9 +169,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-s" || arg1 == "--size")
+    else if(arg1 == "-s" || arg1 == "--size")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> data_size;
@@ -179,9 +179,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-si" || arg1 == "--size-increment")
+    else if(arg1 == "-si" || arg1 == "--size-increment")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> data_size_increment;
@@ -189,9 +189,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-se" || arg1 == "--size-end")
+    else if(arg1 == "-se" || arg1 == "--size-end")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> data_size_end;
@@ -199,9 +199,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-st" || arg1 == "--slack-time")
+    else if(arg1 == "-st" || arg1 == "--slack-time")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.slack_time;
@@ -209,9 +209,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-w" || arg1 == "--max-wait")
+    else if(arg1 == "-w" || arg1 == "--max-wait")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> max_wait;
@@ -219,7 +219,7 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-9" || arg1 == "--terminate")
+    else if(arg1 == "-9" || arg1 == "--terminate")
     {
       is_terminator = true;
 
@@ -279,18 +279,18 @@ void write_file(madara::knowledge::KnowledgeMap& records,
 {
   madara::knowledge::KnowledgeMap::iterator last = records.find("last");
 
-  if (last != records.end() && last->second == trusted.to_string())
+  if(last != records.end() && last->second == trusted.to_string())
   {
     std::stringstream last_message;
     last_message << "Accepting updates from " << last->second << "\n";
     vars.print(last_message.str());
 
     madara::knowledge::KnowledgeMap::iterator file = records.find("file");
-    if (file != records.end())
+    if(file != records.end())
     {
       std::stringstream filename;
 
-      if (target_location == "")
+      if(target_location == "")
         filename << records["file_location"];
       else
         filename << target_location;
@@ -298,7 +298,7 @@ void write_file(madara::knowledge::KnowledgeMap& records,
       filename << "/";
       filename << records["file_name"];
 
-      if (!madara::utility::file_exists(filename.str()))
+      if(!madara::utility::file_exists(filename.str()))
       {
         std::stringstream output_buffer;
         output_buffer << "Received file ";
@@ -323,7 +323,7 @@ void write_file(madara::knowledge::KnowledgeMap& records,
           "Received file. Sending file ack {file.{.id}.ack} for id {.id}.\n");
     }
   }
-  else if (last != records.end())
+  else if(last != records.end())
   {
     std::stringstream last_message;
     last_message << "Discarding updates from " << last->second << "\n";
@@ -348,12 +348,12 @@ int main(int argc, char** argv)
   handle_arguments(argc, argv);
 
 #ifndef _MADARA_NO_KARL_
-  if (settings.id != 0)
+  if(settings.id != 0)
   {
     trusted = madara::knowledge::KnowledgeRecord(settings.id - 1);
   }
 
-  if (settings.hosts.size() == 0)
+  if(settings.hosts.size() == 0)
   {
     // setup default transport as multicast
     settings.hosts.push_back(default_multicast);
@@ -380,14 +380,14 @@ int main(int argc, char** argv)
 
   ack = knowledge.get_ref(knowledge.expand_statement("file.{.id}.ack"));
 
-  if (is_terminator)
+  if(is_terminator)
   {
     knowledge.set("terminated", 1.0, madara::knowledge::EvalSettings::SEND);
   }
 
-  if (settings.id == 0)
+  if(settings.id == 0)
   {
-    if (target_location == "")
+    if(target_location == "")
       target_location = ".";
 
     id0_wait = knowledge.compile("(\n"
@@ -405,7 +405,7 @@ int main(int argc, char** argv)
 
     knowledge.print("Sending file until id {.target} acknowledges receipt.\n");
 
-    if (data_size == 0)
+    if(data_size == 0)
     {
       knowledge.read_file("file", filename, delay_sending);
       knowledge.set("file_name", madara::utility::extract_filename(filename),
@@ -420,7 +420,7 @@ int main(int argc, char** argv)
 
       std::string text(data_size - 1, ' ');
 
-      if (data_size > 3)
+      if(data_size > 3)
       {
         text[0] = 't';
         text[1] = 'e';
@@ -446,7 +446,7 @@ int main(int argc, char** argv)
 
     knowledge.wait(id0_wait, wait_settings);
 
-    for (data_size += data_size_increment; data_size <= data_size_end;
+    for(data_size += data_size_increment; data_size <= data_size_end;
          data_size += data_size_increment)
     {
       std::stringstream new_name;
@@ -456,7 +456,7 @@ int main(int argc, char** argv)
 
       std::string text(data_size - 1, ' ');
 
-      if (data_size > 3)
+      if(data_size > 3)
       {
         text[0] = 't';
         text[1] = 'e';

@@ -171,26 +171,26 @@ inline KnowledgeRecord::KnowledgeRecord(const knowledge::KnowledgeRecord& rhs)
     type_(rhs.type_),
     shared_(rhs.is_ref_counted() ? SHARED : OWNED)
 {
-  if (rhs.type_ == EMPTY)
+  if(rhs.type_ == EMPTY)
     return;
 
-  if (rhs.type_ == INTEGER)
+  if(rhs.type_ == INTEGER)
     int_value_ = rhs.int_value_;
-  else if (rhs.type_ == INTEGER_ARRAY)
+  else if(rhs.type_ == INTEGER_ARRAY)
     new (&int_array_) std::shared_ptr<std::vector<Integer>>(rhs.int_array_);
-  else if (rhs.type_ == DOUBLE)
+  else if(rhs.type_ == DOUBLE)
     double_value_ = rhs.double_value_;
-  else if (rhs.type_ == DOUBLE_ARRAY)
+  else if(rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_)
         std::shared_ptr<std::vector<double>>(rhs.double_array_);
-  else if (is_string_type(rhs.type_))
+  else if(is_string_type(rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-  else if (is_binary_file_type(rhs.type_))
+  else if(is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
-  else if (rhs.type_ == ANY)
+  else if(rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
-  else if (rhs.type_ == BUFFER)
+  else if(rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(rhs.buf_);
 }
 
@@ -204,27 +204,27 @@ inline KnowledgeRecord::KnowledgeRecord(
     type_(rhs.type_),
     shared_(rhs.shared_)
 {
-  if (rhs.type_ == EMPTY)
+  if(rhs.type_ == EMPTY)
     return;
 
-  if (rhs.type_ == INTEGER)
+  if(rhs.type_ == INTEGER)
     int_value_ = rhs.int_value_;
-  else if (rhs.type_ == INTEGER_ARRAY)
+  else if(rhs.type_ == INTEGER_ARRAY)
     new (&int_array_)
         std::shared_ptr<std::vector<Integer>>(std::move(rhs.int_array_));
-  else if (rhs.type_ == DOUBLE)
+  else if(rhs.type_ == DOUBLE)
     double_value_ = rhs.double_value_;
-  else if (rhs.type_ == DOUBLE_ARRAY)
+  else if(rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_)
         std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-  else if (is_string_type(rhs.type_))
+  else if(is_string_type(rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-  else if (is_binary_file_type(rhs.type_))
+  else if(is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
-  else if (rhs.type_ == ANY)
+  else if(rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
-  else if (rhs.type_ == BUFFER)
+  else if(rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(std::move(rhs.buf_));
 
   rhs.type_ = EMPTY;
@@ -246,15 +246,15 @@ inline void KnowledgeRecord::copy_metadata(const KnowledgeRecord& rhs)
 
 inline void KnowledgeRecord::set_value(const KnowledgeRecord& rhs)
 {
-  if (this == &rhs)
+  if(this == &rhs)
     return;
 
-  if (has_history())
+  if(has_history())
   {
     KnowledgeRecord tmp = rhs.has_history() ? rhs.get_newest() : rhs;
     emplace_hist(std::move(tmp));
   }
-  else if (rhs.has_history())
+  else if(rhs.has_history())
   {
     overwrite(rhs.get_newest());
   }
@@ -266,22 +266,22 @@ inline void KnowledgeRecord::set_value(const KnowledgeRecord& rhs)
 
 inline void KnowledgeRecord::set_value(KnowledgeRecord&& rhs)
 {
-  if (this == &rhs)
+  if(this == &rhs)
     return;
 
-  if (!rhs.exists())
+  if(!rhs.exists())
   {
     clear_value();
     return;
   }
 
-  if (has_history())
+  if(has_history())
   {
     KnowledgeRecord tmp =
         rhs.has_history() ? std::move(rhs.ref_newest()) : std::move(rhs);
     emplace_hist(std::move(tmp));
   }
-  else if (rhs.has_history())
+  else if(rhs.has_history())
   {
     overwrite(std::move(rhs.ref_newest()));
   }
@@ -293,7 +293,7 @@ inline void KnowledgeRecord::set_value(KnowledgeRecord&& rhs)
 
 inline void KnowledgeRecord::set_full(const KnowledgeRecord& rhs)
 {
-  if (this == &rhs)
+  if(this == &rhs)
     return;
 
   copy_metadata(rhs);
@@ -302,7 +302,7 @@ inline void KnowledgeRecord::set_full(const KnowledgeRecord& rhs)
 
 inline void KnowledgeRecord::set_full(KnowledgeRecord&& rhs)
 {
-  if (this == &rhs)
+  if(this == &rhs)
     return;
 
   copy_metadata(rhs);
@@ -311,72 +311,72 @@ inline void KnowledgeRecord::set_full(KnowledgeRecord&& rhs)
 
 inline void KnowledgeRecord::overwrite(const KnowledgeRecord& rhs)
 {
-  if (this == &rhs)
+  if(this == &rhs)
     return;
 
   // clear any dynamic memory being used on the left hand side
   clear_value();
 
-  if (rhs.type_ == EMPTY)
+  if(rhs.type_ == EMPTY)
     return;
 
   // set the instance properties accordingly
   type_ = rhs.type_;
   shared_ = is_ref_counted() ? SHARED : OWNED;
 
-  if (rhs.type_ == INTEGER)
+  if(rhs.type_ == INTEGER)
     int_value_ = rhs.int_value_;
-  else if (rhs.type_ == INTEGER_ARRAY)
+  else if(rhs.type_ == INTEGER_ARRAY)
     new (&int_array_) std::shared_ptr<std::vector<Integer>>(rhs.int_array_);
-  else if (rhs.type_ == DOUBLE)
+  else if(rhs.type_ == DOUBLE)
     double_value_ = rhs.double_value_;
-  else if (rhs.type_ == DOUBLE_ARRAY)
+  else if(rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_)
         std::shared_ptr<std::vector<double>>(rhs.double_array_);
-  else if (is_string_type(rhs.type_))
+  else if(is_string_type(rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(rhs.str_value_);
-  else if (is_binary_file_type(rhs.type_))
+  else if(is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
-  else if (rhs.type_ == ANY)
+  else if(rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
-  else if (rhs.type_ == BUFFER)
+  else if(rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(rhs.buf_);
 }
 
 inline void KnowledgeRecord::overwrite(KnowledgeRecord&& rhs)
 {
-  if (this == &rhs)
+  if(this == &rhs)
     return;
 
   // clear any dynamic memory being used on the left hand side
   clear_value();
 
-  if (rhs.type_ == EMPTY)
+  if(rhs.type_ == EMPTY)
     return;
 
   // set the instance properties accordingly
   type_ = rhs.type_;
   shared_ = rhs.shared_;
 
-  if (rhs.type_ == INTEGER)
+  if(rhs.type_ == INTEGER)
     int_value_ = rhs.int_value_;
-  else if (rhs.type_ == INTEGER_ARRAY)
+  else if(rhs.type_ == INTEGER_ARRAY)
     new (&int_array_)
         std::shared_ptr<std::vector<Integer>>(std::move(rhs.int_array_));
-  else if (rhs.type_ == DOUBLE)
+  else if(rhs.type_ == DOUBLE)
     double_value_ = rhs.double_value_;
-  else if (rhs.type_ == DOUBLE_ARRAY)
+  else if(rhs.type_ == DOUBLE_ARRAY)
     new (&double_array_)
         std::shared_ptr<std::vector<double>>(std::move(rhs.double_array_));
-  else if (is_string_type(rhs.type_))
+  else if(is_string_type(rhs.type_))
     new (&str_value_) std::shared_ptr<std::string>(std::move(rhs.str_value_));
-  else if (is_binary_file_type(rhs.type_))
+  else if(is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
-  else if (rhs.type_ == ANY)
+  else if(rhs.type_ == ANY)
     new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
-  else if (rhs.type_ == BUFFER)
+  else if(rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(std::move(rhs.buf_));
 
   rhs.type_ = EMPTY;
@@ -425,15 +425,15 @@ inline KnowledgeRecord KnowledgeRecord::operator-(void) const
 {
   KnowledgeRecord record(*this);
 
-  if (type_ == INTEGER)
+  if(type_ == INTEGER)
   {
     record.set_value(-int_value_);
   }
-  else if (type_ == DOUBLE)
+  else if(type_ == DOUBLE)
   {
     record.set_value(-double_value_);
   }
-  else if (has_history())
+  else if(has_history())
   {
     record.set_value(-get_newest());
   }
@@ -447,20 +447,20 @@ inline KnowledgeRecord KnowledgeRecord::operator-(void) const
 inline KnowledgeRecord& KnowledgeRecord::operator+=(
     const knowledge::KnowledgeRecord& rhs)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
   {
-    if (is_integer_type(rhs.type_))
+    if(is_integer_type(rhs.type_))
       set_value(to_integer() + rhs.to_integer());
     else
       set_value(to_integer() + rhs.to_double());
   }
-  else if (is_double_type(type_))
+  else if(is_double_type(type_))
     set_value(to_double() + rhs.to_double());
 
-  else if (is_string_type(type_))
+  else if(is_string_type(type_))
     set_value(to_string() + rhs.to_string());
 
-  else if (has_history())
+  else if(has_history())
     set_value(get_newest() + rhs);
 
   return *this;
@@ -471,13 +471,13 @@ inline KnowledgeRecord& KnowledgeRecord::operator+=(
  **/
 inline KnowledgeRecord& KnowledgeRecord::operator--(void)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
     set_value(to_integer() - 1);
 
-  else if (is_double_type(type_))
+  else if(is_double_type(type_))
     set_value(to_double() - 1);
 
-  else if (has_history())
+  else if(has_history())
   {
     KnowledgeRecord tmp = get_newest();
     --tmp;
@@ -492,13 +492,13 @@ inline KnowledgeRecord& KnowledgeRecord::operator--(void)
  **/
 inline KnowledgeRecord& KnowledgeRecord::operator++(void)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
     set_value(to_integer() + 1);
 
-  else if (is_double_type(type_))
+  else if(is_double_type(type_))
     set_value(to_double() + 1);
 
-  else if (has_history())
+  else if(has_history())
   {
     KnowledgeRecord tmp = get_newest();
     --tmp;
@@ -514,17 +514,17 @@ inline KnowledgeRecord& KnowledgeRecord::operator++(void)
 inline KnowledgeRecord& KnowledgeRecord::operator-=(
     const knowledge::KnowledgeRecord& rhs)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
   {
-    if (is_integer_type(rhs.type_))
+    if(is_integer_type(rhs.type_))
       set_value(to_integer() - rhs.to_integer());
     else
       set_value(to_integer() - rhs.to_double());
   }
-  else if (is_double_type(type_) || is_string_type(type_))
+  else if(is_double_type(type_) || is_string_type(type_))
     set_value(to_double() - rhs.to_double());
 
-  else if (has_history())
+  else if(has_history())
     set_value(get_newest() - rhs);
 
   return *this;
@@ -536,17 +536,17 @@ inline KnowledgeRecord& KnowledgeRecord::operator-=(
 inline KnowledgeRecord& KnowledgeRecord::operator*=(
     const knowledge::KnowledgeRecord& rhs)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
   {
-    if (is_integer_type(rhs.type_))
+    if(is_integer_type(rhs.type_))
       set_value(to_integer() * rhs.to_integer());
     else
       set_value(to_integer() * rhs.to_double());
   }
-  else if (is_double_type(type_) || is_string_type(type_))
+  else if(is_double_type(type_) || is_string_type(type_))
     set_value(to_double() * rhs.to_double());
 
-  else if (has_history())
+  else if(has_history())
     set_value(get_newest() * rhs);
 
   return *this;
@@ -558,12 +558,12 @@ inline KnowledgeRecord& KnowledgeRecord::operator*=(
 inline KnowledgeRecord& KnowledgeRecord::operator/=(
     const knowledge::KnowledgeRecord& rhs)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
   {
-    if (is_integer_type(rhs.type_))
+    if(is_integer_type(rhs.type_))
     {
       Integer denom = rhs.to_integer();
-      if (denom == 0)
+      if(denom == 0)
         set_value(NAN);
       else
         set_value(to_integer() / denom);
@@ -572,23 +572,23 @@ inline KnowledgeRecord& KnowledgeRecord::operator/=(
     {
       double denom = rhs.to_double();
 
-      if (denom == 0)
+      if(denom == 0)
         set_value(NAN);
       else
         set_value(to_integer() / denom);
     }
   }
-  else if (is_double_type(type_) || is_string_type(type_))
+  else if(is_double_type(type_) || is_string_type(type_))
   {
     double denom = rhs.to_double();
 
-    if (denom == 0)
+    if(denom == 0)
       set_value(NAN);
     else
       set_value(to_double() / denom);
   }
 
-  else if (has_history())
+  else if(has_history())
     set_value(get_newest() / rhs);
 
   return *this;
@@ -600,19 +600,19 @@ inline KnowledgeRecord& KnowledgeRecord::operator/=(
 inline KnowledgeRecord& KnowledgeRecord::operator%=(
     const knowledge::KnowledgeRecord& rhs)
 {
-  if (is_integer_type(type_))
+  if(is_integer_type(type_))
   {
-    if (is_integer_type(rhs.type_))
+    if(is_integer_type(rhs.type_))
     {
       Integer denom = rhs.to_integer();
-      if (denom == 0)
+      if(denom == 0)
         set_value(NAN);
       else
         set_value(to_integer() % denom);
     }
   }
 
-  else if (has_history())
+  else if(has_history())
     set_value(get_newest() % rhs);
 
   return *this;
@@ -677,7 +677,7 @@ inline bool KnowledgeRecord::is_false(void) const
 inline std::ostream& operator<<(
     std::ostream& stream, const KnowledgeRecord& rhs)
 {
-  if (rhs.type() &
+  if(rhs.type() &
       (KnowledgeRecord::INTEGER_ARRAY | KnowledgeRecord::DOUBLE_ARRAY))
   {
     stream << rhs.to_string(", ");
@@ -702,34 +702,34 @@ inline KnowledgeRecord KnowledgeRecord::operator-(
 
 inline void KnowledgeRecord::unshare(void)
 {
-  if (shared_ != SHARED)
+  if(shared_ != SHARED)
   {
     return;
   }
 
-  if (is_ref_counted())
+  if(is_ref_counted())
   {
-    if (is_string_type(type_))
+    if(is_string_type(type_))
     {
       emplace_string(*str_value_);
     }
-    else if (is_binary_file_type(type_))
+    else if(is_binary_file_type(type_))
     {
       emplace_file(*file_value_);
     }
-    else if (type_ == INTEGER_ARRAY)
+    else if(type_ == INTEGER_ARRAY)
     {
       emplace_integers(*int_array_);
     }
-    else if (type_ == DOUBLE_ARRAY)
+    else if(type_ == DOUBLE_ARRAY)
     {
       emplace_doubles(*double_array_);
     }
-    else if (type_ == ANY)
+    else if(type_ == ANY)
     {
       emplace_any(*any_value_);
     }
-    else if (type_ == BUFFER)
+    else if(type_ == BUFFER)
     {
       overwrite_circular_buffer(*buf_);
     }
@@ -774,7 +774,7 @@ inline int KnowledgeRecord::status(void) const
  **/
 inline void KnowledgeRecord::set_modified(void)
 {
-  if (!exists())
+  if(!exists())
   {
     set_value((Integer)0);
   }
@@ -782,34 +782,34 @@ inline void KnowledgeRecord::set_modified(void)
 
 inline uint32_t KnowledgeRecord::size(void) const
 {
-  if (type_ == INTEGER || type_ == DOUBLE)
+  if(type_ == INTEGER || type_ == DOUBLE)
   {
     return 1;
   }
-  else if (is_string_type(type_))
+  else if(is_string_type(type_))
   {
     return (uint32_t)str_value_->size() + 1;
   }
-  else if (is_binary_file_type(type_))
+  else if(is_binary_file_type(type_))
   {
     return (uint32_t)file_value_->size();
   }
-  else if (type_ == INTEGER_ARRAY)
+  else if(type_ == INTEGER_ARRAY)
   {
     return (uint32_t)int_array_->size();
   }
-  else if (type_ == DOUBLE_ARRAY)
+  else if(type_ == DOUBLE_ARRAY)
   {
     return (uint32_t)double_array_->size();
   }
-  else if (type_ == ANY)
+  else if(type_ == ANY)
   {
-    if (any_value_->supports_size())
+    if(any_value_->supports_size())
     {
       return any_value_->size();
     }
   }
-  else if (type_ == BUFFER)
+  else if(type_ == BUFFER)
   {
     return buf_->empty() ? 1 : ref_newest().size();
   }
@@ -823,15 +823,15 @@ inline uint32_t KnowledgeRecord::type(void) const
 
 inline bool KnowledgeRecord::set_type(uint32_t type)
 {
-  if (type == type_ || (is_string_type(type_) && is_string_type(type)) ||
+  if(type == type_ || (is_string_type(type_) && is_string_type(type)) ||
       (is_binary_file_type(type_) && is_binary_file_type(type)))
   {
     type_ = type;
     return true;
   }
-  else if (type_ == BUFFER)
+  else if(type_ == BUFFER)
   {
-    if (buf_->empty())
+    if(buf_->empty())
     {
       buf_->emplace_back();
     }
@@ -845,36 +845,36 @@ inline int64_t KnowledgeRecord::get_encoded_size(void) const
 {
   int64_t buffer_size(sizeof(type_) + sizeof(uint32_t) + sizeof(toi_) + 0);
 
-  if (type_ == INTEGER)
+  if(type_ == INTEGER)
   {
     buffer_size += sizeof(Integer);
   }
-  else if (type_ == DOUBLE)
+  else if(type_ == DOUBLE)
   {
     buffer_size += sizeof(double);
   }
-  else if (type_ == INTEGER_ARRAY)
+  else if(type_ == INTEGER_ARRAY)
   {
     buffer_size += sizeof(Integer) * double_array_->size();
   }
-  else if (type_ == DOUBLE_ARRAY)
+  else if(type_ == DOUBLE_ARRAY)
   {
     buffer_size += sizeof(double) * double_array_->size();
   }
-  else if (is_string_type(type_))
+  else if(is_string_type(type_))
   {
     buffer_size += str_value_->size() + 1;
   }
-  else if (is_binary_file_type(type_))
+  else if(is_binary_file_type(type_))
   {
     buffer_size += file_value_->size();
   }
-  else if (type_ == ANY)
+  else if(type_ == ANY)
   {
     // TODO calculate real size
     buffer_size += 1024;
   }
-  else if (type_ == BUFFER && !buf_->empty())
+  else if(type_ == BUFFER && !buf_->empty())
   {
     return ref_newest().get_encoded_size();
   }
@@ -991,7 +991,7 @@ inline uint32_t max_quality(const knowledge::KnowledgeRecords& records)
   uint32_t max = 0;
 
   // iterate over the list and return the max
-  for (KnowledgeRecords::const_iterator i = records.begin(); i != records.end();
+  for(KnowledgeRecords::const_iterator i = records.begin(); i != records.end();
        ++i)
   {
     max = std::max<uint32_t>(i->second->quality, max);
@@ -1004,7 +1004,7 @@ inline uint32_t max_quality(const KnowledgeMap& records)
   uint32_t max = 0;
 
   // iterate over the list and return the max
-  for (KnowledgeMap::const_iterator i = records.begin(); i != records.end();
+  for(KnowledgeMap::const_iterator i = records.begin(); i != records.end();
        ++i)
   {
     max = std::max<uint32_t>(i->second.quality, max);
@@ -1020,19 +1020,19 @@ inline void destruct(T& x)
 
 inline void KnowledgeRecord::clear_union(void) noexcept
 {
-  if (type_ & ALL_CLEARABLES)
+  if(type_ & ALL_CLEARABLES)
   {
-    if (type_ == INTEGER_ARRAY)
+    if(type_ == INTEGER_ARRAY)
       destruct(int_array_);
-    else if (type_ == DOUBLE_ARRAY)
+    else if(type_ == DOUBLE_ARRAY)
       destruct(double_array_);
-    else if (is_string_type(type_))
+    else if(is_string_type(type_))
       destruct(str_value_);
-    else if (is_binary_file_type(type_))
+    else if(is_binary_file_type(type_))
       destruct(file_value_);
-    else if (type_ == ANY)
+    else if(type_ == ANY)
       destruct(any_value_);
-    else if (type_ == BUFFER)
+    else if(type_ == BUFFER)
       destruct(buf_);
     shared_ = OWNED;
   }
@@ -1055,7 +1055,7 @@ inline const char* KnowledgeRecord::read(
   uint32_t size = 1;
 
   // Remove the type of value from the buffer
-  if (buffer_remaining >= (int64_t)sizeof(type))
+  if(buffer_remaining >= (int64_t)sizeof(type))
   {
     memcpy(&type, buffer, sizeof(type));
     type = madara::utility::endian_swap(type);
@@ -1064,14 +1064,14 @@ inline const char* KnowledgeRecord::read(
   buffer_remaining -= sizeof(type);
 
   // Remove the size of value from the buffer
-  if (buffer_remaining >= (int64_t)sizeof(size))
+  if(buffer_remaining >= (int64_t)sizeof(size))
   {
     memcpy(&size, buffer, sizeof(size));
     size = madara::utility::endian_swap(size);
 
-    if (is_integer_type(type))
+    if(is_integer_type(type))
       buff_value_size = size * sizeof(Integer);
-    else if (is_double_type(type))
+    else if(is_double_type(type))
       buff_value_size = size * sizeof(double);
     else
       buff_value_size = size;
@@ -1086,7 +1086,7 @@ inline const char* KnowledgeRecord::read(
   buffer_remaining -= sizeof(buff_value_size);
 
   // Remove the toi from the buffer
-  if (buffer_remaining >= (int64_t)sizeof(toi_))
+  if(buffer_remaining >= (int64_t)sizeof(toi_))
   {
     memcpy(&toi_, buffer, sizeof(toi_));
     toi_ = madara::utility::endian_swap(toi_);
@@ -1101,11 +1101,11 @@ inline const char* KnowledgeRecord::read(
   // buff_value_size);
 
   // Remove the value from the buffer
-  if (buffer_remaining >= int64_t(buff_value_size))
+  if(buffer_remaining >= int64_t(buff_value_size))
   {
-    if (is_string_type(type))
+    if(is_string_type(type))
     {
-      if (buff_value_size >= 1)
+      if(buff_value_size >= 1)
       {
         emplace_string(buffer, buff_value_size - 1);
       }
@@ -1115,19 +1115,19 @@ inline const char* KnowledgeRecord::read(
       }
     }
 
-    else if (type == INTEGER)
+    else if(type == INTEGER)
     {
       Integer tmp;
       memcpy(&tmp, buffer, sizeof(tmp));
       set_value(madara::utility::endian_swap(tmp));
     }
 
-    else if (type == INTEGER_ARRAY)
+    else if(type == INTEGER_ARRAY)
     {
       std::vector<Integer> tmp;
       tmp.reserve(size);
 
-      for (uint32_t i = 0; i < size; ++i)
+      for(uint32_t i = 0; i < size; ++i)
       {
         Integer cur;
         memcpy(&cur, buffer + i * sizeof(cur), sizeof(cur));
@@ -1137,19 +1137,19 @@ inline const char* KnowledgeRecord::read(
       emplace_integers(std::move(tmp));
     }
 
-    else if (type == DOUBLE)
+    else if(type == DOUBLE)
     {
       double tmp;
       memcpy(&tmp, buffer, sizeof(tmp));
       set_value(madara::utility::endian_swap(tmp));
     }
 
-    else if (type == DOUBLE_ARRAY)
+    else if(type == DOUBLE_ARRAY)
     {
       std::vector<double> tmp;
       tmp.reserve(size);
 
-      for (uint32_t i = 0; i < size; ++i)
+      for(uint32_t i = 0; i < size; ++i)
       {
         double cur;
         memcpy(&cur, buffer + i * sizeof(cur), sizeof(cur));
@@ -1159,13 +1159,13 @@ inline const char* KnowledgeRecord::read(
       emplace_doubles(std::move(tmp));
     }
 
-    else if (is_binary_file_type(type))
+    else if(is_binary_file_type(type))
     {
       const unsigned char* b = (const unsigned char*)buffer;
       emplace_file(b, b + size);
     }
 
-    else if (is_any_type(type))
+    else if(is_any_type(type))
     {
       // madara_logger_ptr_log (logger_, logger::LOG_TRACE,
       //"KnowledgeRecord::read: reading Any type of size %d\n", size);
@@ -1197,7 +1197,7 @@ inline const char* KnowledgeRecord::read(
   uint32_t key_size(0);
 
   // Remove the key size from the buffer
-  if (buffer_remaining >= (int64_t)sizeof(key_size))
+  if(buffer_remaining >= (int64_t)sizeof(key_size))
   {
     memcpy(&key_size, buffer, sizeof(key_size));
     key_size = madara::utility::endian_swap(key_size);
@@ -1206,9 +1206,9 @@ inline const char* KnowledgeRecord::read(
   buffer_remaining -= sizeof(key_size);
 
   // Remove the key from the buffer
-  if (buffer_remaining >= int64_t(sizeof(char) * int64_t(key_size)))
+  if(buffer_remaining >= int64_t(sizeof(char) * int64_t(key_size)))
   {
-    if (key_size > 0)
+    if(key_size > 0)
     {
       // don't worry about null terminator
       key.assign(buffer, key_size - 1);
@@ -1234,7 +1234,7 @@ inline const char* KnowledgeRecord::read(
   // format is [key_id | type | value_size | value]
 
   // Remove the key size from the buffer
-  if (buffer_remaining >= (int64_t)sizeof(key_id))
+  if(buffer_remaining >= (int64_t)sizeof(key_id))
   {
     memcpy(&key_id, buffer, sizeof(key_id));
     key_id = madara::utility::endian_swap(key_id);
@@ -1403,7 +1403,7 @@ inline void KnowledgeRecord::set_file(
 template<typename T, enable_if_<is_int_numeric<T>(), int>>
 inline void KnowledgeRecord::set_value(T new_value)
 {
-  if (has_history())
+  if(has_history())
   {
     KnowledgeRecord tmp;
     tmp.copy_metadata(*this);
@@ -1411,7 +1411,7 @@ inline void KnowledgeRecord::set_value(T new_value)
     set_value(std::move(tmp));
     return;
   }
-  if (type_ != INTEGER)
+  if(type_ != INTEGER)
   {
     clear_union();
     type_ = INTEGER;
@@ -1450,7 +1450,7 @@ template<typename T,
     typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
 inline void KnowledgeRecord::set_value(T new_value)
 {
-  if (has_history())
+  if(has_history())
   {
     KnowledgeRecord tmp;
     tmp.copy_metadata(*this);
@@ -1458,7 +1458,7 @@ inline void KnowledgeRecord::set_value(T new_value)
     set_value(std::move(tmp));
     return;
   }
-  if (type_ != DOUBLE)
+  if(type_ != DOUBLE)
   {
     clear_union();
     type_ = DOUBLE;
@@ -1500,24 +1500,24 @@ inline void KnowledgeRecord::set_value(
 template<typename T, enable_if_<is_int_numeric<T>(), int>>
 inline void KnowledgeRecord::set_index(size_t index, T value)
 {
-  if (has_history())
+  if(has_history())
   {
     KnowledgeRecord tmp = get_newest();
     tmp.set_index(index, value);
     set_value(std::move(tmp));
     return;
   }
-  if (type_ == DOUBLE_ARRAY)
+  if(type_ == DOUBLE_ARRAY)
   {
     // let the set_index for doubles take care of this
     set_index(index, double(value));
     return;
   }
-  else if (type_ == INTEGER_ARRAY)
+  else if(type_ == INTEGER_ARRAY)
   {
     unshare();
 
-    if (index >= int_array_->size())
+    if(index >= int_array_->size())
     {
       int_array_->resize(index + 1);
     }
@@ -1539,24 +1539,24 @@ template<typename T,
     typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
 inline void KnowledgeRecord::set_index(size_t index, T value)
 {
-  if (has_history())
+  if(has_history())
   {
     KnowledgeRecord tmp = get_newest();
     tmp.set_index(index, value);
     set_value(std::move(tmp));
     return;
   }
-  if (type_ == INTEGER_ARRAY)
+  if(type_ == INTEGER_ARRAY)
   {
     std::vector<double> tmp(int_array_->begin(), int_array_->end());
     emplace_doubles(std::move(tmp));
 
-    if (index >= double_array_->size())
+    if(index >= double_array_->size())
     {
       double_array_->resize(index + 1);
     }
   }
-  else if (type_ != DOUBLE_ARRAY)
+  else if(type_ != DOUBLE_ARRAY)
   {
     emplace_doubles(index + 1);
   }
@@ -1564,7 +1564,7 @@ inline void KnowledgeRecord::set_index(size_t index, T value)
   {
     unshare();
 
-    if (index >= double_array_->size())
+    if(index >= double_array_->size())
     {
       double_array_->resize(index + 1);
     }
@@ -1575,12 +1575,12 @@ inline void KnowledgeRecord::set_index(size_t index, T value)
 
 inline std::shared_ptr<const std::string> KnowledgeRecord::share_string() const
 {
-  if (is_string_type(type_))
+  if(is_string_type(type_))
   {
     shared_ = SHARED;
     return str_value_;
   }
-  else if (has_history() && !buf_->empty())
+  else if(has_history() && !buf_->empty())
   {
     return ref_newest().share_string();
   }
@@ -1590,12 +1590,12 @@ inline std::shared_ptr<const std::string> KnowledgeRecord::share_string() const
 inline std::shared_ptr<const std::vector<KnowledgeRecord::Integer>>
 KnowledgeRecord::share_integers() const
 {
-  if (type_ == INTEGER_ARRAY)
+  if(type_ == INTEGER_ARRAY)
   {
     shared_ = SHARED;
     return int_array_;
   }
-  else if (has_history() && !buf_->empty())
+  else if(has_history() && !buf_->empty())
   {
     return ref_newest().share_integers();
   }
@@ -1605,12 +1605,12 @@ KnowledgeRecord::share_integers() const
 inline std::shared_ptr<const std::vector<double>>
 KnowledgeRecord::share_doubles() const
 {
-  if (type_ == DOUBLE_ARRAY)
+  if(type_ == DOUBLE_ARRAY)
   {
     shared_ = SHARED;
     return double_array_;
   }
-  else if (has_history() && !buf_->empty())
+  else if(has_history() && !buf_->empty())
   {
     return ref_newest().share_doubles();
   }
@@ -1620,12 +1620,12 @@ KnowledgeRecord::share_doubles() const
 inline std::shared_ptr<const std::vector<unsigned char>>
 KnowledgeRecord::share_binary() const
 {
-  if (is_binary_file_type(type_))
+  if(is_binary_file_type(type_))
   {
     shared_ = SHARED;
     return file_value_;
   }
-  else if (has_history() && !buf_->empty())
+  else if(has_history() && !buf_->empty())
   {
     return ref_newest().share_binary();
   }
@@ -1634,12 +1634,12 @@ KnowledgeRecord::share_binary() const
 
 inline std::shared_ptr<const ConstAny> KnowledgeRecord::share_any() const
 {
-  if (is_any_type(type_))
+  if(is_any_type(type_))
   {
     shared_ = SHARED;
     return any_value_;
   }
-  else if (has_history() && !buf_->empty())
+  else if(has_history() && !buf_->empty())
   {
     return ref_newest().share_any();
   }
@@ -1650,7 +1650,7 @@ template<typename T>
 inline std::shared_ptr<const T> KnowledgeRecord::share_any() const
 {
   auto any_ptr = share_any();
-  if (!any_ptr)
+  if(!any_ptr)
   {
     throw exceptions::BadAnyAccess("KnowledgeRecord::share_any<T>: "
         "value in record is not an Any");
@@ -1662,7 +1662,7 @@ inline std::shared_ptr<const T> KnowledgeRecord::share_any() const
 inline std::shared_ptr<KnowledgeRecord::CircBuf>
 KnowledgeRecord::share_circular_buffer() const
 {
-  if (!has_history())
+  if(!has_history())
   {
     return nullptr;
   }
@@ -1678,7 +1678,7 @@ inline KnowledgeRecord::operator bool(void) const
 inline char* KnowledgeRecord::write(
     char* buffer, int64_t& buffer_remaining) const
 {
-  if (has_history() && !buf_->empty())
+  if(has_history() && !buf_->empty())
   {
     return ref_newest().write(buffer, buffer_remaining);
   }
@@ -1693,7 +1693,7 @@ inline char* KnowledgeRecord::write(
 
   int64_t encoded_size = get_encoded_size();
 
-  if (buffer_remaining >= encoded_size)
+  if(buffer_remaining >= encoded_size)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "KnowledgeRecord::write:"
@@ -1701,7 +1701,7 @@ inline char* KnowledgeRecord::write(
         encoded_size);
 
     // Remove the type of value from the buffer
-    if (buffer_remaining >= (int64_t)sizeof(type_))
+    if(buffer_remaining >= (int64_t)sizeof(type_))
     {
       decltype(type_) tmp = madara::utility::endian_swap(type_);
       memcpy(buffer, &tmp, sizeof(tmp));
@@ -1710,7 +1710,7 @@ inline char* KnowledgeRecord::write(
     buffer_remaining -= sizeof(type_);
 
     // Remove the size of value from the buffer
-    if (buffer_remaining >= (int64_t)sizeof(size))
+    if(buffer_remaining >= (int64_t)sizeof(size))
     {
       // set a pointer to size, in case we need to modify it during
       // value copy (e.g. during double conversion)
@@ -1725,7 +1725,7 @@ inline char* KnowledgeRecord::write(
     buffer_remaining -= sizeof(size);
 
     // Write TOI to buffer
-    if (buffer_remaining >= (int64_t)sizeof(toi_))
+    if(buffer_remaining >= (int64_t)sizeof(toi_))
     {
       decltype(toi_) tmp = madara::utility::endian_swap(toi_);
       memcpy(buffer, &tmp, sizeof(tmp));
@@ -1734,17 +1734,17 @@ inline char* KnowledgeRecord::write(
     buffer_remaining -= sizeof(toi_);
 
     // Remove the value from the buffer
-    if (is_string_type(type_))
+    if(is_string_type(type_))
     {
       // strings do not have to be converted
-      if (buffer_remaining >= int64_t(size))
+      if(buffer_remaining >= int64_t(size))
       {
         memcpy(buffer, &(*str_value_)[0], size);
       }
     }
-    else if (type_ == INTEGER)
+    else if(type_ == INTEGER)
     {
-      if (buffer_remaining >= int64_t(sizeof(Integer)))
+      if(buffer_remaining >= int64_t(sizeof(Integer)))
       {
         integer_temp = madara::utility::endian_swap(int_value_);
         memcpy(buffer, &integer_temp, sizeof(integer_temp));
@@ -1752,15 +1752,15 @@ inline char* KnowledgeRecord::write(
         size_intermediate = sizeof(Integer);
       }
     }
-    else if (type_ == INTEGER_ARRAY)
+    else if(type_ == INTEGER_ARRAY)
     {
-      if (buffer_remaining >= int64_t(size * sizeof(Integer)))
+      if(buffer_remaining >= int64_t(size * sizeof(Integer)))
       {
         // convert integers to network byte order
         const Integer* ptr_temp = &(*int_array_)[0];
         Integer* target_buffer = (Integer*)buffer;
 
-        for (uint32_t i = 0; i < size; ++i, ++ptr_temp, ++target_buffer)
+        for(uint32_t i = 0; i < size; ++i, ++ptr_temp, ++target_buffer)
         {
           integer_temp = madara::utility::endian_swap(*ptr_temp);
           memcpy(target_buffer, &integer_temp, sizeof(Integer));
@@ -1769,9 +1769,9 @@ inline char* KnowledgeRecord::write(
         size_intermediate = size * sizeof(Integer);
       }
     }
-    else if (type_ == DOUBLE)
+    else if(type_ == DOUBLE)
     {
-      if (buffer_remaining >= int64_t(sizeof(double)))
+      if(buffer_remaining >= int64_t(sizeof(double)))
       {
         double_temp = madara::utility::endian_swap(double_value_);
         memcpy(buffer, &double_temp, sizeof(double));
@@ -1779,15 +1779,15 @@ inline char* KnowledgeRecord::write(
         size_intermediate = sizeof(double);
       }
     }
-    else if (type_ == DOUBLE_ARRAY)
+    else if(type_ == DOUBLE_ARRAY)
     {
-      if (buffer_remaining >= int64_t(size * sizeof(double)))
+      if(buffer_remaining >= int64_t(size * sizeof(double)))
       {
         // convert integers to network byte order
         const double* ptr_temp = &(*double_array_)[0];
         double* target_buffer = (double*)buffer;
 
-        for (uint32_t i = 0; i < size; ++i, ++ptr_temp, ++target_buffer)
+        for(uint32_t i = 0; i < size; ++i, ++ptr_temp, ++target_buffer)
         {
           double_temp = madara::utility::endian_swap(*ptr_temp);
           memcpy(target_buffer, &double_temp, sizeof(double_temp));
@@ -1807,15 +1807,15 @@ inline char* KnowledgeRecord::write(
          **/
       }
     }
-    else if (is_binary_file_type(type_))
+    else if(is_binary_file_type(type_))
     {
       // strings do not have to be converted
-      if (buffer_remaining >= size)
+      if(buffer_remaining >= size)
       {
         memcpy(buffer, &(*file_value_)[0], size);
       }
     }
-    else if (is_any_type(type_))
+    else if(is_any_type(type_))
     {
       // madara_logger_ptr_log (logger_, logger::LOG_TRACE,
       //"KnowledgeRecord::write: encoding an Any type\n");
@@ -1849,7 +1849,7 @@ inline char* KnowledgeRecord::write(
       }
     }
 
-    if (size_location)
+    if(size_location)
     {
       buffer_remaining -= size_intermediate;
       buffer += size_intermediate;
@@ -1883,7 +1883,7 @@ inline char* KnowledgeRecord::write(
 
   int64_t encoded_size = get_encoded_size(key);
 
-  if (buffer_remaining >= encoded_size)
+  if(buffer_remaining >= encoded_size)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "KnowledgeRecord::write:"
@@ -1891,7 +1891,7 @@ inline char* KnowledgeRecord::write(
         encoded_size);
 
     // Remove the key size from the buffer
-    if (buffer_remaining >= (int64_t)sizeof(key_size))
+    if(buffer_remaining >= (int64_t)sizeof(key_size))
     {
       uint32_temp = madara::utility::endian_swap(key_size);
       memcpy(buffer, &uint32_temp, sizeof(uint32_temp));
@@ -1900,7 +1900,7 @@ inline char* KnowledgeRecord::write(
     buffer_remaining -= sizeof(key_size);
 
     // Remove the key from the buffer
-    if (buffer_remaining >= (int64_t)sizeof(char) * key_size)
+    if(buffer_remaining >= (int64_t)sizeof(char) * key_size)
     {
       // copy the string and set null terminator in buffer
       strncpy(buffer, key.c_str(), key_size - 1);
@@ -1936,7 +1936,7 @@ inline char* KnowledgeRecord::write(
 
   int64_t encoded_size = get_encoded_size() + sizeof(key_id);
 
-  if (buffer_remaining >= encoded_size)
+  if(buffer_remaining >= encoded_size)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "KnowledgeRecord::write:"
@@ -1944,7 +1944,7 @@ inline char* KnowledgeRecord::write(
         encoded_size);
 
     // write the key id to the buffer
-    if (buffer_remaining >= (int64_t)sizeof(key_id))
+    if(buffer_remaining >= (int64_t)sizeof(key_id))
     {
       uint32_temp = madara::utility::endian_swap(key_id);
       memcpy(buffer, &uint32_temp, sizeof(uint32_temp));

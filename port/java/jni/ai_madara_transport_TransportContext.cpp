@@ -30,7 +30,7 @@ void JNICALL Java_ai_madara_transport_TransportContext_jni_1addRecord(
   KnowledgeRecord* rec = (KnowledgeRecord*)record;
   const char* nativeName = env->GetStringUTFChars(name, 0);
 
-  if (context && rec)
+  if(context && rec)
   {
     context->add_record(nativeName, *rec);
   }
@@ -56,7 +56,7 @@ void JNICALL Java_ai_madara_transport_TransportContext_jni_1clearRecords(
 {
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
     context->clear_records();
   else
   {
@@ -79,7 +79,7 @@ jlong JNICALL Java_ai_madara_transport_TransportContext_jni_1getCurrentTime(
   jlong result(0);
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
     result = context->get_current_time();
   else
   {
@@ -104,7 +104,7 @@ jstring JNICALL Java_ai_madara_transport_TransportContext_jni_1getDomain(
   jstring result = 0;
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
   {
     result = env->NewStringUTF(context->get_domain().c_str());
   }
@@ -131,7 +131,7 @@ jlong JNICALL Java_ai_madara_transport_TransportContext_jni_1getMessageTime(
   jlong result(0);
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
   {
     result = context->get_message_time();
   }
@@ -158,7 +158,7 @@ jlong JNICALL Java_ai_madara_transport_TransportContext_jni_1getOperation(
   jlong result(0);
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
   {
     result = context->get_operation();
   }
@@ -185,7 +185,7 @@ jstring JNICALL Java_ai_madara_transport_TransportContext_jni_1getOriginator(
   jstring result = 0;
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
   {
     result = env->NewStringUTF(context->get_originator().c_str());
   }
@@ -213,7 +213,7 @@ Java_ai_madara_transport_TransportContext_jni_1getReceiveBandwidth(
   jlong result(0);
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
   {
     result = context->get_receive_bandwidth();
   }
@@ -251,7 +251,7 @@ jlong JNICALL Java_ai_madara_transport_TransportContext_jni_1getSendBandwidth(
   jlong result(0);
   TransportContext* context = (TransportContext*)cptr;
 
-  if (context)
+  if(context)
   {
     result = context->get_send_bandwidth();
   }

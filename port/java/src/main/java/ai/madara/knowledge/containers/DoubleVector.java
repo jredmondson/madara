@@ -283,7 +283,7 @@ public class DoubleVector extends BaseContainer
   {
     Object[] objs = jni_toArray(getCPtr());
     KnowledgeRecord[] records = new KnowledgeRecord[objs.length];
-    for (int i = 0; i < objs.length; ++i)
+    for(int i = 0; i < objs.length; ++i)
     {
       records[i] = (KnowledgeRecord)objs[i];
     }
@@ -319,7 +319,7 @@ public class DoubleVector extends BaseContainer
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeDoubleVector(getCPtr());
       setCPtr(0);

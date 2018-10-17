@@ -65,7 +65,7 @@ public:
    **/
   const FileHeader* get_file_header() const
   {
-    if (stage == 0)
+    if(stage == 0)
     {
       return nullptr;
     }
@@ -179,7 +179,7 @@ public:
   void stop()
   {
     keep_running_.clear();
-    if (thread_.joinable())
+    if(thread_.joinable())
     {
       thread_.join();
     }
@@ -200,7 +200,7 @@ private:
 
   void init_reader()
   {
-    if (!reader_)
+    if(!reader_)
     {
       reader_ = mk_unique<CheckpointReader>(settings_);
     }

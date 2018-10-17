@@ -56,7 +56,7 @@ madara::knowledge::KnowledgeRecord
    * Zone 3 = (0,40) -> (39,79)
    * Zone 4 = (40,40) -> (79,79)
    **/
-  if (args.size () == 1)
+  if(args.size () == 1)
   {
     /**
      * Expand the contents of argument 0 into the special variable .0, which
@@ -124,7 +124,7 @@ madara::knowledge::KnowledgeRecord
    * Zone 3 = (0,40) -> (39,79)
    * Zone 4 = (40,40) -> (79,79)
    **/
-  if (args.size () == 1)
+  if(args.size () == 1)
   {
     /**
      * Expand the contents of argument 0 into the special variable .0, which
@@ -174,7 +174,7 @@ madara::knowledge::KnowledgeRecord
   change_deltas (madara::knowledge::FunctionArguments & args,
              madara::knowledge::Variables & variables)
 {
-  if (args.size () == 1)
+  if(args.size () == 1)
   {
     /**
      * Save the first argument to .change_deltas_id, a temporary variable.
@@ -219,7 +219,7 @@ madara::knowledge::KnowledgeRecord
              madara::knowledge::Variables &)
 {
   // if the args list is greater than zero, is an integer, and is not 0
-  if (args.size () > 0 && 
+  if(args.size () > 0 && 
     args[0].type () == madara::knowledge::KnowledgeRecord::INTEGER &&
     args[0].to_integer () != 0)
     // then call rand () with a modulus up to that integer argument
@@ -241,7 +241,7 @@ int main (int argc, char * argv[])
   madara::knowledge::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
-  if (argc == 2)
+  if(argc == 2)
   {
     // save the first argument into an integer
     madara::knowledge::KnowledgeRecord::Integer new_id;
@@ -311,7 +311,7 @@ int main (int argc, char * argv[])
     madara::knowledge::EvalSettings::SEND
   );
 
-  while (1)
+  while(1)
   {
     knowledge.evaluate (
       /**

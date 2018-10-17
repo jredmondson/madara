@@ -1024,8 +1024,8 @@ KATS_BON::TransportImpl::PersistenceType KATS_BON::TransportImpl::getPersistence
 {
 	std::string val = FCOImpl::getAttribute("Persistence")->getStringValue();
 
-	if ( val == "Volatile") return VolatilePersistenceType;
-	else if ( val == "Persistent") return PersistentPersistenceType;
+	if( val == "Volatile") return VolatilePersistenceType;
+	else if( val == "Persistent") return PersistentPersistenceType;
 	else throw("None of the possible items");
 }
 
@@ -1037,9 +1037,9 @@ KATS_BON::TransportImpl::TypeType KATS_BON::TransportImpl::getType()
 {
 	std::string val = FCOImpl::getAttribute("Type")->getStringValue();
 
-	if ( val == "None") return NoneTypeType;
-	else if ( val == "Splice") return SpliceTypeType;
-	else if ( val == "NDDS") return NDDSTypeType;
+	if( val == "None") return NoneTypeType;
+	else if( val == "Splice") return SpliceTypeType;
+	else if( val == "NDDS") return NDDSTypeType;
 	else throw("None of the possible items");
 }
 
@@ -1051,8 +1051,8 @@ void KATS_BON::TransportImpl::setPersistence( TransportImpl::PersistenceType val
 {
 	std::string str_val = "";
 
-	if ( val == VolatilePersistenceType) str_val = "Volatile";
-	else if ( val == PersistentPersistenceType) str_val = "Persistent";
+	if( val == VolatilePersistenceType) str_val = "Volatile";
+	else if( val == PersistentPersistenceType) str_val = "Persistent";
 	else throw("None of the possible items");
 
 	FCOImpl::getAttribute("Persistence")->setStringValue( str_val);
@@ -1066,9 +1066,9 @@ void KATS_BON::TransportImpl::setType( TransportImpl::TypeType val)
 {
 	std::string str_val = "";
 
-	if ( val == NoneTypeType) str_val = "None";
-	else if ( val == SpliceTypeType) str_val = "Splice";
-	else if ( val == NDDSTypeType) str_val = "NDDS";
+	if( val == NoneTypeType) str_val = "None";
+	else if( val == SpliceTypeType) str_val = "Splice";
+	else if( val == NDDSTypeType) str_val = "NDDS";
 	else throw("None of the possible items");
 
 	FCOImpl::getAttribute("Type")->setStringValue( str_val);

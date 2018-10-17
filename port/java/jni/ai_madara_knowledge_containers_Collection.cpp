@@ -17,7 +17,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1Collection__J(
   Collection* result(0);
   Collection* source = (Collection*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new Collection(*source);
   }
@@ -46,7 +46,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1getDebugInfo(
   jstring result = 0;
   Collection* current = (Collection*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_debug_info().c_str());
   }
@@ -67,7 +67,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1modify(
 {
   Collection* current = (Collection*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -88,7 +88,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -108,7 +108,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addBarrier(
   Collection* current = (Collection*)cptr;
   containers::Barrier* container = (containers::Barrier*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -128,7 +128,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addCounter(
   Collection* current = (Collection*)cptr;
   containers::Counter* container = (containers::Counter*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -148,7 +148,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addDouble(
   Collection* current = (Collection*)cptr;
   containers::Double* container = (containers::Double*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -170,7 +170,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addDoubleVector(
   containers::DoubleVector* container =
       (containers::DoubleVector*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -190,7 +190,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addFlexMap(
   Collection* current = (Collection*)cptr;
   containers::FlexMap* container = (containers::FlexMap*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -210,7 +210,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addInteger(
   Collection* current = (Collection*)cptr;
   containers::Integer* container = (containers::Integer*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -232,7 +232,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addIntegerVector(
   containers::IntegerVector* container =
       (containers::IntegerVector*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -252,7 +252,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addMap(
   Collection* current = (Collection*)cptr;
   containers::Map* container = (containers::Map*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -274,7 +274,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addNativeDoubleVector(
   containers::NativeDoubleVector* container =
       (containers::NativeDoubleVector*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -296,7 +296,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addNativeIntegerVector(
   containers::NativeIntegerVector* container =
       (containers::NativeIntegerVector*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -316,7 +316,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addString(
   Collection* current = (Collection*)cptr;
   containers::String* container = (containers::String*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -338,7 +338,7 @@ Java_ai_madara_knowledge_containers_Collection_jni_1addStringVector(
   containers::StringVector* container =
       (containers::StringVector*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -358,7 +358,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1addVector(
   Collection* current = (Collection*)cptr;
   containers::Vector* container = (containers::Vector*)container_ptr;
 
-  if (current && container)
+  if(current && container)
   {
     current->add(*container);
   }
@@ -378,7 +378,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1isTrue(
   Collection* current = (Collection*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -400,7 +400,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Collection_jni_1isFalse(
   Collection* current = (Collection*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }

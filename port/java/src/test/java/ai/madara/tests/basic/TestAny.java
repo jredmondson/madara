@@ -81,7 +81,7 @@ public class TestAny extends BaseTest {
 		a1.at(7).assign("seventh");
 		a1.at(2).assign("second");
 
-		for (long i = 0, n = a1.size(); i < n; ++i) {
+		for(long i = 0, n = a1.size(); i < n; ++i) {
 			System.err.println("a1[" + i + "] = " + a1.at(i));
 		}
 

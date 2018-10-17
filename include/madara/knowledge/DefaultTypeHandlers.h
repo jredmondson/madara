@@ -182,7 +182,7 @@ constexpr auto get_type_handler_save_json(type<T>, overload_priority<12>)
       knowledge::json_oarchive archive(o);
       const char* tag = knowledge::AnyRegistry::get_type_name<T>();
       std::string name;
-      if (tag)
+      if(tag)
       {
         name = std::string("Any<") + tag + ">";
         archive.setNextName(name.c_str());
@@ -284,7 +284,7 @@ struct do_get_field
   template<typename T>
   void operator()(const char*, T& val)
   {
-    if (cur == field->data())
+    if(cur == field->data())
     {
       *handler = &knowledge::get_type_handler<T>();
       *ptr = (void*)&val;
@@ -363,7 +363,7 @@ struct do_get_member
   template<typename Field, typename Other>
   void operator()(const char*, Field ptm, Other)
   {
-    if (cur == field->data())
+    if(cur == field->data())
     {
       using T = decay_<decltype(invoke_(ptm, std::declval<Class&>()))>;
       *handler = &knowledge::get_type_handler<T>();
@@ -433,7 +433,7 @@ constexpr knowledge::TypeHandlers::index_int_fn_type get_type_handler_index_int(
     T& val = *static_cast<T*>(ptr);
     using I = decltype(val[index]);
     handler = &knowledge::get_type_handler<decay_<I>>();
-    if (val.size() < index)
+    if(val.size() < index)
     {
       val.resize(index + 1);
     }

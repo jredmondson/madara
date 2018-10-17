@@ -267,7 +267,7 @@ protected:
     }
 
     bool WriteBool(bool b)  {
-        if (b) {
+        if(b) {
             PutReserve(*os_, 4);
             PutUnsafe(*os_, 't'); PutUnsafe(*os_, 'r'); PutUnsafe(*os_, 'u'); PutUnsafe(*os_, 'e');
         }
@@ -282,7 +282,7 @@ protected:
         char buffer[11];
         const char* end = internal::i32toa(i, buffer);
         PutReserve(*os_, static_cast<size_t>(end - buffer));
-        for (const char* p = buffer; p != end; ++p)
+        for(const char* p = buffer; p != end; ++p)
             PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>(*p));
         return true;
     }
@@ -291,7 +291,7 @@ protected:
         char buffer[10];
         const char* end = internal::u32toa(u, buffer);
         PutReserve(*os_, static_cast<size_t>(end - buffer));
-        for (const char* p = buffer; p != end; ++p)
+        for(const char* p = buffer; p != end; ++p)
             PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>(*p));
         return true;
     }
@@ -300,7 +300,7 @@ protected:
         char buffer[21];
         const char* end = internal::i64toa(i64, buffer);
         PutReserve(*os_, static_cast<size_t>(end - buffer));
-        for (const char* p = buffer; p != end; ++p)
+        for(const char* p = buffer; p != end; ++p)
             PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>(*p));
         return true;
     }
@@ -309,21 +309,21 @@ protected:
         char buffer[20];
         char* end = internal::u64toa(u64, buffer);
         PutReserve(*os_, static_cast<size_t>(end - buffer));
-        for (char* p = buffer; p != end; ++p)
+        for(char* p = buffer; p != end; ++p)
             PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>(*p));
         return true;
     }
 
     bool WriteDouble(double d) {
-        if (internal::Double(d).IsNanOrInf()) {
-            if (!(writeFlags & kWriteNanAndInfFlag))
+        if(internal::Double(d).IsNanOrInf()) {
+            if(!(writeFlags & kWriteNanAndInfFlag))
                 return false;
-            if (internal::Double(d).IsNan()) {
+            if(internal::Double(d).IsNan()) {
                 PutReserve(*os_, 3);
                 PutUnsafe(*os_, 'N'); PutUnsafe(*os_, 'a'); PutUnsafe(*os_, 'N');
                 return true;
             }
-            if (internal::Double(d).Sign()) {
+            if(internal::Double(d).Sign()) {
                 PutReserve(*os_, 9);
                 PutUnsafe(*os_, '-');
             }
@@ -337,7 +337,7 @@ protected:
         char buffer[25];
         char* end = internal::dtoa(d, buffer, maxDecimalPlaces_);
         PutReserve(*os_, static_cast<size_t>(end - buffer));
-        for (char* p = buffer; p != end; ++p)
+        for(char* p = buffer; p != end; ++p)
             PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>(*p));
         return true;
     }
@@ -356,23 +356,23 @@ protected:
 #undef Z16
         };
 
-        if (TargetEncoding::supportUnicode)
+        if(TargetEncoding::supportUnicode)
             PutReserve(*os_, 2 + length * 6); // "\uxxxx..."
         else
             PutReserve(*os_, 2 + length * 12);  // "\uxxxx\uyyyy..."
 
         PutUnsafe(*os_, '\"');
         GenericStringStream<SourceEncoding> is(str);
-        while (ScanWriteUnescapedString(is, length)) {
+        while(ScanWriteUnescapedString(is, length)) {
             const Ch c = is.Peek();
-            if (!TargetEncoding::supportUnicode && static_cast<unsigned>(c) >= 0x80) {
+            if(!TargetEncoding::supportUnicode && static_cast<unsigned>(c) >= 0x80) {
                 // Unicode escaping
                 unsigned codepoint;
-                if (CEREAL_RAPIDJSON_UNLIKELY(!SourceEncoding::Decode(is, &codepoint)))
+                if(CEREAL_RAPIDJSON_UNLIKELY(!SourceEncoding::Decode(is, &codepoint)))
                     return false;
                 PutUnsafe(*os_, '\\');
                 PutUnsafe(*os_, 'u');
-                if (codepoint <= 0xD7FF || (codepoint >= 0xE000 && codepoint <= 0xFFFF)) {
+                if(codepoint <= 0xD7FF || (codepoint >= 0xE000 && codepoint <= 0xFFFF)) {
                     PutUnsafe(*os_, hexDigits[(codepoint >> 12) & 15]);
                     PutUnsafe(*os_, hexDigits[(codepoint >>  8) & 15]);
                     PutUnsafe(*os_, hexDigits[(codepoint >>  4) & 15]);
@@ -396,18 +396,18 @@ protected:
                     PutUnsafe(*os_, hexDigits[(trail      ) & 15]);                    
                 }
             }
-            else if ((sizeof(Ch) == 1 || static_cast<unsigned>(c) < 256) && CEREAL_RAPIDJSON_UNLIKELY(escape[static_cast<unsigned char>(c)]))  {
+            else if((sizeof(Ch) == 1 || static_cast<unsigned>(c) < 256) && CEREAL_RAPIDJSON_UNLIKELY(escape[static_cast<unsigned char>(c)]))  {
                 is.Take();
                 PutUnsafe(*os_, '\\');
                 PutUnsafe(*os_, static_cast<typename TargetEncoding::Ch>(escape[static_cast<unsigned char>(c)]));
-                if (escape[static_cast<unsigned char>(c)] == 'u') {
+                if(escape[static_cast<unsigned char>(c)] == 'u') {
                     PutUnsafe(*os_, '0');
                     PutUnsafe(*os_, '0');
                     PutUnsafe(*os_, hexDigits[static_cast<unsigned char>(c) >> 4]);
                     PutUnsafe(*os_, hexDigits[static_cast<unsigned char>(c) & 0xF]);
                 }
             }
-            else if (CEREAL_RAPIDJSON_UNLIKELY(!(writeFlags & kWriteValidateEncodingFlag ? 
+            else if(CEREAL_RAPIDJSON_UNLIKELY(!(writeFlags & kWriteValidateEncodingFlag ? 
                 Transcoder<SourceEncoding, TargetEncoding>::Validate(is, *os_) :
                 Transcoder<SourceEncoding, TargetEncoding>::TranscodeUnsafe(is, *os_))))
                 return false;
@@ -427,7 +427,7 @@ protected:
 
     bool WriteRawValue(const Ch* json, size_t length) {
         PutReserve(*os_, length);
-        for (size_t i = 0; i < length; i++) {
+        for(size_t i = 0; i < length; i++) {
             CEREAL_RAPIDJSON_ASSERT(json[i] != '\0');
             PutUnsafe(*os_, json[i]);
         }
@@ -436,15 +436,15 @@ protected:
 
     void Prefix(Type type) {
         (void)type;
-        if (CEREAL_RAPIDJSON_LIKELY(level_stack_.GetSize() != 0)) { // this value is not at root
+        if(CEREAL_RAPIDJSON_LIKELY(level_stack_.GetSize() != 0)) { // this value is not at root
             Level* level = level_stack_.template Top<Level>();
-            if (level->valueCount > 0) {
-                if (level->inArray) 
+            if(level->valueCount > 0) {
+                if(level->inArray) 
                     os_->Put(','); // add comma if it is not the first element in array
                 else  // in object
                     os_->Put((level->valueCount % 2 == 0) ? ',' : ':');
             }
-            if (!level->inArray && level->valueCount % 2 == 0)
+            if(!level->inArray && level->valueCount % 2 == 0)
                 CEREAL_RAPIDJSON_ASSERT(type == kStringType);  // if it's in object, then even number should be a name
             level->valueCount++;
         }
@@ -456,7 +456,7 @@ protected:
 
     // Flush the value if it is the top level one.
     bool EndValue(bool ret) {
-        if (CEREAL_RAPIDJSON_UNLIKELY(level_stack_.Empty()))   // end of json text
+        if(CEREAL_RAPIDJSON_UNLIKELY(level_stack_.Empty()))   // end of json text
             os_->Flush();
         return ret;
     }
@@ -508,16 +508,16 @@ inline bool Writer<StringBuffer>::WriteUint64(uint64_t u) {
 
 template<>
 inline bool Writer<StringBuffer>::WriteDouble(double d) {
-    if (internal::Double(d).IsNanOrInf()) {
-        // Note: This code path can only be reached if (CEREAL_RAPIDJSON_WRITE_DEFAULT_FLAGS & kWriteNanAndInfFlag).
-        if (!(kWriteDefaultFlags & kWriteNanAndInfFlag))
+    if(internal::Double(d).IsNanOrInf()) {
+        // Note: This code path can only be reached if(CEREAL_RAPIDJSON_WRITE_DEFAULT_FLAGS & kWriteNanAndInfFlag).
+        if(!(kWriteDefaultFlags & kWriteNanAndInfFlag))
             return false;
-        if (internal::Double(d).IsNan()) {
+        if(internal::Double(d).IsNan()) {
             PutReserve(*os_, 3);
             PutUnsafe(*os_, 'N'); PutUnsafe(*os_, 'a'); PutUnsafe(*os_, 'N');
             return true;
         }
-        if (internal::Double(d).Sign()) {
+        if(internal::Double(d).Sign()) {
             PutReserve(*os_, 9);
             PutUnsafe(*os_, '-');
         }
@@ -537,21 +537,21 @@ inline bool Writer<StringBuffer>::WriteDouble(double d) {
 #if defined(CEREAL_RAPIDJSON_SSE2) || defined(CEREAL_RAPIDJSON_SSE42)
 template<>
 inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, size_t length) {
-    if (length < 16)
+    if(length < 16)
         return CEREAL_RAPIDJSON_LIKELY(is.Tell() < length);
 
-    if (!CEREAL_RAPIDJSON_LIKELY(is.Tell() < length))
+    if(!CEREAL_RAPIDJSON_LIKELY(is.Tell() < length))
         return false;
 
     const char* p = is.src_;
     const char* end = is.head_ + length;
     const char* nextAligned = reinterpret_cast<const char*>((reinterpret_cast<size_t>(p) + 15) & static_cast<size_t>(~15));
     const char* endAligned = reinterpret_cast<const char*>(reinterpret_cast<size_t>(end) & static_cast<size_t>(~15));
-    if (nextAligned > end)
+    if(nextAligned > end)
         return true;
 
-    while (p != nextAligned)
-        if (*p < 0x20 || *p == '\"' || *p == '\\') {
+    while(p != nextAligned)
+        if(*p < 0x20 || *p == '\"' || *p == '\\') {
             is.src_ = p;
             return CEREAL_RAPIDJSON_LIKELY(is.Tell() < length);
         }
@@ -566,14 +566,14 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
     const __m128i bs = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&bslash[0]));
     const __m128i sp = _mm_loadu_si128(reinterpret_cast<const __m128i *>(&space[0]));
 
-    for (; p != endAligned; p += 16) {
+    for(; p != endAligned; p += 16) {
         const __m128i s = _mm_load_si128(reinterpret_cast<const __m128i *>(p));
         const __m128i t1 = _mm_cmpeq_epi8(s, dq);
         const __m128i t2 = _mm_cmpeq_epi8(s, bs);
         const __m128i t3 = _mm_cmpeq_epi8(_mm_max_epu8(s, sp), sp); // s < 0x20 <=> max(s, 0x19) == 0x19
         const __m128i x = _mm_or_si128(_mm_or_si128(t1, t2), t3);
         unsigned short r = static_cast<unsigned short>(_mm_movemask_epi8(x));
-        if (CEREAL_RAPIDJSON_UNLIKELY(r != 0)) {   // some of characters is escaped
+        if(CEREAL_RAPIDJSON_UNLIKELY(r != 0)) {   // some of characters is escaped
             SizeType len;
 #ifdef _MSC_VER         // Find the index of first escaped
             unsigned long offset;
@@ -583,7 +583,7 @@ inline bool Writer<StringBuffer>::ScanWriteUnescapedString(StringStream& is, siz
             len = static_cast<SizeType>(__builtin_ffs(r) - 1);
 #endif
             char* q = reinterpret_cast<char*>(os_->PushUnsafe(len));
-            for (size_t i = 0; i < len; i++)
+            for(size_t i = 0; i < len; i++)
                 q[i] = p[i];
 
             p += len;

@@ -100,7 +100,7 @@ Java_ai_madara_filters_compression_LZ4BufferFilter_jni_1Lz4BufferFilter__J(
 
 #ifdef _USE_LZ4_
   LZ4BufferFilter* input = (LZ4BufferFilter*)cptr;
-  if (input != 0)
+  if(input != 0)
   {
     result = (jlong) new LZ4BufferFilter(*input);
   }
@@ -151,7 +151,7 @@ jlong JNICALL Java_ai_madara_filters_compression_LZ4BufferFilter_jni_1encode(
 #ifdef _USE_LZ4_
   LZ4BufferFilter* current = (LZ4BufferFilter*)cptr;
 
-  if (current)
+  if(current)
   {
     char* elements = (char*)env->GetByteArrayElements(buffer, 0);
 
@@ -193,7 +193,7 @@ jlong JNICALL Java_ai_madara_filters_compression_LZ4BufferFilter_jni_1decode(
 #ifdef _USE_LZ4_
   LZ4BufferFilter* current = (LZ4BufferFilter*)cptr;
 
-  if (current)
+  if(current)
   {
     char* elements = (char*)env->GetByteArrayElements(buffer, 0);
 

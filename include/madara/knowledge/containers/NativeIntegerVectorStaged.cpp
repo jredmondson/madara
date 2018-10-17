@@ -21,7 +21,7 @@ madara::knowledge::containers::NativeIntegerVectorStaged::
       name.c_str(), size);
 
   vector_ = knowledge.get_ref(name, KnowledgeUpdateSettings(true));
-  if (size >= 0)
+  if(size >= 0)
   {
     resize(size);
   }
@@ -39,7 +39,7 @@ madara::knowledge::containers::NativeIntegerVectorStaged::
       name.c_str(), size);
 
   vector_ = knowledge.get_ref(name, settings);
-  if (size >= 0)
+  if(size >= 0)
   {
     resize(size);
   }

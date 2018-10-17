@@ -65,7 +65,7 @@ jlong JNICALL Java_ai_madara_transport_filters_Packet_jni_1get(
   KnowledgeMap* packet = (KnowledgeMap*)cptr;
   KnowledgeRecord* result(0);
 
-  if (packet)
+  if(packet)
   {
     // get the record and return the string index
     result = new KnowledgeRecord((*packet)[key]);
@@ -97,7 +97,7 @@ void JNICALL Java_ai_madara_transport_filters_Packet_jni_1set(
   KnowledgeMap* packet = (KnowledgeMap*)cptr;
   KnowledgeRecord* result = (KnowledgeRecord*)value;
 
-  if (packet && result)
+  if(packet && result)
   {
     (*packet)[key] = *result;
   }
@@ -125,7 +125,7 @@ jobjectArray JNICALL Java_ai_madara_transport_filters_Packet_jni_1get_1keys(
   KnowledgeMap* packet = (KnowledgeMap*)cptr;
   jobjectArray result(0);
 
-  if (packet)
+  if(packet)
   {
     jclass string_class =
         madara::utility::java::find_class(env, "java/lang/String");
@@ -136,7 +136,7 @@ jobjectArray JNICALL Java_ai_madara_transport_filters_Packet_jni_1get_1keys(
 
     jsize i = 0;
 
-    for (KnowledgeMap::const_iterator cur = packet->begin();
+    for(KnowledgeMap::const_iterator cur = packet->begin();
          cur != packet->end(); ++cur, ++i)
     {
       jstring temp_string = env->NewStringUTF(cur->first.c_str());
@@ -171,7 +171,7 @@ jboolean JNICALL Java_ai_madara_transport_filters_Packet_jni_1exists(
   jboolean result(false);
   KnowledgeMap* packet = (KnowledgeMap*)cptr;
 
-  if (packet)
+  if(packet)
   {
     // get the C string and the underlying map
     const char* key = env->GetStringUTFChars(index, 0);
@@ -197,7 +197,7 @@ void JNICALL Java_ai_madara_transport_filters_Packet_jni_1clear(
 {
   KnowledgeMap* packet = (KnowledgeMap*)cptr;
 
-  if (packet)
+  if(packet)
   {
     packet->clear();
   }
@@ -217,7 +217,7 @@ void JNICALL Java_ai_madara_transport_filters_Packet_jni_1erase(
   KnowledgeMap* packet = (KnowledgeMap*)cptr;
   const char* key = env->GetStringUTFChars(index, 0);
 
-  if (packet)
+  if(packet)
   {
     // erase the record
     packet->erase(key);

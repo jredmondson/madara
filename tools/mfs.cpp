@@ -276,7 +276,7 @@ void send_file(knowledge::KnowledgeBase& kb, const std::string& operation,
 
       if(send_bandwidth > 0)
       {
-        while (
+        while(
             bandwidth_monitor.get_bytes_per_second() > (uint64_t)send_bandwidth)
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
@@ -785,7 +785,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
       "DeleteRequests queue size: %d\n",
       (int)requests.remaining(), (int)delete_requests.remaining());
 
-  while (requests.remaining() > 0)
+  while(requests.remaining() > 0)
   {
     // grab a request from the front of the queue
     Request request;
@@ -877,7 +877,7 @@ void process_requests(std::vector<Sandbox>& sandboxes,
     }      // foreach sandbox
   }        // while requests.remaining () > 0
 
-  while (delete_requests.remaining() > 0)
+  while(delete_requests.remaining() > 0)
   {
     // grab a request from the front of the queue
     DeleteRequest delete_request;
@@ -1522,7 +1522,7 @@ int main(int argc, char** argv)
   {
     utility::EpochEnforcer<utility::Clock> enforcer(digest_period, run_time);
 
-    while (shutdown_request.is_false() && !enforcer.is_done())
+    while(shutdown_request.is_false() && !enforcer.is_done())
     {
       for(auto sandbox : sandboxes)
       {
@@ -1541,7 +1541,7 @@ int main(int argc, char** argv)
   {
     utility::EpochEnforcer<utility::Clock> enforcer(digest_period, run_time);
 
-    while (shutdown_request.is_false())
+    while(shutdown_request.is_false())
     {
       for(auto sandbox : sandboxes)
       {

@@ -33,7 +33,7 @@ void test_probablistic(void)
 
   const int packet_count = 4000;
 
-  for (int i = 0; i < packet_count; ++i)
+  for(int i = 0; i < packet_count; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -43,7 +43,7 @@ void test_probablistic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
+  if(scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
       scheduler.get_dropped() + scheduler.get_sent() == packet_count)
   {
     madara_logger_ptr_log(
@@ -64,7 +64,7 @@ void test_probablistic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < packet_count; ++i)
+  for(int i = 0; i < packet_count; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -74,7 +74,7 @@ void test_probablistic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
+  if(scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
       scheduler.get_dropped() + scheduler.get_sent() == packet_count)
   {
     madara_logger_ptr_log(
@@ -95,7 +95,7 @@ void test_probablistic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < packet_count; ++i)
+  for(int i = 0; i < packet_count; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -105,7 +105,7 @@ void test_probablistic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
+  if(scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
       scheduler.get_dropped() + scheduler.get_sent() == packet_count)
   {
     madara_logger_ptr_log(
@@ -126,7 +126,7 @@ void test_probablistic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < packet_count; ++i)
+  for(int i = 0; i < packet_count; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -136,7 +136,7 @@ void test_probablistic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
+  if(scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
       scheduler.get_dropped() + scheduler.get_sent() == packet_count)
   {
     madara_logger_ptr_log(
@@ -157,7 +157,7 @@ void test_probablistic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < packet_count; ++i)
+  for(int i = 0; i < packet_count; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -167,7 +167,7 @@ void test_probablistic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
+  if(scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
       scheduler.get_dropped() + scheduler.get_sent() == packet_count)
   {
     madara_logger_ptr_log(
@@ -188,7 +188,7 @@ void test_probablistic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < packet_count; ++i)
+  for(int i = 0; i < packet_count; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -198,7 +198,7 @@ void test_probablistic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
+  if(scheduler.get_dropped() > 0 && scheduler.get_dropped() < packet_count &&
       scheduler.get_dropped() + scheduler.get_sent() == packet_count)
   {
     madara_logger_ptr_log(
@@ -230,7 +230,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -240,7 +240,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 20 && scheduler.get_dropped() < 60)
+  if(scheduler.get_dropped() > 20 && scheduler.get_dropped() < 60)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -260,7 +260,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -270,7 +270,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() == 80)
+  if(scheduler.get_dropped() == 80)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -291,7 +291,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -301,7 +301,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() == 120)
+  if(scheduler.get_dropped() == 120)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -320,7 +320,7 @@ void test_deterministic(void)
 
   scheduler.clear();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -330,7 +330,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() == 160)
+  if(scheduler.get_dropped() == 160)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -351,7 +351,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -361,7 +361,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 140 && scheduler.get_dropped() < 180)
+  if(scheduler.get_dropped() > 140 && scheduler.get_dropped() < 180)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -382,7 +382,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -392,7 +392,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 180 && scheduler.get_dropped() < 220)
+  if(scheduler.get_dropped() > 180 && scheduler.get_dropped() < 220)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -414,7 +414,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -424,7 +424,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() > 140 && scheduler.get_dropped() < 220)
+  if(scheduler.get_dropped() > 140 && scheduler.get_dropped() < 220)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -445,7 +445,7 @@ void test_deterministic(void)
   scheduler.clear();
   scheduler.reset();
 
-  for (int i = 0; i < 400; ++i)
+  for(int i = 0; i < 400; ++i)
   {
     scheduler.add();
     scheduler.print_status(madara::logger::LOG_DETAILED);
@@ -455,7 +455,7 @@ void test_deterministic(void)
   madara_logger_ptr_log(
       logger::global_logger.get(), logger::LOG_ALWAYS, "  Results were ");
 
-  if (scheduler.get_dropped() == 320)
+  if(scheduler.get_dropped() == 320)
   {
     madara_logger_ptr_log(
         logger::global_logger.get(), logger::LOG_ALWAYS, "SUCCESS\n");
@@ -475,7 +475,7 @@ int main(int argc, char* argv[])
   test_probablistic();
   test_deterministic();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
@@ -489,13 +489,13 @@ int main(int argc, char* argv[])
 
 int parse_args(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-l" || arg1 == "--level")
+    if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -506,9 +506,9 @@ int parse_args(int argc, char* argv[])
 
       ++i;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }

@@ -16,7 +16,7 @@ void madara::filters::EndpointClear::filter(knowledge::KnowledgeMap& records,
     const transport::TransportContext& transport_context,
     knowledge::Variables& vars)
 {
-  if (!initialized_)
+  if(!initialized_)
   {
     knowledge::KnowledgeUpdateSettings settings(true);
     endpoints_.set_settings(settings);
@@ -32,7 +32,7 @@ void madara::filters::EndpointClear::filter(knowledge::KnowledgeMap& records,
       transport_context.get_originator().c_str(), (int)records.size());
 
   // if a trusted originator has been added, and this is the originator
-  if (trusted_originators_.size() != 0 &&
+  if(trusted_originators_.size() != 0 &&
       (trusted_originators_.find(transport_context.get_originator()) !=
           trusted_originators_.end()))
   {
@@ -43,7 +43,7 @@ void madara::filters::EndpointClear::filter(knowledge::KnowledgeMap& records,
     // then clear the endpoints
     endpoints_.clear();
 
-    if (vars.get_context()->get_logger().get_level() >= logger::LOG_DETAILED)
+    if(vars.get_context()->get_logger().get_level() >= logger::LOG_DETAILED)
     {
       vars.print();
     }
@@ -53,14 +53,14 @@ void madara::filters::EndpointClear::filter(knowledge::KnowledgeMap& records,
     bool found = false;
     const std::string prefix(endpoints_.get_name());
 
-    if (prefix != "")
+    if(prefix != "")
     {
       // iterate through all records looking for the common prefix
-      for (knowledge::KnowledgeMap::const_iterator i = records.begin();
+      for(knowledge::KnowledgeMap::const_iterator i = records.begin();
            i != records.end() && !found; ++i)
       {
         // if we've found the prefix, then clear the endpoints
-        if (utility::begins_with(i->first, prefix))
+        if(utility::begins_with(i->first, prefix))
         {
           madara_logger_log(vars.get_context()->get_logger(), logger::LOG_MAJOR,
               "EndpointClear::filter:"
@@ -69,14 +69,14 @@ void madara::filters::EndpointClear::filter(knowledge::KnowledgeMap& records,
           endpoints_.clear();
           found = true;
 
-          if (vars.get_context()->get_logger().get_level() >=
+          if(vars.get_context()->get_logger().get_level() >=
               logger::LOG_DETAILED)
           {
             vars.print();
           }
         }
         // if we're past where the prefix would be, quit
-        else if (prefix[0] < i->first[0])
+        else if(prefix[0] < i->first[0])
         {
           madara_logger_log(vars.get_context()->get_logger(), logger::LOG_MAJOR,
               "EndpointClear::filter:"
@@ -92,7 +92,7 @@ void madara::filters::EndpointClear::filter(knowledge::KnowledgeMap& records,
 void madara::filters::EndpointClear::add_trusted_originator(
     const std::vector<std::string>& originators)
 {
-  for (std::vector<std::string>::const_iterator i = originators.begin();
+  for(std::vector<std::string>::const_iterator i = originators.begin();
        i != originators.end(); ++i)
   {
     trusted_originators_[*i] = true;

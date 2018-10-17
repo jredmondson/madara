@@ -23,7 +23,7 @@ int main(int argc, char* argv[])
 {
   int retcode = parse_args(argc, argv);
 
-  if (retcode < 0)
+  if(retcode < 0)
     return retcode;
 
   madara::knowledge::KnowledgeBase knowledge;
@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 
   knowledge.print();
 
-  if (knowledge.get("sample").type() ==
+  if(knowledge.get("sample").type() ==
           (uint32_t)knowledge.get("sample.type").to_integer() &&
       knowledge.get("sample").size() ==
           (uint32_t)knowledge.get("sample.size").to_integer() &&
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
     ++madara_fails;
   }
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }
@@ -143,35 +143,35 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
 
   KnowledgeRecord::Integer diff_ns = knowledge.get("diff_ns").to_integer();
 
-  if (two_to_4th != 16)
+  if(two_to_4th != 16)
   {
     std::cerr << "FAIL: pow(2,4) returned " << two_to_4th
               << " instead of 16.\n";
     ++madara_fails;
   }
 
-  if (square_of_16 != 4)
+  if(square_of_16 != 4)
   {
     std::cerr << "FAIL: sqrt(16) returned " << square_of_16
               << " instead of 4.\n";
     ++madara_fails;
   }
 
-  if (square_two_to_4th != 4)
+  if(square_two_to_4th != 4)
   {
     std::cout << "FAIL: sqrt(pow(2,4)) returned " << square_two_to_4th
               << " instead of 4. [1]\n";
     ++madara_fails;
   }
 
-  if (diff_s < 2 || diff_s > 4)
+  if(diff_s < 2 || diff_s > 4)
   {
     std::cout << "FAIL: #get_time_seconds returned diff of " << diff_s
               << " instead of 3 (.\n";
     ++madara_fails;
   }
 
-  if (diff_ns < 3000000000 || diff_ns > 4000000000)
+  if(diff_ns < 3000000000 || diff_ns > 4000000000)
   {
     std::cout << "FAIL: #get_time_ns returned diff of " << diff_ns
               << " instead of ~3000000000 (.\n";
@@ -195,13 +195,13 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
 
 int parse_args(int argc, char* argv[])
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-l" || arg1 == "--level")
+    if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         int level;

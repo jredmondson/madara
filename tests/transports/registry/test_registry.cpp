@@ -47,7 +47,7 @@ threads::Threader* manager(0);
 // signal handler for someone hitting control+c
 void shutdown(int)
 {
-  if (manager)
+  if(manager)
   {
     manager->terminate("publisher");
   }
@@ -56,13 +56,13 @@ void shutdown(int)
 // handle command line arguments
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-a" || arg1 == "--deadline")
+    if(arg1 == "-a" || arg1 == "--deadline")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> deadline;
@@ -70,33 +70,33 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-d" || arg1 == "--domain")
+    else if(arg1 == "-d" || arg1 == "--domain")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         settings.write_domain = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "--debug")
+    else if(arg1 == "--debug")
     {
       debug = true;
     }
-    else if (arg1 == "-f" || arg1 == "--logfile")
+    else if(arg1 == "-f" || arg1 == "--logfile")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         logger::global_logger->add_file(argv[i + 1]);
       }
 
       ++i;
     }
-    else if (arg1 == "-k" || arg1 == "--print-knowledge")
+    else if(arg1 == "-k" || arg1 == "--print-knowledge")
     {
       print_knowledge = true;
     }
-    else if (arg1 == "-l" || arg1 == "--level")
+    else if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -106,16 +106,16 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-o" || arg1 == "--host")
+    else if(arg1 == "-o" || arg1 == "--host")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         host = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-p" || arg1 == "--drop-rate")
+    else if(arg1 == "-p" || arg1 == "--drop-rate")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         double drop_rate;
         std::stringstream buffer(argv[i + 1]);
@@ -127,9 +127,9 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-q" || arg1 == "--queue-length")
+    else if(arg1 == "-q" || arg1 == "--queue-length")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> settings.queue_length;
@@ -137,33 +137,33 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-r" || arg1 == "--reduced")
+    else if(arg1 == "-r" || arg1 == "--reduced")
     {
       settings.send_reduced_message_header = true;
     }
-    else if (arg1 == "-s" || arg1 == "--save")
+    else if(arg1 == "-s" || arg1 == "--save")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
         save_location = argv[i + 1];
 
       ++i;
     }
-    else if (arg1 == "-u" || arg1 == "--udp")
+    else if(arg1 == "-u" || arg1 == "--udp")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         settings.hosts.push_back(argv[i + 1]);
       }
       ++i;
     }
-    else if (arg1 == "-v" || arg1 == "--version")
+    else if(arg1 == "-v" || arg1 == "--version")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "MADARA version: %s\n", utility::get_version().c_str());
     }
-    else if (arg1 == "-z" || arg1 == "--publish-hertz")
+    else if(arg1 == "-z" || arg1 == "--publish-hertz")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> publish_hertz;
@@ -171,7 +171,7 @@ void handle_arguments(int argc, char** argv)
 
       ++i;
     }
-    else if (arg1 == "-h" || arg1 == "--help")
+    else if(arg1 == "-h" || arg1 == "--help")
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s [options] [Logic]:\n\n"
@@ -234,7 +234,7 @@ public:
     ++value;
     value.modify();
 
-    if (debug || print_knowledge)
+    if(debug || print_knowledge)
     {
       knowledge->print();
     }
@@ -257,7 +257,7 @@ int main(int argc, char** argv)
   // handle all user arguments
   handle_arguments(argc, argv);
 
-  if (settings.hosts.size() == 0)
+  if(settings.hosts.size() == 0)
   {
     settings.hosts.push_back(default_port);
   }
@@ -282,7 +282,7 @@ int main(int argc, char** argv)
 
   knowledge.print("Registry shutting down...\n");
 
-  if (debug || print_knowledge)
+  if(debug || print_knowledge)
   {
     knowledge.print();
   }

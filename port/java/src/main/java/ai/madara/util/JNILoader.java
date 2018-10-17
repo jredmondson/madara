@@ -80,22 +80,22 @@ public class JNILoader
     try
     {
       CodeSource src = JNILoader.class.getProtectionDomain().getCodeSource();
-      if (src.getLocation().toString().endsWith(".jar"))
+      if(src.getLocation().toString().endsWith(".jar"))
       {
         InputStream in = src.getLocation().openStream();
         MessageDigest md = MessageDigest.getInstance("MD5");
         byte[] buffer = new byte[1024];
         int count = 0;
-        while ((count = in.read(buffer)) > 0)
+        while((count = in.read(buffer)) > 0)
           md.update(buffer, 0, count);
 
         byte[] checksum = md.digest();
 
         StringBuilder sb = new StringBuilder();
-        for (byte b : checksum)
+        for(byte b : checksum)
           sb.append(Integer.toHexString(b & 0xFF));
         checksumResult = sb.toString();
-        if (checksumResult != null && checksumResult.length() == 0)
+        if(checksumResult != null && checksumResult.length() == 0)
           checksumResult = null;
       }
     }
@@ -121,11 +121,11 @@ public class JNILoader
   public static void load(String library)
   {
     System.loadLibrary(library);
-    if (true)
+    if(true)
       return;
 
     //If it is android, we have to assume library files are already in libs/armeabi
-    if (IS_ANDROID)
+    if(IS_ANDROID)
     {
       System.loadLibrary(library);
       return;
@@ -133,7 +133,7 @@ public class JNILoader
 
     //Resolve the library
     Lib lib = resolve(library);
-    if (lib == null)
+    if(lib == null)
       return;
 
     //Extract the library
@@ -142,7 +142,7 @@ public class JNILoader
     System.out.println("Loading: " + extractedPath);
 
     //If it extracted properly, load it
-    if (extractedPath != null)
+    if(extractedPath != null)
       System.load(extractedPath);
   }
 
@@ -170,7 +170,7 @@ public class JNILoader
     InputStream in = JNILoader.class.getResourceAsStream(filePath.toString());
 
     //If we fail to open the stream, return null
-    if (in != null)
+    if(in != null)
       return new Lib(libName, in);
 
     return null;
@@ -185,7 +185,7 @@ public class JNILoader
    */
   private static String extract(Lib lib)
   {
-    if (lib == null)
+    if(lib == null)
       return null;
 
     //Create the temp directory name
@@ -194,7 +194,7 @@ public class JNILoader
     tempDirName.append("jniloader").append(File.separator);
     tempDirName.append(OS_NAME).append(File.separator);
     tempDirName.append(OS_ARCH).append(File.separator);
-    if (CHECKSUM != null)
+    if(CHECKSUM != null)
       tempDirName.append(CHECKSUM).append(File.separator);
 
     //Make sure the directories exist
@@ -203,7 +203,7 @@ public class JNILoader
 
     //If this file is already extracted, just return the absolute path
     File outFile = new File(tempDir, lib.name);
-    if (outFile.exists())
+    if(outFile.exists())
       return outFile.getAbsolutePath();
 
 
@@ -215,7 +215,7 @@ public class JNILoader
       byte[] buffer = new byte[2048];
       int count = 0;
 
-      while ((count = lib.in.read(buffer)) > 0)
+      while((count = lib.in.read(buffer)) > 0)
         out.write(buffer, 0, count);
 
       lib.in.close();

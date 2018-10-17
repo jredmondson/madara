@@ -14,11 +14,11 @@ inline void madara::logger::Logger::add_file(const std::string& filename)
   madara_logger_ptr_log(this, LOG_MAJOR,
       "Logger::add_file: attempting to open file %s\n", filename.c_str());
 
-  if (filename != "")
+  if(filename != "")
   {
     FILE* new_file = fopen(filename.c_str(), "a+");
 
-    if (new_file)
+    if(new_file)
     {
       madara_logger_ptr_log(this, LOG_MAJOR,
           "Logger::add_file: opened file %s for logging\n", filename.c_str());
@@ -122,9 +122,9 @@ inline void madara::logger::Logger::clear(void)
   this->term_added_ = false;
   this->syslog_added_ = false;
 
-  for (FileVectors::iterator i = files_.begin(); i != files_.end(); ++i)
+  for(FileVectors::iterator i = files_.begin(); i != files_.end(); ++i)
   {
-    if (*i != stderr)
+    if(*i != stderr)
     {
       fclose(*i);
     }

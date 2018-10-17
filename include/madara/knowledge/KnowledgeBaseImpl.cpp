@@ -40,7 +40,7 @@ std::string KnowledgeBaseImpl::setup_unique_hostport(std::string host)
   // placeholder for our ip address
   std::string actual_host(std::move(host));
 
-  if (actual_host == "")
+  if(actual_host == "")
   {
     try
     {
@@ -52,7 +52,7 @@ std::string KnowledgeBaseImpl::setup_unique_hostport(std::string host)
     }
   }
 
-  if (actual_host.size() > 30)
+  if(actual_host.size() > 30)
   {
     actual_host.resize(30);
   }
@@ -76,9 +76,9 @@ size_t KnowledgeBaseImpl::attach_transport(
   madara::transport::Base* transport(0);
   std::string originator(id);
 
-  if (originator == "")
+  if(originator == "")
   {
-    if (id_.size() > 0)
+    if(id_.size() > 0)
       originator = id_;
     else
       originator = id_ = setup_unique_hostport();
@@ -89,17 +89,17 @@ size_t KnowledgeBaseImpl::attach_transport(
       " activating transport type %d\n",
       settings.type);
 
-  if (settings.type == madara::transport::BROADCAST)
+  if(settings.type == madara::transport::BROADCAST)
   {
     transport = new madara::transport::BroadcastTransport(
         originator, map_, settings, true);
   }
-  else if (settings.type == madara::transport::MULTICAST)
+  else if(settings.type == madara::transport::MULTICAST)
   {
     transport = new madara::transport::MulticastTransport(
         originator, map_, settings, true);
   }
-  else if (settings.type == madara::transport::SPLICE)
+  else if(settings.type == madara::transport::SPLICE)
   {
 #ifdef _USE_OPEN_SPLICE_
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
@@ -115,7 +115,7 @@ size_t KnowledgeBaseImpl::attach_transport(
         "invalid.\n");
 #endif
   }
-  else if (settings.type == madara::transport::NDDS)
+  else if(settings.type == madara::transport::NDDS)
   {
 #ifdef _USE_NDDS_
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
@@ -130,7 +130,7 @@ size_t KnowledgeBaseImpl::attach_transport(
         " project was not generated with ndds=1. Transport is invalid.\n");
 #endif
   }
-  else if (settings.type == madara::transport::UDP)
+  else if(settings.type == madara::transport::UDP)
   {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
@@ -139,7 +139,7 @@ size_t KnowledgeBaseImpl::attach_transport(
     transport =
         new madara::transport::UdpTransport(originator, map_, settings, true);
   }
-  else if (settings.type == madara::transport::ZMQ)
+  else if(settings.type == madara::transport::ZMQ)
   {
 #ifdef _MADARA_USING_ZMQ_
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
@@ -154,7 +154,7 @@ size_t KnowledgeBaseImpl::attach_transport(
         " project was not generated with zmq=1. Transport is invalid.\n");
 #endif
   }
-  else if (settings.type == madara::transport::REGISTRY_SERVER)
+  else if(settings.type == madara::transport::REGISTRY_SERVER)
   {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
@@ -163,7 +163,7 @@ size_t KnowledgeBaseImpl::attach_transport(
     transport = new madara::transport::UdpRegistryServer(
         originator, map_, settings, true);
   }
-  else if (settings.type == madara::transport::REGISTRY_CLIENT)
+  else if(settings.type == madara::transport::REGISTRY_CLIENT)
   {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::activate_transport:"
@@ -183,7 +183,7 @@ size_t KnowledgeBaseImpl::attach_transport(
     MADARA_GUARD_TYPE guard(transport_mutex_);
 
     // if we have a valid transport, add it to the transports vector
-    if (transport != 0)
+    if(transport != 0)
     {
       transports_.emplace_back(transport);
     }
@@ -201,7 +201,7 @@ void KnowledgeBaseImpl::close_transport(void)
     swap(old_transports, transports_);
   }
 
-  for (auto& transport : old_transports)
+  for(auto& transport : old_transports)
   {
     transport->close();
 
@@ -237,7 +237,7 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
   EpochEnforcer enforcer(settings.poll_frequency, settings.max_wait_time);
 
   // print the post statement at highest log level (cannot be masked)
-  if (settings.pre_print_statement != "")
+  if(settings.pre_print_statement != "")
     map_.print(settings.pre_print_statement, logger::LOG_EMERGENCY);
 
   // lock the context
@@ -262,7 +262,7 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
   send_modifieds("KnowledgeBaseImpl:wait", settings);
 
   // wait for expression to be true
-  while (!last_value.to_integer() &&
+  while(!last_value.to_integer() &&
          (settings.max_wait_time < 0 || !enforcer.is_done()))
   {
     madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
@@ -271,7 +271,7 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
 
     // Unlike the other wait statements, we allow for a time based wait.
     // To do this, we allow a user to specify a
-    if (settings.poll_frequency > 0)
+    if(settings.poll_frequency > 0)
     {
       enforcer.sleep_until_next();
     }
@@ -302,9 +302,9 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
     send_modifieds("KnowledgeBaseImpl:wait", settings);
     map_.signal();
 
-  }  // end while (!last)
+  }  // end while(!last)
 
-  if (enforcer.is_done())
+  if(enforcer.is_done())
   {
     madara_logger_log(map_.get_logger(), logger::LOG_MAJOR,
         "KnowledgeBaseImpl::wait:"
@@ -312,7 +312,7 @@ KnowledgeRecord KnowledgeBaseImpl::wait(
   }
 
   // print the post statement at highest log level (cannot be masked)
-  if (settings.post_print_statement != "")
+  if(settings.post_print_statement != "")
     map_.print(settings.post_print_statement, logger::LOG_ALWAYS);
 
   return last_value;
@@ -332,7 +332,7 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
   // madara::expression::ExpressionTree tree;
 
   // print the post statement at highest log level (cannot be masked)
-  if (settings.pre_print_statement != "")
+  if(settings.pre_print_statement != "")
     map_.print(settings.pre_print_statement, logger::LOG_ALWAYS);
 
   // lock the context from being updated by any ongoing threads
@@ -348,7 +348,7 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
     send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
     // print the post statement at highest log level (cannot be masked)
-    if (settings.post_print_statement != "")
+    if(settings.post_print_statement != "")
       map_.print(settings.post_print_statement, logger::LOG_ALWAYS);
   }
 
@@ -368,7 +368,7 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
   // madara::expression::ExpressionTree tree;
 
   // print the post statement at highest log level (cannot be masked)
-  if (settings.pre_print_statement != "")
+  if(settings.pre_print_statement != "")
     map_.print(settings.pre_print_statement, logger::LOG_ALWAYS);
 
   // lock the context from being updated by any ongoing threads
@@ -384,7 +384,7 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
     send_modifieds("KnowledgeBaseImpl:evaluate", settings);
 
     // print the post statement at highest log level (cannot be masked)
-    if (settings.post_print_statement != "")
+    if(settings.post_print_statement != "")
       map_.print(settings.post_print_statement, logger::LOG_ALWAYS);
   }
 
@@ -396,7 +396,7 @@ KnowledgeRecord KnowledgeBaseImpl::evaluate(
 int KnowledgeBaseImpl::send_modifieds(
     const std::string& prefix, const EvalSettings& settings)
 {
-  if (settings.delay_sending_modifieds)
+  if(settings.delay_sending_modifieds)
   {
     madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
         "%s: user requested to not send modifieds\n", prefix.c_str());
@@ -411,7 +411,7 @@ int KnowledgeBaseImpl::send_modifieds(
 
   // Loop until threads stop asking us to repeat, which will occur if they
   // try to send while we're sending.
-  for (;;)
+  for(;;)
   {
     // Limit scope of send_guard
     {
@@ -424,7 +424,7 @@ int KnowledgeBaseImpl::send_modifieds(
         std::unique_lock<MADARA_LOCK_TYPE>
             send_guard_tmp(send_mutex_, std::try_to_lock);
 
-        if (!send_guard_tmp.owns_lock())
+        if(!send_guard_tmp.owns_lock())
         {
           // Some other thread is currently doing send_modifieds. Signal it to
           // repeat in case there are new updates to send.
@@ -434,7 +434,7 @@ int KnowledgeBaseImpl::send_modifieds(
 
         // If flag is already set, stop looping. Other threads will clear while
         // we're in this loop if they fail to take send_mutex_.
-        if (done_sending_)
+        if(done_sending_)
         {
           return 0;
         }
@@ -449,7 +449,7 @@ int KnowledgeBaseImpl::send_modifieds(
 
       auto transports = get_transports();
 
-      if (transports.size() == 0)
+      if(transports.size() == 0)
       {
         madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
             "%s: no transport configured\n", prefix.c_str());
@@ -460,7 +460,7 @@ int KnowledgeBaseImpl::send_modifieds(
       // get the modifieds and reset those that will be sent, atomically
       auto modified = map_.get_modifieds_current(settings.send_list, true);
 
-      if (modified.size() == 0)
+      if(modified.size() == 0)
       {
         madara_logger_log(map_.get_logger(), logger::LOG_DETAILED,
             "%s: no modifications to send\n", prefix.c_str());
@@ -469,7 +469,7 @@ int KnowledgeBaseImpl::send_modifieds(
       }
 
       // send across each transport
-      for (auto& transport : transports)
+      for(auto& transport : transports)
       {
         transport->send_data(modified);
       }
@@ -478,7 +478,7 @@ int KnowledgeBaseImpl::send_modifieds(
 
     map_.inc_clock(settings);
 
-    if (settings.signal_changes)
+    if(settings.signal_changes)
       map_.signal(false);
   }
 }

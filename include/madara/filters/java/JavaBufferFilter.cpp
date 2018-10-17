@@ -14,7 +14,7 @@ madara::filters::JavaBufferFilter::JavaBufferFilter(
 {
   madara::utility::java::Acquire_VM jvm;
 
-  if (jvm.env)
+  if(jvm.env)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "JavaBufferFilter::constructor:"
@@ -22,14 +22,14 @@ madara::filters::JavaBufferFilter::JavaBufferFilter(
 
     obj_ = (jobject)jvm.env->NewGlobalRef(obj);
 
-    if (obj_)
+    if(obj_)
     {
       madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
           "JavaBufferFilter::constructor:"
           " allocating global reference for object's class\n");
 
       class_ = (jclass)jvm.env->NewGlobalRef(jvm.env->GetObjectClass(obj_));
-      if (class_)
+      if(class_)
       {
         madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
             "JavaBufferFilter::constructor:"
@@ -60,7 +60,7 @@ madara::filters::JavaBufferFilter::JavaBufferFilter(
 madara::filters::JavaBufferFilter::~JavaBufferFilter()
 {
   madara::utility::java::Acquire_VM jvm;
-  if (jvm.env)
+  if(jvm.env)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
         "JavaBufferFilter::destructor:"
@@ -83,7 +83,7 @@ int madara::filters::JavaBufferFilter::encode(
 
   jmethodID call = jvm.env->GetMethodID(class_, "encode", "([BJJ)J");
 
-  if (call)
+  if(call)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "JavaBufferFilter::encode:"
@@ -139,7 +139,7 @@ int madara::filters::JavaBufferFilter::decode(
 
   jmethodID call = jvm.env->GetMethodID(class_, "decode", "([BJJ)J");
 
-  if (call)
+  if(call)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "JavaBufferFilter::decode:"

@@ -7,7 +7,7 @@
 inline void madara::knowledge::containers::StringStaged::modify(void)
 {
   ContextGuard context_guard(*context_);
-  if (context_ && name_ != "")
+  if(context_ && name_ != "")
   {
     context_->mark_modified(variable_);
   }
@@ -20,7 +20,7 @@ inline std::string madara::knowledge::containers::StringStaged::get_debug_info(
 
   result << "StringStaged: ";
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -41,7 +41,7 @@ madara::knowledge::containers::StringStaged::clone(void) const
 inline void madara::knowledge::containers::StringStaged::operator=(
     const StringStaged& rhs)
 {
-  if (this != &rhs)
+  if(this != &rhs)
   {
     MADARA_GUARD_TYPE guard(mutex_), guard2(rhs.mutex_);
 
@@ -66,7 +66,7 @@ inline void madara::knowledge::containers::StringStaged::set_name(
   name_ = var_name;
   variable_ = context_->get_ref(name_, keep_local);
 
-  if (sync)
+  if(sync)
   {
     value_ = context_->get(variable_).to_string();
     has_changed_ = false;
@@ -85,7 +85,7 @@ inline void madara::knowledge::containers::StringStaged::set_name(
   name_ = var_name;
   variable_ = context_->get_ref(name_, keep_local);
 
-  if (sync)
+  if(sync)
   {
     value_ = context_->get(variable_).to_string();
     has_changed_ = false;
@@ -104,7 +104,7 @@ inline void madara::knowledge::containers::StringStaged::set_name(
   name_ = var_name;
   variable_ = context_->get_ref(name_, keep_local);
 
-  if (sync)
+  if(sync)
   {
     value_ = context_->get(variable_).to_string();
     has_changed_ = false;
@@ -176,7 +176,7 @@ inline bool madara::knowledge::containers::StringStaged::exists(void) const
 {
   bool result(false);
 
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -242,7 +242,7 @@ inline std::string madara::knowledge::containers::StringStaged::to_string(
 inline void madara::knowledge::containers::StringStaged::set_quality(
     uint32_t quality, const KnowledgeReferenceSettings& settings)
 {
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -258,7 +258,7 @@ inline void madara::knowledge::containers::StringStaged::read(void)
 
 inline void madara::knowledge::containers::StringStaged::write(void)
 {
-  if (has_changed_)
+  if(has_changed_)
     context_->set(variable_, value_);
 }
 

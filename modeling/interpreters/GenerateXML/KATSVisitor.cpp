@@ -11,7 +11,7 @@ KATSVisitor::~KATSVisitor() { }
 
 bool KATSVisitor::visitBarrier( const KATS_BON::Barrier& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -20,7 +20,7 @@ bool KATSVisitor::visitBarrier( const KATS_BON::Barrier& object )
 
 bool KATSVisitor::visitDomain( const KATS_BON::Domain& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -29,7 +29,7 @@ bool KATSVisitor::visitDomain( const KATS_BON::Domain& object )
 
 bool KATSVisitor::visitHost( const KATS_BON::Host& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -38,7 +38,7 @@ bool KATSVisitor::visitHost( const KATS_BON::Host& object )
 
 bool KATSVisitor::visitKill( const KATS_BON::Kill& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -47,7 +47,7 @@ bool KATSVisitor::visitKill( const KATS_BON::Kill& object )
 
 bool KATSVisitor::visitGroup( const KATS_BON::Group& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -56,7 +56,7 @@ bool KATSVisitor::visitGroup( const KATS_BON::Group& object )
 
 bool KATSVisitor::visitObserver( const KATS_BON::Observer& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -65,7 +65,7 @@ bool KATSVisitor::visitObserver( const KATS_BON::Observer& object )
 
 bool KATSVisitor::visitProcess( const KATS_BON::Process& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -74,7 +74,7 @@ bool KATSVisitor::visitProcess( const KATS_BON::Process& object )
 
 bool KATSVisitor::visitProcessBase( const KATS_BON::ProcessBase& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -83,7 +83,7 @@ bool KATSVisitor::visitProcessBase( const KATS_BON::ProcessBase& object )
 
 bool KATSVisitor::visitSleep( const KATS_BON::Sleep& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -92,7 +92,7 @@ bool KATSVisitor::visitSleep( const KATS_BON::Sleep& object )
 
 bool KATSVisitor::visitTransport( const KATS_BON::Transport& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -101,7 +101,7 @@ bool KATSVisitor::visitTransport( const KATS_BON::Transport& object )
 
 bool KATSVisitor::visitBarrierRef( const KATS_BON::BarrierRef& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -110,7 +110,7 @@ bool KATSVisitor::visitBarrierRef( const KATS_BON::BarrierRef& object )
 
 bool KATSVisitor::visitDomainRef( const KATS_BON::DomainRef& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -119,7 +119,7 @@ bool KATSVisitor::visitDomainRef( const KATS_BON::DomainRef& object )
 
 bool KATSVisitor::visitGroupRef( const KATS_BON::GroupRef& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -128,7 +128,7 @@ bool KATSVisitor::visitGroupRef( const KATS_BON::GroupRef& object )
 
 bool KATSVisitor::visitHostRef( const KATS_BON::HostRef& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -137,7 +137,7 @@ bool KATSVisitor::visitHostRef( const KATS_BON::HostRef& object )
 
 bool KATSVisitor::visitTransportRef( const KATS_BON::TransportRef& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -146,7 +146,7 @@ bool KATSVisitor::visitTransportRef( const KATS_BON::TransportRef& object )
 
 bool KATSVisitor::visitConfigureBase( const KATS_BON::ConfigureBase& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -155,7 +155,7 @@ bool KATSVisitor::visitConfigureBase( const KATS_BON::ConfigureBase& object )
 
 bool KATSVisitor::visitOrdered( const KATS_BON::Ordered& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -164,7 +164,7 @@ bool KATSVisitor::visitOrdered( const KATS_BON::Ordered& object )
 
 bool KATSVisitor::visitBarriers( const KATS_BON::Barriers& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -173,7 +173,7 @@ bool KATSVisitor::visitBarriers( const KATS_BON::Barriers& object )
 
 bool KATSVisitor::visitDomains( const KATS_BON::Domains& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -182,7 +182,7 @@ bool KATSVisitor::visitDomains( const KATS_BON::Domains& object )
 
 bool KATSVisitor::visitHosts( const KATS_BON::Hosts& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -191,7 +191,7 @@ bool KATSVisitor::visitHosts( const KATS_BON::Hosts& object )
 
 bool KATSVisitor::visitProcesses( const KATS_BON::Processes& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;
@@ -200,7 +200,7 @@ bool KATSVisitor::visitProcesses( const KATS_BON::Processes& object )
 
 bool KATSVisitor::visitTransports( const KATS_BON::Transports& object )
 {
-	if ( !object)
+	if( !object)
 		return false;
 
 	return true;

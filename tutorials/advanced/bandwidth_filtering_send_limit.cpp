@@ -74,9 +74,9 @@ update_payloads_received (
   knowledge::FunctionArguments & args,
   knowledge::Variables & vars)
 {
-  if (args.size () > 0)
+  if(args.size () > 0)
   {
-    if (args[0].is_file_type ())
+    if(args[0].is_file_type ())
     {
       /**
        * Update the knowledge base with the fact that we have received another
@@ -130,7 +130,7 @@ int main (int argc, char * argv[])
   knowledge::KnowledgeBase knowledge (host, settings);
   
   // Check command line arguments for a non-zero id
-  if (argc >= 2)
+  if(argc >= 2)
   {
     // save the first argument into an integer
     madara::knowledge::KnowledgeRecord::Integer new_id;
@@ -145,7 +145,7 @@ int main (int argc, char * argv[])
       madara::knowledge::EvalSettings::SEND);
 
     // the 2nd argument is the log level
-    if (argc >= 3)
+    if(argc >= 3)
     {
       int log_level;
       std::stringstream reader (argv[2]);
@@ -211,11 +211,11 @@ int main (int argc, char * argv[])
   knowledge::CompiledExpression ce =
     knowledge.compile (logic);
 
-  while (1)
+  while(1)
   {
-    if (knowledge.get (".id").to_integer () == 0)
+    if(knowledge.get (".id").to_integer () == 0)
     {
-      if (knowledge.get (slow_publisher).to_integer () == 0)
+      if(knowledge.get (slow_publisher).to_integer () == 0)
       {
         /**
          * Read file takes a variable name and a file name to be read from.

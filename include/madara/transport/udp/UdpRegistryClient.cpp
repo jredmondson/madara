@@ -19,7 +19,7 @@ UdpRegistryClient::UdpRegistryClient(const std::string& id,
   endpoints_.set_name(
       "domain." + config.write_domain + ".endpoints", knowledge_);
 
-  if (launch_transport)
+  if(launch_transport)
     setup();
 }
 
@@ -27,18 +27,18 @@ int UdpRegistryClient::setup(void)
 {
   // call base setup method to initialize certain common variables
   int ret = UdpTransport::setup();
-  if (ret < 0)
+  if(ret < 0)
   {
     return ret;
   }
 
-  if (addresses_.size() > 0)
+  if(addresses_.size() > 0)
   {
     servers_.clear();
 
     // UdpTransport::setup puts hosts into addresses_; move all but first to
     // servers_ instead
-    for (size_t i = 1; i < addresses_.size(); ++i)
+    for(size_t i = 1; i < addresses_.size(); ++i)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
           "UdpRegistryClient::setup:"
@@ -62,7 +62,7 @@ void UdpRegistryClient::send_register(void)
   long result(0);
   uint64_t bytes_sent = 0;
 
-  if (servers_.size() > 0)
+  if(servers_.size() > 0)
   {
     // Register messages always use the message header to include domain
     MessageHeader header;
@@ -82,7 +82,7 @@ void UdpRegistryClient::send_register(void)
 
     result = (long)(update - buffer_.get_ptr());
 
-    for (const auto& server : servers_)
+    for(const auto& server : servers_)
     {
       madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
           "%s:"
@@ -92,7 +92,7 @@ void UdpRegistryClient::send_register(void)
 
       ssize_t actual_sent = send_buffer(server, buffer_.get_ptr(), result);
 
-      if (actual_sent > 0)
+      if(actual_sent > 0)
       {
         bytes_sent += actual_sent;
 
@@ -117,7 +117,7 @@ void UdpRegistryClient::send_register(void)
 long UdpRegistryClient::send_data(
     const knowledge::KnowledgeMap& orig_updates)
 {
-  if (!settings_.no_sending)
+  if(!settings_.no_sending)
   {
     this->endpoints_.sync_keys();
 
@@ -125,7 +125,7 @@ long UdpRegistryClient::send_data(
     this->addresses_.resize(1);
     this->endpoints_.keys(hosts);
 
-    for (auto& host : hosts)
+    for(auto& host : hosts)
     {
       auto addr_parts = utility::parse_address(std::move(host));
       auto addr = ip::address::from_string(addr_parts.first);

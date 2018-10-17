@@ -28,7 +28,7 @@ jlong JNICALL Java_ai_madara_knowledge_Variables_jni_1evaluate__JJJ(
   CompiledExpression* compiled = (CompiledExpression*)expression;
   EvalSettings* settings = (EvalSettings*)evalSettings;
 
-  if (vars && compiled && settings)
+  if(vars && compiled && settings)
   {
     result = new KnowledgeRecord(vars->evaluate(*compiled, *settings));
   }
@@ -58,7 +58,7 @@ jlong JNICALL Java_ai_madara_knowledge_Variables_jni_1compile(
   Variables* vars = (Variables*)cptr;
   CompiledExpression* result(0);
 
-  if (vars)
+  if(vars)
   {
     result = new CompiledExpression(vars->compile(nativeExpression));
 
@@ -89,7 +89,7 @@ jlong JNICALL Java_ai_madara_knowledge_Variables_jni_1get(
   Variables* vars = (Variables*)cptr;
   KnowledgeRecord* result(0);
 
-  if (vars)
+  if(vars)
   {
     result = new KnowledgeRecord(vars->get(nativeVar));
   }
@@ -119,7 +119,7 @@ void JNICALL Java_ai_madara_knowledge_Variables_jni_1set(
   Variables* vars = (Variables*)cptr;
   KnowledgeRecord* record = (KnowledgeRecord*)recordPtr;
 
-  if (vars)
+  if(vars)
   {
     vars->set(nativeVar, *record);
   }

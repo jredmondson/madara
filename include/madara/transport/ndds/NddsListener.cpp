@@ -19,11 +19,11 @@ madara::transport::NddsListener::NddsListener(const TransportSettings& settings,
     packet_scheduler_(packet_scheduler)
 {
   // setup the receive buffer
-  if (settings_.queue_length > 0)
+  if(settings_.queue_length > 0)
     buffer_ = new char[settings_.queue_length];
 
   // check for an on_data_received ruleset
-  if (settings_.on_data_received_logic.length() != 0)
+  if(settings_.on_data_received_logic.length() != 0)
   {
     madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
         "NddsListener::NddsListener:"
@@ -66,7 +66,7 @@ void madara::transport::NddsListener::rebroadcast(const char* print_prefix,
   unsigned long result = prep_rebroadcast(*context_, buffer, buffer_remaining,
       settings_, print_prefix, header, records, packet_scheduler_);
 
-  if (result > 0)
+  if(result > 0)
   {
     ssize_t bytes_sent(result + sizeof(Ndds_Knowledge_Update));
 
@@ -94,7 +94,7 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
 
   Ndds_Knowledge_UpdateDataReader* update_reader =
       Ndds_Knowledge_UpdateDataReader::narrow(reader);
-  if (update_reader == NULL)
+  if(update_reader == NULL)
   {
     madara_logger_log(context_->get_logger(), logger::LOG_ERROR,
         "%s:"
@@ -107,11 +107,11 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
   rc = update_reader->take(update_data_list, info_seq, DDS_LENGTH_UNLIMITED,
       DDS_ANY_SAMPLE_STATE, DDS_ANY_VIEW_STATE, DDS_ANY_INSTANCE_STATE);
 
-  if (rc == DDS_RETCODE_NO_DATA)
+  if(rc == DDS_RETCODE_NO_DATA)
   {
     return;
   }
-  else if (rc != DDS_RETCODE_OK)
+  else if(rc != DDS_RETCODE_OK)
   {
     madara_logger_log(context_->get_logger(), logger::LOG_MINOR,
         "%s:"
@@ -120,14 +120,14 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
     return;
   }
 
-  for (int i = 0; i < update_data_list.length(); ++i)
+  for(int i = 0; i < update_data_list.length(); ++i)
   {
-    if (info_seq[i].valid_data)
+    if(info_seq[i].valid_data)
     {
       // if we are evaluating a message from ourselves, just continue
       // to the next one. It's also possible to receive null originators
       // from what I can only guess is the ospl daemon messing up
-      if (strncmp(update_data_list[i].originator, "", 1) == 0)
+      if(strncmp(update_data_list[i].originator, "", 1) == 0)
       {
         // if we don't check originator for null, we get phantom sends
         // when the program exits.
@@ -139,7 +139,7 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
         continue;
       }
 
-      if (update_data_list[i].type != madara::transport::MULTIASSIGN)
+      if(update_data_list[i].type != madara::transport::MULTIASSIGN)
       {
         // we do not allow any other type than multiassign
         madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
@@ -153,7 +153,7 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
       knowledge::KnowledgeMap rebroadcast_records;
       MessageHeader* header = 0;
 
-      if (knowledge::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
+      if(knowledge::MULTIPLE_ASSIGNMENT == update_data_list[i].type)
       {
         madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
             "%s:"
@@ -172,7 +172,7 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
   }
 
   rc = update_reader->return_loan(update_data_list, info_seq);
-  if (rc != DDS_RETCODE_OK)
+  if(rc != DDS_RETCODE_OK)
   {
     madara_logger_log(context_->get_logger(), logger::LOG_DETAILED,
         "%s:"

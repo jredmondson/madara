@@ -26,7 +26,7 @@ void test_rebroadcast_settings(void)
   settings.set_rebroadcast_ttl(old_ttl);
   current_ttl = settings.get_rebroadcast_ttl();
 
-  if (old_ttl == current_ttl && current_ttl == 3)
+  if(old_ttl == current_ttl && current_ttl == 3)
     std::cerr << "SUCCESS.\n";
   else
     std::cerr << "FAIL.\n";
@@ -38,7 +38,7 @@ void test_rebroadcast_settings(void)
   settings.enable_participant_ttl(4);
   current_ttl = settings.get_participant_ttl();
 
-  if (old_ttl == 0 && current_ttl == 4)
+  if(old_ttl == 0 && current_ttl == 4)
     std::cerr << "SUCCESS.\n";
   else
     std::cerr << "FAIL.\n";
@@ -108,7 +108,7 @@ void test_peer_list(void)
   std::cerr << "Testing copy constructors and assignments.\n";
   std::cerr << "  Copy constructor = ";
 
-  if (!settings_copy.is_trusted(peer3) && !settings_copy.is_trusted(peer4) &&
+  if(!settings_copy.is_trusted(peer3) && !settings_copy.is_trusted(peer4) &&
       settings_copy.is_trusted(peer2))
     std::cerr << "SUCCESS\n";
   else
@@ -116,7 +116,7 @@ void test_peer_list(void)
 
   std::cerr << "  Assignment operator = ";
 
-  if (!settings_assignment.is_trusted(peer3) &&
+  if(!settings_assignment.is_trusted(peer3) &&
       !settings_assignment.is_trusted(peer4) &&
       settings_assignment.is_trusted(peer1))
     std::cerr << "SUCCESS\n";
@@ -134,14 +134,14 @@ madara::knowledge::KnowledgeRecord drop_non_primitives(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size() > 0)
+  if(args.size() > 0)
   {
     /**
      * Alternatively, we could check type () for each
      * defined type, but this will check that we are not
      * a file type
      **/
-    if (!args[0].is_file_type())
+    if(!args[0].is_file_type())
     {
       result = args[0];
     }
@@ -162,7 +162,7 @@ madara::knowledge::KnowledgeRecord increase_clock(
 {
   madara::knowledge::KnowledgeRecord result;
 
-  if (args.size() > 0)
+  if(args.size() > 0)
   {
     result = args[0];
     ++result.clock;
@@ -187,7 +187,7 @@ madara::knowledge::KnowledgeRecord drop_record(
 madara::knowledge::KnowledgeRecord no_op(
     madara::knowledge::FunctionArguments& args, madara::knowledge::Variables&)
 {
-  if (args.size() > 0)
+  if(args.size() > 0)
     return args[0];
   else
     return madara::knowledge::KnowledgeRecord();
@@ -282,7 +282,7 @@ void test_filters(void)
   std::cerr << "The result of the rebroadcast filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result
             << " and clock = " << integer_result.clock << " (";
-  if (integer_result == madara::knowledge::KnowledgeRecord::Integer(1) &&
+  if(integer_result == madara::knowledge::KnowledgeRecord::Integer(1) &&
       integer_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
@@ -290,21 +290,21 @@ void test_filters(void)
 
   std::cerr << "  double result = " << double_result
             << " and clock = " << double_result.clock << " (";
-  if (double_result == 2.5 && double_result.clock == 0)
+  if(double_result == 2.5 && double_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
 
   std::cerr << "  string result = " << string_result
             << " and clock = " << string_result.clock << " (";
-  if (string_result == "Extra data" && string_result.clock == 0)
+  if(string_result == "Extra data" && string_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
 
   std::cerr << "  file size = " << file_result.size()
             << " and clock = " << file_result.clock << " (";
-  if (file_result.size() > 20000 && file_result.clock == 0)
+  if(file_result.size() > 20000 && file_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
@@ -318,7 +318,7 @@ void test_filters(void)
   std::cerr << "The result of the send filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result
             << " and clock = " << integer_result.clock << " (";
-  if (integer_result == madara::knowledge::KnowledgeRecord::Integer(1) &&
+  if(integer_result == madara::knowledge::KnowledgeRecord::Integer(1) &&
       integer_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
@@ -326,21 +326,21 @@ void test_filters(void)
 
   std::cerr << "  double result = " << double_result
             << " and clock = " << double_result.clock << " (";
-  if (double_result == 2.5 && double_result.clock == 0)
+  if(double_result == 2.5 && double_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
 
   std::cerr << "  string result = " << string_result
             << " and clock = " << string_result.clock << " (";
-  if (string_result == "Extra data" && string_result.clock == 0)
+  if(string_result == "Extra data" && string_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
 
   std::cerr << "  file size = " << file_result.size()
             << " and clock = " << file_result.clock << " (";
-  if (file_result.size() > 20000 && file_result.clock == 0)
+  if(file_result.size() > 20000 && file_result.clock == 0)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
@@ -355,7 +355,7 @@ void test_filters(void)
   std::cerr << "The result of the receive filtering was the following:\n";
   std::cerr << "  integer result = " << integer_result
             << " and clock = " << integer_result.clock << " (";
-  if (integer_result == madara::knowledge::KnowledgeRecord::Integer(1) &&
+  if(integer_result == madara::knowledge::KnowledgeRecord::Integer(1) &&
       integer_result.clock == 2)
     std::cerr << "SUCCESS)\n";
   else
@@ -363,21 +363,21 @@ void test_filters(void)
 
   std::cerr << "  double result = " << double_result
             << " and clock = " << double_result.clock << " (";
-  if (double_result == 2.5 && double_result.clock == 1)
+  if(double_result == 2.5 && double_result.clock == 1)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
 
   std::cerr << "  string result = " << string_result
             << " and clock = " << string_result.clock << " (";
-  if (string_result == "Extra data" && string_result.clock == 3)
+  if(string_result == "Extra data" && string_result.clock == 3)
     std::cerr << "SUCCESS)\n";
   else
     std::cerr << "FAILURE)\n";
 
   std::cerr << "  file size = " << file_result.size()
             << " and status = " << file_result.status() << " (";
-  if (file_result.size() == 0 &&
+  if(file_result.size() == 0 &&
       file_result.status() == madara::knowledge::KnowledgeRecord::UNCREATED)
     std::cerr << "SUCCESS)\n";
   else
@@ -428,7 +428,7 @@ void test_save_and_load()
   std::cerr << "Checking loaded QoS Settings...\n";
 
   std::cerr << "  Checking trusted peers... ";
-  if (loaded_settings.is_trusted("trusted_website") &&
+  if(loaded_settings.is_trusted("trusted_website") &&
       loaded_settings.is_trusted("trusted_user") &&
       loaded_settings.is_trusted("trusted_computer"))
   {
@@ -440,7 +440,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking banned peers... ";
-  if (!loaded_settings.is_trusted("banned_website") &&
+  if(!loaded_settings.is_trusted("banned_website") &&
       !loaded_settings.is_trusted("banned_user") &&
       !loaded_settings.is_trusted("banned_computer"))
   {
@@ -452,7 +452,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking deadline... ";
-  if (loaded_settings.get_deadline() == 10)
+  if(loaded_settings.get_deadline() == 10)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -462,7 +462,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking delay launch... ";
-  if (loaded_settings.delay_launch == true)
+  if(loaded_settings.delay_launch == true)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -472,7 +472,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking domain... ";
-  if (loaded_settings.write_domain == "my_domain")
+  if(loaded_settings.write_domain == "my_domain")
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -482,7 +482,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking frag queue length... ";
-  if (loaded_settings.fragment_queue_length == 32000)
+  if(loaded_settings.fragment_queue_length == 32000)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -492,7 +492,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking hosts... ";
-  if (loaded_settings.hosts.size() == 2 &&
+  if(loaded_settings.hosts.size() == 2 &&
       loaded_settings.hosts[0] == "localhost:15000" &&
       loaded_settings.hosts[1] == "localhost:15001")
   {
@@ -504,7 +504,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking id and processes... ";
-  if (loaded_settings.id == 1 && loaded_settings.processes == 10)
+  if(loaded_settings.id == 1 && loaded_settings.processes == 10)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -514,7 +514,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking receive and send suppression... ";
-  if (loaded_settings.no_receiving && loaded_settings.no_sending)
+  if(loaded_settings.no_receiving && loaded_settings.no_sending)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -524,7 +524,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking never exit... ";
-  if (loaded_settings.never_exit)
+  if(loaded_settings.never_exit)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -534,7 +534,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking read thread settings... ";
-  if (loaded_settings.read_threads == 5 &&
+  if(loaded_settings.read_threads == 5 &&
       loaded_settings.read_thread_hertz == 15000)
   {
     std::cerr << "SUCCESS.\n";
@@ -545,7 +545,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking queue length and frag size... ";
-  if (loaded_settings.max_fragment_size == 61350 &&
+  if(loaded_settings.max_fragment_size == 61350 &&
       loaded_settings.queue_length == 1500000)
   {
     std::cerr << "SUCCESS.\n";
@@ -556,7 +556,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking reduced header setting... ";
-  if (loaded_settings.send_reduced_message_header)
+  if(loaded_settings.send_reduced_message_header)
   {
     std::cerr << "SUCCESS.\n";
   }
@@ -566,7 +566,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking type and reliability... ";
-  if (loaded_settings.reliability == transport::RELIABLE &&
+  if(loaded_settings.reliability == transport::RELIABLE &&
       loaded_settings.type == transport::UDP)
   {
     std::cerr << "SUCCESS.\n";
@@ -577,7 +577,7 @@ void test_save_and_load()
   }
 
   std::cerr << "  Checking on data received and slack time... ";
-  if (loaded_settings.on_data_received_logic == "on_data_received_check == 1" &&
+  if(loaded_settings.on_data_received_logic == "on_data_received_check == 1" &&
       loaded_settings.slack_time == 0.2)
   {
     std::cerr << "SUCCESS.\n";

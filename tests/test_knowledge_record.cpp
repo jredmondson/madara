@@ -289,7 +289,7 @@ int main()
   // this test is checking knowledge record functionaly
   // so you get FAILs this means KnowledgeRecord class is not working properly
 
-  if (madara_tests_fail_count > 0)
+  if(madara_tests_fail_count > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_tests_fail_count
               << " tests failed.\n";

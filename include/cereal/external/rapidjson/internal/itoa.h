@@ -39,19 +39,19 @@ inline const char* GetDigitsLut() {
 inline char* u32toa(uint32_t value, char* buffer) {
     const char* cDigitsLut = GetDigitsLut();
 
-    if (value < 10000) {
+    if(value < 10000) {
         const uint32_t d1 = (value / 100) << 1;
         const uint32_t d2 = (value % 100) << 1;
         
-        if (value >= 1000)
+        if(value >= 1000)
             *buffer++ = cDigitsLut[d1];
-        if (value >= 100)
+        if(value >= 100)
             *buffer++ = cDigitsLut[d1 + 1];
-        if (value >= 10)
+        if(value >= 10)
             *buffer++ = cDigitsLut[d2];
         *buffer++ = cDigitsLut[d2 + 1];
     }
-    else if (value < 100000000) {
+    else if(value < 100000000) {
         // value = bbbbcccc
         const uint32_t b = value / 10000;
         const uint32_t c = value % 10000;
@@ -62,11 +62,11 @@ inline char* u32toa(uint32_t value, char* buffer) {
         const uint32_t d3 = (c / 100) << 1;
         const uint32_t d4 = (c % 100) << 1;
         
-        if (value >= 10000000)
+        if(value >= 10000000)
             *buffer++ = cDigitsLut[d1];
-        if (value >= 1000000)
+        if(value >= 1000000)
             *buffer++ = cDigitsLut[d1 + 1];
-        if (value >= 100000)
+        if(value >= 100000)
             *buffer++ = cDigitsLut[d2];
         *buffer++ = cDigitsLut[d2 + 1];
         
@@ -81,7 +81,7 @@ inline char* u32toa(uint32_t value, char* buffer) {
         const uint32_t a = value / 100000000; // 1 to 42
         value %= 100000000;
         
-        if (a >= 10) {
+        if(a >= 10) {
             const unsigned i = a << 1;
             *buffer++ = cDigitsLut[i];
             *buffer++ = cDigitsLut[i + 1];
@@ -112,7 +112,7 @@ inline char* u32toa(uint32_t value, char* buffer) {
 
 inline char* i32toa(int32_t value, char* buffer) {
     uint32_t u = static_cast<uint32_t>(value);
-    if (value < 0) {
+    if(value < 0) {
         *buffer++ = '-';
         u = ~u + 1;
     }
@@ -132,17 +132,17 @@ inline char* u64toa(uint64_t value, char* buffer) {
     const uint64_t kTen15 = kTen8 * 10000000;
     const uint64_t kTen16 = kTen8 * kTen8;
     
-    if (value < kTen8) {
+    if(value < kTen8) {
         uint32_t v = static_cast<uint32_t>(value);
-        if (v < 10000) {
+        if(v < 10000) {
             const uint32_t d1 = (v / 100) << 1;
             const uint32_t d2 = (v % 100) << 1;
             
-            if (v >= 1000)
+            if(v >= 1000)
                 *buffer++ = cDigitsLut[d1];
-            if (v >= 100)
+            if(v >= 100)
                 *buffer++ = cDigitsLut[d1 + 1];
-            if (v >= 10)
+            if(v >= 10)
                 *buffer++ = cDigitsLut[d2];
             *buffer++ = cDigitsLut[d2 + 1];
         }
@@ -157,11 +157,11 @@ inline char* u64toa(uint64_t value, char* buffer) {
             const uint32_t d3 = (c / 100) << 1;
             const uint32_t d4 = (c % 100) << 1;
             
-            if (value >= 10000000)
+            if(value >= 10000000)
                 *buffer++ = cDigitsLut[d1];
-            if (value >= 1000000)
+            if(value >= 1000000)
                 *buffer++ = cDigitsLut[d1 + 1];
-            if (value >= 100000)
+            if(value >= 100000)
                 *buffer++ = cDigitsLut[d2];
             *buffer++ = cDigitsLut[d2 + 1];
             
@@ -171,7 +171,7 @@ inline char* u64toa(uint64_t value, char* buffer) {
             *buffer++ = cDigitsLut[d4 + 1];
         }
     }
-    else if (value < kTen16) {
+    else if(value < kTen16) {
         const uint32_t v0 = static_cast<uint32_t>(value / kTen8);
         const uint32_t v1 = static_cast<uint32_t>(value % kTen8);
         
@@ -193,21 +193,21 @@ inline char* u64toa(uint64_t value, char* buffer) {
         const uint32_t d7 = (c1 / 100) << 1;
         const uint32_t d8 = (c1 % 100) << 1;
 
-        if (value >= kTen15)
+        if(value >= kTen15)
             *buffer++ = cDigitsLut[d1];
-        if (value >= kTen14)
+        if(value >= kTen14)
             *buffer++ = cDigitsLut[d1 + 1];
-        if (value >= kTen13)
+        if(value >= kTen13)
             *buffer++ = cDigitsLut[d2];
-        if (value >= kTen12)
+        if(value >= kTen12)
             *buffer++ = cDigitsLut[d2 + 1];
-        if (value >= kTen11)
+        if(value >= kTen11)
             *buffer++ = cDigitsLut[d3];
-        if (value >= kTen10)
+        if(value >= kTen10)
             *buffer++ = cDigitsLut[d3 + 1];
-        if (value >= kTen9)
+        if(value >= kTen9)
             *buffer++ = cDigitsLut[d4];
-        if (value >= kTen8)
+        if(value >= kTen8)
             *buffer++ = cDigitsLut[d4 + 1];
         
         *buffer++ = cDigitsLut[d5];
@@ -223,14 +223,14 @@ inline char* u64toa(uint64_t value, char* buffer) {
         const uint32_t a = static_cast<uint32_t>(value / kTen16); // 1 to 1844
         value %= kTen16;
         
-        if (a < 10)
+        if(a < 10)
             *buffer++ = static_cast<char>('0' + static_cast<char>(a));
-        else if (a < 100) {
+        else if(a < 100) {
             const uint32_t i = a << 1;
             *buffer++ = cDigitsLut[i];
             *buffer++ = cDigitsLut[i + 1];
         }
-        else if (a < 1000) {
+        else if(a < 1000) {
             *buffer++ = static_cast<char>('0' + static_cast<char>(a / 100));
             
             const uint32_t i = (a % 100) << 1;
@@ -290,7 +290,7 @@ inline char* u64toa(uint64_t value, char* buffer) {
 
 inline char* i64toa(int64_t value, char* buffer) {
     uint64_t u = static_cast<uint64_t>(value);
-    if (value < 0) {
+    if(value < 0) {
         *buffer++ = '-';
         u = ~u + 1;
     }

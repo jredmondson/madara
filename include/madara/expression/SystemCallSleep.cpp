@@ -36,19 +36,19 @@ madara::knowledge::KnowledgeRecord madara::expression::SystemCallSleep::prune(
 
   madara::knowledge::KnowledgeRecord result;
 
-  for (ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
+  for(ComponentNodes::iterator i = nodes_.begin(); i != nodes_.end(); ++i)
   {
     bool arg_can_change = false;
     result = (*i)->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(*i) == 0)
     {
       delete *i;
       *i = new LeafNode(*(this->logger_), result);
     }
   }
 
-  if (nodes_.size() > 1 || nodes_.size() == 0)
+  if(nodes_.size() > 1 || nodes_.size() == 0)
   {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallSleep: "
@@ -74,7 +74,7 @@ madara::expression::SystemCallSleep::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1)
+  if(nodes_.size() == 1)
   {
     double sleep_time = nodes_[0]->evaluate(settings).to_double();
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,

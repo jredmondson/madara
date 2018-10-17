@@ -598,7 +598,7 @@ public:
         data_.f.flags = defaultFlags[type];
 
         // Use ShortString to store empty string.
-        if (type == kStringType)
+        if(type == kStringType)
             data_.ss.SetLength(0);
     }
 
@@ -646,14 +646,14 @@ public:
     explicit GenericValue(int64_t i64) CEREAL_RAPIDJSON_NOEXCEPT : data_() {
         data_.n.i64 = i64;
         data_.f.flags = kNumberInt64Flag;
-        if (i64 >= 0) {
+        if(i64 >= 0) {
             data_.f.flags |= kNumberUint64Flag;
-            if (!(static_cast<uint64_t>(i64) & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x00000000)))
+            if(!(static_cast<uint64_t>(i64) & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x00000000)))
                 data_.f.flags |= kUintFlag;
-            if (!(static_cast<uint64_t>(i64) & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x80000000)))
+            if(!(static_cast<uint64_t>(i64) & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x80000000)))
                 data_.f.flags |= kIntFlag;
         }
-        else if (i64 >= static_cast<int64_t>(CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x80000000)))
+        else if(i64 >= static_cast<int64_t>(CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x80000000)))
             data_.f.flags |= kIntFlag;
     }
 
@@ -661,11 +661,11 @@ public:
     explicit GenericValue(uint64_t u64) CEREAL_RAPIDJSON_NOEXCEPT : data_() {
         data_.n.u64 = u64;
         data_.f.flags = kNumberUint64Flag;
-        if (!(u64 & CEREAL_RAPIDJSON_UINT64_C2(0x80000000, 0x00000000)))
+        if(!(u64 & CEREAL_RAPIDJSON_UINT64_C2(0x80000000, 0x00000000)))
             data_.f.flags |= kInt64Flag;
-        if (!(u64 & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x00000000)))
+        if(!(u64 & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x00000000)))
             data_.f.flags |= kUintFlag;
-        if (!(u64 & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x80000000)))
+        if(!(u64 & CEREAL_RAPIDJSON_UINT64_C2(0xFFFFFFFF, 0x80000000)))
             data_.f.flags |= kIntFlag;
     }
 
@@ -717,19 +717,19 @@ public:
     /*! Need to destruct elements of array, members of object, or copy-string.
     */
     ~GenericValue() {
-        if (Allocator::kNeedFree) { // Shortcut by Allocator's trait
+        if(Allocator::kNeedFree) { // Shortcut by Allocator's trait
             switch(data_.f.flags) {
             case kArrayFlag:
                 {
                     GenericValue* e = GetElementsPointer();
-                    for (GenericValue* v = e; v != e + data_.a.size; ++v)
+                    for(GenericValue* v = e; v != e + data_.a.size; ++v)
                         v->~GenericValue();
                     Allocator::Free(e);
                 }
                 break;
 
             case kObjectFlag:
-                for (MemberIterator m = MemberBegin(); m != MemberEnd(); ++m)
+                for(MemberIterator m = MemberBegin(); m != MemberEnd(); ++m)
                     m->~Member();
                 Allocator::Free(GetMembersPointer());
                 break;
@@ -851,25 +851,25 @@ public:
     template <typename SourceAllocator>
     bool operator==(const GenericValue<Encoding, SourceAllocator>& rhs) const {
         typedef GenericValue<Encoding, SourceAllocator> RhsType;
-        if (GetType() != rhs.GetType())
+        if(GetType() != rhs.GetType())
             return false;
 
         switch (GetType()) {
         case kObjectType: // Warning: O(n^2) inner-loop
-            if (data_.o.size != rhs.data_.o.size)
+            if(data_.o.size != rhs.data_.o.size)
                 return false;           
-            for (ConstMemberIterator lhsMemberItr = MemberBegin(); lhsMemberItr != MemberEnd(); ++lhsMemberItr) {
+            for(ConstMemberIterator lhsMemberItr = MemberBegin(); lhsMemberItr != MemberEnd(); ++lhsMemberItr) {
                 typename RhsType::ConstMemberIterator rhsMemberItr = rhs.FindMember(lhsMemberItr->name);
-                if (rhsMemberItr == rhs.MemberEnd() || lhsMemberItr->value != rhsMemberItr->value)
+                if(rhsMemberItr == rhs.MemberEnd() || lhsMemberItr->value != rhsMemberItr->value)
                     return false;
             }
             return true;
             
         case kArrayType:
-            if (data_.a.size != rhs.data_.a.size)
+            if(data_.a.size != rhs.data_.a.size)
                 return false;
-            for (SizeType i = 0; i < data_.a.size; i++)
-                if ((*this)[i] != rhs[i])
+            for(SizeType i = 0; i < data_.a.size; i++)
+                if((*this)[i] != rhs[i])
                     return false;
             return true;
 
@@ -877,7 +877,7 @@ public:
             return StringEqual(rhs);
 
         case kNumberType:
-            if (IsDouble() || rhs.IsDouble()) {
+            if(IsDouble() || rhs.IsDouble()) {
                 double a = GetDouble();     // May convert from integer to double.
                 double b = rhs.GetDouble(); // Ditto
                 return a >= b && a <= b;    // Prevent -Wfloat-equal
@@ -950,15 +950,15 @@ public:
 
     // Checks whether a number can be losslessly converted to a double.
     bool IsLosslessDouble() const {
-        if (!IsNumber()) return false;
-        if (IsUint64()) {
+        if(!IsNumber()) return false;
+        if(IsUint64()) {
             uint64_t u = GetUint64();
             volatile double d = static_cast<double>(u);
             return (d >= 0.0)
                 && (d < static_cast<double>(std::numeric_limits<uint64_t>::max()))
                 && (u == static_cast<uint64_t>(d));
         }
-        if (IsInt64()) {
+        if(IsInt64()) {
             int64_t i = GetInt64();
             volatile double d = static_cast<double>(i);
             return (d >= static_cast<double>(std::numeric_limits<int64_t>::min()))
@@ -970,16 +970,16 @@ public:
 
     // Checks whether a number is a float (possible lossy).
     bool IsFloat() const  {
-        if ((data_.f.flags & kDoubleFlag) == 0)
+        if((data_.f.flags & kDoubleFlag) == 0)
             return false;
         double d = GetDouble();
         return d >= -3.4028234e38 && d <= 3.4028234e38;
     }
     // Checks whether a number can be losslessly converted to a float.
     bool IsLosslessFloat() const {
-        if (!IsNumber()) return false;
+        if(!IsNumber()) return false;
         double a = GetDouble();
-        if (a < static_cast<double>(-std::numeric_limits<float>::max())
+        if(a < static_cast<double>(-std::numeric_limits<float>::max())
                 || a > static_cast<double>(std::numeric_limits<float>::max()))
             return false;
         double b = static_cast<double>(static_cast<float>(a));
@@ -1047,7 +1047,7 @@ public:
     template <typename SourceAllocator>
     GenericValue& operator[](const GenericValue<Encoding, SourceAllocator>& name) {
         MemberIterator member = FindMember(name);
-        if (member != MemberEnd())
+        if(member != MemberEnd())
             return member->value;
         else {
             CEREAL_RAPIDJSON_ASSERT(false);    // see above note
@@ -1154,8 +1154,8 @@ public:
         CEREAL_RAPIDJSON_ASSERT(IsObject());
         CEREAL_RAPIDJSON_ASSERT(name.IsString());
         MemberIterator member = MemberBegin();
-        for ( ; member != MemberEnd(); ++member)
-            if (name.StringEqual(member->name))
+        for( ; member != MemberEnd(); ++member)
+            if(name.StringEqual(member->name))
                 break;
         return member;
     }
@@ -1188,8 +1188,8 @@ public:
         CEREAL_RAPIDJSON_ASSERT(name.IsString());
 
         ObjectData& o = data_.o;
-        if (o.size >= o.capacity) {
-            if (o.capacity == 0) {
+        if(o.size >= o.capacity) {
+            if(o.capacity == 0) {
                 o.capacity = kDefaultObjectCapacity;
                 SetMembersPointer(reinterpret_cast<Member*>(allocator.Malloc(o.capacity * sizeof(Member))));
             }
@@ -1336,7 +1336,7 @@ public:
     */
     void RemoveAllMembers() {
         CEREAL_RAPIDJSON_ASSERT(IsObject()); 
-        for (MemberIterator m = MemberBegin(); m != MemberEnd(); ++m)
+        for(MemberIterator m = MemberBegin(); m != MemberEnd(); ++m)
             m->~Member();
         data_.o.size = 0;
     }
@@ -1361,7 +1361,7 @@ public:
     template <typename SourceAllocator>
     bool RemoveMember(const GenericValue<Encoding, SourceAllocator>& name) {
         MemberIterator m = FindMember(name);
-        if (m != MemberEnd()) {
+        if(m != MemberEnd()) {
             RemoveMember(m);
             return true;
         }
@@ -1384,7 +1384,7 @@ public:
         CEREAL_RAPIDJSON_ASSERT(m >= MemberBegin() && m < MemberEnd());
 
         MemberIterator last(GetMembersPointer() + (data_.o.size - 1));
-        if (data_.o.size > 1 && m != last)
+        if(data_.o.size > 1 && m != last)
             *m = *last; // Move the last one to this place
         else
             m->~Member(); // Only one left, just destroy
@@ -1423,7 +1423,7 @@ public:
         CEREAL_RAPIDJSON_ASSERT(last <= MemberEnd());
 
         MemberIterator pos = MemberBegin() + (first - MemberBegin());
-        for (MemberIterator itr = pos; itr != last; ++itr)
+        for(MemberIterator itr = pos; itr != last; ++itr)
             itr->~Member();
         std::memmove(&*pos, &*last, static_cast<size_t>(MemberEnd() - last) * sizeof(Member));
         data_.o.size -= static_cast<SizeType>(last - first);
@@ -1447,7 +1447,7 @@ public:
     template <typename SourceAllocator>
     bool EraseMember(const GenericValue<Encoding, SourceAllocator>& name) {
         MemberIterator m = FindMember(name);
-        if (m != MemberEnd()) {
+        if(m != MemberEnd()) {
             EraseMember(m);
             return true;
         }
@@ -1483,7 +1483,7 @@ public:
     void Clear() {
         CEREAL_RAPIDJSON_ASSERT(IsArray()); 
         GenericValue* e = GetElementsPointer();
-        for (GenericValue* v = e; v != e + data_.a.size; ++v)
+        for(GenericValue* v = e; v != e + data_.a.size; ++v)
             v->~GenericValue();
         data_.a.size = 0;
     }
@@ -1521,7 +1521,7 @@ public:
     */
     GenericValue& Reserve(SizeType newCapacity, Allocator &allocator) {
         CEREAL_RAPIDJSON_ASSERT(IsArray());
-        if (newCapacity > data_.a.capacity) {
+        if(newCapacity > data_.a.capacity) {
             SetElementsPointer(reinterpret_cast<GenericValue*>(allocator.Realloc(GetElementsPointer(), data_.a.capacity * sizeof(GenericValue), newCapacity * sizeof(GenericValue))));
             data_.a.capacity = newCapacity;
         }
@@ -1540,7 +1540,7 @@ public:
     */
     GenericValue& PushBack(GenericValue& value, Allocator& allocator) {
         CEREAL_RAPIDJSON_ASSERT(IsArray());
-        if (data_.a.size >= data_.a.capacity)
+        if(data_.a.size >= data_.a.capacity)
             Reserve(data_.a.capacity == 0 ? kDefaultArrayCapacity : (data_.a.capacity + (data_.a.capacity + 1) / 2), allocator);
         GetElementsPointer()[data_.a.size++].RawAssign(value);
         return *this;
@@ -1627,7 +1627,7 @@ public:
         CEREAL_RAPIDJSON_ASSERT(first <= last);
         CEREAL_RAPIDJSON_ASSERT(last <= End());
         ValueIterator pos = Begin() + (first - Begin());
-        for (ValueIterator itr = pos; itr != last; ++itr)
+        for(ValueIterator itr = pos; itr != last; ++itr)
             itr->~GenericValue();       
         std::memmove(pos, last, static_cast<size_t>(End() - last) * sizeof(GenericValue));
         data_.a.size -= static_cast<SizeType>(last - first);
@@ -1652,10 +1652,10 @@ public:
     */
     double GetDouble() const {
         CEREAL_RAPIDJSON_ASSERT(IsNumber());
-        if ((data_.f.flags & kDoubleFlag) != 0)                return data_.n.d;   // exact type, no conversion.
-        if ((data_.f.flags & kIntFlag) != 0)                   return data_.n.i.i; // int -> double
-        if ((data_.f.flags & kUintFlag) != 0)                  return data_.n.u.u; // unsigned -> double
-        if ((data_.f.flags & kInt64Flag) != 0)                 return static_cast<double>(data_.n.i64); // int64_t -> double (may lose precision)
+        if((data_.f.flags & kDoubleFlag) != 0)                return data_.n.d;   // exact type, no conversion.
+        if((data_.f.flags & kIntFlag) != 0)                   return data_.n.i.i; // int -> double
+        if((data_.f.flags & kUintFlag) != 0)                  return data_.n.u.u; // unsigned -> double
+        if((data_.f.flags & kInt64Flag) != 0)                 return static_cast<double>(data_.n.i64); // int64_t -> double (may lose precision)
         CEREAL_RAPIDJSON_ASSERT((data_.f.flags & kUint64Flag) != 0);  return static_cast<double>(data_.n.u64); // uint64_t -> double (may lose precision)
     }
 
@@ -1772,22 +1772,22 @@ public:
         case kTrueType:     return handler.Bool(true);
 
         case kObjectType:
-            if (CEREAL_RAPIDJSON_UNLIKELY(!handler.StartObject()))
+            if(CEREAL_RAPIDJSON_UNLIKELY(!handler.StartObject()))
                 return false;
-            for (ConstMemberIterator m = MemberBegin(); m != MemberEnd(); ++m) {
+            for(ConstMemberIterator m = MemberBegin(); m != MemberEnd(); ++m) {
                 CEREAL_RAPIDJSON_ASSERT(m->name.IsString()); // User may change the type of name by MemberIterator.
-                if (CEREAL_RAPIDJSON_UNLIKELY(!handler.Key(m->name.GetString(), m->name.GetStringLength(), (m->name.data_.f.flags & kCopyFlag) != 0)))
+                if(CEREAL_RAPIDJSON_UNLIKELY(!handler.Key(m->name.GetString(), m->name.GetStringLength(), (m->name.data_.f.flags & kCopyFlag) != 0)))
                     return false;
-                if (CEREAL_RAPIDJSON_UNLIKELY(!m->value.Accept(handler)))
+                if(CEREAL_RAPIDJSON_UNLIKELY(!m->value.Accept(handler)))
                     return false;
             }
             return handler.EndObject(data_.o.size);
 
         case kArrayType:
-            if (CEREAL_RAPIDJSON_UNLIKELY(!handler.StartArray()))
+            if(CEREAL_RAPIDJSON_UNLIKELY(!handler.StartArray()))
                 return false;
-            for (const GenericValue* v = Begin(); v != End(); ++v)
-                if (CEREAL_RAPIDJSON_UNLIKELY(!v->Accept(handler)))
+            for(const GenericValue* v = Begin(); v != End(); ++v)
+                if(CEREAL_RAPIDJSON_UNLIKELY(!v->Accept(handler)))
                     return false;
             return handler.EndArray(data_.a.size);
     
@@ -1796,10 +1796,10 @@ public:
     
         default:
             CEREAL_RAPIDJSON_ASSERT(GetType() == kNumberType);
-            if (IsDouble())         return handler.Double(data_.n.d);
-            else if (IsInt())       return handler.Int(data_.n.i.i);
-            else if (IsUint())      return handler.Uint(data_.n.u.u);
-            else if (IsInt64())     return handler.Int64(data_.n.i64);
+            if(IsDouble())         return handler.Double(data_.n.d);
+            else if(IsInt())       return handler.Int(data_.n.i.i);
+            else if(IsUint())      return handler.Uint(data_.n.u.u);
+            else if(IsInt64())     return handler.Int64(data_.n.i64);
             else                    return handler.Uint64(data_.n.u64);
         }
     }
@@ -1933,7 +1933,7 @@ private:
     // Initialize this value as array with initial data, without calling destructor.
     void SetArrayRaw(GenericValue* values, SizeType count, Allocator& allocator) {
         data_.f.flags = kArrayFlag;
-        if (count) {
+        if(count) {
             GenericValue* e = static_cast<GenericValue*>(allocator.Malloc(count * sizeof(GenericValue)));
             SetElementsPointer(e);
             std::memcpy(e, values, count * sizeof(GenericValue));
@@ -1946,7 +1946,7 @@ private:
     //! Initialize this value as object with initial data, without calling destructor.
     void SetObjectRaw(Member* members, SizeType count, Allocator& allocator) {
         data_.f.flags = kObjectFlag;
-        if (count) {
+        if(count) {
             Member* m = static_cast<Member*>(allocator.Malloc(count * sizeof(Member)));
             SetMembersPointer(m);
             std::memcpy(m, members, count * sizeof(Member));
@@ -1966,7 +1966,7 @@ private:
     //! Initialize this value as copy string with initial data, without calling destructor.
     void SetStringRaw(StringRefType s, Allocator& allocator) {
         Ch* str = 0;
-        if (ShortString::Usable(s.length)) {
+        if(ShortString::Usable(s.length)) {
             data_.f.flags = kShortStringFlag;
             data_.ss.SetLength(s.length);
             str = data_.ss.str;
@@ -2037,7 +2037,7 @@ public:
     explicit GenericDocument(Type type, Allocator* allocator = 0, size_t stackCapacity = kDefaultStackCapacity, StackAllocator* stackAllocator = 0) :
         GenericValue<Encoding, Allocator>(type),  allocator_(allocator), ownAllocator_(0), stack_(stackAllocator, stackCapacity), parseResult_()
     {
-        if (!allocator_)
+        if(!allocator_)
             ownAllocator_ = allocator_ = CEREAL_RAPIDJSON_NEW(Allocator());
     }
 
@@ -2050,7 +2050,7 @@ public:
     GenericDocument(Allocator* allocator = 0, size_t stackCapacity = kDefaultStackCapacity, StackAllocator* stackAllocator = 0) : 
         allocator_(allocator), ownAllocator_(0), stack_(stackAllocator, stackCapacity), parseResult_()
     {
-        if (!allocator_)
+        if(!allocator_)
             ownAllocator_ = allocator_ = CEREAL_RAPIDJSON_NEW(Allocator());
     }
 
@@ -2134,7 +2134,7 @@ public:
     template <typename Generator>
     GenericDocument& Populate(Generator& g) {
         ClearStackOnExit scope(*this);
-        if (g(*this)) {
+        if(g(*this)) {
             CEREAL_RAPIDJSON_ASSERT(stack_.GetSize() == sizeof(ValueType)); // Got one and only one root object
             ValueType::operator=(*stack_.template Pop<ValueType>(1));// Move value from stack to document
         }
@@ -2157,7 +2157,7 @@ public:
             stack_.HasAllocator() ? &stack_.GetAllocator() : 0);
         ClearStackOnExit scope(*this);
         parseResult_ = reader.template Parse<parseFlags>(is, *this);
-        if (parseResult_) {
+        if(parseResult_) {
             CEREAL_RAPIDJSON_ASSERT(stack_.GetSize() == sizeof(ValueType)); // Got one and only one root object
             ValueType::operator=(*stack_.template Pop<ValueType>(1));// Move value from stack to document
         }
@@ -2296,7 +2296,7 @@ public:
         \code
           Document doc;
           ParseResult ok = doc.Parse(json);
-          if (!ok)
+          if(!ok)
             printf( "JSON parse error: %s (%u)\n", GetParseError_En(ok.Code()), ok.Offset());
         \endcode
      */
@@ -2339,7 +2339,7 @@ public:
     bool Double(double d) { new (stack_.template Push<ValueType>()) ValueType(d); return true; }
 
     bool RawNumber(const Ch* str, SizeType length, bool copy) { 
-        if (copy) 
+        if(copy) 
             new (stack_.template Push<ValueType>()) ValueType(str, length, GetAllocator());
         else
             new (stack_.template Push<ValueType>()) ValueType(str, length);
@@ -2347,7 +2347,7 @@ public:
     }
 
     bool String(const Ch* str, SizeType length, bool copy) { 
-        if (copy) 
+        if(copy) 
             new (stack_.template Push<ValueType>()) ValueType(str, length, GetAllocator());
         else
             new (stack_.template Push<ValueType>()) ValueType(str, length);
@@ -2379,8 +2379,8 @@ private:
     GenericDocument& operator=(const GenericDocument&);
 
     void ClearStack() {
-        if (Allocator::kNeedFree)
-            while (stack_.GetSize() > 0)    // Here assumes all elements in stack array are GenericValue (Member is actually 2 GenericValue objects)
+        if(Allocator::kNeedFree)
+            while(stack_.GetSize() > 0)    // Here assumes all elements in stack array are GenericValue (Member is actually 2 GenericValue objects)
                 (stack_.template Pop<ValueType>(1))->~ValueType();
         else
             stack_.Clear();
@@ -2416,7 +2416,7 @@ GenericValue<Encoding,Allocator>::GenericValue(const GenericValue<Encoding,Sourc
         }
         break;
     case kStringType:
-        if (rhs.data_.f.flags == kConstStringFlag) {
+        if(rhs.data_.f.flags == kConstStringFlag) {
             data_.f.flags = rhs.data_.f.flags;
             data_  = *reinterpret_cast<const Data*>(&rhs.data_);
         } else {

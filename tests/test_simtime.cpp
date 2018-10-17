@@ -20,7 +20,7 @@ int main()
   VAL(SimTime::last_simtime());
 
   madara::utility::sim_time_notify(56000000, 0.5);
-  for (int i = 0; i < 10; ++i)
+  for(int i = 0; i < 10; ++i)
   {
     VAL(SimTime::realtime());
     VAL(SimTime::time());
@@ -29,7 +29,7 @@ int main()
 
   // test doesn't really check anything for success or failure
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

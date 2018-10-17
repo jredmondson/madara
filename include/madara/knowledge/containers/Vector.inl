@@ -29,7 +29,7 @@ inline size_t Vector::size(void) const
 inline void Vector::set_name(
     const std::string& var_name, KnowledgeBase& knowledge, int size)
 {
-  if (context_ != &(knowledge.get_context()) || name_ != var_name)
+  if(context_ != &(knowledge.get_context()) || name_ != var_name)
   {
     context_ = &(knowledge.get_context());
 
@@ -49,7 +49,7 @@ inline void Vector::set_name(
 inline void Vector::set_name(
     const std::string& var_name, Variables& knowledge, int size)
 {
-  if (context_ != knowledge.get_context() || name_ != var_name)
+  if(context_ != knowledge.get_context() || name_ != var_name)
   {
     context_ = knowledge.get_context();
 
@@ -66,7 +66,7 @@ inline void Vector::set_name(
 inline void Vector::set_name(
     const std::string& var_name, ThreadSafeContext& knowledge, int size)
 {
-  if (context_ != &knowledge || name_ != var_name)
+  if(context_ != &knowledge || name_ != var_name)
   {
     context_ = &knowledge;
 
@@ -83,7 +83,7 @@ inline void Vector::set_name(
 inline void Vector::set_delimiter(const std::string& delimiter)
 {
   delimiter_ = delimiter;
-  if (context_)
+  if(context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -103,7 +103,7 @@ inline int Vector::set(size_t index, const KnowledgeRecord& value,
 {
   int result = -1;
 
-  if (index < vector_.size() && context_)
+  if(index < vector_.size() && context_)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
@@ -120,7 +120,7 @@ inline int Vector::set(size_t index, const KnowledgeRecord& value)
 
 inline void Vector::modify_size(void)
 {
-  if (context_)
+  if(context_)
   {
     context_->mark_modified(size_);
   }

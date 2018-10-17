@@ -36,7 +36,7 @@ namespace rapidxml
         template<class OutIt, class Ch>
         inline OutIt copy_chars(const Ch *begin, const Ch *end, OutIt out)
         {
-            while (begin != end)
+            while(begin != end)
                 *out++ = *begin++;
             return out;
         }
@@ -46,9 +46,9 @@ namespace rapidxml
         template<class OutIt, class Ch>
         inline OutIt copy_and_expand_chars(const Ch *begin, const Ch *end, Ch noexpand, OutIt out)
         {
-            while (begin != end)
+            while(begin != end)
             {
-                if (*begin == noexpand)
+                if(*begin == noexpand)
                 {
                     *out++ = *begin;    // No expansion, copy character
                 }
@@ -84,7 +84,7 @@ namespace rapidxml
         template<class OutIt, class Ch>
         inline OutIt fill_chars(OutIt out, int n, Ch ch)
         {
-            for (int i = 0; i < n; ++i)
+            for(int i = 0; i < n; ++i)
                 *out++ = ch;
             return out;
         }
@@ -93,8 +93,8 @@ namespace rapidxml
         template<class Ch, Ch ch>
         inline bool find_char(const Ch *begin, const Ch *end)
         {
-            while (begin != end)
-                if (*begin++ == ch)
+            while(begin != end)
+                if(*begin++ == ch)
                     return true;
             return false;
         }
@@ -110,7 +110,7 @@ namespace rapidxml
         template<class OutIt, class Ch>
         inline OutIt print_children(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
-            for (xml_node<Ch> *child = node->first_node(); child; child = child->next_sibling())
+            for(xml_node<Ch> *child = node->first_node(); child; child = child->next_sibling())
                 out = print_node(out, child, flags, indent);
             return out;
         }
@@ -119,16 +119,16 @@ namespace rapidxml
         template<class OutIt, class Ch>
         inline OutIt print_attributes(OutIt out, const xml_node<Ch> *node, int /*flags*/)
         {
-            for (xml_attribute<Ch> *attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute())
+            for(xml_attribute<Ch> *attribute = node->first_attribute(); attribute; attribute = attribute->next_attribute())
             {
-                if (attribute->name() && attribute->value())
+                if(attribute->name() && attribute->value())
                 {
                     // Print attribute name
                     *out = Ch(' '), ++out;
                     out = copy_chars(attribute->name(), attribute->name() + attribute->name_size(), out);
                     *out = Ch('='), ++out;
                     // Print attribute value using appropriate quote type
-                    if (find_char<Ch, Ch('"')>(attribute->value(), attribute->value() + attribute->value_size()))
+                    if(find_char<Ch, Ch('"')>(attribute->value(), attribute->value() + attribute->value_size()))
                     {
                         *out = Ch('\''), ++out;
                         out = copy_and_expand_chars(attribute->value(), attribute->value() + attribute->value_size(), Ch('"'), out);
@@ -150,7 +150,7 @@ namespace rapidxml
         inline OutIt print_data_node(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
             assert(node->type() == node_data);
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             out = copy_and_expand_chars(node->value(), node->value() + node->value_size(), Ch(0), out);
             return out;
@@ -161,7 +161,7 @@ namespace rapidxml
         inline OutIt print_cdata_node(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
             assert(node->type() == node_cdata);
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             *out = Ch('<'); ++out;
             *out = Ch('!'); ++out;
@@ -186,14 +186,14 @@ namespace rapidxml
             assert(node->type() == node_element);
 
             // Print element name and attributes, if any
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             *out = Ch('<'), ++out;
             out = copy_chars(node->name(), node->name() + node->name_size(), out);
             out = print_attributes(out, node, flags);
 
             // If node is childless
-            if (node->value_size() == 0 && !node->first_node())
+            if(node->value_size() == 0 && !node->first_node())
             {
                 // Print childless node tag ending
                 *out = Ch('/'), ++out;
@@ -206,12 +206,12 @@ namespace rapidxml
 
                 // Test if node contains a single data node only (and no other nodes)
                 xml_node<Ch> *child = node->first_node();
-                if (!child)
+                if(!child)
                 {
                     // If node has no children, only print its value without indenting
                     out = copy_and_expand_chars(node->value(), node->value() + node->value_size(), Ch(0), out);
                 }
-                else if (child->next_sibling() == 0 && child->type() == node_data)
+                else if(child->next_sibling() == 0 && child->type() == node_data)
                 {
                     // If node has a sole data child, only print its value without indenting
                     out = copy_and_expand_chars(child->value(), child->value() + child->value_size(), Ch(0), out);
@@ -219,10 +219,10 @@ namespace rapidxml
                 else
                 {
                     // Print all children with full indenting
-                    if (!(flags & print_no_indenting))
+                    if(!(flags & print_no_indenting))
                         *out = Ch('\n'), ++out;
                     out = print_children(out, node, flags, indent + 1);
-                    if (!(flags & print_no_indenting))
+                    if(!(flags & print_no_indenting))
                         out = fill_chars(out, indent, Ch('\t'));
                 }
 
@@ -240,7 +240,7 @@ namespace rapidxml
         inline OutIt print_declaration_node(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
             // Print declaration start
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             *out = Ch('<'), ++out;
             *out = Ch('?'), ++out;
@@ -263,7 +263,7 @@ namespace rapidxml
         inline OutIt print_comment_node(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
             assert(node->type() == node_comment);
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             *out = Ch('<'), ++out;
             *out = Ch('!'), ++out;
@@ -281,7 +281,7 @@ namespace rapidxml
         inline OutIt print_doctype_node(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
             assert(node->type() == node_doctype);
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             *out = Ch('<'), ++out;
             *out = Ch('!'), ++out;
@@ -303,7 +303,7 @@ namespace rapidxml
         inline OutIt print_pi_node(OutIt out, const xml_node<Ch> *node, int flags, int indent)
         {
             assert(node->type() == node_pi);
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 out = fill_chars(out, indent, Ch('\t'));
             *out = Ch('<'), ++out;
             *out = Ch('?'), ++out;
@@ -370,7 +370,7 @@ namespace rapidxml
             }
 
             // If indenting not disabled, add line break after node
-            if (!(flags & print_no_indenting))
+            if(!(flags & print_no_indenting))
                 *out = Ch('\n'), ++out;
 
             // Return modified iterator

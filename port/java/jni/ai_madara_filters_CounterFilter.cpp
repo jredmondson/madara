@@ -21,7 +21,7 @@ jdouble JNICALL Java_ai_madara_filters_CounterFilter_jni_1getThroughput(
   CounterFilter* current = (CounterFilter*)cptr;
   jdouble result(0);
 
-  if (current)
+  if(current)
   {
     result = current->get_throughput();
   }
@@ -43,7 +43,7 @@ void JNICALL Java_ai_madara_filters_CounterFilter_jni_1addReceiveFilterTo(
   CounterFilter* current = (CounterFilter*)cptr;
   QoSTransportSettings* settings = (QoSTransportSettings*)qosCptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     settings->add_receive_filter(current);
   }
@@ -63,7 +63,7 @@ void JNICALL Java_ai_madara_filters_CounterFilter_jni_1addSendFilterTo(
   CounterFilter* current = (CounterFilter*)cptr;
   QoSTransportSettings* settings = (QoSTransportSettings*)qosCptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     settings->add_send_filter(current);
   }
@@ -83,7 +83,7 @@ void JNICALL Java_ai_madara_filters_CounterFilter_jni_1addRebroadcastFilterTo(
   CounterFilter* current = (CounterFilter*)cptr;
   QoSTransportSettings* settings = (QoSTransportSettings*)qosCptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     settings->add_rebroadcast_filter(current);
   }
@@ -103,7 +103,7 @@ jlong JNICALL Java_ai_madara_filters_CounterFilter_jni_1getCount(
   CounterFilter* current = (CounterFilter*)cptr;
   Integer result(0);
 
-  if (current)
+  if(current)
   {
     result = current->get_count();
   }
@@ -125,7 +125,7 @@ jlong JNICALL Java_ai_madara_filters_CounterFilter_jni_1getElapsed(
   CounterFilter* current = (CounterFilter*)cptr;
   Integer result(0);
 
-  if (current)
+  if(current)
   {
     result = current->get_elapsed();
   }

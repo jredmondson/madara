@@ -65,7 +65,7 @@ KnowledgeRecord* ThreadSafeContext::get_record(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -73,7 +73,7 @@ KnowledgeRecord* ThreadSafeContext::get_record(
   else
     key_ptr = &key;
 
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return 0;
 
   // if the variable doesn't exist, hash maps create a record automatically
@@ -89,7 +89,7 @@ VariableReference ThreadSafeContext::get_ref(
   MADARA_GUARD_TYPE guard(mutex_);
 
   // expand the key if the user asked for it
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -97,13 +97,13 @@ VariableReference ThreadSafeContext::get_ref(
   else
     key_ptr = &key;
 
-  if (*key_ptr == "")
+  if(*key_ptr == "")
   {
     return {};
   }
 
   auto iter = map_.lower_bound(*key_ptr);
-  if (iter == map_.end() || iter->first != *key_ptr)
+  if(iter == map_.end() || iter->first != *key_ptr)
   {
     iter = map_.emplace_hint(iter, std::piecewise_construct,
         std::forward_as_tuple(*key_ptr), std::forward_as_tuple());
@@ -122,7 +122,7 @@ VariableReference ThreadSafeContext::get_ref(
   VariableReference record;
 
   // expand the key if the user asked for it
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -130,7 +130,7 @@ VariableReference ThreadSafeContext::get_ref(
   else
     key_ptr = &key;
 
-  if (*key_ptr == "")
+  if(*key_ptr == "")
   {
     return {};
   }
@@ -146,10 +146,10 @@ int ThreadSafeContext::set_xml(const VariableReference& variable,
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
 
-  if (record)
+  if(record)
   {
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     record->set_xml(value, size);
@@ -172,10 +172,10 @@ int ThreadSafeContext::set_text(const VariableReference& variable,
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
 
-  if (record)
+  if(record)
   {
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     record->set_text(value, size);
@@ -199,10 +199,10 @@ int ThreadSafeContext::set_jpeg(const VariableReference& variable,
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
 
-  if (record)
+  if(record)
   {
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     record->set_jpeg(value, size);
@@ -226,10 +226,10 @@ int ThreadSafeContext::set_file(const VariableReference& variable,
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
 
-  if (record)
+  if(record)
   {
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     record->set_file(value, size);
@@ -253,10 +253,10 @@ int ThreadSafeContext::read_file(const VariableReference& variable,
   MADARA_GUARD_TYPE guard(mutex_);
   auto record = variable.get_record_unsafe();
 
-  if (record)
+  if(record)
   {
     // check if we have the appropriate write quality
-    if (!settings.always_overwrite && record->write_quality < record->quality)
+    if(!settings.always_overwrite && record->write_quality < record->quality)
       return -2;
 
     return_value = record->read_file(filename);
@@ -282,7 +282,7 @@ uint32_t ThreadSafeContext::get_quality(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -296,7 +296,7 @@ uint32_t ThreadSafeContext::get_quality(
   // create the variable if it has never been written to before
   // and update its current value quality to the quality parameter
 
-  if (found != map_.end())
+  if(found != map_.end())
     return map_[*key_ptr].quality;
 
   // default quality is 0
@@ -313,7 +313,7 @@ uint32_t ThreadSafeContext::get_write_quality(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -327,7 +327,7 @@ uint32_t ThreadSafeContext::get_write_quality(
   // create the variable if it has never been written to before
   // and update its current value quality to the quality parameter
 
-  if (found != map_.end())
+  if(found != map_.end())
     return map_[*key_ptr].write_quality;
 
   // default quality is 0
@@ -345,7 +345,7 @@ uint32_t ThreadSafeContext::set_quality(const std::string& key,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -354,7 +354,7 @@ uint32_t ThreadSafeContext::set_quality(const std::string& key,
     key_ptr = &key;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return 0;
 
   // find the key in the knowledge base
@@ -363,7 +363,7 @@ uint32_t ThreadSafeContext::set_quality(const std::string& key,
   // create the variable if it has never been written to before
   // and update its current value quality to the quality parameter
 
-  if (found == map_.end() || force_update || quality > found->second.quality)
+  if(found == map_.end() || force_update || quality > found->second.quality)
     map_[*key_ptr].quality = quality;
 
   // return current quality
@@ -379,7 +379,7 @@ void ThreadSafeContext::set_write_quality(const std::string& key,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -407,7 +407,7 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -416,14 +416,14 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
     key_ptr = &key;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return -1;
 
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find(*key_ptr);
 
   // if it's found, then compare the value
-  if (!settings.always_overwrite && found != map_.end())
+  if(!settings.always_overwrite && found != map_.end())
   {
     // setup a rhs
     KnowledgeRecord rhs;
@@ -431,16 +431,16 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
 
     // if we do not have enough quality to update the variable
     // return -2
-    if (quality < found->second.quality)
+    if(quality < found->second.quality)
       result = -2;
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (quality == found->second.quality && clock < found->second.clock)
+    else if(quality == found->second.quality && clock < found->second.clock)
       result = -3;
 
     // check for value already set
-    else if (found->second == rhs)
+    else if(found->second == rhs)
       result = 0;
   }
   else
@@ -453,18 +453,18 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
   KnowledgeRecord& record = found->second;
 
   // if we need to update quality, then update it
-  if (result != -2 && record.quality != quality)
+  if(result != -2 && record.quality != quality)
     record.quality = quality;
 
   // if we need to update the variable clock, then update it
-  if (clock > record.clock)
+  if(clock > record.clock)
     record.clock = clock;
 
   // if we need to update the global clock, then update it
-  if (clock > this->clock_)
+  if(clock > this->clock_)
     this->clock_ = clock;
 
-  if (result == 1)
+  if(result == 1)
   {
     // we have a situation where the value needs to be changed
     record.set_value(value);
@@ -493,7 +493,7 @@ int ThreadSafeContext::set_if_unequal(const std::string& key, double value,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -502,14 +502,14 @@ int ThreadSafeContext::set_if_unequal(const std::string& key, double value,
     key_ptr = &key;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return -1;
 
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find(*key_ptr);
 
   // if it's found, then compare the value
-  if (!settings.always_overwrite && found != map_.end())
+  if(!settings.always_overwrite && found != map_.end())
   {
     // setup a rhs
     KnowledgeRecord rhs;
@@ -517,16 +517,16 @@ int ThreadSafeContext::set_if_unequal(const std::string& key, double value,
 
     // if we do not have enough quality to update the variable
     // return -2
-    if (quality < found->second.quality)
+    if(quality < found->second.quality)
       result = -2;
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (quality == found->second.quality && clock < found->second.clock)
+    else if(quality == found->second.quality && clock < found->second.clock)
       result = -3;
 
     // check for value already set
-    else if (found->second == rhs)
+    else if(found->second == rhs)
       result = 0;
   }
   else
@@ -539,18 +539,18 @@ int ThreadSafeContext::set_if_unequal(const std::string& key, double value,
   KnowledgeRecord& record = found->second;
 
   // if we need to update quality, then update it
-  if (result != -2 && record.quality != quality)
+  if(result != -2 && record.quality != quality)
     record.quality = quality;
 
   // if we need to update the variable clock, then update it
-  if (clock > record.clock)
+  if(clock > record.clock)
     record.clock = clock;
 
   // if we need to update the global clock, then update it
-  if (clock > this->clock_)
+  if(clock > this->clock_)
     this->clock_ = clock;
 
-  if (result == 1)
+  if(result == 1)
   {
     // we have a situation where the value needs to be changed
     record.set_value(value);
@@ -579,7 +579,7 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -588,14 +588,14 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
     key_ptr = &key;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return -1;
 
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find(*key_ptr);
 
   // if it's found, then compare the value
-  if (!settings.always_overwrite && found != map_.end())
+  if(!settings.always_overwrite && found != map_.end())
   {
     // setup a rhs
     KnowledgeRecord rhs;
@@ -603,16 +603,16 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
 
     // if we do not have enough quality to update the variable
     // return -2
-    if (quality < found->second.quality)
+    if(quality < found->second.quality)
       result = -2;
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (quality == found->second.quality && clock < found->second.clock)
+    else if(quality == found->second.quality && clock < found->second.clock)
       result = -3;
 
     // check for value already set
-    else if (found->second == rhs)
+    else if(found->second == rhs)
       result = 0;
   }
   else
@@ -625,18 +625,18 @@ int ThreadSafeContext::set_if_unequal(const std::string& key,
   KnowledgeRecord& record = found->second;
 
   // if we need to update quality, then update it
-  if (result != -2 && record.quality != quality)
+  if(result != -2 && record.quality != quality)
     record.quality = quality;
 
   // if we need to update the variable clock, then update it
-  if (clock > record.clock)
+  if(clock > record.clock)
     record.clock = clock;
 
   // if we need to update the global clock, then update it
-  if (clock > this->clock_)
+  if(clock > this->clock_)
     this->clock_ = clock;
 
-  if (result == 1)
+  if(result == 1)
   {
     // we have a situation where the value needs to be changed
     record.set_value(value);
@@ -665,7 +665,7 @@ int ThreadSafeContext::update_record_from_external(const std::string& key,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(key);
     key_ptr = &key_actual;
@@ -674,23 +674,23 @@ int ThreadSafeContext::update_record_from_external(const std::string& key,
     key_ptr = &key;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return -1;
 
   // find the key in the knowledge base
   KnowledgeMap::iterator found = map_.find(*key_ptr);
 
   // if it's found, then compare the value
-  if (!settings.always_overwrite && found != map_.end())
+  if(!settings.always_overwrite && found != map_.end())
   {
     // if we do not have enough quality to update the variable
     // return -2
-    if (rhs.quality < found->second.quality)
+    if(rhs.quality < found->second.quality)
       return -2;
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (rhs.quality == found->second.quality &&
+    else if(rhs.quality == found->second.quality &&
              rhs.clock < found->second.clock)
       return -3;
 
@@ -706,7 +706,7 @@ int ThreadSafeContext::update_record_from_external(const std::string& key,
         std::forward_as_tuple(*key_ptr), std::forward_as_tuple(rhs));
     found = ret.first;
 
-    if (!ret.second)
+    if(!ret.second)
     {
       ret.first->second = rhs;
     }
@@ -715,10 +715,10 @@ int ThreadSafeContext::update_record_from_external(const std::string& key,
   }
 
   // if we need to update the global clock, then update it
-  if (rhs.clock >= this->clock_)
+  if(rhs.clock >= this->clock_)
     this->clock_ = rhs.clock + 1;
 
-  // if (settings.signal_changes)
+  // if(settings.signal_changes)
   //  changed_.MADARA_CONDITION_NOTIFY_ONE ();
 
   // value was changed
@@ -739,16 +739,16 @@ int ThreadSafeContext::update_record_from_external(
   auto record = target.get_record_unsafe();
 
   // if it's found, then compare the value
-  if (!settings.always_overwrite && target.is_valid())
+  if(!settings.always_overwrite && target.is_valid())
   {
     // if we do not have enough quality to update the variable
     // return -2
-    if (rhs.quality < record->quality)
+    if(rhs.quality < record->quality)
       result = -2;
 
     // if we have the same quality, but our clock value
     // is less than what we've already seen, then return -3
-    else if (rhs.quality == record->quality && rhs.clock < record->clock)
+    else if(rhs.quality == record->quality && rhs.clock < record->clock)
       result = -3;
 
     // if we reach this point, then the record is safe to copy
@@ -758,7 +758,7 @@ int ThreadSafeContext::update_record_from_external(
   }
 
   // if we need to update the global clock, then update it
-  if (rhs.clock >= this->clock_)
+  if(rhs.clock >= this->clock_)
     this->clock_ = rhs.clock + 1;
 
   // value was changed
@@ -777,9 +777,9 @@ void ThreadSafeContext::set_changed(void)
 void ThreadSafeContext::print(unsigned int level) const
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  for (KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
+  for(KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
   {
-    if (i->second.exists())
+    if(i->second.exists())
     {
       madara_logger_ptr_log(logger_, (int)level, "%s=%s\n", i->first.c_str(),
           i->second.to_string(", ").c_str());
@@ -797,10 +797,10 @@ void ThreadSafeContext::to_string(std::string& target,
 
   bool first = true;
 
-  for (KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
+  for(KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
   {
     // separate each record with the record_delimiter
-    if (!first)
+    if(!first)
     {
       buffer << record_delimiter;
     }
@@ -810,11 +810,11 @@ void ThreadSafeContext::to_string(std::string& target,
     // separate the key/value pairing with the key_val_delimiter
     buffer << key_val_delimiter;
 
-    if (i->second.is_string_type() || i->second.is_any_type())
+    if(i->second.is_string_type() || i->second.is_any_type())
     {
       buffer << "'";
     }
-    else if (i->second.type() == i->second.DOUBLE_ARRAY ||
+    else if(i->second.type() == i->second.DOUBLE_ARRAY ||
              i->second.type() == i->second.INTEGER_ARRAY)
     {
       buffer << "[";
@@ -823,17 +823,17 @@ void ThreadSafeContext::to_string(std::string& target,
     // use the array_delimiter for the underlying to_string functions
     buffer << i->second.to_string(array_delimiter);
 
-    if (i->second.is_string_type() || i->second.is_any_type())
+    if(i->second.is_string_type() || i->second.is_any_type())
     {
       buffer << "'";
     }
-    else if (i->second.type() == i->second.DOUBLE_ARRAY ||
+    else if(i->second.type() == i->second.DOUBLE_ARRAY ||
              i->second.type() == i->second.INTEGER_ARRAY)
     {
       buffer << "]";
     }
 
-    if (first)
+    if(first)
       first = false;
   }
 
@@ -856,19 +856,19 @@ std::string ThreadSafeContext::expand_statement(
   std::stringstream builder;
 
   // iterate over the input string
-  for (std::string::size_type i = 0; i < statement.size(); ++i)
+  for(std::string::size_type i = 0; i < statement.size(); ++i)
   {
     // if this is an open brace, increase the subcount
-    if (statement[i] == '{')
+    if(statement[i] == '{')
     {
       ++subcount;
-      if (subcount == 1)
+      if(subcount == 1)
         begin_exp = i;
     }
     // closed brace should decrease subcount
-    else if (statement[i] == '}')
+    else if(statement[i] == '}')
     {
-      if (subcount == 1)
+      if(subcount == 1)
       {
         std::string expandable =
             statement.substr(begin_exp + 1, i - begin_exp - 1);
@@ -881,13 +881,13 @@ std::string ThreadSafeContext::expand_statement(
     // we allow anything not in subcount == 0 to be handled through recursion
     else
     {
-      if (subcount == 0)
+      if(subcount == 0)
         builder << statement[i];
     }
   }
 
   // check to see if all brace counts are appropriate
-  if (subcount != 0)
+  if(subcount != 0)
   {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "KARL COMPILE ERROR : Improperly matched braces in %s\n",
@@ -909,7 +909,7 @@ void ThreadSafeContext::define_function(const std::string& name,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(name);
     key_ptr = &key_actual;
@@ -918,7 +918,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     key_ptr = &name;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return;
 
   functions_[*key_ptr] = Function(func);
@@ -934,7 +934,7 @@ void ThreadSafeContext::define_function(const std::string& name,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(name);
     key_ptr = &key_actual;
@@ -943,7 +943,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     key_ptr = &name;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return;
 
   functions_[*key_ptr] = Function(func);
@@ -958,7 +958,7 @@ void ThreadSafeContext::define_function(const std::string& name,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(name);
     key_ptr = &key_actual;
@@ -967,7 +967,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     key_ptr = &name;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return;
 
   functions_[*key_ptr] = Function(callable);
@@ -983,7 +983,7 @@ void ThreadSafeContext::define_function(const std::string& name,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(name);
     key_ptr = &key_actual;
@@ -992,7 +992,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     key_ptr = &name;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return;
 
   functions_[*key_ptr] = Function(callable);
@@ -1016,7 +1016,7 @@ void ThreadSafeContext::define_function(const std::string& name,
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(name);
     key_ptr = &key_actual;
@@ -1025,7 +1025,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     key_ptr = &name;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return;
 
   functions_[*key_ptr] = Function(expression.expression);
@@ -1039,7 +1039,7 @@ Function* ThreadSafeContext::retrieve_function(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (settings.expand_variables)
+  if(settings.expand_variables)
   {
     key_actual = expand_statement(name);
     key_ptr = &key_actual;
@@ -1048,7 +1048,7 @@ Function* ThreadSafeContext::retrieve_function(
     key_ptr = &name;
 
   // check for null key
-  if (*key_ptr == "")
+  if(*key_ptr == "")
     return 0;
 
   return &functions_[*key_ptr];
@@ -1080,7 +1080,7 @@ KnowledgeRecord ThreadSafeContext::evaluate(
     expression::ComponentNode* root, const KnowledgeUpdateSettings& settings)
 {
   MADARA_GUARD_TYPE guard(mutex_);
-  if (root)
+  if(root)
     return root->evaluate(settings);
   else
     return knowledge::KnowledgeRecord(KnowledgeRecord::Integer(0));
@@ -1096,11 +1096,11 @@ size_t ThreadSafeContext::to_vector(const std::string& subject,
   // enter the mutex
   MADARA_GUARD_TYPE guard(mutex_);
 
-  if (end >= start)
+  if(end >= start)
   {
     target.resize(end - start + 1);
 
-    for (unsigned int i = 0; start <= end; ++start, ++i)
+    for(unsigned int i = 0; start <= end; ++start, ++i)
     {
       std::stringstream buffer;
       buffer << subject;
@@ -1121,7 +1121,7 @@ size_t ThreadSafeContext::to_map(const std::string& expression,
   bool matches_found(false);
 
   // remove the wildcard and make this into a subject
-  if (subject[subject.size() - 1] == '*')
+  if(subject[subject.size() - 1] == '*')
     subject.resize(subject.size() - 1);
 
   // just in case a string implementation does not inline
@@ -1132,22 +1132,22 @@ size_t ThreadSafeContext::to_map(const std::string& expression,
   MADARA_GUARD_TYPE guard(mutex_);
 
   // if expression is blank, assume the user wants all variables
-  if (expression.size() == 0)
+  if(expression.size() == 0)
     target = map_;
   else
   {
-    for (KnowledgeMap::iterator i = map_.begin(); i != map_.end(); ++i)
+    for(KnowledgeMap::iterator i = map_.begin(); i != map_.end(); ++i)
     {
-      if (i->first.size() >= subject_size)
+      if(i->first.size() >= subject_size)
       {
         int result = strncmp(i->first.c_str(), subject_ptr, subject_size);
-        if (result == 0)
+        if(result == 0)
         {
           // we have a match, add this to the map
           target[i->first] = i->second;
           matches_found = true;
         }
-        else if (matches_found)
+        else if(matches_found)
         {
           // we have already found matches, and now we're not seeing matches
           break;
@@ -1166,7 +1166,7 @@ void ThreadSafeContext::get_matches(const std::string& prefix,
   KnowledgeMap::iterator i = map_.lower_bound(prefix);
 
   // if we have a valid prefix, then there is more to do
-  if (i != map_.end())
+  if(i != map_.end())
   {
     // keep track of the beginning as we're going to iterate twice
     KnowledgeMap::iterator first_match = i;
@@ -1178,10 +1178,10 @@ void ThreadSafeContext::get_matches(const std::string& prefix,
     size_t prefix_length = prefix.length();
 
     // Iterate over all of the prefix matches
-    while (i != map_.end() && i->first.compare(0, prefix_length, prefix) == 0)
+    while(i != map_.end() && i->first.compare(0, prefix_length, prefix) == 0)
     {
       ++i;
-      if (suffix == "" || utility::ends_with(i->first, suffix))
+      if(suffix == "" || utility::ends_with(i->first, suffix))
       {
         ++num_matches;
       }
@@ -1200,9 +1200,9 @@ void ThreadSafeContext::get_matches(const std::string& prefix,
     match = matches.begin();
 
     // Reiterate
-    while (i != after_matches)
+    while(i != after_matches)
     {
-      if (suffix == "" || utility::ends_with(i->first, suffix))
+      if(suffix == "" || utility::ends_with(i->first, suffix))
       {
         match->assign(&*i);
         ++match;
@@ -1234,18 +1234,18 @@ size_t ThreadSafeContext::to_map(const std::string& prefix,
 
   KnowledgeMap::iterator i = map_.begin();
 
-  if (prefix != "")
+  if(prefix != "")
   {
     i = map_.lower_bound(prefix);
   }
 
-  for (; i != map_.end(); ++i)
+  for(; i != map_.end(); ++i)
   {
     // if the prefix doesn't match
-    if (prefix != "" && !utility::begins_with(i->first, prefix))
+    if(prefix != "" && !utility::begins_with(i->first, prefix))
     {
       // if we had previously matched a prefix, we're done
-      if (matches_found)
+      if(matches_found)
       {
         break;
       }
@@ -1254,18 +1254,18 @@ size_t ThreadSafeContext::to_map(const std::string& prefix,
     else
     {
       // set matches found if it hasn't been set previously
-      if (!matches_found)
+      if(!matches_found)
       {
         matches_found = true;
       }
 
       // if the suffix is provided and doesn't match, continue
-      if (suffix != "" && !utility::ends_with(i->first, suffix))
+      if(suffix != "" && !utility::ends_with(i->first, suffix))
       {
         continue;
       }
 
-      if (!just_keys)
+      if(!just_keys)
       {
         // the key is safe to add to the master map
         result[i->first] = i->second;
@@ -1277,7 +1277,7 @@ size_t ThreadSafeContext::to_map(const std::string& prefix,
       std::string current_delimiter =
           i->first.substr(prefix.length(), delimiter.length());
 
-      if (current_delimiter == delimiter && i->first.length() > prefix_end)
+      if(current_delimiter == delimiter && i->first.length() > prefix_end)
       {
         // find the end of the sub key
         size_t key_end = i->first.find(delimiter, prefix_end);
@@ -1285,7 +1285,7 @@ size_t ThreadSafeContext::to_map(const std::string& prefix,
         // if we haven't seen the subkey, add it
         std::string current_key(
             i->first.substr(prefix_end, key_end - prefix_end));
-        if (current_key != last_key)
+        if(current_key != last_key)
         {
           next_keys.push_back(current_key);
           last_key = current_key;
@@ -1314,13 +1314,13 @@ void ThreadSafeContext::delete_prefix(
         changed(changed_map_.lower_bound(prefix.c_str()), changed_map_.end());
 
     // does our lower bound actually contain the prefix?
-    if (prefix.compare(0, prefix.size(), changed.first->first, prefix.size()) ==
+    if(prefix.compare(0, prefix.size(), changed.first->first, prefix.size()) ==
         0)
     {
       changed.second = changed.first;
 
       // until we find an entry that does not begin with prefix, loop
-      for (++changed.second; (prefix.compare(0, prefix.size(),
+      for(++changed.second; (prefix.compare(0, prefix.size(),
                                   changed.second->first, prefix.size()) == 0) &&
                              changed.second != changed_map_.end();
            ++changed.second)
@@ -1338,13 +1338,13 @@ void ThreadSafeContext::delete_prefix(
             local_changed_map_.end());
 
     // does our lower bound actually contain the prefix?
-    if (prefix.compare(
+    if(prefix.compare(
             0, prefix.size(), local_changed.first->first, prefix.size()) == 0)
     {
       local_changed.second = local_changed.first;
 
       // until we find an entry that does not begin with prefix, loop
-      for (++local_changed.second;
+      for(++local_changed.second;
            (prefix.compare(0, prefix.size(), local_changed.second->first,
                 prefix.size()) == 0) &&
            local_changed.second != local_changed_map_.end();
@@ -1364,7 +1364,7 @@ ThreadSafeContext::get_prefix_range(const std::string& prefix)
       map_.begin(), map_.end());
 
   // If prefix is empty string, copy entire map
-  if (prefix.size() > 0)
+  if(prefix.size() > 0)
   {
     ssize_t psz = prefix.size();
 
@@ -1372,7 +1372,7 @@ ThreadSafeContext::get_prefix_range(const std::string& prefix)
     ret.second = ret.first = map_.lower_bound(prefix);
 
     // Advance e until it is just past last element with prefix (or at end)
-    while (ret.second != map_.end() &&
+    while(ret.second != map_.end() &&
            ret.second->first.compare(0, psz, prefix) == 0)
       ++ret.second;
   }
@@ -1386,7 +1386,7 @@ ThreadSafeContext::get_prefix_range(const std::string& prefix) const
       map_.begin(), map_.end());
 
   // If prefix is empty string, copy entire map
-  if (prefix.size() > 0)
+  if(prefix.size() > 0)
   {
     ssize_t psz = prefix.size();
 
@@ -1394,7 +1394,7 @@ ThreadSafeContext::get_prefix_range(const std::string& prefix) const
     ret.second = ret.first = map_.lower_bound(prefix);
 
     // Advance e until it is just past last element with prefix (or at end)
-    while (ret.second != map_.end() &&
+    while(ret.second != map_.end() &&
            ret.second->first.compare(0, psz, prefix) == 0)
       ++ret.second;
   }
@@ -1423,7 +1423,7 @@ KnowledgeMap ThreadSafeContext::to_map_stripped(const std::string& prefix) const
 
   // NRVO should avoid copying this map
   KnowledgeMap ret;
-  for (; iters.first != iters.second; ++iters.first)
+  for(; iters.first != iters.second; ++iters.first)
   {
     ret.emplace_hint(ret.end(), iters.first->first.substr(prefix.size()),
         iters.first->second);
@@ -1438,7 +1438,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
       "ThreadSafeContext::copy:"
       " copying a context\n");
 
-  if (reqs.clear_knowledge)
+  if(reqs.clear_knowledge)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::copy:"
@@ -1447,21 +1447,21 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
     map_.clear();
   }
 
-  if (reqs.predicates.size() != 0)
+  if(reqs.predicates.size() != 0)
   {
-    for (auto predicate : reqs.predicates)
+    for(auto predicate : reqs.predicates)
     {
       std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator>
           iters(source.get_prefix_range(predicate.prefix));
 
-      if (predicate.suffix == "")
+      if(predicate.suffix == "")
       {
         madara_logger_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::copy:"
             " matching predicate.prefix=%s\n",
             predicate.prefix.c_str());
 
-        for (; iters.first != iters.second; ++iters.first)
+        for(; iters.first != iters.second; ++iters.first)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::copy:"
@@ -1470,7 +1470,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
 
           auto where = map_.lower_bound(iters.first->first);
 
-          if (where == map_.end() || where->first != iters.first->first)
+          if(where == map_.end() || where->first != iters.first->first)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::copy:"
@@ -1500,9 +1500,9 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
             " matching predicate.suffix=%s\n",
             predicate.suffix.c_str());
 
-        for (; iters.first != iters.second; ++iters.first)
+        for(; iters.first != iters.second; ++iters.first)
         {
-          if (madara::utility::ends_with(iters.first->first, predicate.suffix))
+          if(madara::utility::ends_with(iters.first->first, predicate.suffix))
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::copy:"
@@ -1511,7 +1511,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
 
             auto where = map_.lower_bound(iters.first->first);
 
-            if (where == map_.end() || where->first != iters.first->first)
+            if(where == map_.end() || where->first != iters.first->first)
             {
               madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::copy:"
@@ -1543,7 +1543,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
     std::pair<KnowledgeMap::const_iterator, KnowledgeMap::const_iterator> iters(
         source.map_.begin(), source.map_.end());
 
-    for (; iters.first != iters.second; ++iters.first)
+    for(; iters.first != iters.second; ++iters.first)
     {
       map_.insert(map_.begin(),
           KnowledgeMap::value_type(iters.first->first, iters.first->second));
@@ -1558,13 +1558,13 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
     const KnowledgeUpdateSettings& settings)
 {
   // if we need to clean first, clear the map
-  if (clean_copy)
+  if(clean_copy)
     map_.clear();
 
   // if the copy set is empty, copy everything
-  if (copy_set.size() == 0)
+  if(copy_set.size() == 0)
   {
-    for (KnowledgeMap::const_iterator i = source.map_.begin();
+    for(KnowledgeMap::const_iterator i = source.map_.begin();
          i != source.map_.end(); ++i)
     {
       map_[i->first] = (i->second);
@@ -1574,14 +1574,14 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
   else
   {
     // we have a copy set, so only copy what the user asked for
-    for (CopySet::const_iterator key = copy_set.begin(); key != copy_set.end();
+    for(CopySet::const_iterator key = copy_set.begin(); key != copy_set.end();
          ++key)
     {
       // check source for existence of the current copy set key
       KnowledgeMap::const_iterator i = source.map_.find(key->first);
 
       // if found, make a copy of the found entry
-      if (i != source.map_.end())
+      if(i != source.map_.end())
       {
         map_[i->first] = (i->second);
         mark_modified(i->first, settings);
@@ -1620,7 +1620,7 @@ int64_t ThreadSafeContext::save_context(
 
   transport::MessageHeader checkpoint_header;
 
-  if (file)
+  if(file)
   {
     int64_t max_buffer(settings.buffer_size);
     int64_t buffer_remaining(max_buffer);
@@ -1641,7 +1641,7 @@ int64_t ThreadSafeContext::save_context(
     meta.size += checkpoint_header.encoded_size();
     checkpoint_header.size = checkpoint_header.encoded_size();
 
-    if (settings.override_timestamp)
+    if(settings.override_timestamp)
     {
       meta.initial_timestamp = settings.initial_timestamp;
       meta.last_timestamp = settings.last_timestamp;
@@ -1649,7 +1649,7 @@ int64_t ThreadSafeContext::save_context(
 
     current = meta.write(current, buffer_remaining);
 
-    if (settings.override_lamport)
+    if(settings.override_lamport)
     {
       checkpoint_header.clock = settings.initial_lamport_clock;
     }
@@ -1667,12 +1667,12 @@ int64_t ThreadSafeContext::save_context(
     // lock the context
     MADARA_GUARD_TYPE guard(mutex_);
 
-    for (KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
+    for(KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
     {
-      if (i->second.exists())
+      if(i->second.exists())
       {
         // check if the prefix is allowed
-        if (settings.prefixes.size() > 0)
+        if(settings.prefixes.size() > 0)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_context:"
@@ -1680,14 +1680,14 @@ int64_t ThreadSafeContext::save_context(
               (int)settings.prefixes.size());
 
           bool prefix_found = false;
-          for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
+          for(size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_context:"
                 " checking record %s against prefix %s.\n",
                 i->first.c_str(), settings.prefixes[j].c_str());
 
-            if (madara::utility::begins_with(i->first, settings.prefixes[j]))
+            if(madara::utility::begins_with(i->first, settings.prefixes[j]))
             {
               madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_context:"
@@ -1697,7 +1697,7 @@ int64_t ThreadSafeContext::save_context(
             }
           }
 
-          if (!prefix_found)
+          if(!prefix_found)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_context:"
@@ -1726,14 +1726,14 @@ int64_t ThreadSafeContext::save_context(
         settings.encode(buffer.get_ptr() + (int)FileHeader::encoded_size(),
             (int)checkpoint_header.size, (int)max_buffer);
 
-    if (total < 0)
+    if(total < 0)
     {
       throw exceptions::FilterException("ThreadSafeContext::save_context: "
                                         "encode() returned -1 size. Cannot "
                                         "save a negative sized checkpoint.");
     }
 
-    // if (settings.buffer_filters.size () > 0)
+    // if(settings.buffer_filters.size () > 0)
     // {
     //   total += (int)filters::BufferFilterHeader::encoded_size ();
     // }
@@ -1790,17 +1790,17 @@ int64_t ThreadSafeContext::save_as_karl(
   std::ofstream file;
   file.open(settings.filename.c_str(), std::ios::binary);
 
-  if (file.is_open())
+  if(file.is_open())
   {
     // lock the context
     MADARA_GUARD_TYPE guard(mutex_);
 
-    for (KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
+    for(KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
     {
-      if (i->second.exists())
+      if(i->second.exists())
       {
         // check if the prefix is allowed
-        if (settings.prefixes.size() > 0)
+        if(settings.prefixes.size() > 0)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_as_karl:"
@@ -1808,14 +1808,14 @@ int64_t ThreadSafeContext::save_as_karl(
               (int)settings.prefixes.size());
 
           bool prefix_found = false;
-          for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
+          for(size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_karl:"
                 " checking record %s against prefix %s.\n",
                 i->first.c_str(), settings.prefixes[j].c_str());
 
-            if (madara::utility::begins_with(i->first, settings.prefixes[j]))
+            if(madara::utility::begins_with(i->first, settings.prefixes[j]))
             {
               madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_as_karl:"
@@ -1825,7 +1825,7 @@ int64_t ThreadSafeContext::save_as_karl(
             }
           }
 
-          if (!prefix_found)
+          if(!prefix_found)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_karl:"
@@ -1838,15 +1838,15 @@ int64_t ThreadSafeContext::save_as_karl(
         buffer << i->first;
         buffer << "=";
 
-        if (!i->second.is_binary_file_type())
+        if(!i->second.is_binary_file_type())
         {
           // record is a non binary file type
-          if (i->second.is_string_type())
+          if(i->second.is_string_type())
           {
             // strings require quotation marks
             buffer << "\"";
           }
-          else if (i->second.type() ==
+          else if(i->second.type() ==
                        knowledge::KnowledgeRecord::INTEGER_ARRAY ||
                    i->second.type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
           {
@@ -1855,12 +1855,12 @@ int64_t ThreadSafeContext::save_as_karl(
           }
 
           buffer << i->second;
-          if (i->second.is_string_type())
+          if(i->second.is_string_type())
           {
             // strings require quotation marks
             buffer << "\"";
           }
-          else if (i->second.type() ==
+          else if(i->second.type() ==
                        knowledge::KnowledgeRecord::INTEGER_ARRAY ||
                    i->second.type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
           {
@@ -1874,13 +1874,13 @@ int64_t ThreadSafeContext::save_as_karl(
 
           std::string path = utility::extract_path(settings.filename);
 
-          if (path == "")
+          if(path == "")
             path = ".";
 
           path += "/";
           path += i->first;
 
-          if (i->second.type() == knowledge::KnowledgeRecord::IMAGE_JPEG)
+          if(i->second.type() == knowledge::KnowledgeRecord::IMAGE_JPEG)
           {
             path += ".jpg";
           }
@@ -1902,7 +1902,7 @@ int64_t ThreadSafeContext::save_as_karl(
 
     std::string result = buffer.str();
 
-    if (settings.buffer_filters.size() > 0)
+    if(settings.buffer_filters.size() > 0)
     {
       char* result_copy = new char[settings.buffer_size];
       memcpy(result_copy, result.c_str(), result.size() + 1);
@@ -1910,7 +1910,7 @@ int64_t ThreadSafeContext::save_as_karl(
       int size =
           settings.encode(result_copy, result.size(), settings.buffer_size);
 
-      if (size < 0)
+      if(size < 0)
       {
         throw exceptions::FilterException(
             "ThreadSafeContext::save_as_karl: "
@@ -1963,19 +1963,19 @@ int64_t ThreadSafeContext::save_as_json(
   std::ofstream file;
   file.open(settings.filename.c_str());
 
-  if (file.is_open())
+  if(file.is_open())
   {
     // lock the context
     MADARA_GUARD_TYPE guard(mutex_);
 
     buffer << "{\n";
 
-    for (KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
+    for(KnowledgeMap::const_iterator i = map_.begin(); i != map_.end(); ++i)
     {
-      if (i->second.exists())
+      if(i->second.exists())
       {
         // check if the prefix is allowed
-        if (settings.prefixes.size() > 0)
+        if(settings.prefixes.size() > 0)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_as_json:"
@@ -1983,14 +1983,14 @@ int64_t ThreadSafeContext::save_as_json(
               (int)settings.prefixes.size());
 
           bool prefix_found = false;
-          for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
+          for(size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_json:"
                 " checking record %s against prefix %s.\n",
                 i->first.c_str(), settings.prefixes[j].c_str());
 
-            if (madara::utility::begins_with(i->first, settings.prefixes[j]))
+            if(madara::utility::begins_with(i->first, settings.prefixes[j]))
             {
               madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_as_json:"
@@ -2000,7 +2000,7 @@ int64_t ThreadSafeContext::save_as_json(
             }
           }
 
-          if (!prefix_found)
+          if(!prefix_found)
           {
             madara_logger_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_json:"
@@ -2014,7 +2014,7 @@ int64_t ThreadSafeContext::save_as_json(
         buffer << i->first;
         buffer << "\" : ";
 
-        if (i->second.is_any_type())
+        if(i->second.is_any_type())
         {
           const Any& any = i->second.get_any_cref();
           /*
@@ -2025,15 +2025,15 @@ int64_t ThreadSafeContext::save_as_json(
               "Any<UKNOWN_ANY_TYPE>");*/
           any.serialize_json(buffer);
         }
-        else if (!i->second.is_binary_file_type())
+        else if(!i->second.is_binary_file_type())
         {
           // record is a non binary file type
-          if (i->second.is_string_type())
+          if(i->second.is_string_type())
           {
             // strings require quotation marks
             buffer << "\"";
           }
-          else if (i->second.type() ==
+          else if(i->second.type() ==
                        knowledge::KnowledgeRecord::INTEGER_ARRAY ||
                    i->second.type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
           {
@@ -2042,12 +2042,12 @@ int64_t ThreadSafeContext::save_as_json(
           }
 
           buffer << i->second;
-          if (i->second.is_string_type())
+          if(i->second.is_string_type())
           {
             // strings require quotation marks
             buffer << "\"";
           }
-          else if (i->second.type() ==
+          else if(i->second.type() ==
                        knowledge::KnowledgeRecord::INTEGER_ARRAY ||
                    i->second.type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
           {
@@ -2061,13 +2061,13 @@ int64_t ThreadSafeContext::save_as_json(
 
           std::string path = utility::extract_path(settings.filename);
 
-          if (path == "")
+          if(path == "")
             path = ".";
 
           path += "/";
           path += i->first;
 
-          if (i->second.type() == knowledge::KnowledgeRecord::IMAGE_JPEG)
+          if(i->second.type() == knowledge::KnowledgeRecord::IMAGE_JPEG)
           {
             path += ".jpg";
           }
@@ -2085,7 +2085,7 @@ int64_t ThreadSafeContext::save_as_json(
 
         KnowledgeMap::const_iterator j(i);
 
-        if (++j != map_.end())
+        if(++j != map_.end())
           buffer << ",\n";
       }
     }
@@ -2135,7 +2135,7 @@ int64_t ThreadSafeContext::load_context(const std::string& filename,
 
   int64_t total_read(0);
 
-  if (file)
+  if(file)
   {
     int64_t max_buffer(102800);
     int64_t buffer_remaining(max_buffer);
@@ -2150,7 +2150,7 @@ int64_t ThreadSafeContext::load_context(const std::string& filename,
     total_read = fread(buffer.get_ptr(), 1, max_buffer, file);
     buffer_remaining = (int64_t)total_read;
 
-    if (total_read > FileHeader::encoded_size() &&
+    if(total_read > FileHeader::encoded_size() &&
         FileHeader::file_header_test(current))
     {
       // if there was something in the file, and it was the right header
@@ -2208,12 +2208,12 @@ std::string ThreadSafeContext::file_to_string(
 
   int64_t total_read(0);
 
-  if (checkpoint_settings.clear_knowledge)
+  if(checkpoint_settings.clear_knowledge)
   {
     this->clear();
   }
 
-  if (file)
+  if(file)
   {
     FileHeader meta;
     int64_t max_buffer(checkpoint_settings.buffer_size);
@@ -2231,7 +2231,7 @@ std::string ThreadSafeContext::file_to_string(
     int size = checkpoint_settings.decode(
         buffer.get_ptr(), (int)total_read, (int)max_buffer);
 
-    if (size < 0)
+    if(size < 0)
     {
       throw exceptions::FilterException(
           "ThreadSafeContext::file_to_string: "
@@ -2270,20 +2270,20 @@ int64_t ThreadSafeContext::load_context(CheckpointSettings& checkpoint_settings,
 
   reader.start();
 
-  if (!reader.is_open())
+  if(!reader.is_open())
   {
     return 0;
   }
 
-  if (checkpoint_settings.clear_knowledge)
+  if(checkpoint_settings.clear_knowledge)
   {
     this->clear();
   }
 
-  for (;;)
+  for(;;)
   {
     auto cur = reader.next();
-    if (cur.first.empty())
+    if(cur.first.empty())
     {
       return reader.get_total_read();
     }
@@ -2306,7 +2306,7 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
   file.seekg(0, file.beg);
   // size_t ret = fread (current, meta.encoded_size (), 1, file);
 
-  if (!file.read(buffer.get(), FileHeader::encoded_size()))
+  if(!file.read(buffer.get(), FileHeader::encoded_size()))
   {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "ThreadSafeContext::save_checkpoint:"
@@ -2325,7 +2325,7 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
       " init file meta: size=%d, states=%d\n",
       (int)meta.size, (int)meta.states);
 
-  if (settings.originator != "")
+  if(settings.originator != "")
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
@@ -2348,13 +2348,13 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
       " meta.size=%d, chkpt.header.size=%d \n",
       (int)meta.size, (int)checkpoint_header.size);
 
-  if (settings.override_timestamp)
+  if(settings.override_timestamp)
   {
     meta.initial_timestamp = settings.initial_timestamp;
     meta.last_timestamp = settings.last_timestamp;
   }
 
-  if (settings.override_lamport)
+  if(settings.override_lamport)
   {
     checkpoint_header.clock = settings.initial_lamport_clock;
   }
@@ -2381,7 +2381,7 @@ static char* init_checkpoint_header(logger::Logger* logger_, uint64_t clock_,
   meta.size += checkpoint_header.encoded_size();
   checkpoint_header.size = checkpoint_header.encoded_size();
 
-  if (settings.override_timestamp)
+  if(settings.override_timestamp)
   {
     meta.initial_timestamp = settings.initial_timestamp;
     meta.last_timestamp = settings.last_timestamp;
@@ -2389,7 +2389,7 @@ static char* init_checkpoint_header(logger::Logger* logger_, uint64_t clock_,
 
   current = meta.write(current, buffer_remaining);
 
-  if (settings.override_lamport)
+  if(settings.override_lamport)
   {
     checkpoint_header.clock = settings.initial_lamport_clock;
   }
@@ -2409,10 +2409,10 @@ static void checkpoint_write_record(logger::Logger* logger_,
     transport::MessageHeader& checkpoint_header, char*& current,
     utility::ScopedArray<char>& buffer, int64_t& buffer_remaining)
 {
-  if (record->exists())
+  if(record->exists())
   {
     // check if the prefix is allowed
-    if (settings.prefixes.size() > 0)
+    if(settings.prefixes.size() > 0)
     {
       madara_logger_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"
@@ -2420,20 +2420,20 @@ static void checkpoint_write_record(logger::Logger* logger_,
           (int)settings.prefixes.size());
 
       bool prefix_found = false;
-      for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
+      for(size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
       {
         madara_logger_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:"
             " checking record %s against prefix %s.\n",
             name.c_str(), settings.prefixes[j].c_str());
 
-        if (madara::utility::begins_with(name, settings.prefixes[j]))
+        if(madara::utility::begins_with(name, settings.prefixes[j]))
         {
           prefix_found = true;
         }
       }  // end for j->prefixes.size
 
-      if (!prefix_found)
+      if(!prefix_found)
       {
         madara_logger_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:"
@@ -2451,7 +2451,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
         " estimated encoded size of update=%d bytes\n",
         (int)encoded_size);
 
-    if (encoded_size > buffer_remaining)
+    if(encoded_size > buffer_remaining)
     {
       throw exceptions::MemoryException(
           "ThreadSafeContext::save_checkpoint: "
@@ -2502,7 +2502,7 @@ public:
     map_ = context_->get_local_modified();
     iter_ = map_.begin();
 
-    if (settings.reset_checkpoint)
+    if(settings.reset_checkpoint)
     {
       clear_modifieds_ = true;
     }
@@ -2512,10 +2512,10 @@ public:
   {
     std::pair<const char*, const KnowledgeRecord*> ret{nullptr, nullptr};
 
-    if (iter_ == map_.end())
+    if(iter_ == map_.end())
     {
       guard_.reset();
-      if (clear_modifieds_)
+      if(clear_modifieds_)
       {
         context_->reset_checkpoint();
       }
@@ -2548,16 +2548,16 @@ static void checkpoint_write_records(const ThreadSafeContext& context,
 
   VariablesLister* lister = settings.variables_lister;
 
-  if (!lister)
+  if(!lister)
   {
     lister = &default_lister;
   }
 
   lister->start(settings);
-  for (;;)
+  for(;;)
   {
     auto e = lister->next();
-    if (e.second == nullptr)
+    if(e.second == nullptr)
     {
       break;
     }
@@ -2583,7 +2583,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
   uint64_t checkpoint_start = update_checkpoint_header(logger_, clock_,
       settings, file, meta, checkpoint_header, buffer_remaining, buffer);
 
-  if (settings.variables_lister != nullptr ||
+  if(settings.variables_lister != nullptr ||
       context.get_local_modified().size() != 0)
   {
     // skip over the checkpoint header. We'll write this later with the records
@@ -2623,7 +2623,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
 
     int total_encoded = 0;
 
-    if (buffer_remaining != max_buffer)
+    if(buffer_remaining != max_buffer)
     {
       total_written = (int64_t)(current - buffer.get_ptr());
 
@@ -2638,7 +2638,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
       total_encoded = settings.encode(
           buffer.get_ptr(), (int)total_written, (int)max_buffer);
 
-      if (total_encoded < 0)
+      if(total_encoded < 0)
       {
         throw exceptions::FilterException(
             "ThreadSafeContext::save_context: "
@@ -2650,7 +2650,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
           " encoded %d bytes in buffer. Writing to disk at offset %d bytes\n",
           (int)total_encoded, (int)checkpoint_start);
 
-      // if (settings.buffer_filters.size () > 0)
+      // if(settings.buffer_filters.size () > 0)
       // {
       //   total_encoded += (int)filters::BufferFilterHeader::encoded_size ();
       // }
@@ -2734,7 +2734,7 @@ static void checkpoint_do_initial(const ThreadSafeContext& context,
       settings.encode(buffer.get_ptr() + (int)FileHeader::encoded_size(),
           (int)(full_buffer - file_header_size), (int)max_buffer);
 
-  if (total < 0)
+  if(total < 0)
   {
     throw exceptions::FilterException(
         "ThreadSafeContext::save_checkpoint: "
@@ -2785,7 +2785,7 @@ int64_t ThreadSafeContext::save_checkpoint(
   transport::MessageHeader checkpoint_header;
   // int chkpt_header_size = (int)checkpoint_header.encoded_size ();
 
-  if (file)
+  if(file)
   {
     checkpoint_do_incremental(
         *this, logger_, clock_, settings, file, meta, checkpoint_header);
@@ -2805,7 +2805,7 @@ int64_t ThreadSafeContext::save_checkpoint(
             : settings.originator.size() + 1);
 
     // if the new file creation for wb was unsuccessful
-    if (!file)
+    if(!file)
     {
       madara_logger_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"

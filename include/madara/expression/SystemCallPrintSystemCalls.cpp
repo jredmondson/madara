@@ -41,18 +41,18 @@ madara::expression::SystemCallPrintSystemCalls::prune(bool& can_change)
 
   madara::knowledge::KnowledgeRecord result;
 
-  if (nodes_.size() == 1)
+  if(nodes_.size() == 1)
   {
     bool arg_can_change = false;
     result = nodes_[0]->prune(arg_can_change);
 
-    if (!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
+    if(!arg_can_change && dynamic_cast<LeafNode*>(nodes_[0]) == 0)
     {
       delete nodes_[0];
       nodes_[0] = new LeafNode(*(this->logger_), result);
     }
   }
-  else if (nodes_.size() != 0)
+  else if(nodes_.size() != 0)
   {
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallPrintSystemCalls: "
@@ -68,7 +68,7 @@ madara::expression::SystemCallPrintSystemCalls::prune(bool& can_change)
   }
 
   // if calls hasn't been initialized yet, fill the list of system calls
-  if (calls_.size() == 0)
+  if(calls_.size() == 0)
   {
     calls_["#clear_variable"] =
         "\n#clear_var (var) or #clear_variable (var):\n"
@@ -284,7 +284,7 @@ madara::expression::SystemCallPrintSystemCalls::evaluate(
 {
   knowledge::KnowledgeRecord return_value;
 
-  if (nodes_.size() == 1)
+  if(nodes_.size() == 1)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallPrintSystemCalls: "
@@ -294,16 +294,16 @@ madara::expression::SystemCallPrintSystemCalls::evaluate(
 
     return madara::knowledge::KnowledgeRecord(1);
   }
-  else if (nodes_.size() == 0)
+  else if(nodes_.size() == 0)
   {
     madara_logger_ptr_log(logger_, logger::LOG_MINOR,
         "madara::expression::SystemCallPrintSystemCalls: "
         "System call print_system_calls is printing help\n");
 
-    for (SystemCallsHelp::const_iterator i = calls_.begin(); i != calls_.end();
+    for(SystemCallsHelp::const_iterator i = calls_.begin(); i != calls_.end();
          ++i)
     {
-      if (i->first != "#delete_var" && i->first != "#eval" &&
+      if(i->first != "#delete_var" && i->first != "#eval" &&
           i->first != "#expand" && i->first != "#expand_env")
         context_.print(i->second, 0);
     }

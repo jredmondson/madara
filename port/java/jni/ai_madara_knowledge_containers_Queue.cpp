@@ -74,7 +74,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1Queue__J(
   containers::Queue* result(0);
   containers::Queue* source = (containers::Queue*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new containers::Queue(*source);
   }
@@ -112,11 +112,11 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1enqueue(
   jboolean result(false);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     KnowledgeRecord* record = (KnowledgeRecord*)record_ptr;
 
-    if (record)
+    if(record)
     {
       result = current->enqueue(*record);
     }
@@ -144,7 +144,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1enqueueDouble(
   jboolean result(false);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->enqueue(KnowledgeRecord(value));
   }
@@ -171,7 +171,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1enqueueLong(
   jboolean result(false);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = current->enqueue(KnowledgeRecord(Integer(value)));
   }
@@ -198,7 +198,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1enqueueString(
   jboolean result(false);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_value = env->GetStringUTFChars(value, 0);
 
@@ -229,7 +229,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1dequeue(
   jlong result(0);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong) new KnowledgeRecord(current->dequeue(wait));
   }
@@ -256,7 +256,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1inspect(
   jlong result(0);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong) new KnowledgeRecord(current->inspect(position));
   }
@@ -285,7 +285,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1getName(
   jstring result = 0;
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -313,16 +313,16 @@ void JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1setName(
 {
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -351,7 +351,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1size(
   jlong result(0);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->size();
   }
@@ -378,7 +378,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1count(
   jlong result(0);
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     result = (jlong)current->count();
   }
@@ -404,7 +404,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1resize(
 {
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     current->resize(new_size);
   }
@@ -428,7 +428,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1clear(
 {
   containers::Queue* current = (containers::Queue*)cptr;
 
-  if (current)
+  if(current)
   {
     current->clear();
   }
@@ -449,7 +449,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Queue_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }

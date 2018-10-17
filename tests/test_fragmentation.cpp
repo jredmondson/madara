@@ -26,13 +26,13 @@ char chars[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 void handle_arguments(int argc, char** argv)
 {
-  for (int i = 1; i < argc; ++i)
+  for(int i = 1; i < argc; ++i)
   {
     std::string arg1(argv[i]);
 
-    if (arg1 == "-l" || arg1 == "--level")
+    if(arg1 == "-l" || arg1 == "--level")
     {
-      if (i + 1 < argc)
+      if(i + 1 < argc)
       {
         int level;
         std::stringstream buffer(argv[i + 1]);
@@ -73,7 +73,7 @@ void test_frag(void)
 
   buffer = header.write(buffer, buffer_remaining);
 
-  for (int i = 0; i < 300000; ++i)
+  for(int i = 0; i < 300000; ++i)
   {
     int column = i % 10;
     buffer[i] = chars[column];
@@ -85,12 +85,12 @@ void test_frag(void)
 
   char* result = transport::defrag(map, total_size);
 
-  if (header.message_header_test(result))
+  if(header.message_header_test(result))
   {
     buffer_remaining = header.encoded_size();
     header.read(result, buffer_remaining);
     buffer_remaining = header.size - header.encoded_size();
-    if (buffer_remaining != 300000)
+    if(buffer_remaining != 300000)
     {
       std::cerr << "FAIL. defrag: Size is incorrect after defrag.\n";
       ++madara_fails;
@@ -98,14 +98,14 @@ void test_frag(void)
     else
     {
       bool failed = false;
-      for (int i = 0; i < 299999 && !failed; ++i)
+      for(int i = 0; i < 299999 && !failed; ++i)
       {
         int column = i % 10;
-        if (buffer[i] != chars[column])
+        if(buffer[i] != chars[column])
           failed = true;
       }
 
-      if (failed)
+      if(failed)
       {
         std::cerr << "FAIL. defrag: Size is incorrect after defrag.\n";
         ++madara_fails;
@@ -142,7 +142,7 @@ void test_add_frag(void)
 
   buffer = header.write(buffer, buffer_remaining);
 
-  for (int i = 0; i < 300000; ++i)
+  for(int i = 0; i < 300000; ++i)
   {
     int column = i % 10;
     buffer[i] = chars[column];
@@ -158,7 +158,7 @@ void test_add_frag(void)
   result = transport::add_fragment("testmachine", 1, 2,
       map[2].get(), 5, frag_map, total_size, true);
 
-  if (transport::exists("testmachine", 1, 0, frag_map))
+  if(transport::exists("testmachine", 1, 0, frag_map))
     std::cerr << "SUCCESS. exists found testmachine:1:0 in frag_map.\n";
   else
   {
@@ -166,7 +166,7 @@ void test_add_frag(void)
     ++madara_fails;
   }
 
-  if (transport::exists("testmachine", 1, 1, frag_map))
+  if(transport::exists("testmachine", 1, 1, frag_map))
   {
     std::cerr << "FAIL. exists found testmachine:1:1 in frag_map.\n";
     ++madara_fails;
@@ -181,7 +181,7 @@ void test_add_frag(void)
   result = transport::add_fragment("testmachine", 1, 1,
       map[1].get(), 5, frag_map, total_size, true);
 
-  if (transport::is_complete("testmachine", 1, frag_map))
+  if(transport::is_complete("testmachine", 1, frag_map))
   {
     std::cerr
         << "FAIL. is_complete is returning true from incomplete packets.\n";
@@ -196,7 +196,7 @@ void test_add_frag(void)
   result = transport::add_fragment("testmachine", 1, 4,
       map[4].get(), 5, frag_map, total_size, true);
 
-  if (transport::is_complete("testmachine", 1, frag_map))
+  if(transport::is_complete("testmachine", 1, frag_map))
   {
     std::cerr << "FAIL. is_complete is returning true, even though packet was "
                  "removed.\n";
@@ -208,7 +208,7 @@ void test_add_frag(void)
                  "entry.\n";
   }
 
-  if (transport::exists("testmachine", 1, 1, frag_map))
+  if(transport::exists("testmachine", 1, 1, frag_map))
   {
     std::cerr << "FAIL. exists found testmachine:1:1 in frag_map.\n";
     ++madara_fails;
@@ -216,12 +216,12 @@ void test_add_frag(void)
   else
     std::cerr << "SUCCESS. exists did not find testmachine:1:1 in frag_map.\n";
 
-  if (header.message_header_test(result.get()))
+  if(header.message_header_test(result.get()))
   {
     buffer_remaining = header.encoded_size();
     header.read(result.get(), buffer_remaining);
     buffer_remaining = header.size - header.encoded_size();
-    if (buffer_remaining != 300000)
+    if(buffer_remaining != 300000)
     {
       std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
       ++madara_fails;
@@ -229,14 +229,14 @@ void test_add_frag(void)
     else
     {
       bool failed = false;
-      for (int i = 0; i < 299999 && !failed; ++i)
+      for(int i = 0; i < 299999 && !failed; ++i)
       {
         int column = i % 10;
-        if (buffer[i] != chars[column])
+        if(buffer[i] != chars[column])
           failed = true;
       }
 
-      if (failed)
+      if(failed)
       {
         std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
         ++madara_fails;
@@ -263,7 +263,7 @@ void test_add_frag(void)
   result = transport::add_fragment("testmachine", 2, 1,
       map[1].get(), 5, frag_map, total_size, true);
 
-  if (transport::is_complete("testmachine", 2, frag_map))
+  if(transport::is_complete("testmachine", 2, frag_map))
   {
     std::cerr
         << "FAIL. is_complete is returning true from incomplete packets.\n";
@@ -277,19 +277,19 @@ void test_add_frag(void)
   result = transport::add_fragment("testmachine", 2, 4,
       map[4].get(), 5, frag_map, total_size, false);
 
-  if (transport::is_complete("testmachine", 2, frag_map))
+  if(transport::is_complete("testmachine", 2, frag_map))
     std::cerr << "SUCCESS. is_complete is returning true on complete packet.\n";
   else
   {
     ++madara_fails;
   }
 
-  if (result.get() && header.message_header_test(result.get()))
+  if(result.get() && header.message_header_test(result.get()))
   {
     buffer_remaining = header.encoded_size();
     header.read(result.get(), buffer_remaining);
     buffer_remaining = header.size - header.encoded_size();
-    if (buffer_remaining != 300000)
+    if(buffer_remaining != 300000)
     {
       std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
       ++madara_fails;
@@ -297,14 +297,14 @@ void test_add_frag(void)
     else
     {
       bool failed = false;
-      for (int i = 0; i < 299999 && !failed; ++i)
+      for(int i = 0; i < 299999 && !failed; ++i)
       {
         int column = i % 10;
-        if (buffer[i] != chars[column])
+        if(buffer[i] != chars[column])
           failed = true;
       }
 
-      if (failed)
+      if(failed)
       {
         std::cerr << "FAIL. add_fragment: Size is incorrect after defrag.\n";
         ++madara_fails;
@@ -351,7 +351,7 @@ void test_records_frag(void)
   std::cerr << "  Constructing record aggregation...\n";
   buffer = header.write(buffer, buffer_remaining);
 
-  for (madara::knowledge::KnowledgeMap::iterator i = knowledge.begin();
+  for(madara::knowledge::KnowledgeMap::iterator i = knowledge.begin();
        i != knowledge.end(); ++i)
   {
     buffer = i->second.write(buffer, i->first, buffer_remaining);
@@ -364,7 +364,7 @@ void test_records_frag(void)
 
   const char* result = 0;
 
-  for (unsigned int i = 0; i < map.size(); ++i)
+  for(unsigned int i = 0; i < map.size(); ++i)
   {
     result = transport::add_fragment(
         header.originator, header.clock, i, map[i].get(),
@@ -374,7 +374,7 @@ void test_records_frag(void)
   buffer = (char*)result;
   bool knowledge_mismatch = false;
 
-  if (result)
+  if(result)
   {
     buffer_remaining = transport::MessageHeader::get_size(result);
     transport::MessageHeader copied_header;
@@ -383,7 +383,7 @@ void test_records_frag(void)
 
     result = copied_header.read(result, buffer_remaining);
 
-    if (copied_header.equals(header))
+    if(copied_header.equals(header))
     {
       std::cerr << "SUCCESS: header was decoded properly\n";
     }
@@ -393,14 +393,14 @@ void test_records_frag(void)
       ++madara_fails;
     }
 
-    for (uint32_t i = 0; i < copied_header.updates; ++i)
+    for(uint32_t i = 0; i < copied_header.updates; ++i)
     {
       madara::knowledge::KnowledgeRecord temp;
       std::string key;
       result = temp.read(result, key, buffer_remaining);
       copied_knowledge[key] = temp;
 
-      if (copied_knowledge[key] != knowledge[key])
+      if(copied_knowledge[key] != knowledge[key])
       {
         knowledge_mismatch = 1;
         std::cerr << "FAIL: Knowledge mismatch on key " << key << "\n";
@@ -408,7 +408,7 @@ void test_records_frag(void)
       }
     }
 
-    if (!knowledge_mismatch)
+    if(!knowledge_mismatch)
     {
       std::cerr
           << "SUCCESS: All copied knowledge records match the originals\n";
@@ -461,7 +461,7 @@ void test_ssl(void)
   std::cerr << "  Constructing record aggregation...\n";
   buffer = header.write(buffer, buffer_remaining);
 
-  for (madara::knowledge::KnowledgeMap::iterator i = knowledge.begin();
+  for(madara::knowledge::KnowledgeMap::iterator i = knowledge.begin();
        i != knowledge.end(); ++i)
   {
     buffer = i->second.write(buffer, i->first, buffer_remaining);
@@ -469,7 +469,7 @@ void test_ssl(void)
 
   encode_result = filter.encode(payload, size, max_size);
 
-  if (encode_result <= 0)
+  if(encode_result <= 0)
   {
     size = 0;
     std::cerr << "  Encode failed... Exiting...\n";
@@ -489,7 +489,7 @@ void test_ssl(void)
 
   const char* result = 0;
 
-  for (unsigned int i = 0; i < map.size(); ++i)
+  for(unsigned int i = 0; i < map.size(); ++i)
   {
     result = transport::add_fragment(header.originator, header.clock,
         i, map[i].get(), 5, frag_map, total_size);
@@ -500,7 +500,7 @@ void test_ssl(void)
 
   decode_result = filter.decode(buffer, encode_result, max_size);
 
-  if (decode_result <= 0)
+  if(decode_result <= 0)
   {
     size = 0;
     std::cerr << "  Decode failed... Exiting...\n";
@@ -514,7 +514,7 @@ void test_ssl(void)
 
   bool knowledge_mismatch = false;
 
-  if (size > 0)
+  if(size > 0)
   {
     buffer_remaining = transport::MessageHeader::get_size(result);
     transport::MessageHeader copied_header;
@@ -523,7 +523,7 @@ void test_ssl(void)
 
     result = copied_header.read(result, buffer_remaining);
 
-    if (copied_header.equals(header))
+    if(copied_header.equals(header))
     {
       std::cerr << "SUCCESS: header was decoded properly\n";
     }
@@ -533,14 +533,14 @@ void test_ssl(void)
       ++madara_fails;
     }
 
-    for (uint32_t i = 0; i < copied_header.updates; ++i)
+    for(uint32_t i = 0; i < copied_header.updates; ++i)
     {
       madara::knowledge::KnowledgeRecord temp;
       std::string key;
       result = temp.read(result, key, buffer_remaining);
       copied_knowledge[key] = temp;
 
-      if (copied_knowledge[key] != knowledge[key])
+      if(copied_knowledge[key] != knowledge[key])
       {
         knowledge_mismatch = 1;
         std::cerr << "FAIL: Knowledge mismatch on key " << key << "\n";
@@ -548,7 +548,7 @@ void test_ssl(void)
       }
     }
 
-    if (!knowledge_mismatch)
+    if(!knowledge_mismatch)
     {
       std::cerr
           << "SUCCESS: All copied knowledge records match the originals\n";
@@ -574,7 +574,7 @@ int main(int argc, char* argv[])
   test_records_frag();
   test_ssl();
 
-  if (madara_fails > 0)
+  if(madara_fails > 0)
   {
     std::cerr << "OVERALL: FAIL. " << madara_fails << " tests failed.\n";
   }

@@ -23,7 +23,7 @@ distribution.
 */
 
 /*
- * THIS FILE WAS ALTERED BY Tyge Løvset, 7. April 2005.
+ * THIS FILE WAS ALTERED BY Tyge Lï¿½vset, 7. April 2005.
  */
 
 
@@ -44,7 +44,7 @@ TiXmlString::Rep TiXmlString::nullrep_ = { 0, 0, { '\0' } };
 
 void TiXmlString::reserve (size_type cap)
 {
-	if (cap > capacity())
+	if(cap > capacity())
 	{
 		TiXmlString tmp;
 		tmp.init(length(), cap);
@@ -57,7 +57,7 @@ void TiXmlString::reserve (size_type cap)
 TiXmlString& TiXmlString::assign(const char* str, size_type len)
 {
 	size_type cap = capacity();
-	if (len > cap || cap > 3*(len + 8))
+	if(len > cap || cap > 3*(len + 8))
 	{
 		TiXmlString tmp;
 		tmp.init(len);
@@ -76,7 +76,7 @@ TiXmlString& TiXmlString::assign(const char* str, size_type len)
 TiXmlString& TiXmlString::append(const char* str, size_type len)
 {
 	size_type newsize = length() + len;
-	if (newsize > capacity())
+	if(newsize > capacity())
 	{
 		reserve (newsize + capacity());
 	}

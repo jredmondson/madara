@@ -171,23 +171,23 @@ public:
 
     //! Destructor.
     ~GenericPointer() {
-        if (nameBuffer_)    // If user-supplied tokens constructor is used, nameBuffer_ is nullptr and tokens_ are not deallocated.
+        if(nameBuffer_)    // If user-supplied tokens constructor is used, nameBuffer_ is nullptr and tokens_ are not deallocated.
             Allocator::Free(tokens_);
         CEREAL_RAPIDJSON_DELETE(ownAllocator_);
     }
 
     //! Assignment operator.
     GenericPointer& operator=(const GenericPointer& rhs) {
-        if (this != &rhs) {
+        if(this != &rhs) {
             // Do not delete ownAllcator
-            if (nameBuffer_)
+            if(nameBuffer_)
                 Allocator::Free(tokens_);
 
             tokenCount_ = rhs.tokenCount_;
             parseErrorOffset_ = rhs.parseErrorOffset_;
             parseErrorCode_ = rhs.parseErrorCode_;
 
-            if (rhs.nameBuffer_)
+            if(rhs.nameBuffer_)
                 CopyFromRaw(rhs); // Normally parsed tokens.
             else {
                 tokens_ = rhs.tokens_; // User supplied const tokens.
@@ -267,13 +267,13 @@ public:
         SizeType length = static_cast<SizeType>(end - buffer);
         buffer[length] = '\0';
 
-        if (sizeof(Ch) == 1) {
+        if(sizeof(Ch) == 1) {
             Token token = { reinterpret_cast<Ch*>(buffer), length, index };
             return Append(token, allocator);
         }
         else {
             Ch name[21];
-            for (size_t i = 0; i <= length; i++)
+            for(size_t i = 0; i <= length; i++)
                 name[i] = buffer[i];
             Token token = { name, length, index };
             return Append(token, allocator);
@@ -287,7 +287,7 @@ public:
         \return A new Pointer with appended token.
     */
     GenericPointer Append(const ValueType& token, Allocator* allocator = 0) const {
-        if (token.IsString())
+        if(token.IsString())
             return Append(token.GetString(), token.GetStringLength(), allocator);
         else {
             CEREAL_RAPIDJSON_ASSERT(token.IsUint64());
@@ -332,11 +332,11 @@ public:
         \note When any pointers are invalid, always returns false.
     */
     bool operator==(const GenericPointer& rhs) const {
-        if (!IsValid() || !rhs.IsValid() || tokenCount_ != rhs.tokenCount_)
+        if(!IsValid() || !rhs.IsValid() || tokenCount_ != rhs.tokenCount_)
             return false;
 
-        for (size_t i = 0; i < tokenCount_; i++) {
-            if (tokens_[i].index != rhs.tokens_[i].index ||
+        for(size_t i = 0; i < tokenCount_; i++) {
+            if(tokens_[i].index != rhs.tokens_[i].index ||
                 tokens_[i].length != rhs.tokens_[i].length || 
                 (tokens_[i].length != 0 && std::memcmp(tokens_[i].name, rhs.tokens_[i].name, sizeof(Ch)* tokens_[i].length) != 0))
             {
@@ -402,26 +402,26 @@ public:
         CEREAL_RAPIDJSON_ASSERT(IsValid());
         ValueType* v = &root;
         bool exist = true;
-        for (const Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
-            if (v->IsArray() && t->name[0] == '-' && t->length == 1) {
+        for(const Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
+            if(v->IsArray() && t->name[0] == '-' && t->length == 1) {
                 v->PushBack(ValueType().Move(), allocator);
                 v = &((*v)[v->Size() - 1]);
                 exist = false;
             }
             else {
-                if (t->index == kPointerInvalidIndex) { // must be object name
-                    if (!v->IsObject())
+                if(t->index == kPointerInvalidIndex) { // must be object name
+                    if(!v->IsObject())
                         v->SetObject(); // Change to Object
                 }
                 else { // object name or array index
-                    if (!v->IsArray() && !v->IsObject())
+                    if(!v->IsArray() && !v->IsObject())
                         v->SetArray(); // Change to Array
                 }
 
-                if (v->IsArray()) {
-                    if (t->index >= v->Size()) {
+                if(v->IsArray()) {
+                    if(t->index >= v->Size()) {
                         v->Reserve(t->index + 1, allocator);
-                        while (t->index >= v->Size())
+                        while(t->index >= v->Size())
                             v->PushBack(ValueType().Move(), allocator);
                         exist = false;
                     }
@@ -429,7 +429,7 @@ public:
                 }
                 else {
                     typename ValueType::MemberIterator m = v->FindMember(GenericStringRef<Ch>(t->name, t->length));
-                    if (m == v->MemberEnd()) {
+                    if(m == v->MemberEnd()) {
                         v->AddMember(ValueType(t->name, t->length, allocator).Move(), ValueType().Move(), allocator);
                         v = &(--v->MemberEnd())->value; // Assumes AddMember() appends at the end
                         exist = false;
@@ -440,7 +440,7 @@ public:
             }
         }
 
-        if (alreadyExist)
+        if(alreadyExist)
             *alreadyExist = exist;
 
         return *v;
@@ -479,18 +479,18 @@ public:
     ValueType* Get(ValueType& root, size_t* unresolvedTokenIndex = 0) const {
         CEREAL_RAPIDJSON_ASSERT(IsValid());
         ValueType* v = &root;
-        for (const Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
+        for(const Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
             switch (v->GetType()) {
             case kObjectType:
                 {
                     typename ValueType::MemberIterator m = v->FindMember(GenericStringRef<Ch>(t->name, t->length));
-                    if (m == v->MemberEnd())
+                    if(m == v->MemberEnd())
                         break;
                     v = &m->value;
                 }
                 continue;
             case kArrayType:
-                if (t->index == kPointerInvalidIndex || t->index >= v->Size())
+                if(t->index == kPointerInvalidIndex || t->index >= v->Size())
                     break;
                 v = &((*v)[t->index]);
                 continue;
@@ -499,7 +499,7 @@ public:
             }
 
             // Error: unresolved token
-            if (unresolvedTokenIndex)
+            if(unresolvedTokenIndex)
                 *unresolvedTokenIndex = static_cast<size_t>(t - tokens_);
             return 0;
         }
@@ -710,23 +710,23 @@ public:
     */
     bool Erase(ValueType& root) const {
         CEREAL_RAPIDJSON_ASSERT(IsValid());
-        if (tokenCount_ == 0) // Cannot erase the root
+        if(tokenCount_ == 0) // Cannot erase the root
             return false;
 
         ValueType* v = &root;
         const Token* last = tokens_ + (tokenCount_ - 1);
-        for (const Token *t = tokens_; t != last; ++t) {
+        for(const Token *t = tokens_; t != last; ++t) {
             switch (v->GetType()) {
             case kObjectType:
                 {
                     typename ValueType::MemberIterator m = v->FindMember(GenericStringRef<Ch>(t->name, t->length));
-                    if (m == v->MemberEnd())
+                    if(m == v->MemberEnd())
                         return false;
                     v = &m->value;
                 }
                 break;
             case kArrayType:
-                if (t->index == kPointerInvalidIndex || t->index >= v->Size())
+                if(t->index == kPointerInvalidIndex || t->index >= v->Size())
                     return false;
                 v = &((*v)[t->index]);
                 break;
@@ -739,7 +739,7 @@ public:
         case kObjectType:
             return v->EraseMember(GenericStringRef<Ch>(last->name, last->length));
         case kArrayType:
-            if (last->index == kPointerInvalidIndex || last->index >= v->Size())
+            if(last->index == kPointerInvalidIndex || last->index >= v->Size())
                 return false;
             v->Erase(v->Begin() + last->index);
             return true;
@@ -757,26 +757,26 @@ private:
         \return Start of non-occupied name buffer, for storing extra names.
     */
     Ch* CopyFromRaw(const GenericPointer& rhs, size_t extraToken = 0, size_t extraNameBufferSize = 0) {
-        if (!allocator_) // allocator is independently owned.
+        if(!allocator_) // allocator is independently owned.
             ownAllocator_ = allocator_ = CEREAL_RAPIDJSON_NEW(Allocator());
 
         size_t nameBufferSize = rhs.tokenCount_; // null terminators for tokens
-        for (Token *t = rhs.tokens_; t != rhs.tokens_ + rhs.tokenCount_; ++t)
+        for(Token *t = rhs.tokens_; t != rhs.tokens_ + rhs.tokenCount_; ++t)
             nameBufferSize += t->length;
 
         tokenCount_ = rhs.tokenCount_ + extraToken;
         tokens_ = static_cast<Token *>(allocator_->Malloc(tokenCount_ * sizeof(Token) + (nameBufferSize + extraNameBufferSize) * sizeof(Ch)));
         nameBuffer_ = reinterpret_cast<Ch *>(tokens_ + tokenCount_);
-        if (rhs.tokenCount_ > 0) {
+        if(rhs.tokenCount_ > 0) {
             std::memcpy(tokens_, rhs.tokens_, rhs.tokenCount_ * sizeof(Token));
         }
-        if (nameBufferSize > 0) {
+        if(nameBufferSize > 0) {
             std::memcpy(nameBuffer_, rhs.nameBuffer_, nameBufferSize * sizeof(Ch));
         }
 
         // Adjust pointers to name buffer
         std::ptrdiff_t diff = nameBuffer_ - rhs.nameBuffer_;
-        for (Token *t = tokens_; t != tokens_ + rhs.tokenCount_; ++t)
+        for(Token *t = tokens_; t != tokens_ + rhs.tokenCount_; ++t)
             t->name += diff;
 
         return nameBuffer_ + nameBufferSize;
@@ -805,13 +805,13 @@ private:
         CEREAL_RAPIDJSON_ASSERT(tokens_ == 0);
 
         // Create own allocator if user did not supply.
-        if (!allocator_)
+        if(!allocator_)
             ownAllocator_ = allocator_ = CEREAL_RAPIDJSON_NEW(Allocator());
 
         // Count number of '/' as tokenCount
         tokenCount_ = 0;
-        for (const Ch* s = source; s != source + length; s++) 
-            if (*s == '/')
+        for(const Ch* s = source; s != source + length; s++) 
+            if(*s == '/')
                 tokenCount_++;
 
         Token* token = tokens_ = static_cast<Token *>(allocator_->Malloc(tokenCount_ * sizeof(Token) + length * sizeof(Ch)));
@@ -820,38 +820,38 @@ private:
 
         // Detect if it is a URI fragment
         bool uriFragment = false;
-        if (source[i] == '#') {
+        if(source[i] == '#') {
             uriFragment = true;
             i++;
         }
 
-        if (i != length && source[i] != '/') {
+        if(i != length && source[i] != '/') {
             parseErrorCode_ = kPointerParseErrorTokenMustBeginWithSolidus;
             goto error;
         }
 
-        while (i < length) {
+        while(i < length) {
             CEREAL_RAPIDJSON_ASSERT(source[i] == '/');
             i++; // consumes '/'
 
             token->name = name;
             bool isNumber = true;
 
-            while (i < length && source[i] != '/') {
+            while(i < length && source[i] != '/') {
                 Ch c = source[i];
-                if (uriFragment) {
+                if(uriFragment) {
                     // Decoding percent-encoding for URI fragment
-                    if (c == '%') {
+                    if(c == '%') {
                         PercentDecodeStream is(&source[i], source + length);
                         GenericInsituStringStream<EncodingType> os(name);
                         Ch* begin = os.PutBegin();
-                        if (!Transcoder<UTF8<>, EncodingType>().Validate(is, os) || !is.IsValid()) {
+                        if(!Transcoder<UTF8<>, EncodingType>().Validate(is, os) || !is.IsValid()) {
                             parseErrorCode_ = kPointerParseErrorInvalidPercentEncoding;
                             goto error;
                         }
                         size_t len = os.PutEnd(begin);
                         i += is.Tell() - 1;
-                        if (len == 1)
+                        if(len == 1)
                             c = *name;
                         else {
                             name += len;
@@ -860,7 +860,7 @@ private:
                             continue;
                         }
                     }
-                    else if (NeedPercentEncode(c)) {
+                    else if(NeedPercentEncode(c)) {
                         parseErrorCode_ = kPointerParseErrorCharacterMustPercentEncode;
                         goto error;
                     }
@@ -869,11 +869,11 @@ private:
                 i++;
                 
                 // Escaping "~0" -> '~', "~1" -> '/'
-                if (c == '~') {
-                    if (i < length) {
+                if(c == '~') {
+                    if(i < length) {
                         c = source[i];
-                        if (c == '0')       c = '~';
-                        else if (c == '1')  c = '/';
+                        if(c == '0')       c = '~';
+                        else if(c == '1')  c = '/';
                         else {
                             parseErrorCode_ = kPointerParseErrorInvalidEscape;
                             goto error;
@@ -887,26 +887,26 @@ private:
                 }
 
                 // First check for index: all of characters are digit
-                if (c < '0' || c > '9')
+                if(c < '0' || c > '9')
                     isNumber = false;
 
                 *name++ = c;
             }
             token->length = static_cast<SizeType>(name - token->name);
-            if (token->length == 0)
+            if(token->length == 0)
                 isNumber = false;
             *name++ = '\0'; // Null terminator
 
             // Second check for index: more than one digit cannot have leading zero
-            if (isNumber && token->length > 1 && token->name[0] == '0')
+            if(isNumber && token->length > 1 && token->name[0] == '0')
                 isNumber = false;
 
             // String to SizeType conversion
             SizeType n = 0;
-            if (isNumber) {
-                for (size_t j = 0; j < token->length; j++) {
+            if(isNumber) {
+                for(size_t j = 0; j < token->length; j++) {
                     SizeType m = n * 10 + static_cast<SizeType>(token->name[j] - '0');
-                    if (m < n) {   // overflow detection
+                    if(m < n) {   // overflow detection
                         isNumber = false;
                         break;
                     }
@@ -941,26 +941,26 @@ private:
     bool Stringify(OutputStream& os) const {
         CEREAL_RAPIDJSON_ASSERT(IsValid());
 
-        if (uriFragment)
+        if(uriFragment)
             os.Put('#');
 
-        for (Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
+        for(Token *t = tokens_; t != tokens_ + tokenCount_; ++t) {
             os.Put('/');
-            for (size_t j = 0; j < t->length; j++) {
+            for(size_t j = 0; j < t->length; j++) {
                 Ch c = t->name[j];
-                if (c == '~') {
+                if(c == '~') {
                     os.Put('~');
                     os.Put('0');
                 }
-                else if (c == '/') {
+                else if(c == '/') {
                     os.Put('~');
                     os.Put('1');
                 }
-                else if (uriFragment && NeedPercentEncode(c)) { 
+                else if(uriFragment && NeedPercentEncode(c)) { 
                     // Transcode to UTF8 sequence
                     GenericStringStream<typename ValueType::EncodingType> source(&t->name[j]);
                     PercentEncodeStream<OutputStream> target(os);
-                    if (!Transcoder<EncodingType, UTF8<> >().Validate(source, target))
+                    if(!Transcoder<EncodingType, UTF8<> >().Validate(source, target))
                         return false;
                     j += source.Tell() - 1;
                 }
@@ -989,18 +989,18 @@ private:
         PercentDecodeStream(const Ch* source, const Ch* end) : src_(source), head_(source), end_(end), valid_(true) {}
 
         Ch Take() {
-            if (*src_ != '%' || src_ + 3 > end_) { // %XY triplet
+            if(*src_ != '%' || src_ + 3 > end_) { // %XY triplet
                 valid_ = false;
                 return 0;
             }
             src_++;
             Ch c = 0;
-            for (int j = 0; j < 2; j++) {
+            for(int j = 0; j < 2; j++) {
                 c = static_cast<Ch>(c << 4);
                 Ch h = *src_;
                 if      (h >= '0' && h <= '9') c = static_cast<Ch>(c + h - '0');
-                else if (h >= 'A' && h <= 'F') c = static_cast<Ch>(c + h - 'A' + 10);
-                else if (h >= 'a' && h <= 'f') c = static_cast<Ch>(c + h - 'a' + 10);
+                else if(h >= 'A' && h <= 'F') c = static_cast<Ch>(c + h - 'A' + 10);
+                else if(h >= 'a' && h <= 'f') c = static_cast<Ch>(c + h - 'a' + 10);
                 else {
                     valid_ = false;
                     return 0;

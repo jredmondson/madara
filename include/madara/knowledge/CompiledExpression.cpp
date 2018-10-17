@@ -29,7 +29,7 @@ madara::knowledge::CompiledExpression::get_root(void)
 void madara::knowledge::CompiledExpression::operator=(
     const CompiledExpression& ce)
 {
-  if (this != &ce)
+  if(this != &ce)
   {
     logic = ce.logic;
     expression = ce.expression;

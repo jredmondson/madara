@@ -71,7 +71,7 @@ public class KnowledgeList extends AbstractList<KnowledgeRecord>
   {
     knowledgeRecords = new long[records.length];
     
-    for (int i = 0; i < records.length; ++i)
+    for(int i = 0; i < records.length; ++i)
     {
       knowledgeRecords[i] = records[i].getCPtr();
     }
@@ -110,7 +110,7 @@ public class KnowledgeList extends AbstractList<KnowledgeRecord>
    */
   public void free()
   {
-    if (knowledgeRecords == null)
+    if(knowledgeRecords == null)
       return;
     
     jni_freeKnowledgeList(knowledgeRecords, knowledgeRecords.length);

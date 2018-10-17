@@ -23,7 +23,7 @@ madara::expression::VariableCompareNode::VariableCompareNode(ComponentNode* lhs,
 {
   var_ = dynamic_cast<VariableNode*>(lhs);
 
-  if (!var_)
+  if(!var_)
     array_ = dynamic_cast<CompositeArrayReference*>(lhs);
 }
 
@@ -41,9 +41,9 @@ KnowledgeRecord madara::expression::VariableCompareNode::item() const
 {
   knowledge::KnowledgeRecord value;
 
-  if (var_)
+  if(var_)
     value = var_->item();
-  else if (array_)
+  else if(array_)
     value = array_->item();
 
   return value;
@@ -58,7 +58,7 @@ KnowledgeRecord madara::expression::VariableCompareNode::prune(bool& can_change)
   bool right_child_can_change = false;
   madara::knowledge::KnowledgeRecord right_value;
 
-  if (this->var_ != 0 || this->array_ != 0)
+  if(this->var_ != 0 || this->array_ != 0)
     left_child_can_change = true;
   else
   {
@@ -71,10 +71,10 @@ KnowledgeRecord madara::expression::VariableCompareNode::prune(bool& can_change)
                                     "Node has no variable left-hand side\n");
   }
 
-  if (this->rhs_)
+  if(this->rhs_)
   {
     right_value = this->rhs_->prune(right_child_can_change);
-    if (!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0)
+    if(!right_child_can_change && dynamic_cast<LeafNode*>(rhs_) == 0)
     {
       delete this->rhs_;
       this->rhs_ = new LeafNode(*(this->logger_), right_value);
@@ -104,26 +104,26 @@ KnowledgeRecord madara::expression::VariableCompareNode::evaluate(
   KnowledgeRecord lhs;
   KnowledgeRecord::Integer result(0);
 
-  if (var_)
+  if(var_)
     lhs = var_->evaluate(settings);
-  else if (array_)
+  else if(array_)
     lhs = array_->evaluate(settings);
 
-  if (rhs_)
+  if(rhs_)
   {
-    if (compare_type_ == LESS_THAN)
+    if(compare_type_ == LESS_THAN)
     {
       result = lhs < rhs_->evaluate(settings);
     }
-    else if (compare_type_ == LESS_THAN_EQUAL)
+    else if(compare_type_ == LESS_THAN_EQUAL)
     {
       result = lhs <= rhs_->evaluate(settings);
     }
-    else if (compare_type_ == EQUAL)
+    else if(compare_type_ == EQUAL)
     {
       result = lhs == rhs_->evaluate(settings);
     }
-    else if (compare_type_ == GREATER_THAN_EQUAL)
+    else if(compare_type_ == GREATER_THAN_EQUAL)
     {
       result = lhs >= rhs_->evaluate(settings);
     }
@@ -134,19 +134,19 @@ KnowledgeRecord madara::expression::VariableCompareNode::evaluate(
   }
   else
   {
-    if (compare_type_ == LESS_THAN)
+    if(compare_type_ == LESS_THAN)
     {
       result = lhs < value_;
     }
-    else if (compare_type_ == LESS_THAN_EQUAL)
+    else if(compare_type_ == LESS_THAN_EQUAL)
     {
       result = lhs <= value_;
     }
-    else if (compare_type_ == EQUAL)
+    else if(compare_type_ == EQUAL)
     {
       result = lhs == value_;
     }
-    else if (compare_type_ == GREATER_THAN_EQUAL)
+    else if(compare_type_ == GREATER_THAN_EQUAL)
     {
       result = lhs >= value_;
     }

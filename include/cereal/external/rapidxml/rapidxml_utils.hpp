@@ -31,7 +31,7 @@ namespace rapidxml
 
             // Open stream
             basic_ifstream<Ch> stream(filename, ios::binary);
-            if (!stream)
+            if(!stream)
                 throw runtime_error(string("cannot open file ") + filename);
             stream.unsetf(ios::skipws);
 
@@ -55,7 +55,7 @@ namespace rapidxml
             // Load data and add terminating 0
             stream.unsetf(ios::skipws);
             m_data.assign(istreambuf_iterator<Ch>(stream), istreambuf_iterator<Ch>());
-            if (stream.fail() || stream.bad())
+            if(stream.fail() || stream.bad())
                 throw runtime_error("error reading stream");
             m_data.push_back(0);
         }
@@ -94,7 +94,7 @@ namespace rapidxml
     {
         xml_node<Ch> *child = node->first_node();
         std::size_t count = 0;
-        while (child)
+        while(child)
         {
             ++count;
             child = child->next_sibling();
@@ -109,7 +109,7 @@ namespace rapidxml
     {
         xml_attribute<Ch> *attr = node->first_attribute();
         std::size_t count = 0;
-        while (attr)
+        while(attr)
         {
             ++count;
             attr = attr->next_attribute();

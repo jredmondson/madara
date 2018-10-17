@@ -285,7 +285,7 @@ public class Barrier extends BaseContainer
    */
   public void free()
   {
-    if (manageMemory)
+    if(manageMemory)
     {
       jni_freeBarrier(getCPtr());
       setCPtr(0);

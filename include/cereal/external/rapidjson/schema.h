@@ -176,7 +176,7 @@ public:
     bool Uint64(uint64_t u) { Number n; n.u.u = u; n.d = static_cast<double>(u); return WriteNumber(n); }
     bool Double(double d) { 
         Number n; 
-        if (d < 0) n.u.i = static_cast<int64_t>(d);
+        if(d < 0) n.u.i = static_cast<int64_t>(d);
         else       n.u.u = static_cast<uint64_t>(d); 
         n.d = d;
         return WriteNumber(n);
@@ -197,7 +197,7 @@ public:
     bool EndObject(SizeType memberCount) { 
         uint64_t h = Hash(0, kObjectType);
         uint64_t* kv = stack_.template Pop<uint64_t>(memberCount * 2);
-        for (SizeType i = 0; i < memberCount; i++)
+        for(SizeType i = 0; i < memberCount; i++)
             h ^= Hash(kv[i * 2], kv[i * 2 + 1]);  // Use xor to achieve member order insensitive
         *stack_.template Push<uint64_t>() = h;
         return true;
@@ -207,7 +207,7 @@ public:
     bool EndArray(SizeType elementCount) { 
         uint64_t h = Hash(0, kArrayType);
         uint64_t* e = stack_.template Pop<uint64_t>(elementCount);
-        for (SizeType i = 0; i < elementCount; i++)
+        for(SizeType i = 0; i < elementCount; i++)
             h = Hash(h, e[i]); // Use hash to achieve element order sensitive
         *stack_.template Push<uint64_t>() = h;
         return true;
@@ -238,7 +238,7 @@ private:
         // FNV-1a from http://isthe.com/chongo/tech/comp/fnv/
         uint64_t h = Hash(CEREAL_RAPIDJSON_UINT64_C2(0x84222325, 0xcbf29ce4), type);
         const unsigned char* d = static_cast<const unsigned char*>(data);
-        for (size_t i = 0; i < len; i++)
+        for(size_t i = 0; i < len; i++)
             h = Hash(h, d[i]);
         *stack_.template Push<uint64_t>() = h;
         return true;
@@ -292,21 +292,21 @@ struct SchemaValidationContext {
     }
 
     ~SchemaValidationContext() {
-        if (hasher)
+        if(hasher)
             factory.DestroryHasher(hasher);
-        if (validators) {
-            for (SizeType i = 0; i < validatorCount; i++)
+        if(validators) {
+            for(SizeType i = 0; i < validatorCount; i++)
                 factory.DestroySchemaValidator(validators[i]);
             factory.FreeState(validators);
         }
-        if (patternPropertiesValidators) {
-            for (SizeType i = 0; i < patternPropertiesValidatorCount; i++)
+        if(patternPropertiesValidators) {
+            for(SizeType i = 0; i < patternPropertiesValidatorCount; i++)
                 factory.DestroySchemaValidator(patternPropertiesValidators[i]);
             factory.FreeState(patternPropertiesValidators);
         }
-        if (patternPropertiesSchemas)
+        if(patternPropertiesSchemas)
             factory.FreeState(patternPropertiesSchemas);
-        if (propertyExist)
+        if(propertyExist)
             factory.FreeState(propertyExist);
     }
 
@@ -383,22 +383,22 @@ public:
         typedef typename ValueType::ConstValueIterator ConstValueIterator;
         typedef typename ValueType::ConstMemberIterator ConstMemberIterator;
 
-        if (!value.IsObject())
+        if(!value.IsObject())
             return;
 
-        if (const ValueType* v = GetMember(value, GetTypeString())) {
+        if(const ValueType* v = GetMember(value, GetTypeString())) {
             type_ = 0;
-            if (v->IsString())
+            if(v->IsString())
                 AddType(*v);
-            else if (v->IsArray())
-                for (ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr)
+            else if(v->IsArray())
+                for(ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr)
                     AddType(*itr);
         }
 
-        if (const ValueType* v = GetMember(value, GetEnumString()))
-            if (v->IsArray() && v->Size() > 0) {
+        if(const ValueType* v = GetMember(value, GetEnumString()))
+            if(v->IsArray() && v->Size() > 0) {
                 enum_ = static_cast<uint64_t*>(allocator_->Malloc(sizeof(uint64_t) * v->Size()));
-                for (ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr) {
+                for(ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr) {
                     typedef Hasher<EncodingType, MemoryPoolAllocator<> > EnumHasherType;
                     char buffer[256 + 24];
                     MemoryPoolAllocator<> hasherAllocator(buffer, sizeof(buffer));
@@ -408,13 +408,13 @@ public:
                 }
             }
 
-        if (schemaDocument) {
+        if(schemaDocument) {
             AssignIfExist(allOf_, *schemaDocument, p, value, GetAllOfString(), document);
             AssignIfExist(anyOf_, *schemaDocument, p, value, GetAnyOfString(), document);
             AssignIfExist(oneOf_, *schemaDocument, p, value, GetOneOfString(), document);
         }
 
-        if (const ValueType* v = GetMember(value, GetNotString())) {
+        if(const ValueType* v = GetMember(value, GetNotString())) {
             schemaDocument->CreateSchema(&not_, p.Append(GetNotString(), allocator_), *v, document);
             notValidatorIndex_ = validatorCount_;
             validatorCount_++;
@@ -429,28 +429,28 @@ public:
             // Gather properties from properties/required/dependencies
             SValue allProperties(kArrayType);
 
-            if (properties && properties->IsObject())
-                for (ConstMemberIterator itr = properties->MemberBegin(); itr != properties->MemberEnd(); ++itr)
+            if(properties && properties->IsObject())
+                for(ConstMemberIterator itr = properties->MemberBegin(); itr != properties->MemberEnd(); ++itr)
                     AddUniqueElement(allProperties, itr->name);
             
-            if (required && required->IsArray())
-                for (ConstValueIterator itr = required->Begin(); itr != required->End(); ++itr)
-                    if (itr->IsString())
+            if(required && required->IsArray())
+                for(ConstValueIterator itr = required->Begin(); itr != required->End(); ++itr)
+                    if(itr->IsString())
                         AddUniqueElement(allProperties, *itr);
 
-            if (dependencies && dependencies->IsObject())
-                for (ConstMemberIterator itr = dependencies->MemberBegin(); itr != dependencies->MemberEnd(); ++itr) {
+            if(dependencies && dependencies->IsObject())
+                for(ConstMemberIterator itr = dependencies->MemberBegin(); itr != dependencies->MemberEnd(); ++itr) {
                     AddUniqueElement(allProperties, itr->name);
-                    if (itr->value.IsArray())
-                        for (ConstValueIterator i = itr->value.Begin(); i != itr->value.End(); ++i)
-                            if (i->IsString())
+                    if(itr->value.IsArray())
+                        for(ConstValueIterator i = itr->value.Begin(); i != itr->value.End(); ++i)
+                            if(i->IsString())
                                 AddUniqueElement(allProperties, *i);
                 }
 
-            if (allProperties.Size() > 0) {
+            if(allProperties.Size() > 0) {
                 propertyCount_ = allProperties.Size();
                 properties_ = static_cast<Property*>(allocator_->Malloc(sizeof(Property) * propertyCount_));
-                for (SizeType i = 0; i < propertyCount_; i++) {
+                for(SizeType i = 0; i < propertyCount_; i++) {
                     new (&properties_[i]) Property();
                     properties_[i].name = allProperties[i];
                     properties_[i].schema = GetTypeless();
@@ -458,21 +458,21 @@ public:
             }
         }
 
-        if (properties && properties->IsObject()) {
+        if(properties && properties->IsObject()) {
             PointerType q = p.Append(GetPropertiesString(), allocator_);
-            for (ConstMemberIterator itr = properties->MemberBegin(); itr != properties->MemberEnd(); ++itr) {
+            for(ConstMemberIterator itr = properties->MemberBegin(); itr != properties->MemberEnd(); ++itr) {
                 SizeType index;
-                if (FindPropertyIndex(itr->name, &index))
+                if(FindPropertyIndex(itr->name, &index))
                     schemaDocument->CreateSchema(&properties_[index].schema, q.Append(itr->name, allocator_), itr->value, document);
             }
         }
 
-        if (const ValueType* v = GetMember(value, GetPatternPropertiesString())) {
+        if(const ValueType* v = GetMember(value, GetPatternPropertiesString())) {
             PointerType q = p.Append(GetPatternPropertiesString(), allocator_);
             patternProperties_ = static_cast<PatternProperty*>(allocator_->Malloc(sizeof(PatternProperty) * v->MemberCount()));
             patternPropertyCount_ = 0;
 
-            for (ConstMemberIterator itr = v->MemberBegin(); itr != v->MemberEnd(); ++itr) {
+            for(ConstMemberIterator itr = v->MemberBegin(); itr != v->MemberEnd(); ++itr) {
                 new (&patternProperties_[patternPropertyCount_]) PatternProperty();
                 patternProperties_[patternPropertyCount_].pattern = CreatePattern(itr->name);
                 schemaDocument->CreateSchema(&patternProperties_[patternPropertyCount_].schema, q.Append(itr->name, allocator_), itr->value, document);
@@ -480,32 +480,32 @@ public:
             }
         }
 
-        if (required && required->IsArray())
-            for (ConstValueIterator itr = required->Begin(); itr != required->End(); ++itr)
-                if (itr->IsString()) {
+        if(required && required->IsArray())
+            for(ConstValueIterator itr = required->Begin(); itr != required->End(); ++itr)
+                if(itr->IsString()) {
                     SizeType index;
-                    if (FindPropertyIndex(*itr, &index)) {
+                    if(FindPropertyIndex(*itr, &index)) {
                         properties_[index].required = true;
                         hasRequired_ = true;
                     }
                 }
 
-        if (dependencies && dependencies->IsObject()) {
+        if(dependencies && dependencies->IsObject()) {
             PointerType q = p.Append(GetDependenciesString(), allocator_);
             hasDependencies_ = true;
-            for (ConstMemberIterator itr = dependencies->MemberBegin(); itr != dependencies->MemberEnd(); ++itr) {
+            for(ConstMemberIterator itr = dependencies->MemberBegin(); itr != dependencies->MemberEnd(); ++itr) {
                 SizeType sourceIndex;
-                if (FindPropertyIndex(itr->name, &sourceIndex)) {
-                    if (itr->value.IsArray()) {
+                if(FindPropertyIndex(itr->name, &sourceIndex)) {
+                    if(itr->value.IsArray()) {
                         properties_[sourceIndex].dependencies = static_cast<bool*>(allocator_->Malloc(sizeof(bool) * propertyCount_));
                         std::memset(properties_[sourceIndex].dependencies, 0, sizeof(bool)* propertyCount_);
-                        for (ConstValueIterator targetItr = itr->value.Begin(); targetItr != itr->value.End(); ++targetItr) {
+                        for(ConstValueIterator targetItr = itr->value.Begin(); targetItr != itr->value.End(); ++targetItr) {
                             SizeType targetIndex;
-                            if (FindPropertyIndex(*targetItr, &targetIndex))
+                            if(FindPropertyIndex(*targetItr, &targetIndex))
                                 properties_[sourceIndex].dependencies[targetIndex] = true;
                         }
                     }
-                    else if (itr->value.IsObject()) {
+                    else if(itr->value.IsObject()) {
                         hasSchemaDependencies_ = true;
                         schemaDocument->CreateSchema(&properties_[sourceIndex].dependenciesSchema, q.Append(itr->name, allocator_), itr->value, document);
                         properties_[sourceIndex].dependenciesValidatorIndex = validatorCount_;
@@ -515,10 +515,10 @@ public:
             }
         }
 
-        if (const ValueType* v = GetMember(value, GetAdditionalPropertiesString())) {
-            if (v->IsBool())
+        if(const ValueType* v = GetMember(value, GetAdditionalPropertiesString())) {
+            if(v->IsBool())
                 additionalProperties_ = v->GetBool();
-            else if (v->IsObject())
+            else if(v->IsObject())
                 schemaDocument->CreateSchema(&additionalPropertiesSchema_, p.Append(GetAdditionalPropertiesString(), allocator_), *v, document);
         }
 
@@ -526,14 +526,14 @@ public:
         AssignIfExist(maxProperties_, value, GetMaxPropertiesString());
 
         // Array
-        if (const ValueType* v = GetMember(value, GetItemsString())) {
+        if(const ValueType* v = GetMember(value, GetItemsString())) {
             PointerType q = p.Append(GetItemsString(), allocator_);
-            if (v->IsObject()) // List validation
+            if(v->IsObject()) // List validation
                 schemaDocument->CreateSchema(&itemsList_, q, *v, document);
-            else if (v->IsArray()) { // Tuple validation
+            else if(v->IsArray()) { // Tuple validation
                 itemsTuple_ = static_cast<const Schema**>(allocator_->Malloc(sizeof(const Schema*) * v->Size()));
                 SizeType index = 0;
-                for (ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr, index++)
+                for(ConstValueIterator itr = v->Begin(); itr != v->End(); ++itr, index++)
                     schemaDocument->CreateSchema(&itemsTuple_[itemsTupleCount_++], q.Append(index, allocator_), *itr, document);
             }
         }
@@ -541,10 +541,10 @@ public:
         AssignIfExist(minItems_, value, GetMinItemsString());
         AssignIfExist(maxItems_, value, GetMaxItemsString());
 
-        if (const ValueType* v = GetMember(value, GetAdditionalItemsString())) {
-            if (v->IsBool())
+        if(const ValueType* v = GetMember(value, GetAdditionalItemsString())) {
+            if(v->IsBool())
                 additionalItems_ = v->GetBool();
-            else if (v->IsObject())
+            else if(v->IsObject())
                 schemaDocument->CreateSchema(&additionalItemsSchema_, p.Append(GetAdditionalItemsString(), allocator_), *v, document);
         }
 
@@ -554,43 +554,43 @@ public:
         AssignIfExist(minLength_, value, GetMinLengthString());
         AssignIfExist(maxLength_, value, GetMaxLengthString());
 
-        if (const ValueType* v = GetMember(value, GetPatternString()))
+        if(const ValueType* v = GetMember(value, GetPatternString()))
             pattern_ = CreatePattern(*v);
 
         // Number
-        if (const ValueType* v = GetMember(value, GetMinimumString()))
-            if (v->IsNumber())
+        if(const ValueType* v = GetMember(value, GetMinimumString()))
+            if(v->IsNumber())
                 minimum_.CopyFrom(*v, *allocator_);
 
-        if (const ValueType* v = GetMember(value, GetMaximumString()))
-            if (v->IsNumber())
+        if(const ValueType* v = GetMember(value, GetMaximumString()))
+            if(v->IsNumber())
                 maximum_.CopyFrom(*v, *allocator_);
 
         AssignIfExist(exclusiveMinimum_, value, GetExclusiveMinimumString());
         AssignIfExist(exclusiveMaximum_, value, GetExclusiveMaximumString());
 
-        if (const ValueType* v = GetMember(value, GetMultipleOfString()))
-            if (v->IsNumber() && v->GetDouble() > 0.0)
+        if(const ValueType* v = GetMember(value, GetMultipleOfString()))
+            if(v->IsNumber() && v->GetDouble() > 0.0)
                 multipleOf_.CopyFrom(*v, *allocator_);
     }
 
     ~Schema() {
-        if (allocator_) {
+        if(allocator_) {
             allocator_->Free(enum_);
         }
-        if (properties_) {
-            for (SizeType i = 0; i < propertyCount_; i++)
+        if(properties_) {
+            for(SizeType i = 0; i < propertyCount_; i++)
                 properties_[i].~Property();
             AllocatorType::Free(properties_);
         }
-        if (patternProperties_) {
-            for (SizeType i = 0; i < patternPropertyCount_; i++)
+        if(patternProperties_) {
+            for(SizeType i = 0; i < patternPropertyCount_; i++)
                 patternProperties_[i].~PatternProperty();
             AllocatorType::Free(patternProperties_);
         }
         AllocatorType::Free(itemsTuple_);
 #if CEREAL_RAPIDJSON_SCHEMA_HAS_REGEX
-        if (pattern_) {
+        if(pattern_) {
             pattern_->~RegexType();
             allocator_->Free(pattern_);
         }
@@ -598,18 +598,18 @@ public:
     }
 
     bool BeginValue(Context& context) const {
-        if (context.inArray) {
-            if (uniqueItems_)
+        if(context.inArray) {
+            if(uniqueItems_)
                 context.valueUniqueness = true;
 
-            if (itemsList_)
+            if(itemsList_)
                 context.valueSchema = itemsList_;
-            else if (itemsTuple_) {
-                if (context.arrayElementIndex < itemsTupleCount_)
+            else if(itemsTuple_) {
+                if(context.arrayElementIndex < itemsTupleCount_)
                     context.valueSchema = itemsTuple_[context.arrayElementIndex];
-                else if (additionalItemsSchema_)
+                else if(additionalItemsSchema_)
                     context.valueSchema = additionalItemsSchema_;
-                else if (additionalItems_)
+                else if(additionalItems_)
                     context.valueSchema = GetTypeless();
                 else
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetItemsString());
@@ -623,154 +623,154 @@ public:
     }
 
     CEREAL_RAPIDJSON_FORCEINLINE bool EndValue(Context& context) const {
-        if (context.patternPropertiesValidatorCount > 0) {
+        if(context.patternPropertiesValidatorCount > 0) {
             bool otherValid = false;
             SizeType count = context.patternPropertiesValidatorCount;
-            if (context.objectPatternValidatorType != Context::kPatternValidatorOnly)
+            if(context.objectPatternValidatorType != Context::kPatternValidatorOnly)
                 otherValid = context.patternPropertiesValidators[--count]->IsValid();
 
             bool patternValid = true;
-            for (SizeType i = 0; i < count; i++)
-                if (!context.patternPropertiesValidators[i]->IsValid()) {
+            for(SizeType i = 0; i < count; i++)
+                if(!context.patternPropertiesValidators[i]->IsValid()) {
                     patternValid = false;
                     break;
                 }
 
-            if (context.objectPatternValidatorType == Context::kPatternValidatorOnly) {
-                if (!patternValid)
+            if(context.objectPatternValidatorType == Context::kPatternValidatorOnly) {
+                if(!patternValid)
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetPatternPropertiesString());
             }
-            else if (context.objectPatternValidatorType == Context::kPatternValidatorWithProperty) {
-                if (!patternValid || !otherValid)
+            else if(context.objectPatternValidatorType == Context::kPatternValidatorWithProperty) {
+                if(!patternValid || !otherValid)
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetPatternPropertiesString());
             }
-            else if (!patternValid && !otherValid) // kPatternValidatorWithAdditionalProperty)
+            else if(!patternValid && !otherValid) // kPatternValidatorWithAdditionalProperty)
                 CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetPatternPropertiesString());
         }
 
-        if (enum_) {
+        if(enum_) {
             const uint64_t h = context.factory.GetHashCode(context.hasher);
-            for (SizeType i = 0; i < enumCount_; i++)
-                if (enum_[i] == h)
+            for(SizeType i = 0; i < enumCount_; i++)
+                if(enum_[i] == h)
                     goto foundEnum;
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetEnumString());
             foundEnum:;
         }
 
-        if (allOf_.schemas)
-            for (SizeType i = allOf_.begin; i < allOf_.begin + allOf_.count; i++)
-                if (!context.validators[i]->IsValid())
+        if(allOf_.schemas)
+            for(SizeType i = allOf_.begin; i < allOf_.begin + allOf_.count; i++)
+                if(!context.validators[i]->IsValid())
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetAllOfString());
         
-        if (anyOf_.schemas) {
-            for (SizeType i = anyOf_.begin; i < anyOf_.begin + anyOf_.count; i++)
-                if (context.validators[i]->IsValid())
+        if(anyOf_.schemas) {
+            for(SizeType i = anyOf_.begin; i < anyOf_.begin + anyOf_.count; i++)
+                if(context.validators[i]->IsValid())
                     goto foundAny;
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetAnyOfString());
             foundAny:;
         }
 
-        if (oneOf_.schemas) {
+        if(oneOf_.schemas) {
             bool oneValid = false;
-            for (SizeType i = oneOf_.begin; i < oneOf_.begin + oneOf_.count; i++)
-                if (context.validators[i]->IsValid()) {
-                    if (oneValid)
+            for(SizeType i = oneOf_.begin; i < oneOf_.begin + oneOf_.count; i++)
+                if(context.validators[i]->IsValid()) {
+                    if(oneValid)
                         CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetOneOfString());
                     else
                         oneValid = true;
                 }
-            if (!oneValid)
+            if(!oneValid)
                 CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetOneOfString());
         }
 
-        if (not_ && context.validators[notValidatorIndex_]->IsValid())
+        if(not_ && context.validators[notValidatorIndex_]->IsValid())
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetNotString());
 
         return true;
     }
 
     bool Null(Context& context) const { 
-        if (!(type_ & (1 << kNullSchemaType)))
+        if(!(type_ & (1 << kNullSchemaType)))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
         return CreateParallelValidator(context);
     }
     
     bool Bool(Context& context, bool) const { 
-        if (!(type_ & (1 << kBooleanSchemaType)))
+        if(!(type_ & (1 << kBooleanSchemaType)))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
         return CreateParallelValidator(context);
     }
 
     bool Int(Context& context, int i) const {
-        if (!CheckInt(context, i))
+        if(!CheckInt(context, i))
             return false;
         return CreateParallelValidator(context);
     }
 
     bool Uint(Context& context, unsigned u) const {
-        if (!CheckUint(context, u))
+        if(!CheckUint(context, u))
             return false;
         return CreateParallelValidator(context);
     }
 
     bool Int64(Context& context, int64_t i) const {
-        if (!CheckInt(context, i))
+        if(!CheckInt(context, i))
             return false;
         return CreateParallelValidator(context);
     }
 
     bool Uint64(Context& context, uint64_t u) const {
-        if (!CheckUint(context, u))
+        if(!CheckUint(context, u))
             return false;
         return CreateParallelValidator(context);
     }
 
     bool Double(Context& context, double d) const {
-        if (!(type_ & (1 << kNumberSchemaType)))
+        if(!(type_ & (1 << kNumberSchemaType)))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
 
-        if (!minimum_.IsNull() && !CheckDoubleMinimum(context, d))
+        if(!minimum_.IsNull() && !CheckDoubleMinimum(context, d))
             return false;
 
-        if (!maximum_.IsNull() && !CheckDoubleMaximum(context, d))
+        if(!maximum_.IsNull() && !CheckDoubleMaximum(context, d))
             return false;
         
-        if (!multipleOf_.IsNull() && !CheckDoubleMultipleOf(context, d))
+        if(!multipleOf_.IsNull() && !CheckDoubleMultipleOf(context, d))
             return false;
         
         return CreateParallelValidator(context);
     }
     
     bool String(Context& context, const Ch* str, SizeType length, bool) const {
-        if (!(type_ & (1 << kStringSchemaType)))
+        if(!(type_ & (1 << kStringSchemaType)))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
 
-        if (minLength_ != 0 || maxLength_ != SizeType(~0)) {
+        if(minLength_ != 0 || maxLength_ != SizeType(~0)) {
             SizeType count;
-            if (internal::CountStringCodePoint<EncodingType>(str, length, &count)) {
-                if (count < minLength_)
+            if(internal::CountStringCodePoint<EncodingType>(str, length, &count)) {
+                if(count < minLength_)
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinLengthString());
-                if (count > maxLength_)
+                if(count > maxLength_)
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaxLengthString());
             }
         }
 
-        if (pattern_ && !IsPatternMatch(pattern_, str, length))
+        if(pattern_ && !IsPatternMatch(pattern_, str, length))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetPatternString());
 
         return CreateParallelValidator(context);
     }
 
     bool StartObject(Context& context) const { 
-        if (!(type_ & (1 << kObjectSchemaType)))
+        if(!(type_ & (1 << kObjectSchemaType)))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
 
-        if (hasDependencies_ || hasRequired_) {
+        if(hasDependencies_ || hasRequired_) {
             context.propertyExist = static_cast<bool*>(context.factory.MallocState(sizeof(bool) * propertyCount_));
             std::memset(context.propertyExist, 0, sizeof(bool) * propertyCount_);
         }
 
-        if (patternProperties_) { // pre-allocate schema array
+        if(patternProperties_) { // pre-allocate schema array
             SizeType count = patternPropertyCount_ + 1; // extra for valuePatternValidatorType
             context.patternPropertiesSchemas = static_cast<const SchemaType**>(context.factory.MallocState(sizeof(const SchemaType*) * count));
             context.patternPropertiesSchemaCount = 0;
@@ -781,16 +781,16 @@ public:
     }
     
     bool Key(Context& context, const Ch* str, SizeType len, bool) const {
-        if (patternProperties_) {
+        if(patternProperties_) {
             context.patternPropertiesSchemaCount = 0;
-            for (SizeType i = 0; i < patternPropertyCount_; i++)
-                if (patternProperties_[i].pattern && IsPatternMatch(patternProperties_[i].pattern, str, len))
+            for(SizeType i = 0; i < patternPropertyCount_; i++)
+                if(patternProperties_[i].pattern && IsPatternMatch(patternProperties_[i].pattern, str, len))
                     context.patternPropertiesSchemas[context.patternPropertiesSchemaCount++] = patternProperties_[i].schema;
         }
 
         SizeType index;
-        if (FindPropertyIndex(ValueType(str, len).Move(), &index)) {
-            if (context.patternPropertiesSchemaCount > 0) {
+        if(FindPropertyIndex(ValueType(str, len).Move(), &index)) {
+            if(context.patternPropertiesSchemaCount > 0) {
                 context.patternPropertiesSchemas[context.patternPropertiesSchemaCount++] = properties_[index].schema;
                 context.valueSchema = GetTypeless();
                 context.valuePatternValidatorType = Context::kPatternValidatorWithProperty;
@@ -798,14 +798,14 @@ public:
             else
                 context.valueSchema = properties_[index].schema;
 
-            if (context.propertyExist)
+            if(context.propertyExist)
                 context.propertyExist[index] = true;
 
             return true;
         }
 
-        if (additionalPropertiesSchema_) {
-            if (additionalPropertiesSchema_ && context.patternPropertiesSchemaCount > 0) {
+        if(additionalPropertiesSchema_) {
+            if(additionalPropertiesSchema_ && context.patternPropertiesSchemaCount > 0) {
                 context.patternPropertiesSchemas[context.patternPropertiesSchemaCount++] = additionalPropertiesSchema_;
                 context.valueSchema = GetTypeless();
                 context.valuePatternValidatorType = Context::kPatternValidatorWithAdditionalProperty;
@@ -814,40 +814,40 @@ public:
                 context.valueSchema = additionalPropertiesSchema_;
             return true;
         }
-        else if (additionalProperties_) {
+        else if(additionalProperties_) {
             context.valueSchema = GetTypeless();
             return true;
         }
 
-        if (context.patternPropertiesSchemaCount == 0) // patternProperties are not additional properties
+        if(context.patternPropertiesSchemaCount == 0) // patternProperties are not additional properties
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetAdditionalPropertiesString());
 
         return true;
     }
 
     bool EndObject(Context& context, SizeType memberCount) const {
-        if (hasRequired_)
-            for (SizeType index = 0; index < propertyCount_; index++)
-                if (properties_[index].required)
-                    if (!context.propertyExist[index])
+        if(hasRequired_)
+            for(SizeType index = 0; index < propertyCount_; index++)
+                if(properties_[index].required)
+                    if(!context.propertyExist[index])
                         CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetRequiredString());
 
-        if (memberCount < minProperties_)
+        if(memberCount < minProperties_)
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinPropertiesString());
 
-        if (memberCount > maxProperties_)
+        if(memberCount > maxProperties_)
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaxPropertiesString());
 
-        if (hasDependencies_) {
-            for (SizeType sourceIndex = 0; sourceIndex < propertyCount_; sourceIndex++)
-                if (context.propertyExist[sourceIndex]) {
-                    if (properties_[sourceIndex].dependencies) {
-                        for (SizeType targetIndex = 0; targetIndex < propertyCount_; targetIndex++)
-                            if (properties_[sourceIndex].dependencies[targetIndex] && !context.propertyExist[targetIndex])
+        if(hasDependencies_) {
+            for(SizeType sourceIndex = 0; sourceIndex < propertyCount_; sourceIndex++)
+                if(context.propertyExist[sourceIndex]) {
+                    if(properties_[sourceIndex].dependencies) {
+                        for(SizeType targetIndex = 0; targetIndex < propertyCount_; targetIndex++)
+                            if(properties_[sourceIndex].dependencies[targetIndex] && !context.propertyExist[targetIndex])
                                 CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetDependenciesString());
                     }
-                    else if (properties_[sourceIndex].dependenciesSchema)
-                        if (!context.validators[properties_[sourceIndex].dependenciesValidatorIndex]->IsValid())
+                    else if(properties_[sourceIndex].dependenciesSchema)
+                        if(!context.validators[properties_[sourceIndex].dependenciesValidatorIndex]->IsValid())
                             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetDependenciesString());
                 }
         }
@@ -856,7 +856,7 @@ public:
     }
 
     bool StartArray(Context& context) const { 
-        if (!(type_ & (1 << kArraySchemaType)))
+        if(!(type_ & (1 << kArraySchemaType)))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
 
         context.arrayElementIndex = 0;
@@ -868,10 +868,10 @@ public:
     bool EndArray(Context& context, SizeType elementCount) const { 
         context.inArray = false;
         
-        if (elementCount < minItems_)
+        if(elementCount < minItems_)
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinItemsString());
         
-        if (elementCount > maxItems_)
+        if(elementCount > maxItems_)
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaxItemsString());
 
         return true;
@@ -956,8 +956,8 @@ private:
 
     template <typename V1, typename V2>
     void AddUniqueElement(V1& a, const V2& v) {
-        for (typename V1::ConstValueIterator itr = a.Begin(); itr != a.End(); ++itr)
-            if (*itr == v)
+        for(typename V1::ConstValueIterator itr = a.Begin(); itr != a.End(); ++itr)
+            if(*itr == v)
                 return;
         V1 c(v, *allocator_);
         a.PushBack(c, *allocator_);
@@ -969,25 +969,25 @@ private:
     }
 
     static void AssignIfExist(bool& out, const ValueType& value, const ValueType& name) {
-        if (const ValueType* v = GetMember(value, name))
-            if (v->IsBool())
+        if(const ValueType* v = GetMember(value, name))
+            if(v->IsBool())
                 out = v->GetBool();
     }
 
     static void AssignIfExist(SizeType& out, const ValueType& value, const ValueType& name) {
-        if (const ValueType* v = GetMember(value, name))
-            if (v->IsUint64() && v->GetUint64() <= SizeType(~0))
+        if(const ValueType* v = GetMember(value, name))
+            if(v->IsUint64() && v->GetUint64() <= SizeType(~0))
                 out = static_cast<SizeType>(v->GetUint64());
     }
 
     void AssignIfExist(SchemaArray& out, SchemaDocumentType& schemaDocument, const PointerType& p, const ValueType& value, const ValueType& name, const ValueType& document) {
-        if (const ValueType* v = GetMember(value, name)) {
-            if (v->IsArray() && v->Size() > 0) {
+        if(const ValueType* v = GetMember(value, name)) {
+            if(v->IsArray() && v->Size() > 0) {
                 PointerType q = p.Append(name, allocator_);
                 out.count = v->Size();
                 out.schemas = static_cast<const Schema**>(allocator_->Malloc(out.count * sizeof(const Schema*)));
                 memset(out.schemas, 0, sizeof(Schema*)* out.count);
-                for (SizeType i = 0; i < out.count; i++)
+                for(SizeType i = 0; i < out.count; i++)
                     schemaDocument.CreateSchema(&out.schemas[i], q.Append(i, allocator_), (*v)[i], document);
                 out.begin = validatorCount_;
                 validatorCount_ += out.count;
@@ -998,9 +998,9 @@ private:
 #if CEREAL_RAPIDJSON_SCHEMA_USE_INTERNALREGEX
     template <typename ValueType>
     RegexType* CreatePattern(const ValueType& value) {
-        if (value.IsString()) {
+        if(value.IsString()) {
             RegexType* r = new (allocator_->Malloc(sizeof(RegexType))) RegexType(value.GetString());
-            if (!r->IsValid()) {
+            if(!r->IsValid()) {
                 r->~RegexType();
                 AllocatorType::Free(r);
                 r = 0;
@@ -1016,7 +1016,7 @@ private:
 #elif CEREAL_RAPIDJSON_SCHEMA_USE_STDREGEX
     template <typename ValueType>
     RegexType* CreatePattern(const ValueType& value) {
-        if (value.IsString())
+        if(value.IsString())
             try {
                 return new (allocator_->Malloc(sizeof(RegexType))) RegexType(value.GetString(), std::size_t(value.GetStringLength()), std::regex_constants::ECMAScript);
             }
@@ -1038,38 +1038,38 @@ private:
 
     void AddType(const ValueType& type) {
         if      (type == GetNullString()   ) type_ |= 1 << kNullSchemaType;
-        else if (type == GetBooleanString()) type_ |= 1 << kBooleanSchemaType;
-        else if (type == GetObjectString() ) type_ |= 1 << kObjectSchemaType;
-        else if (type == GetArrayString()  ) type_ |= 1 << kArraySchemaType;
-        else if (type == GetStringString() ) type_ |= 1 << kStringSchemaType;
-        else if (type == GetIntegerString()) type_ |= 1 << kIntegerSchemaType;
-        else if (type == GetNumberString() ) type_ |= (1 << kNumberSchemaType) | (1 << kIntegerSchemaType);
+        else if(type == GetBooleanString()) type_ |= 1 << kBooleanSchemaType;
+        else if(type == GetObjectString() ) type_ |= 1 << kObjectSchemaType;
+        else if(type == GetArrayString()  ) type_ |= 1 << kArraySchemaType;
+        else if(type == GetStringString() ) type_ |= 1 << kStringSchemaType;
+        else if(type == GetIntegerString()) type_ |= 1 << kIntegerSchemaType;
+        else if(type == GetNumberString() ) type_ |= (1 << kNumberSchemaType) | (1 << kIntegerSchemaType);
     }
 
     bool CreateParallelValidator(Context& context) const {
-        if (enum_ || context.arrayUniqueness)
+        if(enum_ || context.arrayUniqueness)
             context.hasher = context.factory.CreateHasher();
 
-        if (validatorCount_) {
+        if(validatorCount_) {
             CEREAL_RAPIDJSON_ASSERT(context.validators == 0);
             context.validators = static_cast<ISchemaValidator**>(context.factory.MallocState(sizeof(ISchemaValidator*) * validatorCount_));
             context.validatorCount = validatorCount_;
 
-            if (allOf_.schemas)
+            if(allOf_.schemas)
                 CreateSchemaValidators(context, allOf_);
 
-            if (anyOf_.schemas)
+            if(anyOf_.schemas)
                 CreateSchemaValidators(context, anyOf_);
             
-            if (oneOf_.schemas)
+            if(oneOf_.schemas)
                 CreateSchemaValidators(context, oneOf_);
             
-            if (not_)
+            if(not_)
                 context.validators[notValidatorIndex_] = context.factory.CreateSchemaValidator(*not_);
             
-            if (hasSchemaDependencies_) {
-                for (SizeType i = 0; i < propertyCount_; i++)
-                    if (properties_[i].dependenciesSchema)
+            if(hasSchemaDependencies_) {
+                for(SizeType i = 0; i < propertyCount_; i++)
+                    if(properties_[i].dependenciesSchema)
                         context.validators[properties_[i].dependenciesValidatorIndex] = context.factory.CreateSchemaValidator(*properties_[i].dependenciesSchema);
             }
         }
@@ -1078,7 +1078,7 @@ private:
     }
 
     void CreateSchemaValidators(Context& context, const SchemaArray& schemas) const {
-        for (SizeType i = 0; i < schemas.count; i++)
+        for(SizeType i = 0; i < schemas.count; i++)
             context.validators[schemas.begin + i] = context.factory.CreateSchemaValidator(*schemas.schemas[i]);
     }
 
@@ -1086,8 +1086,8 @@ private:
     bool FindPropertyIndex(const ValueType& name, SizeType* outIndex) const {
         SizeType len = name.GetStringLength();
         const Ch* str = name.GetString();
-        for (SizeType index = 0; index < propertyCount_; index++)
-            if (properties_[index].name.GetStringLength() == len && 
+        for(SizeType index = 0; index < propertyCount_; index++)
+            if(properties_[index].name.GetStringLength() == len && 
                 (std::memcmp(properties_[index].name.GetString(), str, sizeof(Ch) * len) == 0))
             {
                 *outIndex = index;
@@ -1097,38 +1097,38 @@ private:
     }
 
     bool CheckInt(Context& context, int64_t i) const {
-        if (!(type_ & ((1 << kIntegerSchemaType) | (1 << kNumberSchemaType))))
+        if(!(type_ & ((1 << kIntegerSchemaType) | (1 << kNumberSchemaType))))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
 
-        if (!minimum_.IsNull()) {
-            if (minimum_.IsInt64()) {
-                if (exclusiveMinimum_ ? i <= minimum_.GetInt64() : i < minimum_.GetInt64())
+        if(!minimum_.IsNull()) {
+            if(minimum_.IsInt64()) {
+                if(exclusiveMinimum_ ? i <= minimum_.GetInt64() : i < minimum_.GetInt64())
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinimumString());
             }
-            else if (minimum_.IsUint64()) {
+            else if(minimum_.IsUint64()) {
                 CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinimumString()); // i <= max(int64_t) < minimum.GetUint64()
             }
-            else if (!CheckDoubleMinimum(context, static_cast<double>(i)))
+            else if(!CheckDoubleMinimum(context, static_cast<double>(i)))
                 return false;
         }
 
-        if (!maximum_.IsNull()) {
-            if (maximum_.IsInt64()) {
-                if (exclusiveMaximum_ ? i >= maximum_.GetInt64() : i > maximum_.GetInt64())
+        if(!maximum_.IsNull()) {
+            if(maximum_.IsInt64()) {
+                if(exclusiveMaximum_ ? i >= maximum_.GetInt64() : i > maximum_.GetInt64())
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaximumString());
             }
-            else if (maximum_.IsUint64())
+            else if(maximum_.IsUint64())
                 /* do nothing */; // i <= max(int64_t) < maximum_.GetUint64()
-            else if (!CheckDoubleMaximum(context, static_cast<double>(i)))
+            else if(!CheckDoubleMaximum(context, static_cast<double>(i)))
                 return false;
         }
 
-        if (!multipleOf_.IsNull()) {
-            if (multipleOf_.IsUint64()) {
-                if (static_cast<uint64_t>(i >= 0 ? i : -i) % multipleOf_.GetUint64() != 0)
+        if(!multipleOf_.IsNull()) {
+            if(multipleOf_.IsUint64()) {
+                if(static_cast<uint64_t>(i >= 0 ? i : -i) % multipleOf_.GetUint64() != 0)
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMultipleOfString());
             }
-            else if (!CheckDoubleMultipleOf(context, static_cast<double>(i)))
+            else if(!CheckDoubleMultipleOf(context, static_cast<double>(i)))
                 return false;
         }
 
@@ -1136,37 +1136,37 @@ private:
     }
 
     bool CheckUint(Context& context, uint64_t i) const {
-        if (!(type_ & ((1 << kIntegerSchemaType) | (1 << kNumberSchemaType))))
+        if(!(type_ & ((1 << kIntegerSchemaType) | (1 << kNumberSchemaType))))
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetTypeString());
 
-        if (!minimum_.IsNull()) {
-            if (minimum_.IsUint64()) {
-                if (exclusiveMinimum_ ? i <= minimum_.GetUint64() : i < minimum_.GetUint64())
+        if(!minimum_.IsNull()) {
+            if(minimum_.IsUint64()) {
+                if(exclusiveMinimum_ ? i <= minimum_.GetUint64() : i < minimum_.GetUint64())
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinimumString());
             }
-            else if (minimum_.IsInt64())
+            else if(minimum_.IsInt64())
                 /* do nothing */; // i >= 0 > minimum.Getint64()
-            else if (!CheckDoubleMinimum(context, static_cast<double>(i)))
+            else if(!CheckDoubleMinimum(context, static_cast<double>(i)))
                 return false;
         }
 
-        if (!maximum_.IsNull()) {
-            if (maximum_.IsUint64()) {
-                if (exclusiveMaximum_ ? i >= maximum_.GetUint64() : i > maximum_.GetUint64())
+        if(!maximum_.IsNull()) {
+            if(maximum_.IsUint64()) {
+                if(exclusiveMaximum_ ? i >= maximum_.GetUint64() : i > maximum_.GetUint64())
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaximumString());
             }
-            else if (maximum_.IsInt64())
+            else if(maximum_.IsInt64())
                 CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaximumString()); // i >= 0 > maximum_
-            else if (!CheckDoubleMaximum(context, static_cast<double>(i)))
+            else if(!CheckDoubleMaximum(context, static_cast<double>(i)))
                 return false;
         }
 
-        if (!multipleOf_.IsNull()) {
-            if (multipleOf_.IsUint64()) {
-                if (i % multipleOf_.GetUint64() != 0)
+        if(!multipleOf_.IsNull()) {
+            if(multipleOf_.IsUint64()) {
+                if(i % multipleOf_.GetUint64() != 0)
                     CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMultipleOfString());
             }
-            else if (!CheckDoubleMultipleOf(context, static_cast<double>(i)))
+            else if(!CheckDoubleMultipleOf(context, static_cast<double>(i)))
                 return false;
         }
 
@@ -1174,13 +1174,13 @@ private:
     }
 
     bool CheckDoubleMinimum(Context& context, double d) const {
-        if (exclusiveMinimum_ ? d <= minimum_.GetDouble() : d < minimum_.GetDouble())
+        if(exclusiveMinimum_ ? d <= minimum_.GetDouble() : d < minimum_.GetDouble())
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMinimumString());
         return true;
     }
 
     bool CheckDoubleMaximum(Context& context, double d) const {
-        if (exclusiveMaximum_ ? d >= maximum_.GetDouble() : d > maximum_.GetDouble())
+        if(exclusiveMaximum_ ? d >= maximum_.GetDouble() : d > maximum_.GetDouble())
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMaximumString());
         return true;
     }
@@ -1189,7 +1189,7 @@ private:
         double a = std::abs(d), b = std::abs(multipleOf_.GetDouble());
         double q = std::floor(a / b);
         double r = a - q * b;
-        if (r > 0.0)
+        if(r > 0.0)
             CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(GetMultipleOfString());
         return true;
     }
@@ -1208,7 +1208,7 @@ private:
     struct PatternProperty {
         PatternProperty() : schema(), pattern() {}
         ~PatternProperty() { 
-            if (pattern) {
+            if(pattern) {
                 pattern->~RegexType();
                 AllocatorType::Free(pattern);
             }
@@ -1266,7 +1266,7 @@ struct TokenHelper {
         *documentStack.template Push<Ch>() = '/';
         char buffer[21];
         size_t length = static_cast<size_t>((sizeof(SizeType) == 4 ? u32toa(index, buffer) : u64toa(index, buffer)) - buffer);
-        for (size_t i = 0; i < length; i++)
+        for(size_t i = 0; i < length; i++)
             *documentStack.template Push<Ch>() = buffer[i];
     }
 };
@@ -1275,7 +1275,7 @@ struct TokenHelper {
 template <typename Stack>
 struct TokenHelper<Stack, char> {
     CEREAL_RAPIDJSON_FORCEINLINE static void AppendIndexToken(Stack& documentStack, SizeType index) {
-        if (sizeof(SizeType) == 4) {
+        if(sizeof(SizeType) == 4) {
             char *buffer = documentStack.template Push<char>(1 + 10); // '/' + uint
             *buffer++ = '/';
             const char* end = internal::u32toa(index, buffer);
@@ -1346,7 +1346,7 @@ public:
         schemaMap_(allocator, kInitialSchemaMapSize),
         schemaRef_(allocator, kInitialSchemaRefSize)
     {
-        if (!allocator_)
+        if(!allocator_)
             ownAllocator_ = allocator_ = CEREAL_RAPIDJSON_NEW(Allocator());
 
         // Generate root schema, it will call CreateSchema() to create sub-schemas,
@@ -1354,14 +1354,14 @@ public:
         CreateSchemaRecursive(&root_, PointerType(), document, document);
 
         // Resolve $ref
-        while (!schemaRef_.Empty()) {
+        while(!schemaRef_.Empty()) {
             SchemaRefEntry* refEntry = schemaRef_.template Pop<SchemaRefEntry>(1);
-            if (const SchemaType* s = GetSchema(refEntry->target)) {
-                if (refEntry->schema)
+            if(const SchemaType* s = GetSchema(refEntry->target)) {
+                if(refEntry->schema)
                     *refEntry->schema = s;
 
                 // Create entry in map if not exist
-                if (!GetSchema(refEntry->source)) {
+                if(!GetSchema(refEntry->source)) {
                     new (schemaMap_.template Push<SchemaEntry>()) SchemaEntry(refEntry->source, const_cast<SchemaType*>(s), false, allocator_);
                 }
             }
@@ -1391,7 +1391,7 @@ public:
 
     //! Destructor
     ~GenericSchemaDocument() {
-        while (!schemaMap_.Empty())
+        while(!schemaMap_.Empty())
             schemaMap_.template Pop<SchemaEntry>(1)->~SchemaEntry();
 
         CEREAL_RAPIDJSON_DELETE(ownAllocator_);
@@ -1416,7 +1416,7 @@ private:
     struct SchemaEntry {
         SchemaEntry(const PointerType& p, SchemaType* s, bool o, Allocator* allocator) : pointer(p, allocator), schema(s), owned(o) {}
         ~SchemaEntry() {
-            if (owned) {
+            if(owned) {
                 schema->~SchemaType();
                 Allocator::Free(schema);
             }
@@ -1427,29 +1427,29 @@ private:
     };
 
     void CreateSchemaRecursive(const SchemaType** schema, const PointerType& pointer, const ValueType& v, const ValueType& document) {
-        if (schema)
+        if(schema)
             *schema = SchemaType::GetTypeless();
 
-        if (v.GetType() == kObjectType) {
+        if(v.GetType() == kObjectType) {
             const SchemaType* s = GetSchema(pointer);
-            if (!s)
+            if(!s)
                 CreateSchema(schema, pointer, v, document);
 
-            for (typename ValueType::ConstMemberIterator itr = v.MemberBegin(); itr != v.MemberEnd(); ++itr)
+            for(typename ValueType::ConstMemberIterator itr = v.MemberBegin(); itr != v.MemberEnd(); ++itr)
                 CreateSchemaRecursive(0, pointer.Append(itr->name, allocator_), itr->value, document);
         }
-        else if (v.GetType() == kArrayType)
-            for (SizeType i = 0; i < v.Size(); i++)
+        else if(v.GetType() == kArrayType)
+            for(SizeType i = 0; i < v.Size(); i++)
                 CreateSchemaRecursive(0, pointer.Append(i, allocator_), v[i], document);
     }
 
     void CreateSchema(const SchemaType** schema, const PointerType& pointer, const ValueType& v, const ValueType& document) {
         CEREAL_RAPIDJSON_ASSERT(pointer.IsValid());
-        if (v.IsObject()) {
-            if (!HandleRefSchema(pointer, schema, v, document)) {
+        if(v.IsObject()) {
+            if(!HandleRefSchema(pointer, schema, v, document)) {
                 SchemaType* s = new (allocator_->Malloc(sizeof(SchemaType))) SchemaType(this, pointer, v, document, allocator_);
                 new (schemaMap_.template Push<SchemaEntry>()) SchemaEntry(pointer, s, true, allocator_);
-                if (schema)
+                if(schema)
                     *schema = s;
             }
         }
@@ -1460,24 +1460,24 @@ private:
         static const ValueType kRefValue(kRefString, 4);
 
         typename ValueType::ConstMemberIterator itr = v.FindMember(kRefValue);
-        if (itr == v.MemberEnd())
+        if(itr == v.MemberEnd())
             return false;
 
-        if (itr->value.IsString()) {
+        if(itr->value.IsString()) {
             SizeType len = itr->value.GetStringLength();
-            if (len > 0) {
+            if(len > 0) {
                 const Ch* s = itr->value.GetString();
                 SizeType i = 0;
-                while (i < len && s[i] != '#') // Find the first #
+                while(i < len && s[i] != '#') // Find the first #
                     i++;
 
-                if (i > 0) { // Remote reference, resolve immediately
-                    if (remoteProvider_) {
-                        if (const GenericSchemaDocument* remoteDocument = remoteProvider_->GetRemoteDocument(s, i - 1)) {
+                if(i > 0) { // Remote reference, resolve immediately
+                    if(remoteProvider_) {
+                        if(const GenericSchemaDocument* remoteDocument = remoteProvider_->GetRemoteDocument(s, i - 1)) {
                             PointerType pointer(&s[i], len - i, allocator_);
-                            if (pointer.IsValid()) {
-                                if (const SchemaType* sc = remoteDocument->GetSchema(pointer)) {
-                                    if (schema)
+                            if(pointer.IsValid()) {
+                                if(const SchemaType* sc = remoteDocument->GetSchema(pointer)) {
+                                    if(schema)
                                         *schema = sc;
                                     return true;
                                 }
@@ -1485,11 +1485,11 @@ private:
                         }
                     }
                 }
-                else if (s[i] == '#') { // Local reference, defer resolution
+                else if(s[i] == '#') { // Local reference, defer resolution
                     PointerType pointer(&s[i], len - i, allocator_);
-                    if (pointer.IsValid()) {
-                        if (const ValueType* nv = pointer.Get(document))
-                            if (HandleRefSchema(source, schema, *nv, document))
+                    if(pointer.IsValid()) {
+                        if(const ValueType* nv = pointer.Get(document))
+                            if(HandleRefSchema(source, schema, *nv, document))
                                 return true;
 
                         new (schemaRef_.template Push<SchemaRefEntry>()) SchemaRefEntry(source, pointer, schema, allocator_);
@@ -1502,15 +1502,15 @@ private:
     }
 
     const SchemaType* GetSchema(const PointerType& pointer) const {
-        for (const SchemaEntry* target = schemaMap_.template Bottom<SchemaEntry>(); target != schemaMap_.template End<SchemaEntry>(); ++target)
-            if (pointer == target->pointer)
+        for(const SchemaEntry* target = schemaMap_.template Bottom<SchemaEntry>(); target != schemaMap_.template End<SchemaEntry>(); ++target)
+            if(pointer == target->pointer)
                 return target->schema;
         return 0;
     }
 
     PointerType GetPointer(const SchemaType* schema) const {
-        for (const SchemaEntry* target = schemaMap_.template Bottom<SchemaEntry>(); target != schemaMap_.template End<SchemaEntry>(); ++target)
-            if (schema == target->schema)
+        for(const SchemaEntry* target = schemaMap_.template Bottom<SchemaEntry>(); target != schemaMap_.template End<SchemaEntry>(); ++target)
+            if(schema == target->schema)
                 return target->pointer;
         return PointerType();
     }
@@ -1623,7 +1623,7 @@ public:
 
     //! Reset the internal states.
     void Reset() {
-        while (!schemaStack_.Empty())
+        while(!schemaStack_.Empty())
             PopSchema();
         documentStack_.Clear();
         valid_ = true;
@@ -1660,21 +1660,21 @@ CEREAL_RAPIDJSON_MULTILINEMACRO_END
 #endif
 
 #define CEREAL_RAPIDJSON_SCHEMA_HANDLE_BEGIN_(method, arg1)\
-    if (!valid_) return false; \
-    if (!BeginValue() || !CurrentSchema().method arg1) {\
+    if(!valid_) return false; \
+    if(!BeginValue() || !CurrentSchema().method arg1) {\
         CEREAL_RAPIDJSON_SCHEMA_HANDLE_BEGIN_VERBOSE_();\
         return valid_ = false;\
     }
 
 #define CEREAL_RAPIDJSON_SCHEMA_HANDLE_PARALLEL_(method, arg2)\
-    for (Context* context = schemaStack_.template Bottom<Context>(); context != schemaStack_.template End<Context>(); context++) {\
-        if (context->hasher)\
+    for(Context* context = schemaStack_.template Bottom<Context>(); context != schemaStack_.template End<Context>(); context++) {\
+        if(context->hasher)\
             static_cast<HasherType*>(context->hasher)->method arg2;\
-        if (context->validators)\
-            for (SizeType i_ = 0; i_ < context->validatorCount; i_++)\
+        if(context->validators)\
+            for(SizeType i_ = 0; i_ < context->validatorCount; i_++)\
                 static_cast<GenericSchemaValidator*>(context->validators[i_])->method arg2;\
-        if (context->patternPropertiesValidators)\
-            for (SizeType i_ = 0; i_ < context->patternPropertiesValidatorCount; i_++)\
+        if(context->patternPropertiesValidators)\
+            for(SizeType i_ = 0; i_ < context->patternPropertiesValidatorCount; i_++)\
                 static_cast<GenericSchemaValidator*>(context->patternPropertiesValidators[i_])->method arg2;\
     }
 
@@ -1705,17 +1705,17 @@ CEREAL_RAPIDJSON_MULTILINEMACRO_END
     }
     
     bool Key(const Ch* str, SizeType len, bool copy) {
-        if (!valid_) return false;
+        if(!valid_) return false;
         AppendToken(str, len);
-        if (!CurrentSchema().Key(CurrentContext(), str, len, copy)) return valid_ = false;
+        if(!CurrentSchema().Key(CurrentContext(), str, len, copy)) return valid_ = false;
         CEREAL_RAPIDJSON_SCHEMA_HANDLE_PARALLEL_(Key, (str, len, copy));
         return valid_ = outputHandler_.Key(str, len, copy);
     }
     
     bool EndObject(SizeType memberCount) { 
-        if (!valid_) return false;
+        if(!valid_) return false;
         CEREAL_RAPIDJSON_SCHEMA_HANDLE_PARALLEL_(EndObject, (memberCount));
-        if (!CurrentSchema().EndObject(CurrentContext(), memberCount)) return valid_ = false;
+        if(!CurrentSchema().EndObject(CurrentContext(), memberCount)) return valid_ = false;
         CEREAL_RAPIDJSON_SCHEMA_HANDLE_END_(EndObject, (memberCount));
     }
 
@@ -1726,9 +1726,9 @@ CEREAL_RAPIDJSON_MULTILINEMACRO_END
     }
     
     bool EndArray(SizeType elementCount) {
-        if (!valid_) return false;
+        if(!valid_) return false;
         CEREAL_RAPIDJSON_SCHEMA_HANDLE_PARALLEL_(EndArray, (elementCount));
-        if (!CurrentSchema().EndArray(CurrentContext(), elementCount)) return valid_ = false;
+        if(!CurrentSchema().EndArray(CurrentContext(), elementCount)) return valid_ = false;
         CEREAL_RAPIDJSON_SCHEMA_HANDLE_END_(EndArray, (elementCount));
     }
 
@@ -1804,34 +1804,34 @@ private:
     }
 
     StateAllocator& GetStateAllocator() {
-        if (!stateAllocator_)
+        if(!stateAllocator_)
             stateAllocator_ = ownStateAllocator_ = CEREAL_RAPIDJSON_NEW(StateAllocator());
         return *stateAllocator_;
     }
 
     bool BeginValue() {
-        if (schemaStack_.Empty())
+        if(schemaStack_.Empty())
             PushSchema(root_);
         else {
-            if (CurrentContext().inArray)
+            if(CurrentContext().inArray)
                 internal::TokenHelper<internal::Stack<StateAllocator>, Ch>::AppendIndexToken(documentStack_, CurrentContext().arrayElementIndex);
 
-            if (!CurrentSchema().BeginValue(CurrentContext()))
+            if(!CurrentSchema().BeginValue(CurrentContext()))
                 return false;
 
             SizeType count = CurrentContext().patternPropertiesSchemaCount;
             const SchemaType** sa = CurrentContext().patternPropertiesSchemas;
             typename Context::PatternValidatorType patternValidatorType = CurrentContext().valuePatternValidatorType;
             bool valueUniqueness = CurrentContext().valueUniqueness;
-            if (CurrentContext().valueSchema)
+            if(CurrentContext().valueSchema)
                 PushSchema(*CurrentContext().valueSchema);
 
-            if (count > 0) {
+            if(count > 0) {
                 CurrentContext().objectPatternValidatorType = patternValidatorType;
                 ISchemaValidator**& va = CurrentContext().patternPropertiesValidators;
                 SizeType& validatorCount = CurrentContext().patternPropertiesValidatorCount;
                 va = static_cast<ISchemaValidator**>(MallocState(sizeof(ISchemaValidator*) * count));
-                for (SizeType i = 0; i < count; i++)
+                for(SizeType i = 0; i < count; i++)
                     va[validatorCount++] = CreateSchemaValidator(*sa[i]);
             }
 
@@ -1841,7 +1841,7 @@ private:
     }
 
     bool EndValue() {
-        if (!CurrentSchema().EndValue(CurrentContext()))
+        if(!CurrentSchema().EndValue(CurrentContext()))
             return false;
 
 #if CEREAL_RAPIDJSON_SCHEMA_VERBOSE
@@ -1857,21 +1857,21 @@ private:
         
         PopSchema();
 
-        if (!schemaStack_.Empty()) {
+        if(!schemaStack_.Empty()) {
             Context& context = CurrentContext();
-            if (context.valueUniqueness) {
+            if(context.valueUniqueness) {
                 HashCodeArray* a = static_cast<HashCodeArray*>(context.arrayElementHashCodes);
-                if (!a)
+                if(!a)
                     CurrentContext().arrayElementHashCodes = a = new (GetStateAllocator().Malloc(sizeof(HashCodeArray))) HashCodeArray(kArrayType);
-                for (typename HashCodeArray::ConstValueIterator itr = a->Begin(); itr != a->End(); ++itr)
-                    if (itr->GetUint64() == h)
+                for(typename HashCodeArray::ConstValueIterator itr = a->Begin(); itr != a->End(); ++itr)
+                    if(itr->GetUint64() == h)
                         CEREAL_RAPIDJSON_INVALID_KEYWORD_RETURN(SchemaType::GetUniqueItemsString());
                 a->PushBack(h, GetStateAllocator());
             }
         }
 
         // Remove the last token of document pointer
-        while (!documentStack_.Empty() && *documentStack_.template Pop<Ch>(1) != '/')
+        while(!documentStack_.Empty() && *documentStack_.template Pop<Ch>(1) != '/')
             ;
 
         return true;
@@ -1880,12 +1880,12 @@ private:
     void AppendToken(const Ch* str, SizeType len) {
         documentStack_.template Reserve<Ch>(1 + len * 2); // worst case all characters are escaped as two characters
         *documentStack_.template PushUnsafe<Ch>() = '/';
-        for (SizeType i = 0; i < len; i++) {
-            if (str[i] == '~') {
+        for(SizeType i = 0; i < len; i++) {
+            if(str[i] == '~') {
                 *documentStack_.template PushUnsafe<Ch>() = '~';
                 *documentStack_.template PushUnsafe<Ch>() = '0';
             }
-            else if (str[i] == '/') {
+            else if(str[i] == '/') {
                 *documentStack_.template PushUnsafe<Ch>() = '~';
                 *documentStack_.template PushUnsafe<Ch>() = '1';
             }
@@ -1898,7 +1898,7 @@ private:
     
     CEREAL_RAPIDJSON_FORCEINLINE void PopSchema() {
         Context* c = schemaStack_.template Pop<Context>(1);
-        if (HashCodeArray* a = static_cast<HashCodeArray*>(c->arrayElementHashCodes)) {
+        if(HashCodeArray* a = static_cast<HashCodeArray*>(c->arrayElementHashCodes)) {
             a->~HashCodeArray();
             StateAllocator::Free(a);
         }
@@ -1969,7 +1969,7 @@ public:
         parseResult_ = reader.template Parse<parseFlags>(is_, validator);
 
         isValid_ = validator.IsValid();
-        if (isValid_) {
+        if(isValid_) {
             invalidSchemaPointer_ = PointerType();
             invalidSchemaKeyword_ = 0;
             invalidDocumentPointer_ = PointerType();

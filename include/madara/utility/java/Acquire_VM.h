@@ -31,7 +31,7 @@ public:
    **/
   Acquire_VM(bool no_detach = false)
   {
-    if (!no_detach)
+    if(!no_detach)
     {
       needs_detach = !madara_jni_is_attached();
     }
@@ -48,7 +48,7 @@ public:
    **/
   ~Acquire_VM()
   {
-    if (needs_detach)
+    if(needs_detach)
       jni_detach();
   }
 

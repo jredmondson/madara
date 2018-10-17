@@ -252,7 +252,7 @@ public:
 private:
   void init_reader() const
   {
-    if (!reader_)
+    if(!reader_)
     {
       reader_ = mk_reader();
     }
@@ -655,19 +655,19 @@ inline auto get_type_handler_get_reader(type<knowledge::CapnObject<T>>,
     using knowledge::CapnObject;
     const CapnObject<T>& val = *static_cast<const CapnObject<T>*>(ptr);
 
-    if (reader)
+    if(reader)
     {
       *reader = val.reader();
     }
-    if (schema)
+    if(schema)
     {
       *schema = capnp::Schema::from<T>();
     }
-    if (data)
+    if(data)
     {
       *data = val.data();
     }
-    if (size)
+    if(size)
     {
       *size = val.size();
     }
@@ -684,19 +684,19 @@ inline auto get_type_handler_get_reader(type<knowledge::RegCapnObject>,
     using knowledge::RegCapnObject;
     const RegCapnObject& val = *static_cast<const RegCapnObject*>(ptr);
 
-    if (reader)
+    if(reader)
     {
       *reader = val.reader();
     }
-    if (schema)
+    if(schema)
     {
       *schema = val.schema();
     }
-    if (data)
+    if(data)
     {
       *data = val.data();
     }
-    if (size)
+    if(size)
     {
       *size = val.size();
     }
@@ -713,19 +713,19 @@ inline auto get_type_handler_get_reader(type<knowledge::GenericCapnObject>,
     using knowledge::GenericCapnObject;
     const GenericCapnObject& val = *static_cast<const GenericCapnObject*>(ptr);
 
-    if (reader && !schema)
+    if(reader && !schema)
     {
       return false;
     }
-    if (reader && schema)
+    if(reader && schema)
     {
       *reader = val.reader(*schema);
     }
-    if (data)
+    if(data)
     {
       *data = val.data();
     }
-    if (size)
+    if(size)
     {
       *size = val.size();
     }

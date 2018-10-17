@@ -75,7 +75,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Map_jni_1Map__J(
   containers::Map* result(0);
   containers::Map* source = (containers::Map*)cptr;
 
-  if (source)
+  if(source)
   {
     result = new containers::Map(*source);
   }
@@ -112,7 +112,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1clear(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     current->clear(clear_variables);
   }
@@ -136,7 +136,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1erase(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
 
@@ -164,7 +164,7 @@ Java_ai_madara_knowledge_containers_Map_jni_1setString__JLjava_lang_String_2Ljav
     JNIEnv* env, jobject, jlong cptr, jstring key, jstring value)
 {
   containers::Map* current = (containers::Map*)cptr;
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
     const char* str_value = env->GetStringUTFChars(value, 0);
@@ -195,7 +195,7 @@ Java_ai_madara_knowledge_containers_Map_jni_1setDouble__JLjava_lang_String_2D(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
 
@@ -224,12 +224,12 @@ Java_ai_madara_knowledge_containers_Map_jni_1set__JLjava_lang_String_2JJ(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
 
     // integer set
-    if (type == 0)
+    if(type == 0)
     {
       current->set(str_key, (KnowledgeRecord::Integer)value);
     }
@@ -238,37 +238,37 @@ Java_ai_madara_knowledge_containers_Map_jni_1set__JLjava_lang_String_2JJ(
     {
       KnowledgeRecord* record = (KnowledgeRecord*)value;
 
-      if (record)
+      if(record)
       {
         // check the type and set accordingly
-        if (record->type() == knowledge::KnowledgeRecord::DOUBLE)
+        if(record->type() == knowledge::KnowledgeRecord::DOUBLE)
         {
           current->set(str_key, record->to_double());
         }
-        else if (record->type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
+        else if(record->type() == knowledge::KnowledgeRecord::DOUBLE_ARRAY)
         {
           current->set(str_key, record->to_doubles());
         }
-        else if (record->type() == knowledge::KnowledgeRecord::INTEGER)
+        else if(record->type() == knowledge::KnowledgeRecord::INTEGER)
         {
           current->set(str_key, record->to_integer());
         }
-        else if (record->type() == knowledge::KnowledgeRecord::INTEGER_ARRAY)
+        else if(record->type() == knowledge::KnowledgeRecord::INTEGER_ARRAY)
         {
           current->set(str_key, record->to_integers());
         }
-        else if (record->is_binary_file_type())
+        else if(record->is_binary_file_type())
         {
           size_t size;
           unsigned char* buffer = record->to_unmanaged_buffer(size);
           current->set_file(str_key, buffer, size);
           delete[] buffer;
         }
-        else if (record->type() == knowledge::KnowledgeRecord::STRING)
+        else if(record->type() == knowledge::KnowledgeRecord::STRING)
         {
           current->set(str_key, record->to_string());
         }
-        else if (record->is_string_type())
+        else if(record->is_string_type())
         {
           current->set(str_key, record->to_string());
         }
@@ -298,7 +298,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Map_jni_1getName(
   jstring result = 0;
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_name().c_str());
   }
@@ -324,16 +324,16 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1setName(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_name = env->GetStringUTFChars(name, 0);
 
-    if (type == 0)
+    if(type == 0)
     {
       knowledge::KnowledgeBase* kb = (knowledge::KnowledgeBase*)context;
       current->set_name(str_name, *kb);
     }
-    else if (type == 1)
+    else if(type == 1)
     {
       knowledge::Variables* vars = (knowledge::Variables*)context;
       current->set_name(str_name, *vars);
@@ -362,7 +362,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Map_jni_1get(
   knowledge::KnowledgeRecord* result(0);
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
 
@@ -393,7 +393,7 @@ jlong JNICALL Java_ai_madara_knowledge_containers_Map_jni_1toRecord(
   knowledge::KnowledgeRecord* result(0);
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
 
@@ -418,7 +418,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1modify(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     current->modify();
   }
@@ -442,7 +442,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1modifyIndex(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_key = env->GetStringUTFChars(key, 0);
 
@@ -466,7 +466,7 @@ jstring JNICALL Java_ai_madara_knowledge_containers_Map_jni_1getDelimiter(
   jstring result = 0;
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     result = env->NewStringUTF(current->get_delimiter().c_str());
   }
@@ -487,7 +487,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1setDelimiter(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     const char* str_delimiter = env->GetStringUTFChars(delimiter, 0);
 
@@ -511,7 +511,7 @@ jobjectArray JNICALL Java_ai_madara_knowledge_containers_Map_jni_1keys(
   jobjectArray result(0);
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     std::vector<std::string> keys;
     current->keys(keys);
@@ -523,7 +523,7 @@ jobjectArray JNICALL Java_ai_madara_knowledge_containers_Map_jni_1keys(
     result =
         env->NewObjectArray((jsize)keys.size(), string_class, empty_string);
 
-    for (unsigned int i = 0; i < keys.size(); i++)
+    for(unsigned int i = 0; i < keys.size(); i++)
     {
       jstring temp_string = env->NewStringUTF(keys[i].c_str());
 
@@ -552,7 +552,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1sync(
 {
   containers::Map* current = (containers::Map*)cptr;
 
-  if (current)
+  if(current)
   {
     current->sync_keys();
   }
@@ -573,7 +573,7 @@ void JNICALL Java_ai_madara_knowledge_containers_Map_jni_1setSettings(
   knowledge::KnowledgeUpdateSettings* settings =
       (knowledge::KnowledgeUpdateSettings*)settings_ptr;
 
-  if (current && settings)
+  if(current && settings)
   {
     current->set_settings(*settings);
   }
@@ -593,7 +593,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Map_jni_1isTrue(
   containers::Map* current = (containers::Map*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_true();
   }
@@ -615,7 +615,7 @@ jboolean JNICALL Java_ai_madara_knowledge_containers_Map_jni_1isFalse(
   containers::Map* current = (containers::Map*)cptr;
   bool result(true);
 
-  if (current)
+  if(current)
   {
     result = current->is_false();
   }
