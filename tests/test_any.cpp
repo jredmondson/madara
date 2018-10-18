@@ -707,6 +707,23 @@ void test_geo()
   TEST_EQ(reader.get("x").template as<double>(), 1);
   TEST_EQ(reader.get("y").template as<double>(), 2);
   TEST_EQ(reader.get("z").template as<double>(), 3);
+
+  std::map<std::string, std::string> tags;
+  kb.for_each(
+    [&](const std::pair<const std::string,
+        madara::knowledge::KnowledgeRecord>& cur)
+    {
+      const Any &any = cur.second.get_any_cref();
+      if (any.tag())
+      {
+        tags[cur.first] = any.tag();
+      }
+    });
+
+  for (const auto& cur : tags)
+  {
+    std::cerr << cur.first << ": " << cur.second << std::endl;
+  }
 }
 
 struct Example
