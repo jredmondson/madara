@@ -1128,6 +1128,21 @@ public:
     return map_.cinvoke(key, std::forward<Callable>(callable), settings);
   }
 
+  /**
+   * Call given Callable on each element in this KB. Note that the context
+   * will be locked for the entire duration of this iteration. The Callable
+   * must accept one argument, a `const std::pair<const std::string,
+   * KnowledgeRecord>&`, and it's return value is ignored.
+   *
+   * @tparam Func a callable type as described above
+   * @param func the callable object; either function pointer or functor
+   **/
+  template<typename Func>
+  void for_each(Func&& func) const
+  {
+    map_.for_each(std::forward<Func>(func));
+  }
+
 private:
   ThreadSafeContext map_;
   std::string id_;

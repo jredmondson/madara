@@ -124,11 +124,21 @@ int main(int, char**)
   else
     knowledge.print("Fail\n");
 
-  knowledge.print("Sleeping for 5 seconds\n");
+  knowledge.print("Done with test.\n");
 
-  utility::sleep(5.0);
+  knowledge.set("a", 1);
+  knowledge.set("b", 2);
+  knowledge.set("c", 3);
 
-  knowledge.print("Finished sleeping. Done with test.\n");
+  size_t kcount = 0;
+  knowledge.for_each(
+    [&](const std::pair<const std::string,
+        madara::knowledge::KnowledgeRecord>& cur)
+    {
+      ++kcount;
+      std::cout << cur.first << std::endl;
+    });
+  std::cerr << "Found " << kcount << " records" << std::endl;
 
   // Cleanup
   std::cerr << "KnowledgeBase Object Cleanup Started...\n\n";
