@@ -476,6 +476,10 @@ MADARA_EXPORT double sleep(double sleep_time);
  **/
 MADARA_EXPORT SecondsDuration sleep(const SecondsDuration& sleep_time);
 
+MADARA_EXPORT Duration sleep_until(uint64_t wake);
+
+MADARA_EXPORT Duration sleep_until(TimeValue wake);
+
 /**
  * Checks two doubles for approximate equality. Doubles, unlike integers,
  * are approximations of fractions. Consequently, two doubles cannot be

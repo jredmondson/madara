@@ -27,6 +27,48 @@ uint64_t SimTime::realtime()
   return sc::duration_cast<sc::nanoseconds>(dur).count();
 }
 
+uint64_t SimTime::realtime(uint64_t simtime)
+{
+  uint64_t prt;
+  uint64_t pst;
+  double pr;
+  sim_time_callback_fn callback;
+
+  {
+    std::lock_guard<std::mutex> guard{mutex_};
+    callback = callback_;
+    if (callback)
+    {
+      uint64_t st;
+      double r;
+
+      callback_(&st, &r);
+
+      prt = last_realtime_ = realtime();
+      pst = last_simtime_ = st;
+      pr = last_rate_ = r;
+    }
+    else
+    {
+      prt = last_realtime_;
+      pst = last_simtime_;
+      pr = last_rate_;
+    }
+  }
+
+  if (pst == (uint64_t)-1)
+  {
+    return simtime;
+  }
+
+  if (pr == 0)
+  {
+    pr = 1;
+  }
+
+  return ((simtime - pst) / pr) + prt;
+}
+
 uint64_t SimTime::time()
 {
   uint64_t prt;
@@ -36,7 +78,7 @@ uint64_t SimTime::time()
   double r;
   sim_time_callback_fn callback;
 
-  uint64_t now = realtime();
+  int64_t now = realtime();
   {
     std::lock_guard<std::mutex> guard{mutex_};
     callback = callback_;

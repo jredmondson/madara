@@ -366,6 +366,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
 
 void CheckpointPlayer::thread_main(CheckpointPlayer* self)
 {
+  uint64_t start_time = utility::get_time();
   uint64_t first_toi = -1UL;
   uint64_t prev_toi = -1UL;
 
@@ -377,40 +378,34 @@ void CheckpointPlayer::thread_main(CheckpointPlayer* self)
       break;
     }
 
+    uint64_t cur_toi = cur.second.toi();
+
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
         "CheckpointPlayer:"
-        " record has toi %lu. prev: %lu. first: %lu\n",
-        cur.second.toi(), prev_toi, first_toi);
+        " record has toi %lu. prev: %lu. first: %lu,. start: %lu\n",
+        cur_toi, prev_toi, first_toi, start_time);
 
     if (first_toi == -1UL)
     {
-      first_toi = cur.second.toi();
+      first_toi = cur_toi;
       prev_toi = first_toi;
 #ifdef MADARA_FEATURE_SIMTIME
       if (self->settings_.playback_simtime)
       {
         utility::sim_time_notify(first_toi, NAN);
+        start_time = first_toi;
       }
 #endif
     }
 
-    uint64_t raw_wait_time =
-        prev_toi < cur.second.toi() ? cur.second.toi() - prev_toi : 0;
-#ifdef MADARA_FEATURE_SIMTIME
-    uint64_t wait_time = utility::SimTime::duration(raw_wait_time);
-#else
-    uint64_t wait_time = raw_wait_time;
-#endif
-
-    utility::SecondsDuration sec_wait = sc::nanoseconds{wait_time};
+    uint64_t target_time = cur_toi - first_toi + start_time;
 
     madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MINOR,
-        "CheckpointPlayer: wait_time: %lu (%f s)\n", wait_time,
-        sec_wait.count());
+        "CheckpointPlayer: sleep_until: %lu\n", target_time);
 
-    utility::sleep(sec_wait);
+    utility::sleep_until(target_time);
 
-    prev_toi = cur.second.toi();
+    prev_toi = cur_toi;
 
     self->context_->update_record_from_external(
         cur.first, cur.second, self->update_settings_);
