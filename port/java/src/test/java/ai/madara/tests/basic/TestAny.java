@@ -64,13 +64,7 @@ public class TestAny extends BaseTest {
 
 		// System.err.println("Loading libdatatypes_shared.so");
 		// System.loadLibrary("datatypes_shared");
-
-		Any.registerStringVector("strvec");
-		Any.registerDoubleVector("dblvec");
-		Any.registerStringToStringMap("smap");
-
-		Any.registerClass("Point", Geo.Point.factory);
-
+	
 		Any a0 = new Any("smap");
 		a0.at("hello").assign("world");
 

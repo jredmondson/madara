@@ -48,7 +48,7 @@ package ai.madara.knowledge;
 
 import ai.madara.MadaraJNI;
 
-class BadAnyAccess extends Exception
+public class BadAnyAccess extends Exception
 {
   BadAnyAccess(String message)
   {

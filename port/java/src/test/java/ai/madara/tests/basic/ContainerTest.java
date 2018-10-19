@@ -75,7 +75,7 @@ public class ContainerTest extends BaseTest {
 
 	@Test
 	public void testFlexMap() throws MadaraDeadObjectException {
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 		UpdateSettings settings = new UpdateSettings();
 		settings.setTreatGlobalsAsLocals(true);
 		FlexMap map = new FlexMap();
@@ -180,7 +180,7 @@ public class ContainerTest extends BaseTest {
 
 	@Test
 	public void testInteger() throws MadaraDeadObjectException {
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 
 		Integer counter = new Integer();
 		UpdateSettings settings = new UpdateSettings();
@@ -206,7 +206,7 @@ public class ContainerTest extends BaseTest {
 	@Test
 	public void testCircularBuffer() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 		CircularBuffer producer = new CircularBuffer();
 		UpdateSettings settings = new UpdateSettings();
 		settings.setTreatGlobalsAsLocals(true);
@@ -253,7 +253,7 @@ public class ContainerTest extends BaseTest {
 	@Test
 	public void testCircularBufferConsumer() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 		CircularBuffer producer = new CircularBuffer();
 		CircularBufferConsumer consumer = new CircularBufferConsumer();
 		UpdateSettings settings = new UpdateSettings();
@@ -305,7 +305,7 @@ public class ContainerTest extends BaseTest {
 
 	@Test
 	public void testQueue() throws MadaraDeadObjectException {
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 		Queue queue = new Queue();
 		UpdateSettings settings = new UpdateSettings();
 		settings.setTreatGlobalsAsLocals(true);
@@ -340,7 +340,7 @@ public class ContainerTest extends BaseTest {
 
 	@Test
 	public void testDoubleVector() throws MadaraDeadObjectException {
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 		DoubleVector vector = new DoubleVector();
 		UpdateSettings settings = new UpdateSettings();
 		settings.setTreatGlobalsAsLocals(true);
@@ -382,7 +382,7 @@ public class ContainerTest extends BaseTest {
 	@Test
 	public void testCollection() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = getDefaultKnowledgeBase();
 
 		ai.madara.knowledge.containers.String name = new ai.madara.knowledge.containers.String();
 		Integer age = new Integer();
