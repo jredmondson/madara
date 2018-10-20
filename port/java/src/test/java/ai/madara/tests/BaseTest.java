@@ -1,48 +1,59 @@
 package ai.madara.tests;
 
+import org.capnproto.MessageBuilder;
 import org.junit.After;
 import org.junit.Before;
 
 import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.Any;
+import ai.madara.knowledge.BadAnyAccess;
 import ai.madara.knowledge.KnowledgeBase;
-import ai.madara.logger.GlobalLogger;
-import ai.madara.logger.LogLevels;
 import ai.madara.tests.capnp.Geo;
 import ai.madara.transport.QoSTransportSettings;
 import ai.madara.transport.TransportType;
 import ai.madara.transport.filters.AggregateFilter;
 
 public class BaseTest {
-	private KnowledgeBase knowledgetBase;
+	private KnowledgeBase knowledgeBase;
+
+	public static double[] DEFAULT_GEO_POINT = { 40.417286, -82.907120, 0 };
 
 	static {
 		System.loadLibrary("MADARA");
 	}
-	
-	
+
 	@Before
 	public void initKB() throws MadaraDeadObjectException {
 		registerAnyTypes();
-		knowledgetBase = new KnowledgeBase();
-		KnowledgeBase.setLogLevel(LogLevels.LOG_DETAILED);
-		knowledgetBase.attachLogger(GlobalLogger.toLogger());
+		knowledgeBase = new KnowledgeBase();
+		//KnowledgeBase.setLogLevel(LogLevels.LOG_DETAILED);
+		//knowledgeBase.attachLogger(GlobalLogger.toLogger());
 	}
 
 	private void registerAnyTypes() {
-
 		Any.registerStringVector("strvec");
 		Any.registerDoubleVector("dblvec");
 		Any.registerStringToStringMap("smap");
 		Any.registerClass("Point", Geo.Point.factory);
-
 	}
 
 	@After
 	public void freeResources() {
-		if (knowledgetBase != null) {
-			knowledgetBase.free();
+		if (knowledgeBase != null) {
+			knowledgeBase.free();
 		}
+	}
+
+	public Any getGeoPoint() throws BadAnyAccess {
+		MessageBuilder msg = new MessageBuilder();
+		Geo.Point.Builder builder = msg.initRoot(Geo.Point.factory);
+
+		builder.setX(DEFAULT_GEO_POINT[0]);
+		builder.setY(DEFAULT_GEO_POINT[1]);
+		builder.setZ(DEFAULT_GEO_POINT[2]);
+
+		Any ohio = new Any(Geo.Point.factory, msg);
+		return ohio;
 	}
 
 	/**
@@ -53,26 +64,29 @@ public class BaseTest {
 	 * @throws MadaraDeadObjectException throws exception if object is already
 	 *                                   released
 	 */
-	public void attachMulticast(AggregateFilter receiveFilter, AggregateFilter sendFilter)
+	public void attachMulticast(KnowledgeBase knowledgeBase, AggregateFilter receiveFilter, AggregateFilter sendFilter)
 			throws MadaraDeadObjectException {
 
-		QoSTransportSettings transport = new QoSTransportSettings();
 		QoSTransportSettings qoSTransportSettings = new QoSTransportSettings();
 		qoSTransportSettings.setHosts(new String[] { "239.255.0.1:4150" });
 		qoSTransportSettings.setType(TransportType.MULTICAST_TRANSPORT);
-		qoSTransportSettings.addReceiveFilter(receiveFilter);
-		qoSTransportSettings.addSendFilter(sendFilter);
-		knowledgetBase.attachTransport("multicast", transport);
-		knowledgetBase.attachLogger(GlobalLogger.toLogger());
+		if (receiveFilter != null) {
+			qoSTransportSettings.addReceiveFilter(receiveFilter);
+		}
+
+		if (sendFilter != null) {
+			qoSTransportSettings.addSendFilter(sendFilter);
+		}
+		knowledgeBase.attachTransport("", qoSTransportSettings);
 
 	}
 
 	public void attachQoS(String id, QoSTransportSettings transport) throws MadaraDeadObjectException {
-		knowledgetBase.attachTransport(id, transport);
+		knowledgeBase.attachTransport(id, transport);
 	}
 
 	public KnowledgeBase getDefaultKnowledgeBase() {
-		return knowledgetBase;
+		return knowledgeBase;
 	}
 
 }

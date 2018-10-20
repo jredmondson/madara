@@ -47,7 +47,6 @@
 
 package ai.madara.tests.basic;
 
-import org.capnproto.MessageBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -96,24 +95,18 @@ public class TestKnowledgeBase extends BaseTest {
 		Assert.assertTrue(deviceSettings.containsKey("device.2.test.settings"));
 
 		Assert.assertNull(deviceSettings.get("device.2"));
-
 		Assert.assertNull(deviceSettings.get("device.location"));
 
 	}
 
 	@Test
 	public void testKBClone() throws MadaraDeadObjectException, BadAnyAccess {
-		attachMulticast(null, null);
 		KnowledgeBase defaultKb = getDefaultKnowledgeBase();
 		defaultKb.set("name", "Steven Spielberg");
 		defaultKb.set("age", 75);
-		MessageBuilder msg = new MessageBuilder();
-		Geo.Point.Builder builder = msg.initRoot(Geo.Point.factory);
-		builder.setX(40.417286);
-		builder.setY(-82.907120);
-		builder.setZ(0);
-		Any ohio = new Any(Geo.Point.factory, msg);
-		defaultKb.set("location", ohio);
+
+		Any defGeoPoint = getGeoPoint();
+		defaultKb.set("location", defGeoPoint);
 
 		KnowledgeBase clonedKb = new KnowledgeBase(defaultKb);
 
@@ -121,12 +114,12 @@ public class TestKnowledgeBase extends BaseTest {
 
 		Assert.assertEquals(clonedKb.get("age").toLong(), defaultKb.get("age").toLong());
 
-		Any clonedOhio = clonedKb.get("location").toAny();
-		Geo.Point.Reader reader = clonedOhio.reader(Geo.Point.factory);
-		
-		Assert.assertEquals(builder.getX(), reader.getX(), 0);
-		Assert.assertEquals(builder.getY(), reader.getY(), 0);
-		Assert.assertEquals(builder.getZ(), reader.getZ(), 0);
+		Any clonedAnyType = clonedKb.get("location").toAny();
+		Geo.Point.Reader reader = clonedAnyType.reader(Geo.Point.factory);
+
+		Assert.assertEquals(DEFAULT_GEO_POINT[0], reader.getX(), 0);
+		Assert.assertEquals(DEFAULT_GEO_POINT[1], reader.getY(), 0);
+		Assert.assertEquals(DEFAULT_GEO_POINT[2], reader.getZ(), 0);
 
 	}
 
