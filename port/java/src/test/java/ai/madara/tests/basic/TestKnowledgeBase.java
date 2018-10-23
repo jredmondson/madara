@@ -51,11 +51,14 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import ai.madara.exceptions.MadaraDeadObjectException;
+import ai.madara.knowledge.Any;
+import ai.madara.knowledge.BadAnyAccess;
 import ai.madara.knowledge.KnowledgeBase;
 import ai.madara.knowledge.KnowledgeMap;
 import ai.madara.knowledge.containers.Integer;
 import ai.madara.knowledge.containers.String;
 import ai.madara.tests.BaseTest;
+import ai.madara.tests.capnp.Geo;
 
 /**
  * This class is a tester for basic KnowledgeBase functionality
@@ -65,7 +68,7 @@ public class TestKnowledgeBase extends BaseTest {
 	@Test
 	public void testKBToKnowledgeMap() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = getKb();
+		KnowledgeBase knowledge = initKnowledgeBase();
 
 		Integer age = new Integer();
 		age.setName(knowledge, "age");
@@ -92,10 +95,32 @@ public class TestKnowledgeBase extends BaseTest {
 		Assert.assertTrue(deviceSettings.containsKey("device.2.test.settings"));
 
 		Assert.assertNull(deviceSettings.get("device.2"));
-
 		Assert.assertNull(deviceSettings.get("device.location"));
 
 	}
 
+	@Test
+	public void testKBClone() throws MadaraDeadObjectException, BadAnyAccess {
+		KnowledgeBase defaultKb = initKnowledgeBase();
+		defaultKb.set("name", "Steven Spielberg");
+		defaultKb.set("age", 75);
+
+		Any defGeoPoint = getGeoPoint();
+		defaultKb.set("location", defGeoPoint);
+
+		KnowledgeBase clonedKb = new KnowledgeBase(defaultKb);
+
+		Assert.assertNotEquals(clonedKb.getCPtr(), defaultKb.getCPtr());
+
+		Assert.assertEquals(clonedKb.get("age").toLong(), defaultKb.get("age").toLong());
+
+		Any clonedAnyType = clonedKb.get("location").toAny();
+		Geo.Point.Reader reader = clonedAnyType.reader(Geo.Point.factory);
+
+		Assert.assertEquals(DEFAULT_GEO_POINT[0], reader.getX(), 0);
+		Assert.assertEquals(DEFAULT_GEO_POINT[1], reader.getY(), 0);
+		Assert.assertEquals(DEFAULT_GEO_POINT[2], reader.getZ(), 0);
+
+	}
 
 }

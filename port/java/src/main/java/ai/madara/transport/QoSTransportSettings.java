@@ -55,365 +55,381 @@ import ai.madara.transport.filters.RecordFilter;
 
 public class QoSTransportSettings extends TransportSettings {
 
-  private native long jni_QoSTransportSettings();
+	private native long jni_QoSTransportSettings();
 
-  private native long jni_QoSTransportSettings(long cptr);
+	private native long jni_QoSTransportSettings(long cptr);
 
-  private static native void jni_freeQoSTransportSettings(long cptr);
+	private static native void jni_freeQoSTransportSettings(long cptr);
 
-  private native void jni_addBufferFilter(long cptr, long filter);
+	private native void jni_addBufferFilter(long cptr, long filter);
 
-  private native void jni_addBufferFilterObj(long cptr, BufferFilter filter);
+	private native void jni_addBufferFilterObj(long cptr, BufferFilter filter);
 
-  private native void jni_clearBufferFilters(long cptr);
+	private native void jni_clearBufferFilters(long cptr);
 
-  private native int jni_getNumberOfBufferFilters(long cptr);
+	private native int jni_getNumberOfBufferFilters(long cptr);
 
-  private native void jni_addRebroadcastRecordFilter(long cptr, int type, RecordFilter filter);
+	private native void jni_addRebroadcastRecordFilter(long cptr, int type, RecordFilter filter);
 
-  private native void jni_addRebroadcastAggregateFilter(long cptr, AggregateFilter filter);
+	private native void jni_addRebroadcastAggregateFilter(long cptr, AggregateFilter filter);
 
-  private native void jni_addSendRecordFilter(long cptr, int type, RecordFilter filter);
+	private native void jni_addSendRecordFilter(long cptr, int type, RecordFilter filter);
 
-  private native void jni_addSendAggregateFilter(long cptr, AggregateFilter filter);
+	private native void jni_addSendAggregateFilter(long cptr, AggregateFilter filter);
 
-  private native void jni_addReceiveRecordFilter(long cptr, int type, RecordFilter filter);
+	private native void jni_addReceiveRecordFilter(long cptr, int type, RecordFilter filter);
 
-  private native void jni_addReceiveAggregateFilter(long cptr, AggregateFilter filter);
+	private native void jni_addReceiveAggregateFilter(long cptr, AggregateFilter filter);
 
-  private native void jni_setRebroadcastTtl(long cptr, int ttl);
+	private native void jni_setRebroadcastTtl(long cptr, int ttl);
 
-  private native int jni_getRebroadcastTtl(long cptr);
+	private native int jni_getRebroadcastTtl(long cptr);
 
-  private native void jni_enableParticipantTtl(long cptr, int ttl);
+	private native void jni_enableParticipantTtl(long cptr, int ttl);
 
-  private native int jni_getParticipantTtl(long cptr);
+	private native int jni_getParticipantTtl(long cptr);
 
-  private native void jni_saveQoS(long cptr, java.lang.String filenmae);
+	private native void jni_saveQoS(long cptr, java.lang.String filenmae);
 
-  private native void jni_loadQoS(long cptr, java.lang.String filename);
+	private native void jni_loadQoS(long cptr, java.lang.String filename);
 
-  private native void jni_setSendBandwidthLimit(long cptr, int limit);
+	private native void jni_setSendBandwidthLimit(long cptr, int limit);
 
-  private native int jni_getSendBandwidthLimit(long cptr);
+	private native int jni_getSendBandwidthLimit(long cptr);
 
-  private native void jni_setTotalBandwidthLimit(long cptr, int limit);
+	private native void jni_setTotalBandwidthLimit(long cptr, int limit);
 
-  private native int jni_getTotalBandwidthLimit(long cptr);
+	private native int jni_getTotalBandwidthLimit(long cptr);
 
-  private native void jni_setDeadline(long cptr, int deadline);
+	private native void jni_setDeadline(long cptr, int deadline);
 
-  private native int jni_getDeadline(long cptr);
+	private native int jni_getDeadline(long cptr);
 
-  private native void jni_addTrustedPeer(long cptr, java.lang.String host);
+	private native void jni_addTrustedPeer(long cptr, java.lang.String host);
 
-  private native void jni_addBannedPeer(long cptr, java.lang.String host);
+	private native void jni_addBannedPeer(long cptr, java.lang.String host);
 
-  private native void jni_updateDropRate(long cptr, double percentage, int type, int burstamount);
+	private native void jni_updateDropRate(long cptr, double percentage, int type, int burstamount);
 
-  public QoSTransportSettings()
-  {
-    setCPtr(jni_QoSTransportSettings());
-  }
+	public QoSTransportSettings() {
+		setCPtr(jni_QoSTransportSettings());
+	}
 
-  public QoSTransportSettings(QoSTransportSettings transportSettings) throws MadaraDeadObjectException
-  {
-    setCPtr(jni_QoSTransportSettings(transportSettings.getCPtr()));
-  }
+	public QoSTransportSettings(QoSTransportSettings transportSettings) throws MadaraDeadObjectException {
+		setCPtr(jni_QoSTransportSettings(transportSettings.getCPtr()));
+	}
 
-  /**
-   * Adds a BufferFilter to the filter chain. Buffer filters are applied just
-   * after all other filters on send and before all other filters on receive.
-   *
-   * @param filter a filter to encode and decode buffers
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addFilter(BufferFilter filter) throws MadaraDeadObjectException
-  {
-    if (filter instanceof MadaraJNI)
-    {
-      MadaraJNI superClass = (MadaraJNI)filter;
-      jni_addBufferFilter(getCPtr(), superClass.getCPtr());
-    }
-    else
-    {
-      jni_addBufferFilterObj(getCPtr(), filter);
-    }
-  }
+	/**
+	 * Adds a BufferFilter to the filter chain. Buffer filters are applied just
+	 * after all other filters on send and before all other filters on receive.
+	 *
+	 * @param filter a filter to encode and decode buffers
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addFilter(BufferFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Clears the list of buffer filters
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void clearBufferFilters() throws MadaraDeadObjectException
-  {
-    jni_clearBufferFilters(getCPtr());
-  }
+		if (filter instanceof MadaraJNI) {
+			MadaraJNI superClass = (MadaraJNI) filter;
+			jni_addBufferFilter(getCPtr(), superClass.getCPtr());
+		} else {
+			jni_addBufferFilterObj(getCPtr(), filter);
+		}
+	}
 
-  /**
-   * Adds a filter that will be applied to certain types after receiving and
-   * before rebroadcasting, if time-to-live is greater than 0
-   *
-   * @param type the types to add the filter to
-   * @param filter Madara callback function
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
-  {
-    jni_addRebroadcastRecordFilter(getCPtr(), type.value(), filter);
-  }
+	/**
+	 * Clears the list of buffer filters
+	 * 
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void clearBufferFilters() throws MadaraDeadObjectException {
+		jni_clearBufferFilters(getCPtr());
+	}
 
-  /**
-   * Adds an aggregate update filter that will be applied before rebroadcasting,
-   * after individual record filters.
-   *
-   * @param filter Madara callback function
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addRebroadcastFilter(AggregateFilter filter) throws MadaraDeadObjectException
-  {
-    jni_addRebroadcastAggregateFilter(getCPtr(), filter);
-  }
+	/**
+	 * Adds a filter that will be applied to certain types after receiving and
+	 * before rebroadcasting, if time-to-live is greater than 0
+	 *
+	 * @param type   the types to add the filter to
+	 * @param filter Madara callback function
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addRebroadcastFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Adds a filter that will be applied to certain types before sending
-   *
-   * @param type the types to add the filter to
-   * @param filter Madara callback function
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addSendFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
-  {
-    jni_addSendRecordFilter(getCPtr(), type.value(), filter);
-  }
+		jni_addRebroadcastRecordFilter(getCPtr(), type.value(), filter);
+	}
 
-  /**
-   * Adds an aggregate update filter that will be applied before sending, after
-   * individual record filters.
-   *
-   * @param filter Madara callback function
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addSendFilter(AggregateFilter filter) throws MadaraDeadObjectException
-  {
-    jni_addSendAggregateFilter(getCPtr(), filter);
-  }
+	/**
+	 * Adds an aggregate update filter that will be applied before rebroadcasting,
+	 * after individual record filters.
+	 *
+	 * @param filter Madara callback function
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addRebroadcastFilter(AggregateFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Adds an aggregate filter for a map of variables to values before applying
-   * updates to the Knowledge_Base
-   *
-   * @param type the types to add the filter to
-   * @param filter Madara callback function
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addReceiveFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException
-  {
-    jni_addReceiveRecordFilter(getCPtr(), type.value(), filter);
-  }
+		jni_addRebroadcastAggregateFilter(getCPtr(), filter);
+	}
 
-  /**
-   * Adds an aggregate update filter that will be applied after receiving, after
-   * individual record filters.
-   *
-   * @param filter Madara callback function
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void addReceiveFilter(AggregateFilter filter) throws MadaraDeadObjectException
-  {
-    jni_addReceiveAggregateFilter(getCPtr(), filter);
-  }
+	/**
+	 * Adds a filter that will be applied to certain types before sending
+	 *
+	 * @param type   the types to add the filter to
+	 * @param filter Madara callback function
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addSendFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Sets the rebroadcast time-to-live for all sent packets
-   *
-   * @param ttl the time-to-live
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void setRebroadcastTtl(int ttl) throws MadaraDeadObjectException
-  {
-    jni_setRebroadcastTtl(getCPtr(), ttl);
-  }
+		jni_addSendRecordFilter(getCPtr(), type.value(), filter);
+	}
 
-  /**
-   * Gets the rebroadcast time-to-live for all sent packets
-   *
-   * @return the rebroadcast time-to-live
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public int getRebroadcastTtl() throws MadaraDeadObjectException
-  {
-    return jni_getRebroadcastTtl(getCPtr());
-  }
+	/**
+	 * Adds an aggregate update filter that will be applied before sending, after
+	 * individual record filters.
+	 *
+	 * @param filter Madara callback function
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addSendFilter(AggregateFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Enables participation in rebroadcasts up to a certain ttl value
-   *
-   * @param ttl the time-to-live
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void enableParticipantTtl(int ttl) throws MadaraDeadObjectException
-  {
-    jni_enableParticipantTtl(getCPtr(), ttl);
-  }
+		jni_addSendAggregateFilter(getCPtr(), filter);
+	}
 
-  /**
-   * Gets the rebroadcast time-to-live for all rebroadcasted packets
-   *
-   * @return the rebroadcast time-to-live
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public int getParticipantTtl() throws MadaraDeadObjectException
-  {
-    return jni_getParticipantTtl(getCPtr());
-  }
+	/**
+	 * Adds an aggregate filter for a map of variables to values before applying
+	 * updates to the Knowledge_Base
+	 *
+	 * @param type   the types to add the filter to
+	 * @param filter Madara callback function
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addReceiveFilter(KnowledgeType type, RecordFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Sets the send bandwidth limit
-   *
-   * @param limit the bandwidth limit for sending packets
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void setSendBandwidthLimit(int limit) throws MadaraDeadObjectException
-  {
-    jni_setSendBandwidthLimit(getCPtr(), limit);
-  }
+		jni_addReceiveRecordFilter(getCPtr(), type.value(), filter);
+	}
 
-  /**
-   * Gets the send bandwidth limit
-   *
-   * @return the bandwidth limit for sending packets
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public int getSendBandwidthLimit() throws MadaraDeadObjectException
-  {
-    return jni_getSendBandwidthLimit(getCPtr());
-  }
+	/**
+	 * Adds an aggregate update filter that will be applied after receiving, after
+	 * individual record filters.
+	 *
+	 * @param filter Madara callback function
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void addReceiveFilter(AggregateFilter filter) throws MadaraDeadObjectException {
+		if (filter == null) {
+			throw new IllegalArgumentException("Filter cannot be null");
+		}
 
-  /**
-   * Sets the total bandwidth limit
-   *
-   * @param limit the bandwidth limit for all packets
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public void setTotalBandwidthLimit(int limit) throws MadaraDeadObjectException
-  {
-    jni_setTotalBandwidthLimit(getCPtr(), limit);
-  }
+		jni_addReceiveAggregateFilter(getCPtr(), filter);
+	}
 
-  /**
-   * Gets the total bandwidth limit
-   *
-   * @return the bandwidth limit for all packets
- * @throws MadaraDeadObjectException throws exception if object is already released 
-   */
-  public int getTotalBandwidthLimit() throws MadaraDeadObjectException
-  {
-    return jni_getTotalBandwidthLimit(getCPtr());
-  }
+	/**
+	 * Sets the rebroadcast time-to-live for all sent packets
+	 *
+	 * @param ttl the time-to-live
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setRebroadcastTtl(int ttl) throws MadaraDeadObjectException {
+		jni_setRebroadcastTtl(getCPtr(), ttl);
+	}
 
-  /**
-   * Sets the deadline (seconds)
-   *
-   * @param deadline the maximum lifetime for all packets in seconds
-   */
-  public void setDeadline(int deadline) throws MadaraDeadObjectException
-  {
-    jni_setDeadline(getCPtr(), deadline);
-  }
+	/**
+	 * Gets the rebroadcast time-to-live for all sent packets
+	 *
+	 * @return the rebroadcast time-to-live
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public int getRebroadcastTtl() throws MadaraDeadObjectException {
+		return jni_getRebroadcastTtl(getCPtr());
+	}
 
-  /**
-   * Gets the deadline (seconds)
-   *
-   * @return the maximum lifetime for all packets in seconds
-   */
-  public int getDeadline() throws MadaraDeadObjectException
-  {
-    return jni_getDeadline(getCPtr());
-  }
+	/**
+	 * Enables participation in rebroadcasts up to a certain ttl value
+	 *
+	 * @param ttl the time-to-live
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void enableParticipantTtl(int ttl) throws MadaraDeadObjectException {
+		jni_enableParticipantTtl(getCPtr(), ttl);
+	}
 
-  /**
-   * Adds a trusted peer
-   *
-   * @param host the peer to add to the trusted list
-   *
-   */
-  void addTrustedPeer(java.lang.String host) throws MadaraDeadObjectException
-  {
-    jni_addTrustedPeer(getCPtr(), host);
-  }
+	/**
+	 * Gets the rebroadcast time-to-live for all rebroadcasted packets
+	 *
+	 * @return the rebroadcast time-to-live
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public int getParticipantTtl() throws MadaraDeadObjectException {
+		return jni_getParticipantTtl(getCPtr());
+	}
 
-  /**
-   * Adds a banned peer
-   *
-   * @param host the peer to add to the banned list
-   *
-   */
-  void addBannedPeer(java.lang.String host) throws MadaraDeadObjectException
-  {
-    jni_addBannedPeer(getCPtr(), host);
-  }
+	/**
+	 * Sets the send bandwidth limit
+	 *
+	 * @param limit the bandwidth limit for sending packets
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setSendBandwidthLimit(int limit) throws MadaraDeadObjectException {
+		jni_setSendBandwidthLimit(getCPtr(), limit);
+	}
 
-  /**
-   * Updates drop rate
-   *
-   * @param percentage the percentage of drops to enforce
-   * @param type the type of drop policy to use
-   * @param burstamount the amount of bursts of drops to enforce
-   *
-   */
-  void updateDropRate(double percentage, DropType type, int burstamount) throws MadaraDeadObjectException
-  {
-    jni_updateDropRate(getCPtr(), percentage, type.value(), burstamount);
-  }
+	/**
+	 * Gets the send bandwidth limit
+	 *
+	 * @return the bandwidth limit for sending packets
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public int getSendBandwidthLimit() throws MadaraDeadObjectException {
+		return jni_getSendBandwidthLimit(getCPtr());
+	}
 
-  /**
-   * Saves the transport settings as a KnowledgeBase to a file
-   *
-   * @param filename the file to save the knowledge base to
-   *
-   **/
-  @Override
-  public void save(String filename) throws MadaraDeadObjectException
-  {
-    jni_saveQoS(getCPtr(), filename);
-  }
+	/**
+	 * Sets the total bandwidth limit
+	 *
+	 * @param limit the bandwidth limit for all packets
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void setTotalBandwidthLimit(int limit) throws MadaraDeadObjectException {
+		jni_setTotalBandwidthLimit(getCPtr(), limit);
+	}
 
-  /**
-   * Loads the transport settings from a KnowledgeBase context file
-   *
-   * @param filename the file to save the knowledge base to
-   *
-   **/
-  @Override
-  public void load(String filename) throws MadaraDeadObjectException
-  {
-    jni_loadQoS(getCPtr(), filename);
-  }
+	/**
+	 * Gets the total bandwidth limit
+	 *
+	 * @return the bandwidth limit for all packets
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public int getTotalBandwidthLimit() throws MadaraDeadObjectException {
+		return jni_getTotalBandwidthLimit(getCPtr());
+	}
 
-  /**
-   * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
-   * called before an instance of WaitSettings gets garbage collected
-   */
-  public void free()
-  {
-    jni_freeQoSTransportSettings(getCPtr());
-    setCPtr(0);
-  }
+	/**
+	 * Sets the deadline (seconds)
+	 *
+	 * @param deadline the maximum lifetime for all packets in seconds
+	 */
+	public void setDeadline(int deadline) throws MadaraDeadObjectException {
+		jni_setDeadline(getCPtr(), deadline);
+	}
 
-  /**
-   * Cleans up underlying C resources
-   * @throws Throwable necessary for override but unused
-   */
-  @Override
-  protected void finalize() throws Throwable
-  {
-    try {
-      free();
-    } catch (Throwable t) {
-      throw t;
-    } finally {
-      super.finalize();
-    }
-  }
+	/**
+	 * Gets the deadline (seconds)
+	 *
+	 * @return the maximum lifetime for all packets in seconds
+	 */
+	public int getDeadline() throws MadaraDeadObjectException {
+		return jni_getDeadline(getCPtr());
+	}
+
+	/**
+	 * Adds a trusted peer
+	 *
+	 * @param host the peer to add to the trusted list
+	 *
+	 */
+	void addTrustedPeer(java.lang.String host) throws MadaraDeadObjectException {
+		jni_addTrustedPeer(getCPtr(), host);
+	}
+
+	/**
+	 * Adds a banned peer
+	 *
+	 * @param host the peer to add to the banned list
+	 *
+	 */
+	void addBannedPeer(java.lang.String host) throws MadaraDeadObjectException {
+		jni_addBannedPeer(getCPtr(), host);
+	}
+
+	/**
+	 * Updates drop rate
+	 *
+	 * @param percentage  the percentage of drops to enforce
+	 * @param type        the type of drop policy to use
+	 * @param burstamount the amount of bursts of drops to enforce
+	 *
+	 */
+	void updateDropRate(double percentage, DropType type, int burstamount) throws MadaraDeadObjectException {
+		jni_updateDropRate(getCPtr(), percentage, type.value(), burstamount);
+	}
+
+	/**
+	 * Saves the transport settings as a KnowledgeBase to a file
+	 *
+	 * @param filename the file to save the knowledge base to
+	 *
+	 **/
+	@Override
+	public void save(String filename) throws MadaraDeadObjectException {
+		jni_saveQoS(getCPtr(), filename);
+	}
+
+	/**
+	 * Loads the transport settings from a KnowledgeBase context file
+	 *
+	 * @param filename the file to save the knowledge base to
+	 *
+	 **/
+	@Override
+	public void load(String filename) throws MadaraDeadObjectException {
+		jni_loadQoS(getCPtr(), filename);
+	}
+
+	/**
+	 * Deletes the C instantiation. To prevent memory leaks, this <b>must</b> be
+	 * called before an instance of WaitSettings gets garbage collected
+	 */
+	public void free() {
+		jni_freeQoSTransportSettings(getCPtr());
+		setCPtr(0);
+	}
+
+	/**
+	 * Cleans up underlying C resources
+	 * 
+	 * @throws Throwable necessary for override but unused
+	 */
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			free();
+		} catch (Throwable t) {
+			throw t;
+		} finally {
+			super.finalize();
+		}
+	}
 }

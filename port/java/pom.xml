@@ -87,7 +87,7 @@
 						</goals>
 						<configuration>
 							<schemaDirectory>${env.MADARA_ROOT}/tests/capnfiles</schemaDirectory>
-							<outputDirectory>${env.MADARA_ROOT}/port/java/src/main/java/ai/madara/tests/capnp</outputDirectory>
+							<outputDirectory>${env.MADARA_ROOT}/port/java/src/test/java/ai/madara/tests/capnp</outputDirectory>
 						</configuration>
 					</execution>
 				</executions>
