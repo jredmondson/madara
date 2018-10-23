@@ -68,7 +68,7 @@ public class TestKnowledgeBase extends BaseTest {
 	@Test
 	public void testKBToKnowledgeMap() throws MadaraDeadObjectException {
 
-		KnowledgeBase knowledge = getDefaultKnowledgeBase();
+		KnowledgeBase knowledge = initKnowledgeBase();
 
 		Integer age = new Integer();
 		age.setName(knowledge, "age");
@@ -101,7 +101,7 @@ public class TestKnowledgeBase extends BaseTest {
 
 	@Test
 	public void testKBClone() throws MadaraDeadObjectException, BadAnyAccess {
-		KnowledgeBase defaultKb = getDefaultKnowledgeBase();
+		KnowledgeBase defaultKb = initKnowledgeBase();
 		defaultKb.set("name", "Steven Spielberg");
 		defaultKb.set("age", 75);
 

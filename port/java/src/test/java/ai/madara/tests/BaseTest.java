@@ -1,47 +1,44 @@
 package ai.madara.tests;
 
 import org.capnproto.MessageBuilder;
-import org.junit.After;
-import org.junit.Before;
 
 import ai.madara.exceptions.MadaraDeadObjectException;
 import ai.madara.knowledge.Any;
 import ai.madara.knowledge.BadAnyAccess;
 import ai.madara.knowledge.KnowledgeBase;
+import ai.madara.logger.GlobalLogger;
 import ai.madara.tests.capnp.Geo;
+import ai.madara.tests.capnp.Person;
 import ai.madara.transport.QoSTransportSettings;
 import ai.madara.transport.TransportType;
 import ai.madara.transport.filters.AggregateFilter;
 
 public class BaseTest {
-	private KnowledgeBase knowledgeBase;
 
 	public static double[] DEFAULT_GEO_POINT = { 40.417286, -82.907120, 0 };
 
 	static {
 		System.loadLibrary("MADARA");
-	}
-
-	@Before
-	public void initKB() throws MadaraDeadObjectException {
 		registerAnyTypes();
-		knowledgeBase = new KnowledgeBase();
-		//KnowledgeBase.setLogLevel(LogLevels.LOG_DETAILED);
-		//knowledgeBase.attachLogger(GlobalLogger.toLogger());
+
 	}
 
-	private void registerAnyTypes() {
+	public static void registerAnyTypes() {
+		// Primitive Types
+		Any.registerInt("int");
+		Any.registerDouble("double");
+		Any.registerString("string");
+		Any.registerChar("char");
+		Any.registerFloat("float");
+
 		Any.registerStringVector("strvec");
 		Any.registerDoubleVector("dblvec");
 		Any.registerStringToStringMap("smap");
 		Any.registerClass("Point", Geo.Point.factory);
-	}
+		Any.registerClass("PersonBio", Person.Bio.factory);
+		Any.registerClass("PersonDate", Person.Date.factory);
+		Any.registerClass("PersonPhone", Person.Bio.PhoneNumber.factory);
 
-	@After
-	public void freeResources() {
-		if (knowledgeBase != null) {
-			knowledgeBase.free();
-		}
 	}
 
 	public Any getGeoPoint() throws BadAnyAccess {
@@ -81,12 +78,67 @@ public class BaseTest {
 
 	}
 
-	public void attachQoS(String id, QoSTransportSettings transport) throws MadaraDeadObjectException {
-		knowledgeBase.attachTransport(id, transport);
+	/**
+	 * Initializes KB with ZMQ
+	 *
+	 * @param receiveFilter
+	 * @param sendFilter
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void attachZMQ(KnowledgeBase knowledgeBase, String[] hosts, AggregateFilter receiveFilter,
+			AggregateFilter sendFilter) throws MadaraDeadObjectException {
+
+		QoSTransportSettings qoSTransportSettings = new QoSTransportSettings();
+		qoSTransportSettings.setHosts(hosts);
+		qoSTransportSettings.setType(TransportType.ZMQ_TRANSPORT);
+		if (receiveFilter != null) {
+			qoSTransportSettings.addReceiveFilter(receiveFilter);
+		}
+
+		if (sendFilter != null) {
+			qoSTransportSettings.addSendFilter(sendFilter);
+		}
+		knowledgeBase.attachTransport("", qoSTransportSettings);
+
 	}
 
-	public KnowledgeBase getDefaultKnowledgeBase() {
+	/**
+	 * Initializes KB with ZMQ
+	 *
+	 * @param receiveFilter
+	 * @param sendFilter
+	 * @throws MadaraDeadObjectException throws exception if object is already
+	 *                                   released
+	 */
+	public void attachUDP(KnowledgeBase knowledgeBase, String[] hosts, AggregateFilter receiveFilter,
+			AggregateFilter sendFilter) throws MadaraDeadObjectException {
+
+		QoSTransportSettings qoSTransportSettings = new QoSTransportSettings();
+		qoSTransportSettings.setHosts(hosts);
+		qoSTransportSettings.setType(TransportType.UDP_TRANSPORT);
+		if (receiveFilter != null) {
+			qoSTransportSettings.addReceiveFilter(receiveFilter);
+		}
+
+		if (sendFilter != null) {
+			qoSTransportSettings.addSendFilter(sendFilter);
+		}
+		knowledgeBase.attachTransport("", qoSTransportSettings);
+
+	}
+
+	public KnowledgeBase initKnowledgeBase() throws MadaraDeadObjectException {
+		KnowledgeBase knowledgeBase = new KnowledgeBase();
+		knowledgeBase.attachLogger(GlobalLogger.toLogger());
 		return knowledgeBase;
+	}
+
+	public void freeResources(KnowledgeBase kb) throws MadaraDeadObjectException {
+		kb.clearModifieds();
+		kb.closeTransports();
+		kb.free();
+
 	}
 
 }

@@ -48,23 +48,61 @@
 package ai.madara.tests.basic;
 
 import org.capnproto.MessageBuilder;
+import org.capnproto.StructList.Builder;
 import org.junit.Assert;
 import org.junit.Test;
 
 import ai.madara.knowledge.Any;
+import ai.madara.knowledge.BadAnyAccess;
 import ai.madara.tests.BaseTest;
 import ai.madara.tests.capnp.Geo;
+import ai.madara.tests.capnp.Person;
+import ai.madara.tests.capnp.Person.Bio.PhoneNumber.Type;
+import ai.madara.tests.capnp.Person.Bio.Reader;
 
 /**
  * This class is a tester for Any and AnyRef
  */
 public class TestAny extends BaseTest {
+	/**
+	 * All the Any types are registered in {@link BaseTest#registerAnyTypes()}
+	 * 
+	 * @throws InterruptedException
+	 * @throws Exception
+	 */
 	@Test
-	public void testAny() throws InterruptedException, Exception {
+	public void testPrimitiveDataTypes() throws InterruptedException, Exception {
 
 		// System.err.println("Loading libdatatypes_shared.so");
 		// System.loadLibrary("datatypes_shared");
-	
+
+		Any anyChar = new Any("char");
+		anyChar.assign('A');
+		Assert.assertEquals("A", anyChar.toString());
+
+		Any anyInt = new Any("int");
+		anyInt.assign(100);
+		Assert.assertEquals(100, anyInt.toInteger());
+
+		Any anyFloat = new Any("float");
+		anyFloat.assign(123f);
+		Assert.assertEquals(123f, anyFloat.toDouble(), 0.0);
+
+		Any anyDouble = new Any("double");
+		anyDouble.assign(3.14159);
+		Assert.assertEquals((double) 22 / 7, anyDouble.toDouble(), 0.1);
+
+		Any anyStr = new Any("string");
+		anyStr.assign("Jungle Book");
+		Assert.assertEquals("Jungle Book", anyStr.toString());
+
+	}
+
+	public void testListsTypes() {
+
+	}
+
+	public void testMapTypes() throws BadAnyAccess {
 		Any a0 = new Any("smap");
 		a0.at("hello").assign("world");
 
@@ -75,35 +113,51 @@ public class TestAny extends BaseTest {
 		a1.at(7).assign("seventh");
 		a1.at(2).assign("second");
 
-		for (long i = 0, n = a1.size(); i < n; ++i) {
-			System.err.println("a1[" + i + "] = " + a1.at(i));
-		}
-
 		Assert.assertFalse(a1.at(0).empty());
 		Assert.assertNotNull(a1.at(2));
 		Assert.assertEquals(a1.at(2).toString(), "second");
-		/*
-		 * Any p0 = new Any("Point"); System.err.println("p0 = " + p0);
-		 * 
-		 * Any p1 = new Any("Pose"); System.err.println("p1 = " + p1);
-		 * 
-		 * kb.set("p0", p0); kb.set("p1", p1);
-		 * 
-		 * System.err.println("kb.p0 = " + kb.get("p0")); System.err.println("kb.p1 = "
-		 * + kb.get("p1"));
-		 */
-
-		MessageBuilder msg = new MessageBuilder();
-		Geo.Point.Builder builder = msg.initRoot(Geo.Point.factory);
-		builder.setX(12);
-		builder.setY(32);
-		builder.setZ(47);
-		Any c0 = new Any(Geo.Point.factory, msg);
-
-		Geo.Point.Reader reader = c0.reader(Geo.Point.factory);
-		Assert.assertEquals(reader.getX(), 12, 0.0);
-		Assert.assertEquals(reader.getY(), 32, 0.01);
-		Assert.assertEquals(reader.getZ(), 47, 0);
 
 	}
+
+	@Test
+	public void testSimpleObjectType() throws BadAnyAccess {
+		Any c0 = getGeoPoint();
+
+		Geo.Point.Reader reader = c0.reader(Geo.Point.factory);
+		Assert.assertEquals(reader.getX(), DEFAULT_GEO_POINT[0], 0.0);
+		Assert.assertEquals(reader.getY(), DEFAULT_GEO_POINT[1], 0.01);
+		Assert.assertEquals(reader.getZ(), DEFAULT_GEO_POINT[2], 0);
+	}
+
+	@Test
+	public void testComplexObjectType() throws BadAnyAccess {
+
+		MessageBuilder bioMb = new MessageBuilder();
+		Person.Bio.Builder bioBuilder = bioMb.initRoot(Person.Bio.factory);
+		ai.madara.tests.capnp.Person.Date.Builder dobBuilder = bioBuilder.initBirthdate();
+		dobBuilder.setDay((byte) 29);
+		dobBuilder.setMonth((byte) 03);
+		dobBuilder.setYear((short) 1986);
+
+		bioBuilder.setEmail("amit@hakoonamatata.com");
+		bioBuilder.setName("Amit S");
+
+		Builder<ai.madara.tests.capnp.Person.Bio.PhoneNumber.Builder> phones = bioBuilder.initPhones(3);
+
+		ai.madara.tests.capnp.Person.Bio.PhoneNumber.Builder homePhoneBuilder = phones.get(0);
+		homePhoneBuilder.setNumber("+1 9900-123-123");
+		homePhoneBuilder.setType(Type.HOME);
+
+		bioBuilder.setBirthdate(dobBuilder.asReader());
+
+		// Convert Person object to Any type.
+		Any person = new Any(Person.Bio.factory, bioMb);
+
+		// Read from Any type again.
+		Reader obj = person.reader(Person.Bio.factory);
+
+		// Assertion
+		Assert.assertEquals(obj.getName().toString(), "Amit S");
+	}
+
 }
