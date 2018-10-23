@@ -401,7 +401,7 @@ inline auto capn_get(typename C::Reader& reader, const CapnList<R, B, C>& info,
 template<typename T, typename R, typename B, typename C, typename A>
 inline auto capn_set(typename C::Builder& builder,
     const CapnList<R, B, C>& info, const std::vector<T, A>& val)
-    -> enable_if_<std::is_arithmetic<T>::value>
+    -> enable_if_<std::is_arithmetic<T>::value || std::is_enum<T>::value>
 {
   auto p = capn_preprocess(val, select_overload());
   const auto& ref = resolve_preprocess(p, val, select_overload());
@@ -419,7 +419,7 @@ inline auto capn_set(typename C::Builder& builder,
 
 template<typename T, typename R, typename B, typename C, typename A>
 inline auto capn_get(typename C::Reader& reader, const CapnList<R, B, C>& info,
-    std::vector<T, A>& val) -> enable_if_<std::is_arithmetic<T>::value>
+    std::vector<T, A>& val) -> enable_if_<std::is_arithmetic<T>::value || std::is_enum<T>::value>
 {
   auto list_reader{(reader.*(info.get))()};
   val.resize(list_reader.size());
