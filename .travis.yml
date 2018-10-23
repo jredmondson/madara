@@ -116,7 +116,7 @@ matrix:
     # g++, linux, lz4
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 lz4" LZ4="lz4"
+      env: NAME="Ubuntu 16.04 g++ lz4" LZ4="lz4"
 
     # g++, linux, android, zmq
     - compiler: gcc
