@@ -83,6 +83,7 @@ public:
    * @param  t_last_state        the last state to query/save
    * @param  t_reset_checkpoint  reset the checkpoint modifieds
    * @param  t_ignore_header_check  if true, ignore header checks
+   * @param  t_max_buffer_size   the max size in bytes for buffer growth
    **/
   CheckpointSettings(size_t t_buffer_size, bool t_clear_knowledge,
       std::string t_filename = "", uint64_t t_initial_timestamp = 0,
@@ -93,7 +94,8 @@ public:
       bool t_override_lamport = false, bool t_keep_open = false,
       uint64_t t_initial_state = 0, uint64_t t_last_state = (uint64_t)-1,
       bool t_reset_checkpoint = true, bool t_ignore_header_check = false,
-      VariablesLister* t_variables_lister = nullptr)
+      VariablesLister* t_variables_lister = nullptr,
+      size_t t_max_buffer_size = 2000000000)
     : buffer_size(t_buffer_size),
       clear_knowledge(t_clear_knowledge),
       filename(t_filename),
@@ -112,7 +114,8 @@ public:
       last_state(t_last_state),
       reset_checkpoint(t_reset_checkpoint),
       ignore_header_check(t_ignore_header_check),
-      variables_lister(t_variables_lister)
+      variables_lister(t_variables_lister),
+      max_buffer_size(t_max_buffer_size)
   {
   }
 
@@ -462,6 +465,11 @@ public:
    * obejct exists
    **/
   VariablesLister* variables_lister = nullptr;
+
+  /**
+   * the max size the buffer can grow to
+   **/
+  size_t max_buffer_size = 2000000000;
 
 private:
   /**
