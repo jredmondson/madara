@@ -1,3 +1,4 @@
 feature (lz4) {
   macros += _USE_LZ4_
+  includes += $(LZ4_ROOT)/lib
 }

@@ -113,6 +113,11 @@ matrix:
       os: linux
       env: NAME="Ubuntu 16.04 g++ simtime" SIMTIME="simtime"
 
+    # g++, linux, lz4
+    - compiler: gcc
+      os: linux
+      env: NAME="Ubuntu 16.04 g++ lz4" LZ4="lz4"
+
     # g++, linux, android, zmq
     - compiler: gcc
       os: linux
@@ -150,8 +155,8 @@ script:
   - echo "TRAVIS_BUILD_DIR=$TRAVIS_BUILD_DIR"
   - echo ls $TRAVIS_BUILD_DIR
   - ls $TRAVIS_BUILD_DIR
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_any ; fi
