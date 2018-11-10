@@ -17,23 +17,23 @@ namespace threads
     /**
      * Default constructor
      **/
-    MyThread ();
+    MyThread();
     
     /**
      * Destructor
      **/
-    virtual ~MyThread ();
+    virtual ~MyThread();
     
     /**
       * Initializes thread with MADARA knowledge base
       * @param   kb   context for querying current program state
       **/
-    virtual void init (madara::knowledge::KnowledgeBase & kb);
+    virtual void init(madara::knowledge::KnowledgeBase & kb);
 
     /**
       * Executes the main thread logic
       **/
-    virtual void run (void);
+    virtual void run(void);
 
   private:
     /// data plane if we want to access the knowledge base

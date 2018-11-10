@@ -17,7 +17,7 @@ namespace transports
     /**
      * Default constructor
      **/
-    MyTransportReadThread (
+    MyTransportReadThread(
       const std::string & id,
       const madara::transport::TransportSettings & settings,
       madara::transport::BandwidthMonitor & send_monitor,
@@ -27,24 +27,24 @@ namespace transports
     /**
      * Destructor
      **/
-    virtual ~MyTransportReadThread ();
+    virtual ~MyTransportReadThread();
     
     /**
       * Initializes thread with MADARA context
       * @param   kb   context for querying current program state
       **/
-    virtual void init (madara::knowledge::KnowledgeBase & kb);
+    virtual void init(madara::knowledge::KnowledgeBase & kb);
 
     /**
       * Executes the main thread logic
       **/
-    virtual void run (void);
+    virtual void run(void);
 
   private:
     /// data plane if we want to access the knowledge base
     madara::knowledge::ThreadSafeContext * context_;
     
-    /// the unique id of this agent (probably a host:port pairing)
+    /// the unique id of this agent(probably a host:port pairing)
     const std::string id_;
     
     /// the transport settings being used

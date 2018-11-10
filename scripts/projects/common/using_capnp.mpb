@@ -6,7 +6,7 @@ project {
   libs += capnp-json
   libs += kj
 
-  Define_Custom (CAPN) {
+  Define_Custom(CAPN) {
     command = bash -c "capnp compile -I \$$CAPNP_ROOT/c++/src -oc++ \$$0;\
 capnp compile -I \$$CAPNP_ROOT/c++/src -o/bin/cat \$$0 > \$$0.bin"
     inputext = .capn

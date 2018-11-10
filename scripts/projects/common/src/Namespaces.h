@@ -10,49 +10,26 @@
 **/
 
 /**
- * @namespace algorithms
- * Contains algorithms that can be changed at runtime in GAMS
- **/
-namespace algorithms
-{
-}
-
-/**
- * @namespace containers
- * Contains managed C++ containers that map between C++ variables and knowledge variables
- **/
-namespace containers
-{
-}
-
-/**
  * @namespace filters
- * Contains filters that may shape traffic on-send or on-receive
+ * Contains filters that can shape traffic on-send or on-receive
  **/
 namespace filters
 {
 }
 
 /**
- * @namespace platforms
- * Contains platform drivers and platform threads
+ * @namespace threads
+ * Contains threads that can be used by applications
  **/
-namespace platforms
+namespace threads
 {
-  /**
-   * @namespace platforms::threads
-   * Contains threads that will be managed by platform drivers
-   **/
-  namespace threads
-  {
-  }
 }
 
 /**
- * @namespace threads
- * Contains threads that will be managed by an agent controller
+ * @namespace transports
+ * Contains custom transports that can be used for data transfer
  **/
-namespace threads
+namespace transports
 {
 }
 

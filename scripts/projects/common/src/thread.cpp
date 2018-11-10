@@ -5,12 +5,12 @@
 namespace knowledge = madara::knowledge;
 
 // constructor
-threads::MyThread::MyThread ()
+threads::MyThread::MyThread()
 {
 }
 
 // destructor
-threads::MyThread::~MyThread ()
+threads::MyThread::~MyThread()
 {
 }
 
@@ -21,7 +21,7 @@ threads::MyThread::~MyThread ()
  * the function.
  **/
 void
-threads::MyThread::init (knowledge::KnowledgeBase & kb)
+threads::MyThread::init(knowledge::KnowledgeBase & kb)
 {
   // point our data plane to the knowledge base initializing the thread
   data_ = kb;
@@ -34,15 +34,15 @@ threads::MyThread::init (knowledge::KnowledgeBase & kb)
  * controller.
  **/
 void
-threads::MyThread::run (void)
+threads::MyThread::run(void)
 {
   /**
    * the MADARA logger is thread-safe, fast, and allows for specifying
-   * various options like output files and multiple output targets (
+   * various options like output files and multiple output targets(
    * e.g., std::cerr, a system log, and a thread_output.txt file). You
    * can create your own custom log levels or loggers as well.
    **/
-  madara_logger_ptr_log (madara::logger::global_logger.get (),
+  madara_logger_ptr_log(madara::logger::global_logger.get(),
     madara::logger::LOG_MAJOR,
     "threads::MyThread::run:" 
     " executing\n");

@@ -1,4 +1,4 @@
-feature (zmq) {
+feature(zmq) {
   includes += $(ZMQ_ROOT)/include
 
   specific(prop:windows) {

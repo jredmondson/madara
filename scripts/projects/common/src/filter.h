@@ -16,12 +16,12 @@ namespace filters
     /**
      * Constructor
      **/
-    MyFilter ();
+    MyFilter();
 
     /**
      * Destructor
      **/
-    virtual ~MyFilter ();
+    virtual ~MyFilter();
 
     /**
      * The method that filters incoming or outgoing 
@@ -29,7 +29,7 @@ namespace filters
      * @param   transport_context context for querying transport state
      * @param   vars              context for querying current program state
      **/
-    virtual void filter (madara::knowledge::KnowledgeMap & records,
+    virtual void filter(madara::knowledge::KnowledgeMap & records,
       const madara::transport::TransportContext & transport_context,
       madara::knowledge::Variables & vars);
       

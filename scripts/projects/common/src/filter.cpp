@@ -1,16 +1,16 @@
  
 #include "MyFilter.h"
 
-filters::MyFilter::MyFilter ()
+filters::MyFilter::MyFilter()
 {
 }
 
-filters::MyFilter::~MyFilter ()
+filters::MyFilter::~MyFilter()
 {
 }
 
 void
-filters::MyFilter::filter (
+filters::MyFilter::filter(
   madara::knowledge::KnowledgeMap & records,
   const madara::transport::TransportContext & transport_context,
   madara::knowledge::Variables & vars)

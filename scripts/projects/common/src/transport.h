@@ -16,18 +16,18 @@ namespace transports
   public:
     /**
      * Constructor
-     * @param   id                unique identifier (generally host:port)
+     * @param   id                unique identifier(generally host:port)
      * @param   new_settings      settings to apply to the transport
      * @param   context           the knowledge record context
      **/
-    MyTransport (const std::string & id,
+    MyTransport(const std::string & id,
       madara::transport::TransportSettings & new_settings,
       madara::knowledge::KnowledgeBase & context);
 
     /**
      * Destructor
      **/
-    virtual ~MyTransport ();
+    virtual ~MyTransport();
     
     /**
      * Sends a list of updates to the domain. This function must be
@@ -36,7 +36,7 @@ namespace transports
      *          been updated and could be sent.
      * @return  result of operation or -1 if we are shutting down
      **/
-    long send_data (const madara::knowledge::KnowledgeMap & modifieds) override;
+    long send_data(const madara::knowledge::KnowledgeMap & modifieds) override;
     
   protected:
     /// threads for monitoring knowledge updates

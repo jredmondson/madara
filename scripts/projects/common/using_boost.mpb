@@ -5,8 +5,8 @@ project {
   }
 
   // b2 builds libboost_system with the following example formats:
-  // libboost_system-vc141-mt-gd-x64-1_67.lib (Debug) 
-  // libboost_system-vc141-mt-x64-1_67.lib (Release)
+  // libboost_system-vc141-mt-gd-x64-1_67.lib(Debug) 
+  // libboost_system-vc141-mt-x64-1_67.lib(Release)
   // we want to allow Windows devs to customize their linked boost libs
 
   expand(BOOST_TOOLSET) {
