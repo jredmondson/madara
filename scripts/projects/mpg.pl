@@ -56,6 +56,7 @@ options:
   --verbose|-v              print detailed debug info\n";
   
   print("$output\n");
+  exit 0;
 }
 else
 {
@@ -534,5 +535,5 @@ project ($app) : using_madara {
   open project_file, ">>$path/project.mpc" or
     die "ERROR: Couldn't open $path/project.mpc\n"; 
     print project_file $contents; 
-  close app_file;
+  close project_file;
 }
