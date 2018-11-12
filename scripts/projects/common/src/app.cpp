@@ -1,8 +1,13 @@
+// non-MADARA includes
+#include <memory>
+
 // MADARA includes
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/threads/Threader.h"
 #include "madara/utility/EpochEnforcer.h"
 #include "madara/utility/Utility.h"
+#include "madara/knowledge/containers/Integer.h"
 
 // DO NOT DELETE THIS SECTION
 
@@ -42,12 +47,18 @@ std::string save_transport_prefix;
 std::string save_transport_text;
 std::string load_transport_prefix;
 
+// checkpoint settings
+knowledge::CheckpointSettings chkpt_settings;
+double checkpoint_hertz = 100;
+
 void print_usage(char * prog_name)
 {
   madara_logger_ptr_log(madara::logger::global_logger.get(),
     madara::logger::LOG_ALWAYS,
 "\nProgram summary for %s:\n\n" 
 " [-b |--broadcast ip:port]     the broadcast ip to send and listen to\n" 
+" [-c |--checkpoint filename]   save state to a checkpoint file for retrieval\n" 
+" [-cz |--checkpoint-hz hz]     maximum periodicity to save checkpoints at\n" 
 " [-d |--domain domain]         the knowledge domain to send and listen to\n" 
 " [-e |--rebroadcasts num]      number of hops for rebroadcasting messages\n" 
 " [-f |--logfile file]          log to a file\n" 
@@ -94,10 +105,39 @@ void handle_arguments(int argc, char ** argv)
 
       ++i;
     }
+    else if (arg1 == "-c" || arg1 == "--checkpoint")
+    {
+      if (i + 1 < argc)
+      {
+        chkpt_settings.filename = argv[i + 1];
+      }
+      else
+      {
+        print_usage(argv[0]);
+      }
+
+      ++i;
+    }
+    else if (arg1 == "-cz" || arg1 == "--checkpoint-hz")
+    {
+      if (i + 1 < argc && argv[i + 1][0] != '-')
+      {
+        std::stringstream buffer(argv[i + 1]);
+        buffer >> checkpoint_hertz;
+      }
+      else
+      {
+        print_usage(argv[0]);
+      }
+
+      ++i;
+    }
     else if (arg1 == "-d" || arg1 == "--domain")
     {
       if (i + 1 < argc && argv[i + 1][0] != '-')
+      {
         settings.write_domain = argv[i + 1];
+      }
       else
       {
         print_usage(argv[0]);
@@ -411,6 +451,21 @@ int main(int argc, char ** argv)
   // create knowledge base
   knowledge::KnowledgeBase kb;
 
+  // setup an example container
+  knowledge::containers::Integer var1 ("var1", kb);
+
+  // setup checkpoint streaming, if configured on command line
+  std::unique_ptr<knowledge::CheckpointStreamer> streamer = 0;
+
+  if (chkpt_settings.filename != "" && checkpoint_hertz > 0)
+  {
+    std::cerr << "Saving checkpoints to " << chkpt_settings.filename << "\n";
+
+    streamer.reset (new knowledge::CheckpointStreamer(
+      chkpt_settings, kb.get_context(), checkpoint_hertz));
+    kb.attach_streamer(std::move(streamer));
+  }
+
   // create threader for thread launching and control
   madara::threads::Threader threader (kb);
 
@@ -432,14 +487,6 @@ int main(int argc, char ** argv)
     kb.evaluate(madara_commands,
       knowledge::EvalSettings(false, true));
   }
-  
-  /**
-   * WARNING: the following section will be regenerated whenever new threads
-   * are added via this tool. So, you can adjust hertz rates and change how
-   * the thread is initialized, but the entire section will be regenerated
-   * with all threads in the threads directory, whenever you use the new
-   * thread option with the gpc.pl script.
-   **/
 
   // begin thread creation
   // end thread creation
@@ -455,6 +502,9 @@ int main(int argc, char ** argv)
   while (!enforcer.is_done ())
   {
     std::cerr << "Executing app control loop\n";
+
+    // increment the Integer container var to change knowledge
+    ++var1;
 
     // print knowledge base and send modifieds
     kb.print();
