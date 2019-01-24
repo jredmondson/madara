@@ -67,7 +67,7 @@ struct MADARA_EXPORT EvalSettings : public KnowledgeUpdateSettings
    **/
   EvalSettings()
     : KnowledgeUpdateSettings(),
-      delay_sending_modifieds(true),
+      delay_sending_modifieds(false),
       pre_print_statement(""),
       post_print_statement("")
   {
