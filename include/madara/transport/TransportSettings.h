@@ -269,7 +269,7 @@ public:
    * Number of valid messages allowed to be received per second. This
    * value can be -1 or 0.0 to go as fast as possible
    **/
-  double read_thread_hertz = 0.0;
+  double read_thread_hertz = 1000.0;
 
   /**
    * Maximum rate of sending messages. This is not a bandwidth limit.

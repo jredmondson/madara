@@ -177,6 +177,16 @@ void handle_arguments(int argc, char** argv)
     {
       settings.send_reduced_message_header = true;
     }
+    else if(arg1 == "-rhz" || arg1 == "--read-hz")
+    {
+      if(i + 1 < argc)
+      {
+        std::stringstream buffer(argv[i + 1]);
+        buffer >> settings.read_thread_hertz;
+      }
+
+      ++i;
+    }
     else if (arg1 == "-s" || arg1 == "--size")
     {
       if (i + 1 < argc)
@@ -284,6 +294,7 @@ void handle_arguments(int argc, char** argv)
           "(def:localhost)\n"
           " [-q|--queue-length len   the buffer size to use for the test\n"
           " [-r|--reduced]           use the reduced message header\n"
+          " [-rhz|--read-hz hz]      hertz rate of read threads\n"
           " [-s|--size size]         size of data packet to send in bytes\n"
           " [-ssl|--ssl password]    encrypt/decrypt with 256bit AES\n"
           " [--send-hz hertz]        hertz to send at\n"
@@ -353,6 +364,7 @@ int main(int argc, char** argv)
   // initialize settings
   settings.type = transport::MULTICAST;
   settings.queue_length = 1000000;
+  settings.read_thread_hertz = 0.0; // infinite default hertz
 
   // parse the user command line arguments
   handle_arguments(argc, argv);

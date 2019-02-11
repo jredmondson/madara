@@ -220,7 +220,7 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
         size_t bytes = checkpoint_size;
 
         // if bytes is larger than the existing buffer size
-        if(bytes > max_buffer)
+        if(bytes > (size_t)max_buffer)
         {
           madara_logger_ptr_log(logger_, logger::LOG_MINOR,
               "CheckpointReader::next:"
