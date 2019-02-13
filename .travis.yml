@@ -190,6 +190,7 @@ script:
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_threader_change_hertz ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_knowledge_record ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_knowledge_base ; fi
+  - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_shared_memory_push ; fi
   # performance test (useful to see if we've regressed in performance)
   - if [ ! -z $TESTS ]; then echo "Testing reasoning throughput..." ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_reasoning_throughput ; fi
