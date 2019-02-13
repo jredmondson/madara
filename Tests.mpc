@@ -171,6 +171,25 @@ project (Test_Counter) : using_madara, no_karl, no_xml, null_lock, using_simtime
   }
 }
 
+project (Test_Shared_Memory_Push) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_shared_memory_push
+  
+  
+  requires += tests
+
+
+  Documentation_Files {
+  }
+  
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/transports/test_shared_memory_push.cpp
+  }
+}
+
 project (Test_Fragmentation) : using_madara, no_karl, no_xml, null_lock, using_simtime, using_ssl {
   exeout = $(MADARA_ROOT)/bin
   exename = test_fragmentation

@@ -75,15 +75,16 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/transport/multicast
     include/madara/transport/broadcast
     include/madara/transport/BandwidthMonitor.cpp
+    include/madara/transport/BasicASIOTransport.cpp
+    include/madara/transport/Fragmentation.cpp
     include/madara/transport/MessageHeader.cpp
     include/madara/transport/PacketScheduler.cpp
     include/madara/transport/ReducedMessageHeader.cpp
     include/madara/transport/QoSTransportSettings.cpp
-    include/madara/transport/Fragmentation.cpp
+    include/madara/transport/SharedMemoryPush.cpp
     include/madara/transport/TransportSettings.cpp
     include/madara/transport/TransportContext.cpp
     include/madara/transport/Transport.cpp
-    include/madara/transport/BasicASIOTransport.cpp
     include/madara/utility/Utility.cpp
     include/madara/utility/SimTime.cpp
     include/madara/utility/Refcounter.cpp
@@ -102,15 +103,16 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/transport/multicast
     include/madara/transport/broadcast
     include/madara/transport/BandwidthMonitor.h
-    include/madara/transport/Transport.h
+    include/madara/transport/BasicASIOTransport.h
+    include/madara/transport/Fragmentation.h
     include/madara/transport/MessageHeader.h
     include/madara/transport/PacketScheduler.h
     include/madara/transport/ReducedMessageHeader.h
-    include/madara/transport/Fragmentation.h
+    include/madara/transport/SharedMemoryPush.cpp
     include/madara/transport/QoSTransportSettings.h
+    include/madara/transport/Transport.h
     include/madara/transport/TransportSettings.h
     include/madara/transport/TransportContext.h
-    include/madara/transport/BasicASIOTransport.h
     include/madara/utility
     include/madara/Boost.h
     include/madara/MADARA_export.h
