@@ -77,14 +77,18 @@ public:
   /// min data sent
   knowledge::containers::Integer sent_data_min;
 
+  long receive_buffer(
+    char* buf, size_t & bytes_read, udp::endpoint& remote);
+    
+  long send_buffer(const udp::endpoint& target,
+    const char* buf, size_t size);
+
 protected:
   int setup_read_socket() override;
   int setup_write_socket() override;
   int setup_read_thread(double hertz, const std::string& name) override;
 
   long send_message(const char* buf, size_t size, uint64_t clock);
-  long send_buffer(const udp::endpoint& target,
-    const char* buf, size_t size);
   virtual bool pre_send_buffer(size_t addr_index)
   {
     return addr_index != 0;

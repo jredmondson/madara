@@ -36,6 +36,11 @@ public:
 
   static const double default_read_hertz;
 
+  inline const std::vector<udp::endpoint>& get_udp_endpoints(void)
+  {
+    return addresses_;
+  }
+
 protected:
   virtual int setup_socket(udp::socket& socket);
   virtual int setup_read_socket();

@@ -97,6 +97,36 @@ int UdpTransport::setup_write_socket(void)
   return 0;
 }
 
+
+long UdpTransport::receive_buffer(
+    char* buf, size_t & bytes_read, udp::endpoint& remote)
+{
+  boost::system::error_code err;
+  bytes_read = socket_.receive_from(
+      asio::buffer((void*)buf, settings_.queue_length), remote,
+      udp::socket::message_flags{}, err);
+
+  if (err == asio::error::would_block || bytes_read == 0)
+  {
+    madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
+        "UdpTransport::receive_buffer: "
+        " no bytes to read. Proceeding to next wait\n");
+
+    return 1;
+  }
+  else if (err)
+  {
+    madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
+        "UdpTransport::receive_buffer: unexpected error: %s. "
+        "Proceeding to next wait\n",
+        err.message().c_str());
+
+    return 2;
+  }
+
+  return 0;
+}
+
 long UdpTransport::send_buffer(
     const udp::endpoint& target, const char* buf, size_t size)
 {
