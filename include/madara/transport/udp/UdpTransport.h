@@ -77,9 +77,23 @@ public:
   /// min data sent
   knowledge::containers::Integer sent_data_min;
 
+  /**
+   * Receives a buffer from a remote host
+   * @param buf         buffer to fill with data
+   * @param bytes_read  number of bytes read
+   * @param remote      remote endpoint that sent message
+   * @return 0 if success, 1 if socket busy, or 2 if unknown error
+   **/
   long receive_buffer(
     char* buf, size_t & bytes_read, udp::endpoint& remote);
     
+  /**
+   * Sends a buffer to a host endpoint
+   * @param buf         buffer to send
+   * @param size        number of bytes to send
+   * @param target      remote endpoint to send to
+   * @return 0 if success, 1 if socket busy, or 2 if unknown error
+   **/
   long send_buffer(const udp::endpoint& target,
     const char* buf, size_t size);
 
