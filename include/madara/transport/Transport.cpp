@@ -887,8 +887,8 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
 
   madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
       "%s:"
-      " Applying filters before sending...\n",
-      print_prefix);
+      " Applying filters to %zu updates before sending...\n",
+      print_prefix, orig_updates.size());
 
   TransportContext transport_context(TransportContext::SENDING_OPERATION,
       receive_monitor_.get_bytes_per_second(),
@@ -948,7 +948,8 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
             " Filter returned for %s.\n",
             print_prefix, e.first.c_str());
 
-        if(result.exists())
+        // allow updates of 0. Exists probably isn't right here.
+        if(result.exists() || !record.exists())
         {
           madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
               "%s:"
@@ -996,15 +997,13 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
           latest_toi = record.toi();
         }
 
-        if(record)
-        {
-          madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
-              "%s:"
-              " Adding record %s to update list.\n",
-              print_prefix, e.first.c_str());
+        madara_logger_log(context_.get_logger(), logger::LOG_MINOR,
+            "%s:"
+            " Adding record %s to update list.\n",
+            print_prefix, e.first.c_str());
 
-          filtered_updates.emplace(std::make_pair(e.first, record));
-        }
+        filtered_updates.emplace(std::make_pair(e.first, record));
+
         // Youtube tutorial is currently throwing this. Need to check GAMS
         // else
         // {

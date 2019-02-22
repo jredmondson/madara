@@ -131,6 +131,7 @@ copy "$script_dir/common/doxygen_help_gen.mpb", "$path/";
 copy "$script_dir/common/using_boost.mpb", "$path/";
 copy "$script_dir/common/using_capnp.mpb", "$path/";
 copy "$script_dir/common/using_madara.mpb", "$path/";
+copy "$script_dir/common/using_clang.mpb", "$path/";
 copy "$script_dir/common/using_zmq.mpb", "$path/";
 copy "$script_dir/common/VERSION.txt", "$path/";
 copy "$script_dir/common/workspace.mwc", "$path/";

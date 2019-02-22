@@ -31,8 +31,8 @@ madara::transport::QoSTransportSettings settings;
 // create shortcuts to MADARA classes and namespaces
 namespace utility = madara::utility;
 namespace knowledge = madara::knowledge;
-typedef knowledge::KnowledgeRecord   Record;
-typedef Record::Integer Integer;
+typedef knowledge::KnowledgeRecord   KnowledgeRecord;
+typedef KnowledgeRecord::Integer Integer;
 
 // periodicity and run time of app
 double hertz = 1.0;

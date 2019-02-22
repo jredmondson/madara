@@ -57,13 +57,14 @@
 # Build a custom project created by mpg.pl
 
 
+CLANG=0
+CLEAN=1
 COMPILE=0
 COMPILE_VREP=0
 DOCS=0
 PREREQS=0
 RUN=0
 VERBOSE=0
-VREP=0
 INSTALL_DIR=`pwd`
 SCRIPTS_DIR=`dirname $0`
 
@@ -79,12 +80,25 @@ if [ -z $CORES ] ; then
   export CORES=1  
 fi
 
-for var in "$@"
+if [ $# == 0 ]; then
+  echo "Loading last build with noclean..."
+  IFS=$'\r\n ' GLOBIGNORE='*' command eval  'ARGS=($(cat $SCRIPTS_DIR/last_build.lst))'
+  ARGS+=("noclean")
+else
+  echo "Processing user arguments..."
+  ARGS=("$@")
+fi
+
+for var in "${ARGS[@]}"
 do
   if [ "$var" = "compile" ]; then
     COMPILE=1
+  elif [ "$var" = "clang" ]; then
+    CLANG=1
   elif [ "$var" = "docs" ]; then
     DOCS=1
+  elif [ "$var" = "noclean" ]; then
+    CLEAN=0
   elif [ "$var" = "prereqs" ]; then
     PREREQS=1
   elif [ "$var" = "run" ]; then
@@ -94,7 +108,9 @@ do
   else
     echo "Invalid argument: $var"
     echo "  args can be zero or more of the following, space delimited"
+    echo "  clang           build with clang instead of g++"
     echo "  compile         build the custom project"
+    echo "  noclean         do not do a make clean before building"
     echo "  prereqs         apt-get doxygen and other prereqs"
     echo "  verbose         print verbose information during this script"
     echo "  help            get script usage"
@@ -108,6 +124,13 @@ do
   fi
 done
 
+if [ $CLANG -eq 0 ]; then
+  if grep -q clang "$GAMS_ROOT/last_build.lst"; then
+    echo "Detected clang in MADARA build. Setting clang as compiler..."
+    CLANG=1
+  fi
+fi
+
 if [ $PREREQS -eq 1 ]; then
   sudo apt-get install doxygen graphviz
 fi
@@ -119,7 +142,7 @@ if [ $COMPILE -eq 1 ]; then
   fi
 
   cd $SCRIPTS_DIR
-  $MPC_ROOT/mwc.pl -type make -features docs=1 workspace.mwc
+  $MPC_ROOT/mwc.pl -type make -features clang=$CLANG,docs=1 workspace.mwc
   
   
   if [ $VERBOSE -eq 1 ]; then
@@ -133,10 +156,17 @@ if [ $COMPILE -eq 1 ]; then
     echo "Building project..."
   fi
 
+  make depend vrep=$COMPILE_VREP docs=$DOCS -j $CORES
   make vrep=$COMPILE_VREP docs=$DOCS -j $CORES
   
 fi
   
+# save the last feature changing build (need to fix this by flattening $@)
+if [ $CLEAN -eq 1 ]; then
+  cd $INSTALL_DIR
+  echo "Saving the last build. If you want to rebuild with same arguments,"
+  echo "then just call action.sh with no arguments"
+  echo "${ARGS[@]}" > $SCRIPTS_DIR/last_build.lst
+fi
+
 echo "Script finished"
-
-
