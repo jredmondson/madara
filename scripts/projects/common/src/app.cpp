@@ -469,6 +469,9 @@ int main(int argc, char ** argv)
   // create threader for thread launching and control
   madara::threads::Threader threader (kb);
 
+  // begin buffer filters
+  // end buffer filters
+  
   // begin on receive filters
   // end on receive filters
   

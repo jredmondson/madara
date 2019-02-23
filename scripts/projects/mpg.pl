@@ -21,6 +21,7 @@ my $madararoot = $ENV{MADARA_ROOT};
 my @transports;
 my @receive_filters;
 my @send_filters;
+my @buffer_filters;
 my @threads = ();
 my $path = '.';
 my ($script, $script_dir) = fileparse($0);
@@ -30,6 +31,7 @@ my $thread_hz = "hertz";
 # setup options parser
 GetOptions(
   'app|a=s' => \@apps,
+  'buffer-filter|b=s' => \@buffer_filters,
   'on-receive|receive=s' => \@receive_filters,
   'on-send|send=s' => \@send_filters,
   'path|dir|p=s' => \$path,
@@ -48,6 +50,7 @@ $script purpose:
 
 options:
   --app|-a name             adds or updates a generated MADARA application
+  --buffer-filter|-b name   create or use a buffer filter
   --thread|t|nt name        create or use an existing custom thread
   --transport|r|nr name     create or use an existing custom network transport
   --on-send|send name       create or use an on-send filter 
@@ -66,6 +69,8 @@ else
 $script is using the following configuration:
   apps = " . (scalar @apps > 0 ?
     ("\n    " . join ("\n    ", @apps)) : 'no') . "
+  buffer_filters = " . (scalar @buffer_filters > 0 ?
+    ("\n    " . join ("\n    ", @buffer_filters)) : 'no') . "
   thread = " . (scalar @threads > 0 ?
     ("\n    " . join ("\n    ", @threads)) : 'no') . "
   transport = " . (scalar @transports > 0 ?
@@ -163,6 +168,54 @@ for my $filter (@new_filters)
     copy "$script_dir/common/src/filter.cpp", "$path/src/filters/$filter.cpp"
       or die "Copy failed: $!";
     copy "$script_dir/common/src/filter.h", "$path/src/filters/$filter.h"
+      or die "Copy failed: $!";
+
+    # save an upper case version of the filter name
+    my $filter_uc = uc $filter;
+
+    # read the cpp contents and insert our filter name
+    my $contents;
+    open cpp_file, "$path/src/filters/$filter.cpp" or
+      die "ERROR: Couldn't open $path/src/filters/$filter.cpp\n"; 
+      $contents = join("", <cpp_file>); 
+    close cpp_file;
+
+    $contents =~ s/MyFilter/$filter/g;
+
+    open cpp_file, ">$path/src/filters/$filter.cpp" or
+      die "ERROR: Couldn't open $path/src/filters/$filter.cpp\n"; 
+      print cpp_file $contents;
+    close cpp_file;
+
+    # read the header contents and insert our filter name
+    open h_file, "$path/src/filters/$filter.h" or
+      die "ERROR: Couldn't open $path/src/filters/$filter.h\n"; 
+      $contents = join("", <h_file>); 
+    close h_file;
+
+    $contents =~ s/MyFilter/$filter/g;
+    $contents =~ s/MYFILTER/$filter_uc/g;
+
+    open h_file, ">$path/src/filters/$filter.h" or
+      die "ERROR: Couldn't open $path/src/filters/$filter.h\n"; 
+      print h_file $contents;
+    close h_file;
+  }
+  else
+  {
+    print "src/filters/$filter already exists. Not creating a new one.\n"
+  }
+}
+
+##################### create filter for user ########################
+
+for my $filter (@buffer_filters)
+{
+  if (not -f "$path/src/filters/$filter.cpp")
+  {
+    copy "$script_dir/common/src/buffer_filter.cpp", "$path/src/filters/$filter.cpp"
+      or die "Copy failed: $!";
+    copy "$script_dir/common/src/buffer_filter.h", "$path/src/filters/$filter.h"
       or die "Copy failed: $!";
 
     # save an upper case version of the filter name
@@ -409,6 +462,51 @@ $contents =~
   s/\/\/ begin transport creation(.|\s)*\/\/ end transport creation/\/\/ begin transport creation${transport_creation}\n  \/\/ end transport creation/;
   } # end if there are custom threads
   
+  my $buffer_filter_includes;
+  my $buffer_filter_creation;
+
+  if (scalar @buffer_filters > 0)
+  {
+    if ($verbose)
+    {
+      print ("  Custom buffer filters detected. Updating...\n");
+    }
+    
+    if (not $contents =~ /\/\/ end filter includes/)
+    {
+      $contents =~
+  s/\/\/ end transport includes/\/\/ end transport includes\n\n\/\/ begin filter includes\n\/\/ end filter includes/;
+    }
+    
+    if (not $contents =~ /\/\/ end buffer filters/)
+    {
+      $contents =~
+  s/KnowledgeBase kb;/KnowledgeBase kb;\n\n  \/\/ begin buffer filters\n  \/\/ end buffer filters/;
+    }
+
+    for (my $i = 0; $i < scalar @buffer_filters; ++$i)
+    {
+      if (not $contents =~ /#include \"filters\/${buffer_filters[$i]}\.h\"/)
+      {
+        $buffer_filter_includes .= "\n#include \"filters/${buffer_filters[$i]}.h\"";
+      }
+      $buffer_filter_creation .= "
+  filters::${buffer_filters[$i]} buffer_filter_$i;
+  settings.add_filter(&buffer_filter_$i);";
+    }
+    
+    if ($buffer_filter_includes)
+    {
+      # change the includes         
+      $contents =~
+  s/[\n \r]+\/\/ end filter includes/${buffer_filter_includes}\n\/\/ end filter includes/;
+    }
+    # change the creation process
+    $contents =~
+  s/\/\/ begin buffer filters(.|\s)*\/\/ end buffer filters/\/\/ begin buffer filters${buffer_filter_creation}\n  \/\/ end buffer filters/;
+
+  } # end if there are custom read filters
+
   my $receive_filter_includes;
   my $receive_filter_creation;
 
