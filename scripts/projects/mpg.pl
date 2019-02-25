@@ -31,7 +31,7 @@ my $thread_hz = "hertz";
 # setup options parser
 GetOptions(
   'app|a=s' => \@apps,
-  'buffer-filter|b=s' => \@buffer_filters,
+  'buffer-filter|bf=s' => \@buffer_filters,
   'on-receive|receive=s' => \@receive_filters,
   'on-send|send=s' => \@send_filters,
   'path|dir|p=s' => \$path,
@@ -50,7 +50,7 @@ $script purpose:
 
 options:
   --app|-a name             adds or updates a generated MADARA application
-  --buffer-filter|-b name   create or use a buffer filter
+  --buffer-filter|-bf name  create or use a buffer filter
   --thread|t|nt name        create or use an existing custom thread
   --transport|r|nr name     create or use an existing custom network transport
   --on-send|send name       create or use an on-send filter 
@@ -207,7 +207,7 @@ for my $filter (@new_filters)
   }
 }
 
-##################### create filter for user ########################
+##################### create buffer filter for user ########################
 
 for my $filter (@buffer_filters)
 {
@@ -505,7 +505,7 @@ $contents =~
     $contents =~
   s/\/\/ begin buffer filters(.|\s)*\/\/ end buffer filters/\/\/ begin buffer filters${buffer_filter_creation}\n  \/\/ end buffer filters/;
 
-  } # end if there are custom read filters
+  } # end if there are custom buffer filters
 
   my $receive_filter_includes;
   my $receive_filter_creation;

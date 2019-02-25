@@ -1488,6 +1488,16 @@ int main(int argc, char** argv)
   noharm.signal_changes = false;
   noharm.track_local_changes = false;
 
+  // set initialization variables from command-line logics
+  if(initlogics.size() > 0)
+  {
+    for(StringVector::const_iterator i = initlogics.begin();
+         i != initlogics.end(); ++i)
+    {
+      kb.evaluate(*i, noharm);
+    }
+  }
+
   // set initialization variables from files into the knowledge base
   if(initfiles.size() > 0)
   {
@@ -1505,16 +1515,6 @@ int main(int argc, char** argv)
             "Check that file exists and that you have permission to read.\n",
             i->c_str());
       }
-    }
-  }
-
-  // set initialization variables from command-line logics
-  if(initlogics.size() > 0)
-  {
-    for(StringVector::const_iterator i = initlogics.begin();
-         i != initlogics.end(); ++i)
-    {
-      kb.evaluate(*i, noharm);
     }
   }
 
