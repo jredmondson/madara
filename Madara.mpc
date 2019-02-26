@@ -1,5 +1,5 @@
 
-project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android, using_capnp, using_nothreadlocal, using_filesystem {
+project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android, using_capnp, using_nothreadlocal, using_filesystem, using_warnings, no_warnings {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL
@@ -21,8 +21,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   libpaths += $(MADARA_ROOT)/lib
 
   verbatim (make, local, true) {
-    CPPFLAGS := -std=c++11 -Wall -Wextra -Wnon-virtual-dtor \
-      -Woverloaded-virtual -pedantic -O3 $(CPPFLAGS)
+    CPPFLAGS := -std=c++11 -O3 $(CPPFLAGS)
   }
 
   Build_Files {

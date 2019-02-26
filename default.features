@@ -102,3 +102,7 @@ simtime                   = 0
 /// @feature nothreadlocal
 /// Enable this feature to disable all uses of thread_local
 nothreadlocal             = 0
+
+/// @feature warnings
+/// This feature enables compilation warnings to debug MADARA core libraries
+warnings                = 0
