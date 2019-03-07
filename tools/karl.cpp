@@ -316,17 +316,37 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::BROADCAST;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Adding UDP broadcast host %s\n", argv[i + 1]);
+        }
       }
       ++i;
     }
     if(arg1 == "-c" || arg1 == "--check-result")
     {
       check_result = true;
+
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Enabling result check\n");
+      }
     }
     else if(arg1 == "-d" || arg1 == "--domain")
     {
       if(i + 1 < argc)
+      {
         settings.write_domain = argv[i + 1];
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Setting write domain to %s\n", argv[i + 1]);
+        }
+      }
 
       ++i;
     }
@@ -529,6 +549,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     else if(arg1 == "-k" || arg1 == "--print-knowledge")
     {
       print_knowledge = true;
+
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Enabling print final knowledge\n");
+      }
     }
     else if(arg1 == "-kp" || arg1 == "--print-prefix")
     {
@@ -568,6 +594,11 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     else if(arg1 == "-ky")
     {
       print_knowledge_frequency = true;
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Enabling printing knowledge at stated frequency\n");
+      }
     }
     else if(arg1 == "-l" || arg1 == "--level")
     {
@@ -577,6 +608,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         std::stringstream buffer(argv[i + 1]);
         buffer >> level;
         logger::global_logger->set_level(level);
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Setting log level to %d\n", level);
+        }
       }
 
       ++i;
@@ -685,6 +722,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::MULTICAST;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Adding UDP multicast host %s\n", argv[i + 1]);
+        }
       }
       ++i;
     }
@@ -1071,6 +1114,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::UDP;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Adding UDP host %s\n", argv[i + 1]);
+        }
       }
       ++i;
     }
@@ -1087,6 +1136,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         waiting = true;
         std::stringstream buffer(argv[i + 1]);
         buffer >> wait_time;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Setting wait for periodic to %f:\n", wait_time);
+        }
       }
       ++i;
     }
@@ -1097,6 +1152,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         waiting_for_periodic = true;
         std::stringstream buffer(argv[i + 1]);
         buffer >> wait_for_periodic;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Setting wait for periodic to %f:\n", wait_for_periodic);
+        }
       }
       ++i;
     }
@@ -1106,6 +1167,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         std::stringstream buffer(argv[i + 1]);
         buffer >> frequency;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Setting frequency to %f:\n", frequency);
+        }
       }
 
       ++i;
@@ -1116,6 +1183,13 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       {
         settings.hosts.push_back(argv[i + 1]);
         settings.type = transport::ZMQ;
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Adding ZMQ host %s\n", argv[i + 1]);
+        }
+
       }
       ++i;
     }
@@ -1124,6 +1198,12 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       if(i + 1 < argc)
       {
         initlogics.push_back(argv[i + 1]);
+
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "Adding init logic %s\n", argv[i + 1]);
+        }
       }
 
       ++i;
@@ -1139,7 +1219,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         if(debug)
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
-              "\nReading logic from file %s:\n", filename.c_str());
+              "Reading logic from file %s\n", filename.c_str());
         }
 
         initfiles.push_back(filename);
@@ -1156,7 +1236,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         if(debug)
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
-              "Will be reading binary checkpoint from file %s:\n",
+              "Will be reading binary checkpoint from file %s\n",
               initbinaries.c_str());
         }
       }
@@ -1172,7 +1252,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
         if(debug)
         {
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
-              "Will be saving checkpoint meta data to to prefix %s:\n",
+              "Will be saving checkpoint meta data to to prefix %s\n",
               meta_prefix.c_str());
         }
       }
@@ -1181,11 +1261,23 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
     }
     else if(arg1 == "--use-id")
     {
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Using id\n");
+      }
       use_id = true;
     }
     else if(logic == "")
     {
       logic = arg1;
+
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "\nSettings logic to %s:\n", logic.c_str());
+      }
+
     }
   }
 }
@@ -1523,16 +1615,47 @@ int main(int argc, char** argv)
   // command line logics are evaluated last
   if(logic != "")
   {
+
+    if(debug)
+    {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "\nCompiling logic %s:\n", logic.c_str());
+    }
+
     expressions.push_back(kb.compile(logic));
+  }
+
+  if(debug)
+  {
+    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+        "Frequency is %f\n", frequency);
   }
 
   // check frequency to see if we should only execute once
   if(frequency < 0)
   {
+    if(debug)
+    {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "Entering one-shot evaluation (non-threaded mode)\n");
+    }
+
     if(!after_wait)
     {
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Evaluating %zu expressions before wait:\n", expressions.size());
+      }
+
       for(size_t i = 0; i < expressions.size(); ++i)
       {
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "  Evaluating expression %zu:\n", i);
+        }
+
 #ifndef _MADARA_NO_KARL_
         knowledge::KnowledgeRecord result =
             kb.evaluate(expressions[i], knowledge::EvalSettings::SEND);
@@ -1548,26 +1671,63 @@ int main(int argc, char** argv)
     // if user requests to wait, do so before the debug print
     if(waiting_for_periodic || waiting)
     {
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Sleeping for %f + %f:\n", wait_time, wait_for_periodic);
+      }
+
       utility::sleep(wait_time + wait_for_periodic);
     }
 
     if(after_wait)
     {
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Evaluating %zu expressions after wait:\n", expressions.size());
+      }
+
       for(size_t i = 0; i < expressions.size(); ++i)
       {
+        if(debug)
+        {
+          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+              "  Evaluating expression %zu:\n", i);
+        }
+
 #ifndef _MADARA_NO_KARL_
-        kb.evaluate(expressions[i], madara::knowledge::EvalSettings::SEND);
+        knowledge::KnowledgeRecord result =
+            kb.evaluate(expressions[i], madara::knowledge::EvalSettings::SEND);
+
+        if(check_result && result.is_true())
+        {
+          break;
+        }
 #endif  // _MADARA_NO_KARL_
       }
+
     }   // if(after_wait)
   }     // if(frequency < 0)
   else  // frequency >= 0
   {
+    if(debug)
+    {
+      madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+          "Entering threaded mode\n");
+    }
+
     threads::Threader threader(kb);
 
     // if the user specified a wait before evaluation, sleep for the time
     if(waiting_for_periodic)
     {
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Sleeping for %f:\n", wait_for_periodic);
+      }
+
       utility::sleep(wait_for_periodic);
     }
 
@@ -1580,6 +1740,12 @@ int main(int argc, char** argv)
     {
       knowledge::WaitSettings ws;
       ws.max_wait_time = wait_time;
+
+      if(debug)
+      {
+        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+            "Waiting for %f:\n", wait_time);
+      }
 
       terminated = threader.wait(ws);
     }
