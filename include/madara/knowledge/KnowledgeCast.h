@@ -156,21 +156,21 @@ inline auto knowledge_cast(type<O>, const KnowledgeRecord& in) ->
   return O{in};
 }
 
-///// Convert KnowledgeRecord to floating point
-//template<class O>
-//inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
-//    -> enable_if_<is_floating_point<O>(), O>
-//{
-//  return static_cast<O>(in.to_double());
-//}
-//
-///// Convert KnowledgeRecord to integer
-//template<class O>
-//inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
-//    -> enable_if_<is_integral<O>() || is_enum<O>(), O>
-//{
-//  return static_cast<O>(in.to_integer());
-//}
+/// Convert KnowledgeRecord to floating point
+template<class O>
+inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
+    -> enable_if_<is_floating_point<O>(), O>
+{
+  return static_cast<O>(in.to_double());
+}
+
+/// Convert KnowledgeRecord to integer
+template<class O>
+inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
+    -> enable_if_<is_integral<O>() || is_enum<O>(), O>
+{
+  return static_cast<O>(in.to_integer());
+}
 
 /// Convert KnowledgeRecord to bool (using in.is_true())
 inline bool knowledge_cast(type<bool>, const KnowledgeRecord& in)

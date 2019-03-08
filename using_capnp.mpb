@@ -16,12 +16,12 @@ capnp compile -I \$$CAPNP_ROOT/c++/src -I \$$CAPNP_ROOT/src -o/bin/cat \"\$$0\" 
 	
     includes += $(CAPNP_ROOT)/src
 	
-	Debug::libpaths += $(CAPNP_ROOT)/src/capnp/Debug $(CAPNP_ROOT)/src/kj/Debug
-	Release::libpaths += $(CAPNP_ROOT)/src/capnp/Release $(CAPNP_ROOT)/src/kj/Release
+    Debug::libpaths += $(CAPNP_ROOT)/src/capnp/Debug $(CAPNP_ROOT)/src/kj/Debug
+    Release::libpaths += $(CAPNP_ROOT)/src/capnp/Release $(CAPNP_ROOT)/src/kj/Release
     
-	lit_libs += capnp
-	lit_libs += capnp-json
-	lit_libs += kj
+    lit_libs += capnp
+    lit_libs += capnp-json
+    lit_libs += kj
   } else {
     includes += $(CAPNP_ROOT)/c++/src
     libpaths += $(CAPNP_ROOT)/c++/.libs
