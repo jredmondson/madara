@@ -68,7 +68,7 @@ madara::expression::CompositeModulusNode::prune(bool& can_change)
       delete this->right_;
       this->right_ = new LeafNode(*(this->logger_), right_value);
 
-      if (right_value == madara::knowledge::KnowledgeRecord::Integer(0))
+      if (right_value.is_false())
       {
         madara_logger_ptr_log(logger_, logger::LOG_ERROR,
             "KARL COMPILE ERROR: Modulus results in permanent divide by "

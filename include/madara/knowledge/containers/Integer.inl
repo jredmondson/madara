@@ -109,7 +109,7 @@ inline bool madara::knowledge::containers::Integer::operator==(type value) const
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
-    return context_->get(variable_, settings_) == value;
+    return context_->get(variable_, settings_).to_integer() == value;
   }
 
   return false;

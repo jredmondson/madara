@@ -451,8 +451,8 @@ std::pair<std::string, KnowledgeRecord> CheckpointReader::next()
 void CheckpointPlayer::thread_main(CheckpointPlayer* self)
 {
   uint64_t start_time = utility::get_time();
-  uint64_t first_toi = -1UL;
-  uint64_t prev_toi = -1UL;
+  uint64_t first_toi = 0UL - 1;
+  uint64_t prev_toi = 0UL - 1;
 
   while (self->keep_running_.test_and_set())
   {
@@ -469,7 +469,7 @@ void CheckpointPlayer::thread_main(CheckpointPlayer* self)
         " record has toi %lu. prev: %lu. first: %lu,. start: %lu\n",
         cur_toi, prev_toi, first_toi, start_time);
 
-    if (first_toi == -1UL)
+    if (first_toi == 0UL - 1)
     {
       first_toi = cur_toi;
       prev_toi = first_toi;

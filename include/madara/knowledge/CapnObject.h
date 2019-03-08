@@ -51,7 +51,8 @@ struct NoThrowDestruct : T
 {
   using T::T;
 
-  ~NoThrowDestruct() noexcept try
+  ~NoThrowDestruct() noexcept
+  try
   {
     return;
   }

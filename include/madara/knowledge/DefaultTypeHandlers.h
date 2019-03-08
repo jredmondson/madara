@@ -517,36 +517,36 @@ struct do_serialize_member
 
 }  // namespace madara
 
-namespace cereal
-{
-using ::madara::utility::core::madara_ignore_for_each_field;
-
-// Implement Cereal library serialization for types supporting for_each_field
-template<typename Archive, typename T>
-auto serialize(Archive& ar, T&& val) -> ::madara::enable_if_<
-    ::madara::knowledge::supports_for_each_field<T>::value &&
-    !madara_ignore_for_each_field(::madara::type<::madara::decay_<T>>{})>  // &&
-//!::madara::knowledge::use_cereal_directly<::madara::decay_<T>>::value>
-{
-  for_each_field(
-      ::madara::knowledge::do_serialize<Archive>{&ar}, std::forward<T>(val));
-}
-
-// Implement Cereal library serialization for types supporting for_each_member
-template<typename Archive, typename T,
-    ::madara::enable_if_<
-        !madara_use_cereal(::madara::type<::madara::decay_<T>>{}) &&
-            (::madara::is_same<Archive, ::madara::knowledge::json_iarchive>() ||
-                ::madara::is_same<Archive,
-                    ::madara::knowledge::json_oarchive>()),
-        int> = 0>
-auto serialize(Archive& ar, T&& val) -> ::madara::enable_if_<
-    ::madara::knowledge::supports_for_each_member<T>::value>
-{
-  using DT = ::madara::decay_<T>;
-  for_each_member(::madara::type<DT>{},
-      ::madara::knowledge::do_serialize_member<DT, Archive>{&val, &ar});
-}
-}
+//namespace cereal
+//{
+//using ::madara::utility::core::madara_ignore_for_each_field;
+//
+//// Implement Cereal library serialization for types supporting for_each_field
+//template<typename Archive, typename T>
+//auto serialize(Archive& ar, T&& val) -> ::madara::enable_if_<
+//    ::madara::knowledge::supports_for_each_field<T>::value &&
+//    !madara_ignore_for_each_field(::madara::type<::madara::decay_<T>>{})>  // &&
+////!::madara::knowledge::use_cereal_directly<::madara::decay_<T>>::value>
+//{
+//  for_each_field(
+//      ::madara::knowledge::do_serialize<Archive>{&ar}, std::forward<T>(val));
+//}
+//
+//// Implement Cereal library serialization for types supporting for_each_member
+//template<typename Archive, typename T,
+//    ::madara::enable_if_<
+//        !madara_use_cereal(::madara::type<::madara::decay_<T>>{}) &&
+//            (::madara::is_same<Archive, ::madara::knowledge::json_iarchive>() ||
+//                ::madara::is_same<Archive,
+//                    ::madara::knowledge::json_oarchive>()),
+//        int> = 0>
+//auto serialize(Archive& ar, T&& val) -> ::madara::enable_if_<
+//    ::madara::knowledge::supports_for_each_member<T>::value>
+//{
+//  using DT = ::madara::decay_<T>;
+//  for_each_member(::madara::type<DT>{},
+//      ::madara::knowledge::do_serialize_member<DT, Archive>{&val, &ar});
+//}
+//}
 
 #endif  // MADARA_KNOWLEDGE_DEFAULT_TYPE_HANDLERS_H_
