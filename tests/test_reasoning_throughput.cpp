@@ -210,7 +210,7 @@ madara::knowledge::KnowledgeRecord increment_var1(
   return variables.evaluate(
       increment_ce, madara::knowledge::KnowledgeUpdateSettings(false, false));
 #else
-  return Integer(0);
+  return madara::knowledge::KnowledgeRecord();
 #endif  // _MADARA_NO_KARL_
 }
 
@@ -1292,8 +1292,6 @@ uint64_t test_stl_inc_atomic(
   uint64_t measured(0);
   madara::utility::Timer<Clock> timer;
 
-  madara::knowledge::CompiledExpression ce;
-
   std::atomic<long> counter;
 
   timer.start();
@@ -1320,8 +1318,6 @@ uint64_t test_stl_inc_recursive(
   // keep track of time
   uint64_t measured(0);
   madara::utility::Timer<Clock> timer;
-
-  madara::knowledge::CompiledExpression ce;
 
   long counter = 0;
   std::recursive_mutex critical_section;
@@ -1352,8 +1348,6 @@ uint64_t test_stl_inc_mutex(
   // keep track of time
   uint64_t measured(0);
   madara::utility::Timer<Clock> timer;
-
-  madara::knowledge::CompiledExpression ce;
 
   long counter = 0;
   std::mutex critical_section;

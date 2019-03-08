@@ -121,7 +121,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   }
 }
 
-project (Madara_Version) : using_madara {
+project (Madara_Version) : using_madara, no_karl {
   exeout = $(MADARA_ROOT)/bin
   exename = madara_version
   
@@ -222,21 +222,5 @@ project (Madara_Registry) : using_madara, no_karl {
 
   Source_Files {
     tools/madara_registry.cpp
-  }
-}
-
-
-project (MPGen) : using_madara {
-  exeout = $(MADARA_ROOT)/bin
-  exename = mpgen
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tools/mpgen.cpp
   }
 }

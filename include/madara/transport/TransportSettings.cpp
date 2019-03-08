@@ -191,7 +191,13 @@ void madara::transport::TransportSettings::load_text(
     const std::string& filename, const std::string& prefix)
 {
   knowledge::KnowledgeBase knowledge;
+
+#ifndef _MADARA_NO_KARL_
+
   knowledge.evaluate(madara::utility::file_to_string(filename));
+
+#endif // end karl support
+
 
   read_threads = (uint32_t)knowledge.get(prefix + ".read_threads").to_integer();
   write_domain = knowledge.get(prefix + ".write_domain").to_string();
@@ -298,7 +304,12 @@ void madara::transport::TransportSettings::save_text(
   knowledge::KnowledgeBase knowledge;
 
   // load what exists at the file so we can append/overwrite it
+#ifndef _MADARA_NO_KARL_
+
   knowledge.evaluate(madara::utility::file_to_string(filename));
+
+#endif // end karl support
+
 
   containers::StringVector kb_hosts(
       prefix + ".hosts", knowledge, (int)hosts.size());

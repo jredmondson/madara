@@ -1370,6 +1370,8 @@ void print_all_prefixes(knowledge::KnowledgeBase& context)
   }
 }
 
+#ifndef _MADARA_NO_KARL_
+
 class Evaluator : public threads::BaseThread
 {
 public:
@@ -1417,6 +1419,8 @@ private:
   knowledge::KnowledgeBase* knowledge_;
   std::vector<knowledge::CompiledExpression>& expressions_;
 };
+
+#endif // end karl language enabled
 
 int main(int argc, char** argv)
 {
@@ -1543,6 +1547,8 @@ int main(int argc, char** argv)
     }
   }
 
+#ifndef _MADARA_NO_KARL_
+
   // build the expressions to evaluate
   std::vector<knowledge::CompiledExpression> expressions;
 
@@ -1656,7 +1662,6 @@ int main(int argc, char** argv)
               "  Evaluating expression %zu:\n", i);
         }
 
-#ifndef _MADARA_NO_KARL_
         knowledge::KnowledgeRecord result =
             kb.evaluate(expressions[i], knowledge::EvalSettings::SEND);
 
@@ -1664,7 +1669,6 @@ int main(int argc, char** argv)
         {
           break;
         }
-#endif  // _MADARA_NO_KARL_
       }
     }
 
@@ -1696,7 +1700,6 @@ int main(int argc, char** argv)
               "  Evaluating expression %zu:\n", i);
         }
 
-#ifndef _MADARA_NO_KARL_
         knowledge::KnowledgeRecord result =
             kb.evaluate(expressions[i], madara::knowledge::EvalSettings::SEND);
 
@@ -1704,7 +1707,6 @@ int main(int argc, char** argv)
         {
           break;
         }
-#endif  // _MADARA_NO_KARL_
       }
 
     }   // if(after_wait)
@@ -1802,6 +1804,8 @@ int main(int argc, char** argv)
     save_checkpoint_settings.filename = save_binary;
     kb.save_context(save_checkpoint_settings);
   }
+
+#endif  // _MADARA_NO_KARL_
 
   return 0;
 }

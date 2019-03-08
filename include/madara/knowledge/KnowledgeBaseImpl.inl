@@ -658,12 +658,12 @@ inline VariableReferences KnowledgeBaseImpl::save_modifieds(void) const
   return map_.save_modifieds();
 }
 
-#ifndef _MADARA_NO_KARL_
-
 inline void KnowledgeBaseImpl::wait_for_change(void)
 {
   map_.wait_for_change();
 }
+
+#ifndef _MADARA_NO_KARL_
 
 inline KnowledgeRecord KnowledgeBaseImpl::evaluate(
     const std::string& expression, const EvalSettings& settings)

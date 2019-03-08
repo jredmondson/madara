@@ -209,6 +209,9 @@ void test_fragments_to_files_filter(void)
 }
 void test_dynamic_predicate_filter(void)
 {
+
+#ifndef _MADARA_NO_KARL_
+
   madara::knowledge::KnowledgeBase kb;
   madara::knowledge::Variables vars(&kb.get_context());
 
@@ -250,10 +253,14 @@ void test_dynamic_predicate_filter(void)
     }
     ++madara_fails;
   }
+
+  #endif  // end karl supported
 }
 
 void test_dynamic_prefix_filter(void)
 {
+#ifndef _MADARA_NO_KARL_
+
   madara::knowledge::KnowledgeBase kb;
   madara::knowledge::Variables vars(&kb.get_context());
 
@@ -289,10 +296,14 @@ void test_dynamic_prefix_filter(void)
     std::cerr << "FAIL\n";
     ++madara_fails;
   }
+
+#endif // end karl evaluation support
 }
 
 void test_dynamic_prefix_int_convert(void)
 {
+#ifndef _MADARA_NO_KARL_
+
   madara::knowledge::KnowledgeBase kb;
   madara::knowledge::Variables vars(&kb.get_context());
 
@@ -339,6 +350,8 @@ void test_dynamic_prefix_int_convert(void)
 
     ++madara_fails;
   }
+
+#endif  // end karl evaluation support
 }
 
 void test_prefix_int_convert(void)

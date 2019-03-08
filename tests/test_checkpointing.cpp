@@ -65,8 +65,12 @@ void test_checkpoint_settings(void)
   saver.set("int_array", integers);
   saver.set("double_array", doubles);
 
+#ifndef _MADARA_NO_KARL_
+
   // set the system lamport clock to something arbitrary
   saver.evaluate("#set_clock (2001)");
+
+#endif // end karl support
 
   settings.filename = "test_context_save_1.kb";
   settings.clear_knowledge = true;

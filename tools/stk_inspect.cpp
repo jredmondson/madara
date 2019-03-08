@@ -244,8 +244,12 @@ int64_t process_command(const std::string & command,
         std::cout << "\n";
       }
 
+#ifndef _MADARA_NO_KARL_
+
       result += stats.evaluate(
         logic.substr(11), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+
+#endif // end no karl support
 
       ++result;
     }
@@ -259,8 +263,12 @@ int64_t process_command(const std::string & command,
         std::cout << "\n";
       }
 
+#ifndef _MADARA_NO_KARL_
+
       result += kb.evaluate(
         logic.substr(5), knowledge::EvalSettings::DELAY_EXPAND).to_integer();
+
+#endif
 
       ++result;
     }
@@ -1370,8 +1378,15 @@ int main(int argc, char** argv)
     }
   }
 
+#ifndef _MADARA_NO_KARL_
+
   // return value is always 0 unless check is specified
   if(check == "" || stats.evaluate(check).is_true())
+
+#else // if there is no karl support
+  if(check == "")
+#endif // end if there is no karl support
+
   {
     if(check != "")
     {

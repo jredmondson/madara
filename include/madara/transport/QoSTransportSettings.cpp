@@ -844,7 +844,13 @@ void madara::transport::QoSTransportSettings::load_text(
   TransportSettings::load_text(filename, prefix);
 
   knowledge::KnowledgeBase knowledge;
+
+
+#ifndef _MADARA_NO_KARL_
+
   knowledge.evaluate(madara::utility::file_to_string(filename));
+
+#endif // end karl support
 
   containers::Map trusted_peers(prefix + ".trusted_peers", knowledge);
   containers::Map banned_peers(prefix + ".banned_peers", knowledge);
@@ -932,7 +938,13 @@ void madara::transport::QoSTransportSettings::save_text(
 
   // then load the savings
   knowledge::KnowledgeBase knowledge;
+  
+#ifndef _MADARA_NO_KARL_
+
   knowledge.evaluate(madara::utility::file_to_string(filename));
+
+#endif // end karl support
+
 
   containers::Map trusted_peers(prefix + ".trusted_peers", knowledge);
   containers::Map banned_peers(prefix + ".banned_peers", knowledge);

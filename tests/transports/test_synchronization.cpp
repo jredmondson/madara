@@ -594,8 +594,12 @@ int main(int argc, char ** argv)
   // read madara initialization
   if (madara_commands != "")
   {
+#ifndef _MADARA_NO_KARL_
+
     kb.evaluate(madara_commands,
       knowledge::EvalSettings(false, true));
+
+#endif  // end karl support
   }
 
   // begin thread creation

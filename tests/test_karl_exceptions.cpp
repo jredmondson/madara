@@ -12,6 +12,8 @@ namespace logger = madara::logger;
 
 int madara_fails(0);
 
+#ifndef _MADARA_NO_KARL_
+
 void test_functions(void)
 {
   std::cerr << "#####################\n";
@@ -541,14 +543,19 @@ void test_unitialized(void)
 
 }
 
+#endif // end karl supported
+
 int main(int, char**)
 {
+#ifndef _MADARA_NO_KARL_
+
   test_functions();
   test_nan();
   test_min();
   test_empty_assignment();
   test_bad_operators();
   test_unitialized();
+#endif  // end karl supported
 
   if(madara_fails > 0)
   {

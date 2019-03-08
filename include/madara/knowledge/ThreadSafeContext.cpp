@@ -2191,9 +2191,15 @@ madara::knowledge::KnowledgeRecord ThreadSafeContext::evaluate_file(
       " opening file %s\n",
       checkpoint_settings.filename.c_str());
 
+#ifndef _MADARA_NO_KARL_
+
   CompiledExpression expression = compile(file_to_string(checkpoint_settings));
 
   return evaluate(expression, update_settings);
+#else // if KARL has been disabled
+  KnowledgeRecord result;
+  return result;
+#endif
 }
 
 std::string ThreadSafeContext::file_to_string(
