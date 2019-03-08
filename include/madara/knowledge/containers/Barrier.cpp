@@ -1,6 +1,4 @@
 
-#ifndef _MADARA_NO_KARL_
-
 #include <sstream>
 
 #include "Barrier.h"
@@ -69,7 +67,9 @@ madara::knowledge::containers::Barrier::Barrier(const Barrier& rhs)
     variable_(rhs.variable_),
     id_(rhs.id_),
     participants_(rhs.participants_),
+#ifndef _MADARA_NO_KARL_
     aggregate_barrier_(rhs.aggregate_barrier_),
+#endif
     variable_name_(rhs.variable_name_)
 {
 }
@@ -88,7 +88,9 @@ void madara::knowledge::containers::Barrier::operator=(const Barrier& rhs)
     this->participants_ = rhs.participants_;
     this->settings_ = rhs.settings_;
     this->variable_ = rhs.variable_;
+#ifndef _MADARA_NO_KARL_
     this->aggregate_barrier_ = rhs.aggregate_barrier_;
+#endif
     this->variable_name_ = rhs.variable_name_;
   }
 }
@@ -124,7 +126,9 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
       }
     }
 
+#ifndef _MADARA_NO_KARL_
     aggregate_barrier_ = context_->compile(buffer.str());
+#endif
 
     madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
         "Barrier::build_aggregate_barrier: building barrier string of %s\n",
@@ -489,5 +493,3 @@ bool madara::knowledge::containers::Barrier::is_false_(void) const
 {
   return is_false();
 }
-
-#endif  // _MADARA_NO_KARL_

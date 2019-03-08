@@ -2,8 +2,6 @@
 #ifndef _MADARA_CONTAINERS_BARRIER_H_
 #define _MADARA_CONTAINERS_BARRIER_H_
 
-#ifndef _MADARA_NO_KARL_
-
 #include <vector>
 #include <string>
 #include "madara/LockType.h"
@@ -311,7 +309,12 @@ private:
    **/
   inline type barrier_result(void) const
   {
+#ifndef _MADARA_NO_KARL_
     return context_->evaluate(aggregate_barrier_, no_harm).to_integer();
+#else
+    // note this means that barriers are always successful if no_karl=1
+    return type(1);
+#endif
   }
 
   /**
@@ -344,10 +347,12 @@ private:
    **/
   size_t participants_;
 
+#ifndef _MADARA_NO_KARL_
   /**
    * Expression for aggregating barrier in one atomic operation
    **/
   CompiledExpression aggregate_barrier_;
+#endif
 
   /**
    * Settings we'll use for all evaluations
@@ -362,7 +367,5 @@ private:
 }
 }
 }
-
-#endif  // _MADARA_NO_KARL_
 
 #endif  // _MADARA_CONTAINERS_BARRIER_H_
