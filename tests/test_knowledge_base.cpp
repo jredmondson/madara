@@ -16,7 +16,7 @@ int main(int, char**)
   madara::knowledge::KnowledgeBase* knowledge1 =
       new madara::knowledge::KnowledgeBase(
           "", madara::transport::Types::NO_TRANSPORT);
-  TEST_NE((unsigned long)knowledge1, (unsigned long)NULL);
+  TEST_NE(knowledge1, (madara::knowledge::KnowledgeBase*)NULL);
   // Terminal failure lets get out of her..
   if (knowledge1 == NULL)
   {

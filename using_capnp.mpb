@@ -13,7 +13,7 @@ capnp compile -I \$$CAPNP_ROOT/c++/src -o/bin/cat \"\$$0\" > \$$0.bin"
   includes += $(CAPNP_ROOT)/c++/src
 
   specific(prop:microsoft) {
-    DisableSpecificWarnings += 4005 4251 4275 4244
+    DisableSpecificWarnings += 4005 4251 4275 4244 4267
     macros += _CRT_SECURE_NO_WARNINGS
 	
     Debug::libpaths += $(CAPNP_ROOT)/c++/src/capnp/Debug $(CAPNP_ROOT)/c++/src/kj/Debug

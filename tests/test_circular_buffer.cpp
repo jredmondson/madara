@@ -16,7 +16,7 @@ using namespace utility;
 using namespace containers;
 
 template<typename T>
-std::ostream& operator<<(std::ostream& o, const CircularBuffer<T>& buf)
+std::ostream& operator<<(std::ostream& o, const utility::CircularBuffer<T>& buf)
 {
   for (const auto& cur : buf)
   {
@@ -27,7 +27,7 @@ std::ostream& operator<<(std::ostream& o, const CircularBuffer<T>& buf)
 
 void test_circular_int_buffer()
 {
-  CircularBuffer<int> b(10);
+  utility::CircularBuffer<int> b(10);
 
   VAL(b.capacity());
 
@@ -82,10 +82,10 @@ void test_circular_int_buffer()
   std::cout << b << std::endl;
 
   for (auto iter =
-           std::reverse_iterator<typename CircularBuffer<int>::iterator>(
+           std::reverse_iterator<typename utility::CircularBuffer<int>::iterator>(
                b.end());
        iter !=
-       std::reverse_iterator<typename CircularBuffer<int>::iterator>(b.begin());
+       std::reverse_iterator<typename utility::CircularBuffer<int>::iterator>(b.begin());
        ++iter)
   {
     std::cout << *iter << std::endl;
@@ -93,7 +93,7 @@ void test_circular_int_buffer()
   std::cout << std::endl;
 
   {
-    CircularBuffer<KnowledgeRecord> empty(10);
+    utility::CircularBuffer<KnowledgeRecord> empty(10);
   }
 }
 
@@ -332,7 +332,7 @@ int main(int, char**)
 {
   madara::logger::global_logger->set_level(2);
 
-  std::cerr << "Test CircularBuffer directly" << std::endl;
+  std::cerr << "Test utility::CircularBuffer directly" << std::endl;
   test_circular_int_buffer();
 
   std::cerr << "Test KnowledgeRecord with history" << std::endl;

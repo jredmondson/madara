@@ -31,7 +31,7 @@ namespace containers
  * access times.
  */
 template<typename T>
-class MADARA_EXPORT CircularBufferT
+class CircularBufferT
 {
 public:
   /**

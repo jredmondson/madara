@@ -32,7 +32,7 @@ namespace containers
  * CircularBuffer and encourage one-time access of buffer elements.
  */
 template<typename T>
-class MADARA_EXPORT CircularBufferConsumerT
+class CircularBufferConsumerT
 {
 public:
   /**

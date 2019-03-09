@@ -31,7 +31,7 @@ namespace containers
  * all operations in CircularBufferConsumer use a local index into the
  * CircularBuffer and encourage one-time access of buffer elements.
  */
-class MADARA_EXPORT CircularBufferConsumer
+class CircularBufferConsumer
 {
 public:
   /**
