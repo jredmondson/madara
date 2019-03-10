@@ -70,6 +70,7 @@ inline namespace core
 template<class T>
 struct type
 {
+  type() = default;
   using self = T;
 };
 
@@ -314,10 +315,10 @@ MADARA_AUTORET_REF_FUNC(invoke_, (Func func, Arg0&& arg0, Args&&... args),
 template<typename Func, typename... Args>
 MADARA_AUTORET_REF_FUNC(
     invoke_, (Func func, Args&&... args), func(std::forward<Args>(args)...))
-}
-}
+}  // namespace core
+}  // namespace utility
 
 using namespace utility::core;
-}
+}  // namespace madara
 
 #endif

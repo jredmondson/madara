@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <string>
+#include "madara/MadaraExport.h"
 #include "madara/LockType.h"
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/ThreadSafeContext.h"
@@ -29,7 +30,7 @@ namespace containers
  * @brief This container stores a thread-safe circular buffer with O(1)
  * access times.
  */
-class MADARA_EXPORT CircularBuffer
+class CircularBuffer
 {
 public:
   /**

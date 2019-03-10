@@ -237,7 +237,7 @@ bool madara::knowledge::containers::Double::operator==(type value) const
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
-    return context_->get(variable_, settings_) == value;
+    return context_->get(variable_, settings_).to_double() == value;
   }
 
   return false;

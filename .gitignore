@@ -16,6 +16,7 @@ lib*
 *.log
 .vimrc
 *.vcxproj
+*.vcxproj.user
 *.vcxproj.filters
 *.capnp.*
 MADARA.VC.VC.opendb

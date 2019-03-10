@@ -806,7 +806,7 @@ inline uint32_t KnowledgeRecord::size(void) const
   {
     if (any_value_->supports_size())
     {
-      return any_value_->size();
+      return (uint32_t)any_value_->size();
     }
   }
   else if (type_ == BUFFER)

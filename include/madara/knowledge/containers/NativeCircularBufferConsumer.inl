@@ -52,7 +52,7 @@ inline void NativeCircularBufferConsumer::check_context(const char* func) const
 
 inline NativeCircularBufferConsumer::NativeCircularBufferConsumer(
     const std::string& name, KnowledgeBase& knowledge)
-  : context_(&(knowledge.get_context())), local_index_(-1UL)
+  : context_(&(knowledge.get_context())), local_index_(0UL - 1)
 {
   check_name(__func__, name.c_str());
 
@@ -63,7 +63,7 @@ inline NativeCircularBufferConsumer::NativeCircularBufferConsumer(
 
 inline NativeCircularBufferConsumer::NativeCircularBufferConsumer(
     const std::string& name, Variables& knowledge)
-  : context_(knowledge.get_context()), local_index_(-1UL)
+  : context_(knowledge.get_context()), local_index_(0UL - 1)
 {
   check_name(__func__, name.c_str());
 
