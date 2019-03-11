@@ -66,6 +66,8 @@
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wundef"
 #pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
+#else
+#undef CONST
 #endif
 
 #include "capnp/schema.h"

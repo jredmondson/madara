@@ -43,9 +43,15 @@ template<typename T>
 constexpr bool madara_use_cereal(type<T>)
 {
   return (knowledge::supports_for_each_field<T>::value &&
-             !madara_ignore_for_each_field(type<T>{})) ||
+             !ignore_for_each_field_struct<::madara::decay_<T>>::value) ||
          std::is_arithmetic<T>::value || std::is_enum<T>::value;
 }
+
+template<typename T>
+struct use_cereal_struct
+{
+  static constexpr bool value = madara_use_cereal(type<T>{});
+};
 
 #define MADARA_IGNORE_FOR_EACH_FIELD(...)                                  \
   constexpr bool madara_ignore_for_each_field(::madara::type<__VA_ARGS__>) \
@@ -88,6 +94,12 @@ MADARA_IGNORE_FOR_EACH_FIELD(std::set<V, C, A>)
 
 template<typename V, typename H, typename A>
 MADARA_IGNORE_FOR_EACH_FIELD(std::unordered_set<V, H, A>)
+
+template<typename T>
+struct ignore_for_each_field_struct
+{
+  static constexpr bool value = madara_ignore_for_each_field(madara::type<T>{});
+};
 
 #define MADARA_USE_CEREAL(...)                                  \
   constexpr bool madara_use_cereal(::madara::type<__VA_ARGS__>) \
@@ -138,7 +150,7 @@ MADARA_USE_CEREAL(std::unordered_set<V, H, A>)
 /// Specialize this function to customize otherwise.
 template<typename T>
 constexpr auto get_type_handler_save(type<T>, overload_priority<12>)
-    -> enable_if_<madara_use_cereal(type<T>{}),
+    -> enable_if_<use_cereal_struct<T>::value,
         knowledge::TypeHandlers::save_fn_type>
 {
   return [](std::ostream& o, const void* ptr) {
@@ -153,7 +165,7 @@ constexpr auto get_type_handler_save(type<T>, overload_priority<12>)
 /// Specialize this function to customize otherwise.
 template<typename T>
 constexpr auto get_type_handler_load(type<T>, overload_priority<12>)
-    -> enable_if_<madara_use_cereal(type<T>{}),
+    -> enable_if_<use_cereal_struct<T>::value,
         knowledge::TypeHandlers::load_fn_type>
 {
   return [](const char* in, size_t size, void* ptr, const char*) {
@@ -261,7 +273,7 @@ inline std::vector<knowledge::AnyField> get_fields(T& val)
 // Implement get_type_handler_list_fields for type supporting for_each_field
 template<typename T,
     enable_if_<knowledge::supports_for_each_field<T>::value &&
-                   !madara_ignore_for_each_field(type<decay_<T>>{}),
+                   !ignore_for_each_field_struct<::madara::decay_<T>>::value,
         int> = 0>
 constexpr knowledge::TypeHandlers::list_fields_fn_type
     get_type_handler_list_fields(type<T>, overload_priority<8>)
@@ -296,7 +308,7 @@ struct do_get_field
 // Implement get_type_handler_get_field for type supporting for_each_field
 template<typename T,
     enable_if_<knowledge::supports_for_each_field<T>::value &&
-                   !madara_ignore_for_each_field(type<decay_<T>>{}),
+                   !ignore_for_each_field_struct<::madara::decay_<T>>::value,
         int> = 0>
 constexpr knowledge::TypeHandlers::get_field_fn_type get_type_handler_get_field(
     type<T>, overload_priority<8>)
@@ -519,14 +531,12 @@ struct do_serialize_member
 
 namespace cereal
 {
-using ::madara::utility::core::madara_ignore_for_each_field;
-
 // Implement Cereal library serialization for types supporting for_each_field
 template<typename Archive, typename T>
 auto serialize(Archive& ar, T&& val) -> ::madara::enable_if_<
     ::madara::knowledge::supports_for_each_field<T>::value &&
-    !madara_ignore_for_each_field(::madara::type<::madara::decay_<T>>{})>  // &&
-//!::madara::knowledge::use_cereal_directly<::madara::decay_<T>>::value>
+    !::madara::utility::core::ignore_for_each_field_struct<
+        ::madara::decay_<T>>::value>
 {
   for_each_field(
       ::madara::knowledge::do_serialize<Archive>{&ar}, std::forward<T>(val));
@@ -535,7 +545,7 @@ auto serialize(Archive& ar, T&& val) -> ::madara::enable_if_<
 // Implement Cereal library serialization for types supporting for_each_member
 template<typename Archive, typename T,
     ::madara::enable_if_<
-        !madara_use_cereal(::madara::type<::madara::decay_<T>>{}) &&
+        !::madara::use_cereal_struct<::madara::decay_<T>>::value &&
             (::madara::is_same<Archive, ::madara::knowledge::json_iarchive>() ||
                 ::madara::is_same<Archive,
                     ::madara::knowledge::json_oarchive>()),

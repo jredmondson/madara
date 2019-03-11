@@ -1,5 +1,7 @@
 #include "Any.h"
 
+#undef CONST
+
 #include "capnp/schema.h"
 
 using namespace madara;

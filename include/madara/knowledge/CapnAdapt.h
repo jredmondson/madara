@@ -20,6 +20,8 @@
 
 #define KJ_HEADER_WARNINGS 0
 
+#undef CONST
+
 #include "kj/io.h"
 #include "kj/std/iostream.h"
 #include "capnp/serialize.h"
