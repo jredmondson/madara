@@ -166,9 +166,8 @@ inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
 
 /// Convert KnowledgeRecord to integer
 template<class O>
-        inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
-            -> enable_if_ < std::is_integral<O>::value ||
-		   	   std::is_enum<O>::value, O >
+inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
+    -> enable_if_<std::is_integral<O>::value || std::is_enum<O>::value, O>
 {
   return static_cast<O>(in.to_integer());
 }
@@ -339,7 +338,7 @@ MADARA_MAKE_VAL_SUPPORT_TEST(target_container, x,
     (enable_if_<std::is_arithmetic<
             typename std::decay<decltype(*std::begin(x))>::type>::value>(),
         impl::get_size(x)));
-}
+}  // namespace impl
 
 /// Convert KnowledgeRecord via an output parameter. This overload calls the
 /// underlying version that returns by value, and sets to out
@@ -363,7 +362,7 @@ struct is_basic_string<std::basic_string<CharT, Traits, Allocator>>
   : std::true_type
 {
 };
-}
+}  // namespace impl
 
 /// Conert KnowlegeRecord into an existing std::basic_string<...>
 template<typename CharT, typename Traits, typename Allocator>
@@ -496,6 +495,14 @@ inline auto knowledge_cast(const KnowledgeRecord& in, T&& out)
 {
   return (*out = knowledge_cast(
               type<typename decay_<T>::container_type::value_type>{}, in));
+}
+
+template<typename Container>
+inline const void knowledge_cast(const KnowledgeRecord& in,
+	std::back_insert_iterator<Container> iter)
+{
+  using out_type = typename Container::value_type;
+  iter = knowledge_cast(type<out_type>{}, in);
 }
 
 /// Identity NOP
@@ -781,7 +788,7 @@ size_t KnowledgeRecord::get_history_range(
       },
       index, count);
 }
-}
+}  // namespace knowledge
 
 namespace utility
 {
@@ -808,8 +815,8 @@ constexpr knowledge::TypeHandlers::from_record_fn_type
     knowledge::knowledge_cast(rec, val);
   };
 }
-}
-}
-}
+}  // namespace core
+}  // namespace utility
+}  // namespace madara
 
 #endif

@@ -141,9 +141,6 @@ project (KaRL) : using_madara, no_karl, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = karl
 
-  libs += boost_filesystem
-  libs += capnpc 
-  
   after = Madara
   
   Documentation_Files {
@@ -161,8 +158,6 @@ project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = stk_inspect
 
-  libs += capnpc 
-  
   after = Madara
   
   Documentation_Files {

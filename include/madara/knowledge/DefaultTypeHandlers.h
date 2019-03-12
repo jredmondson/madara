@@ -40,6 +40,12 @@ constexpr bool madara_ignore_for_each_field(...)
 }
 
 template<typename T>
+struct ignore_for_each_field_struct
+{
+  static constexpr bool value = madara_ignore_for_each_field(madara::type<T>{});
+};
+
+template<typename T>
 constexpr bool madara_use_cereal(type<T>)
 {
   return (knowledge::supports_for_each_field<T>::value &&
@@ -94,12 +100,6 @@ MADARA_IGNORE_FOR_EACH_FIELD(std::set<V, C, A>)
 
 template<typename V, typename H, typename A>
 MADARA_IGNORE_FOR_EACH_FIELD(std::unordered_set<V, H, A>)
-
-template<typename T>
-struct ignore_for_each_field_struct
-{
-  static constexpr bool value = madara_ignore_for_each_field(madara::type<T>{});
-};
 
 #define MADARA_USE_CEREAL(...)                                  \
   constexpr bool madara_use_cereal(::madara::type<__VA_ARGS__>) \
