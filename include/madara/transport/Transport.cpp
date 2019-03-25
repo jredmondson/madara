@@ -176,8 +176,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
   {
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
-        " processing KaRL message from %s\n",
-        print_prefix, remote_host);
+        " %s: processing KaRL message from %s\n",
+        print_prefix, id.c_str(), remote_host);
 
     header = new MessageHeader();
   }
@@ -253,8 +253,8 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
     {
       madara_logger_log(context.get_logger(), logger::LOG_MAJOR,
           "%s:"
-          " dropping message from ourself\n",
-          print_prefix);
+          " %s: dropping message from ourself\n",
+          print_prefix, id.c_str());
 
       return -2;
     }
