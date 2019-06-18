@@ -43,7 +43,7 @@ struct compare_const_char_ptr
   }
 };
 
-class AnyRegistry
+class MADARA_EXPORT AnyRegistry
 {
 public:
   /**

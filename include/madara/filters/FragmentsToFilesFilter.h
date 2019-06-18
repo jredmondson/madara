@@ -14,6 +14,7 @@
 #include "madara/knowledge/containers/Vector.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/filters/AggregateFilter.h"
+#include "madara/MadaraExport.h"
 
 namespace madara
 {
@@ -42,7 +43,7 @@ public:
    * Filters the fragments and converts them to files
    * @param   records           the aggregate records vector
    **/
-  virtual void filter(knowledge::KnowledgeMap& records,
+  MADARA_EXPORT virtual void filter(knowledge::KnowledgeMap& records,
       const transport::TransportContext&, knowledge::Variables&);
 
   /**

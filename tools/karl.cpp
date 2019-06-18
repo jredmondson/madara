@@ -825,8 +825,20 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
         static capnp::SchemaParser schparser;
         capnp::ParsedSchema ps;
-        ps = schparser.parseDiskFile(utility::extract_filename(filename),
-            filename, capnp_import_dirs.asPtr());
+        //ps = schparser.parseDiskFile(utility::extract_filename(filename),
+        //    filename, capnp_import_dirs.asPtr());
+        //ps = schparser.parseFromDirectory (
+        //  "", utility::extract_filename (filename),
+        //  capnp_import_dirs.asPtr ());
+        auto fs = kj::newDiskFilesystem ();
+        ps = schparser.parseFromDirectory(fs->getCurrent(),
+            kj::Path::parse(filename), nullptr);
+
+        //auto dir = kj::newInMemoryDirectory (kj::nullClock ());
+        //auto path = kj::Path::parse(filename);
+        //dir->openFile(path, kj::WriteMode::CREATE | kj::WriteMode::CREATE_PARENT)
+        //     ->writeAll("struct Foo {}");
+        //auto schema = parser->parseFromDirectory(*dir, path, nullptr);
 
         std::string msg;
         std::string typestr;

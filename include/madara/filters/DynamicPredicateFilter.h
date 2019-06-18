@@ -21,7 +21,7 @@ namespace filters
 /**
  * Filter for removing variables with any unwanted predicates
  **/
-class MADARA_EXPORT DynamicPredicateFilter : public AggregateFilter
+class DynamicPredicateFilter : public AggregateFilter
 {
 public:
   /**

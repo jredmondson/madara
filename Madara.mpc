@@ -114,7 +114,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/transport/TransportContext.h
     include/madara/utility
     include/madara/Boost.h
-    include/madara/MADARA_export.h
+    include/madara/MadaraExport.h
     include/madara/LockType.h
     include/madara/Namespaces.h
     include/pugi

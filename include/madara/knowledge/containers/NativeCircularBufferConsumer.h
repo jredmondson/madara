@@ -45,7 +45,7 @@ namespace containers
  * This class should only be used with records which have history capacity of
  * at least 1. Most methods will throw IndexException if not.
  */
-class MADARA_EXPORT NativeCircularBufferConsumer
+class NativeCircularBufferConsumer
 {
 public:
   /**

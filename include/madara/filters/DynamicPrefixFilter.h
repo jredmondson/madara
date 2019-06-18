@@ -21,7 +21,7 @@ namespace filters
 /**
  * Filter for removing variables with any unwanted prefixes
  **/
-class MADARA_EXPORT DynamicPrefixFilter : public AggregateFilter
+class DynamicPrefixFilter : public AggregateFilter
 {
 public:
   /**

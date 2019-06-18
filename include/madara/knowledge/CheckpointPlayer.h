@@ -5,6 +5,7 @@
 #include <thread>
 #include <memory>
 
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "madara/knowledge/CheckpointSettings.h"
 #include "madara/knowledge/FileHeader.h"
@@ -24,7 +25,7 @@ namespace knowledge
 /**
  * Class for iterating binary checkpoint files
  **/
-class CheckpointReader
+class MADARA_EXPORT CheckpointReader
 {
 public:
   /**
@@ -112,7 +113,7 @@ private:
 /**
  * Plays back a checkpoint over time, based on recorded TOI
  **/
-class CheckpointPlayer
+class MADARA_EXPORT CheckpointPlayer
 {
 public:
   /**

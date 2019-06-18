@@ -29,7 +29,7 @@ namespace filters
  * Filter for mapping variables in the KB into a filter's outgoing or
  * incoming messages
  **/
-class MADARA_EXPORT VariableMapFilter : public AggregateFilter
+class VariableMapFilter : public AggregateFilter
 {
 public:
   /**

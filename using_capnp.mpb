@@ -1,13 +1,14 @@
 project {
 
   Define_Custom (CAPN) {
-    command = bash -c "capnp compile -I \$$CAPNP_ROOT/c++/src -oc++ \"\$$0\";\
-mv \"\$$0.c++\" \"\$$0.cpp\";\
-capnp compile -I \$$CAPNP_ROOT/c++/src -o/bin/cat \"\$$0\" > \$$0.bin"
+    command = <%quote%>capnp<%quote%>
+    commandflags = compile -I $(CAPNP_ROOT)/c++/src -ocpp
     inputext = .capnp
     source_outputext = .capnp.cpp
     header_outputext = .capnp.h
     generic_outputext = .capnp.bin
+    postcommand      = <%mv> <%quote><%output_noext%>.capnp.c++<%quote%> <%quote><%output_noext%>.capnp.cpp<%quote%>
+    keyword capnp_flags = commandflags
   }
 
   includes += $(CAPNP_ROOT)/c++/src

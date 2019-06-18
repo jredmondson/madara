@@ -24,7 +24,7 @@ namespace filters
  * Filter for printing variables as they arrive and excluding prefixes
  * that are unwanted via a user-specified MADARA StringVector container
  **/
-class MADARA_EXPORT PrefixIntConvert : public AggregateFilter
+class PrefixIntConvert : public AggregateFilter
 {
 public:
   /**

@@ -110,7 +110,7 @@ std::string& dds_topicify(std::string& input);
  * @param     input         the string to change
  * @return    a reference to the modified input
  **/
-std::string& strip_white_space(std::string& input);
+MADARA_EXPORT std::string& strip_white_space(std::string& input);
 
 /**
  * Strips all comments (single-line and multi-line). This function will

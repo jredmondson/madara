@@ -23,7 +23,7 @@ namespace filters
 /**
  * Filter for integerizing variables (usually before sending)
  **/
-class MADARA_EXPORT DynamicPrefixIntConvert : public AggregateFilter
+class DynamicPrefixIntConvert : public AggregateFilter
 {
 public:
   /**
