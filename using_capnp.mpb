@@ -1,8 +1,10 @@
-project {
+feature (capnp) {
+
+  macros += _USE_CAPNP_
 
   Define_Custom (CAPN) {
-    command = <%quote%>capnp<%quote%>
-    commandflags = compile -I $(CAPNP_ROOT)/c++/src -ocpp
+    command = capnp
+    commandflags = compile -I $(CAPNP_ROOT)/c++/src -oc++
     inputext = .capnp
     source_outputext = .capnp.cpp
     header_outputext = .capnp.h

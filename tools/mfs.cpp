@@ -1447,10 +1447,10 @@ int main(int argc, char** argv)
   knowledge::KnowledgeBase kb;
 
   receive_filter.requests.set_name(".requests", kb);
-  receive_filter.requests.resize(requests_buffer_size);
+  receive_filter.requests.resize((int)requests_buffer_size);
 
   receive_filter.delete_requests.set_name(".delete_requests", kb);
-  receive_filter.delete_requests.resize(requests_buffer_size);
+  receive_filter.delete_requests.resize((int)requests_buffer_size);
 
   madara::knowledge::EvalSettings silent(true, true, true, true, true);
   shutdown_request.set_name(prefix + ".shutdown", kb);

@@ -261,9 +261,9 @@ int main(int, char**)
   test_eq(fstdvector_out.size(), 4UL);
   test_eq(fstdvector_out[2], 12.5);
 
-  int int_out;
-  knowledge_cast(knowledge_cast(13), int_out);
-  test_eq(int_out, 13);
+  //int int_out;
+  //knowledge_cast(knowledge_cast(13), int_out);
+  //test_eq(int_out, 13);
 
   std::string hello = "hello world!";
   std::string hello_out;

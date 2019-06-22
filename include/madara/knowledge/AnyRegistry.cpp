@@ -2,7 +2,9 @@
 
 #undef CONST
 
+#ifdef _USE_CAPNP_
 #include "capnp/schema.h"
+#endif  // _USE_CAPNP_
 
 using namespace madara;
 using namespace knowledge;
@@ -16,6 +18,7 @@ bool AnyRegistry::register_type_impl(
   return type_builders.emplace(tag, handler).second;
 }
 
+#ifdef _USE_CAPNP_
 static std::map<const char*, capnp::StructSchema, compare_const_char_ptr>
     schemas;
 
@@ -36,6 +39,7 @@ AnyRegistry::lookup_schema(const char* tag)
   }
   return *iter;
 }
+#endif
 
 Any AnyRegistry::construct(const char* tag)
 {
@@ -45,12 +49,18 @@ Any AnyRegistry::construct(const char* tag)
     auto handler = biter->second;
     return Any(handler, handler->construct_default());
   }
+
+#ifdef _USE_CAPNP_
   auto siter = schemas.find(tag);
   if (siter != schemas.end())
   {
     return Any(type<RegCapnObject>{}, siter->first, siter->second);
   }
   return Any(type<GenericCapnObject>{});
+#else
+  return Any();
+#endif // _USE_CAPNP_
+
 }
 
 inline ConstAny AnyRegistry::construct_const(const char* tag)

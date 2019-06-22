@@ -70,8 +70,10 @@
 #undef CONST
 #endif
 
+#ifdef _USE_CAPNP_
 #include "capnp/schema.h"
 #include "capnp/dynamic.h"
+#endif // _USE_CAPNP_
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
@@ -223,9 +225,11 @@ struct TypeHandlers
   typedef std::ostream& (*to_ostream_fn_type)(std::ostream&, void*);
   to_ostream_fn_type to_ostream;
 
+#ifdef _USE_CAPNP_
   typedef bool (*get_reader_fn_type)(capnp::DynamicStruct::Reader*,
       capnp::StructSchema*, const char**, size_t*, void*);
   get_reader_fn_type get_reader;
+#endif // _USE_CAPNP_
 };
 
 inline const TypeHandlers& AnyField::parent() const
@@ -403,12 +407,14 @@ constexpr TypeHandlers::to_ostream_fn_type get_type_handler_to_ostream(
   return nullptr;
 }
 
+#ifdef _USE_CAPNP_
 template<typename T>
 constexpr TypeHandlers::get_reader_fn_type get_type_handler_get_reader(
     type<T>, overload_priority_weakest)
 {
   return nullptr;
 }
+#endif  // _USE_CAPNP_
 
 /// For internal use. Constructs a TypeHandlers containing functions used by Any
 template<typename T>
@@ -432,7 +438,9 @@ inline const TypeHandlers& get_type_handler(type<T> t)
       get_type_handler_to_record(t, select_overload()),
       get_type_handler_from_record(t, select_overload()),
       get_type_handler_to_ostream(t, select_overload()),
+#ifdef _USE_CAPNP_
       get_type_handler_get_reader(t, select_overload()),
+#endif // _USE_CAPNP_
   };
   return handler;
 }

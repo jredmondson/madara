@@ -25,8 +25,11 @@
 #include "madara/filters/lz4/LZ4BufferFilter.h"
 #endif
 
+#ifdef _USE_CAPNP_
 #include "capnp/schema-parser.h"
 #include "capnp/schema.h"
+#endif // _USE_CAPNP_
+
 #include <boost/algorithm/string.hpp>
 
 // convenience namespaces and typedefs
@@ -50,12 +53,15 @@ bool print_stats = false;
 std::vector<std::string> print_prefixes;
 std::string save_file;
 
+#ifdef _USE_CAPNP_
 // Capnp types and globals
 kj::Vector<kj::StringPtr> capnp_import_dirs;
 std::vector<std::string> capnp_msg;
 std::vector<std::string> capnp_type;
 bool capnp_msg_type_param_flag = false;
 bool capnp_import_dirs_flag = false;
+#endif // _USE_CAPNP_
+
 bool summary = true;
 
 // default KaRL config file
@@ -751,6 +757,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
+#ifdef _USE_CAPNP_
     else if(arg1 == "-ni")
     {
       if(i + 1 < argc)
@@ -882,6 +889,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
+#endif   // _USE_CAPNP
     else if(arg1 == "-ns" || arg1 == "--no-summary")
     {
       summary = false;
@@ -980,19 +988,24 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "can be read\n"
           "                           by NamedVectorCombinator.\n"
           "  [-ls|--load-size bytes]  size of buffer needed for file load\n"
-          "  [-n|--capnp tag:msg_type] register tag with given message "
-          "schema.\n"
-          "                            See also -nf and -ni.\n"
-          "  [-nf|--capnp-file]       load capnp file. Must appear after -n "
-          "and -ni.\n"
-          "  [-ni|--capnp-import ]    add directory to capnp directory "
-          "imports.\n"
-          "                           Must appear before all -n and -nf.\n"
           "  [-ns|--no-summary ]      do not print or save summary stats per "
           "var\n"
           "  [-s|--save file]         save the results to a file\n"
           "\n",
           arg1.c_str(), argv[0]);
+
+#ifdef _USE_CAPNP_
+      madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+      "  [-n|--capnp tag:msg_type] register tag with given message "
+        "schema.\n"
+        "                            See also -nf and -ni.\n"
+        "  [-nf|--capnp-file]       load capnp file. Must appear after -n "
+        "and -ni.\n"
+        "  [-ni|--capnp-import ]    add directory to capnp directory "
+        "imports.\n"
+        "                           Must appear before all -n and -nf.\n\n");
+#endif   // _USE_CAPNP_
+
       exit(0);
     }
   }

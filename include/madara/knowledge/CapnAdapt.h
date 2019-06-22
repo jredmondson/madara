@@ -1,6 +1,7 @@
 #ifndef MADARA_KNOWLEDGE_CAPNADAPT_H_
 #define MADARA_KNOWLEDGE_CAPNADAPT_H_
 
+#ifdef _USE_CAPNP_
 /**
  * @file CapnAdapt.h
  * @author David Kyle <david.kyle@shield.ai>
@@ -766,5 +767,7 @@ inline auto get_type_handler_load(type<T>, overload_priority<8>)
 #define MADARA_CAPN_MEMBERS(TYPE, CAPNTYPE, FIELDS) \
   MADARA_CAPN_MEMBERS_IMPL(                         \
       TYPE, CAPNTYPE, MADARA_PP_VARIADIC_SEQ_TO_SEQ(FIELDS))
+
+#endif  // _USE_CAPNP_
 
 #endif  // MADARA_KNOWLEDGE_CAPNADAPT_H_

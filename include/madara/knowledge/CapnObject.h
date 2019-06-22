@@ -1,6 +1,8 @@
 #ifndef MADARA_CAPNOBJECT_ANY_H_
 #define MADARA_CAPNOBJECT_ANY_H_
 
+#ifdef _USE_CAPNP_
+
 /**
  * @file CapnObject.h
  * @author David Kyle <david.kyle@shield.ai>
@@ -752,5 +754,7 @@ constexpr auto get_type_handler_tag(type<T>, overload_priority<8>)
 }
 
 }  // namespace madara
+
+#endif // _USE_CAPNP_
 
 #endif  // MADARA_CAPNOBJECT_ANY_H_

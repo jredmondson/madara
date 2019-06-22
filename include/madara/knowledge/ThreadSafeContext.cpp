@@ -1907,8 +1907,8 @@ int64_t ThreadSafeContext::save_as_karl(
       char* result_copy = new char[settings.buffer_size];
       memcpy(result_copy, result.c_str(), result.size() + 1);
 
-      int size =
-          settings.encode(result_copy, result.size(), settings.buffer_size);
+      int size = settings.encode(
+        result_copy, (int)result.size(), (int)settings.buffer_size);
 
       if (size < 0)
       {

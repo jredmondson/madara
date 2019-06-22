@@ -14,6 +14,8 @@ using namespace knowledge;
 
 int main(int, char**)
 {
+
+#ifdef _USE_CAPNP_
   Any any = Any::construct("Point");
   std::cerr << any << std::endl;
 
@@ -32,6 +34,7 @@ int main(int, char**)
   {
     std::cerr << "OVERALL: SUCCESS.\n";
   }
+#endif   // _USE_CAPNP_
 
   return madara_tests_fail_count;
 }

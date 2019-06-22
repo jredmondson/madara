@@ -28,9 +28,11 @@
 #include "madara/filters/lz4/LZ4BufferFilter.h"
 #endif
 
+#ifdef _USE_CAPNP_
 #include "capnp/schema-parser.h"
 #include "capnp/schema.h"
 #include <boost/algorithm/string.hpp>
+#endif
 
 // convenience namespaces and typedefs
 namespace knowledge = madara::knowledge;
@@ -292,12 +294,14 @@ public:
 // originator debug filter to add if requested
 StatsFilter stats_filter;
 
+#ifdef _USE_CAPNP_
 // Capnp types and globals
 kj::Vector<kj::StringPtr> capnp_import_dirs;
 std::vector<std::string> capnp_msg;
 std::vector<std::string> capnp_type;
 bool capnp_msg_type_param_flag = false;
 bool capnp_import_dirs_flag = false;
+#endif
 
 // handle command line arguments
 void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
@@ -440,12 +444,6 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "settings from\n"
           "  [-lz4|--lz4]             compress with LZ4 over network\n"
           "  [-m|--multicast ip:port] the multicast ip to send and listen to\n"
-          "  [-n|--capnp tag:msg_type] register tag with given message schema. "
-          "See also -nf and -ni.\n"
-          "  [-nf|--capnp-file]       load capnp file. Must appear after all "
-          "-n and -ni.\n"
-          "  [-ni|--capnp-import ]    add directory to capnp directory "
-          "imports. Must appear before all -n and -nf.\n"
           "  [-o|--host hostname]     the hostname of this process "
           "(def:localhost)\n"
           "  [-ps|--print-stats]      print variable/originator stats at the "
@@ -526,6 +524,18 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "  [-v|--version]           print current MADARA version\n"
           "\n",
           argv[0]);
+
+#ifdef _USE_CAPNP_
+          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
+            "  [-n|--capnp tag:msg_type] register tag with given message "
+            "schema.\n"
+            "                            See also -nf and -ni.\n"
+            "  [-nf|--capnp-file]       load capnp file. Must appear after -n "
+            "and -ni.\n"
+            "  [-ni|--capnp-import ]    add directory to capnp directory "
+            "imports.\n"
+            "                           Must appear before all -n and -nf.\n\n");
+#endif   // _USE_CAPNP_
 
       exit(0);
     }
@@ -731,6 +741,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
       ++i;
     }
+#ifdef _USE_CAPNP_
     else if(arg1 == "-ni")
     {
       if(i + 1 < argc)
@@ -874,6 +885,7 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 
       ++i;
     }
+#endif
     else if(arg1 == "-o" || arg1 == "--host")
     {
       if(i + 1 < argc)

@@ -1,6 +1,8 @@
 #include <string>
 #include <iostream>
 
+#ifdef _USE_CAPNP_
+
 #include "madara/knowledge/Any.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
@@ -117,3 +119,5 @@ extern "C" void madara_register_test_types(void)
 {
   geo::register_types();
 }
+
+#endif  // _USE_CAPNP_

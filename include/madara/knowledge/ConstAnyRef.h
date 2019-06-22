@@ -280,6 +280,7 @@ public:
     return ptr(type<T>{});
   }
 
+#ifdef _USE_CAPNP_
   /**
    * Get a statically typed reader for a Cap'n Proto object stored inside this
    * object. Throws BadAnyAccess if the wrong type is given.
@@ -373,6 +374,7 @@ public:
     }
     return {(const capnp::word*)data, size / 8};
   }
+#endif // USE_CAPNP
 
   /**
    * Serialize this Any to the given buffer. Throws an exception if the buffer

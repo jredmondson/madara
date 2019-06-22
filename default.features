@@ -8,15 +8,25 @@
 ///
 ///============================================================================
 
-boost = 1
+/// @feature android
+/// Enable this feature if you need Android support (requires java=1)
+android                 = 0
+
+/// @feature boost
+/// Enable this feature to enable boost (is required now)
+boost                   = 1
+
+/// @feature nocapnp
+/// Enable this feature if you want capnp support for custom types for variables
+capnp                     = 0
+
+/// @feature clang
+/// Enable this feature if you want to compile with clang++ and libc++
+clang                   = 0
 
 /// @feature debug
 /// Enable this feature if you want to generate debug build
 debug                   = 0
-
-/// @feature debug
-/// Enable this feature if you want to compile with clang++ and libc++
-clang                   = 0
 
 /// @feature deprecated
 /// Enable this feature if you want to generate deprecated test applications
@@ -52,29 +62,13 @@ no_xml                  = 0
 
 opensplice              = 0
 
-/// @feature tests
-/// Enable this feature if you want to generate test applications
-tests                   = 1
-
-/// @feature tutorials
-/// Enable this feature if you want to generate tutorial applications
-tutorials               = 0
-
 /// @feature java
 /// Enable this feature if you want to generate a JNI port for Java
 java                    = 0
 
-/// @feature android
-/// Enable this feature if you need Android support (requires java=1)
-android                 = 0
-
-/// @feature python
-/// Enable this feature if you want to generate a Boost.Python port for Python
-python                  = 0
-
-/// @feature openjdk
-/// Enable this feature if you want to compile with OpenJDK (requires java=1)
-openjdk                 = 0
+/// @feature nothreadlocal
+/// Enable this feature to disable all uses of thread_local
+nothreadlocal             = 0
 
 /// @feature null_lock
 /// Enable this feature if you want to only use NULL locks instead of recursive
@@ -87,22 +81,34 @@ openjdk                 = 0
 /// accessor methods like get, set, and any MADARA container methods.
 null_lock                 = 0
 
-/// @feature ssl
-/// Enable this feature if you want SSL support
-ssl                       = 0
+/// @feature openjdk
+/// Enable this feature if you want to compile with OpenJDK (requires java=1)
+openjdk                 = 0
 
-/// @feature zmq
-/// Enable this feature if you want ZeroMQ support
-zmq                       = 0
+/// @feature python
+/// Enable this feature if you want to generate a Boost.Python port for Python
+python                  = 0
 
 /// @feature simtime
 /// Enable this feature if you want SimTime interface support
 simtime                   = 0
 
-/// @feature nothreadlocal
-/// Enable this feature to disable all uses of thread_local
-nothreadlocal             = 0
+/// @feature ssl
+/// Enable this feature if you want SSL support
+ssl                       = 0
+
+/// @feature tests
+/// Enable this feature if you want to generate test applications
+tests                   = 1
+
+/// @feature tutorials
+/// Enable this feature if you want to generate tutorial applications
+tutorials               = 0
 
 /// @feature warnings
 /// This feature enables compilation warnings to debug MADARA core libraries
 warnings                = 0
+
+/// @feature zmq
+/// Enable this feature if you want ZeroMQ support
+zmq                       = 0

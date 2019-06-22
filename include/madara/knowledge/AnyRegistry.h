@@ -22,10 +22,12 @@
 #include "madara/utility/IntTypes.h"
 #include "madara/exceptions/BadAnyAccess.h"
 
+#ifdef _USE_CAPNP_
 namespace capnp
 {
 class StructSchema;
 }
+#endif
 
 namespace madara
 {
@@ -60,6 +62,7 @@ public:
   template<typename T>
   static bool register_type(const char* name);
 
+#ifdef _USE_CAPNP_
   /**
    * Register a schema with the Any system, using a tag which will be used to
    * portably identify this type across processes.
@@ -77,6 +80,7 @@ public:
 
   static const std::pair<const char* const, capnp::StructSchema>& lookup_schema(
       const char* tag);
+#endif
 
   template<typename T>
   static const char* const& get_type_name()
