@@ -1,4 +1,4 @@
-feature (capnp) {
+project {
 
   macros += _USE_CAPNP_
 
@@ -12,6 +12,8 @@ feature (capnp) {
     postcommand      = <%mv> <%quote><%output_noext%>.capnp.c++<%quote%> <%quote><%output_noext%>.capnp.cpp<%quote%>
     keyword capnp_flags = commandflags
   }
+
+  requires += capnp
 
   includes += $(CAPNP_ROOT)/c++/src
 
