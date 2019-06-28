@@ -21,7 +21,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   libpaths += $(MADARA_ROOT)/lib
 
   verbatim (make, local, true) {
-    CPPFLAGS := -std=c++11 -O3 $(CPPFLAGS)
+    CPPFLAGS := -std=c++14 -O3 $(CPPFLAGS)
   }
 
   Build_Files {
