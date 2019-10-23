@@ -28,8 +28,8 @@ env:
 matrix:
   allow_failures:
     #- env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-    - env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS=""
-    - env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
+    - env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS="" CAPNP="capnp"
+    - env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS="" CAPNP="capnp"
     - env: NAME="Ubuntu 16.04 capnp" CAPNP="capnp"
     - env: NAME="Ubuntu 16.04 clang capnp" CAPNP="capnp" CLANG="clang"
   include:
@@ -49,7 +49,7 @@ matrix:
 
       # clang, osx, java
     - compiler: clang
-      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
+      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java" CAPNP="capnp"
       os: osx
       osx_image: xcode9.3
 
@@ -98,7 +98,7 @@ matrix:
       # g++, linux, java
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 g++ java" JAVA="java"
+      env: NAME="Ubuntu 16.04 g++ java" JAVA="java" CAPNP="capnp"
 
       # g++, linux, zmq
     - compiler: gcc
@@ -108,7 +108,7 @@ matrix:
       # g++, linux, zmq
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 g++ python" PYTHON="python"
+      env: NAME="Ubuntu 16.04 g++ python" PYTHON="python" CAPNP="capnp"
 
       # g++, linux, simtime
     - compiler: gcc
