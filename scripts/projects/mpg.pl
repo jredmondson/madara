@@ -135,6 +135,7 @@ if (not -d "$transports_path")
 copy "$script_dir/common/doxygen_help_gen.mpb", "$path/";
 copy "$script_dir/common/using_boost.mpb", "$path/";
 copy "$script_dir/common/using_capnp.mpb", "$path/";
+copy "$script_dir/common/capnp_files.mpb", "$path/";
 copy "$script_dir/common/using_madara.mpb", "$path/";
 copy "$script_dir/common/using_clang.mpb", "$path/";
 copy "$script_dir/common/using_zmq.mpb", "$path/";
