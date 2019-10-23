@@ -18,8 +18,11 @@
 #include "MadaraKnowledgeContainers.h"
 #include "MadaraKnowledge.h"
 
+/// to do: find a way to excise capnp feature where possible in python port
+#ifdef _USE_CAPNP_
 #include "capnp/schema-loader.h"
 #include "capnp/schema.h"
+#endif
 
 /**
  * @file MadaraModule.cpp
