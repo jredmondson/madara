@@ -30,6 +30,8 @@ matrix:
     #- env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
     - env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS=""
     - env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
+    - env: NAME="Ubuntu 16.04 capnp" CAPNP="capnp"
+    - env: NAME="Ubuntu 16.04 clang capnp" CAPNP="capnp" CLANG="clang"
   include:
       ################MAC#####################
 
@@ -155,8 +157,8 @@ script:
   - echo "TRAVIS_BUILD_DIR=$TRAVIS_BUILD_DIR"
   - echo ls $TRAVIS_BUILD_DIR
   - ls $TRAVIS_BUILD_DIR
-  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4
-  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4
+  - echo $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4 $CLANG
+  - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4 $CLANG
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_any ; fi
