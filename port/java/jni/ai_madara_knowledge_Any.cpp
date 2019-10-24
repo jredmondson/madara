@@ -6,6 +6,7 @@
 #include "ai_madara_knowledge_KnowledgeRecord.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
+#include "madara/knowledge/CapnObject.h"
 
 using namespace madara;
 using namespace knowledge;
