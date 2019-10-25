@@ -123,12 +123,12 @@ matrix:
     # g++, linux, android, zmq
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
+      env: NAME="Ubuntu 16.04 android zmq capnp" ANDROID="android" ZMQ="zmq" TESTS="" CAPNP="capnp"
 
     # g++, linux, android, ssl
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS="" CAPNP="capnp"
+      env: NAME="Ubuntu 16.04 android capnp" ANDROID="android" SSL="ssl" TESTS=""
 
 addons:
   apt:

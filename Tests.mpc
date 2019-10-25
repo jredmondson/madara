@@ -609,7 +609,7 @@ project (Test_Modifieds) : using_madara, no_karl, no_xml, null_lock, using_simti
   }
 }
 
-project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime, using_capnp {
+project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime, capnp_files {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing
   
@@ -619,6 +619,10 @@ project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_x
   }
   
   Header_Files {
+  }
+
+  CAPNP_Files {
+    tests/capnfiles
   }
 
   Source_Files {
@@ -1526,7 +1530,7 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_files {
   requires += tests capnp
 
   after += Test_CapnFiles
@@ -1539,6 +1543,10 @@ project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   }
 
   Header_Files {
+    tests/capnfiles
+  }
+
+  CAPNP_Files {
     tests/capnfiles
   }
 
@@ -1568,7 +1576,7 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
   }
 }
 
-project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_files {
   requires += tests capnp
 
   after += Test_CapnFiles
@@ -1580,6 +1588,10 @@ project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_loc
   }
 
   Header_Files {
+    tests/capnfiles
+  }
+
+  CAPNP_Files {
     tests/capnfiles
   }
 
