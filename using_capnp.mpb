@@ -16,7 +16,7 @@ feature(capnp) {
   } else {
     libpaths += $(CAPNP_ROOT)/c++/.libs
 
-    libs += capnp
+    libs += capnp capnpc
     libs += capnp-json
     libs += kj
   }

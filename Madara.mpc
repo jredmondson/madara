@@ -137,7 +137,7 @@ project (Madara_Version) : using_madara, no_karl {
 }
 
 
-project (KaRL) : using_madara, no_karl, using_ssl, using_lz4, using_capnp {
+project (KaRL) : using_madara, no_karl, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = karl
 
