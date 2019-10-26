@@ -1527,7 +1527,7 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
 }
 
 project (Test_CapnFiles) : capnp_files {
-  requires += capnp
+  requires += tests capnp
 
   CAPNP_Files {
     tests/capnfiles
