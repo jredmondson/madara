@@ -1,18 +1,13 @@
 project {
   Define_Custom (CAPNP) {
     command = capnp
-    precommand = capnp compile -I $(CAPNP_ROOT)/c++/src -oc++ <%input%>
-    commandflags = compile -I $(CAPNP_ROOT)/c++/src -o/bin/cat <%input%> <%gt%> <%input%>.bin
+    commandflags = compile -I $(CAPNP_ROOT)/c++/src -oc++ <%input%>
     inputext = .capnp
     source_outputext = .capnp.cpp
     header_outputext = .capnp.h
     generic_outputext = .capnp.bin
-    //postcommand      = <%mv> <%quote><%output_noext%>.capnp.c++<%quote%> <%quote><%output_noext%>.capnp.cpp<%quote%>
-    //postcommand      = <%cp%> <%input%>.c++ <%input%>.cpp.cp
-    //postcommand      += <%cat%> <%output%> <%gt%> <%output_noext%>.cat
-    //postcommand      += <%mv%> <%quote%><%input%>.c++<%quote%> <%quote%><%input%>.cpp<%quote%>
-    
-    postcommand += mv <%input%>.c++ <%input%>.cpp
+    postcommand += mv <%input%>.c++ <%input%>.cpp <%and%> \
+      capnp compile -I $(CAPNP_ROOT)/c++/src -o/bin/cat <%input%> <%gt%> <%input%>.bin
 
     keyword capnp_flags = commandflags
   }

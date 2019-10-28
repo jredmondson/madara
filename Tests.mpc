@@ -619,10 +619,12 @@ project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_x
   }
   
   Header_Files {
+    tests/capnfiles
   }
 
   Source_Files {
     tests/test_checkpointing.cpp
+    tests/capnfiles
   }
 }
 
@@ -1526,11 +1528,17 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Test_CapnFiles) : capnp_files {
+project (Test_CapnFiles) : capnp_files, using_capnp {
   requires += tests capnp
 
   CAPNP_Files {
     tests/capnfiles
+  }
+
+  Header_Files {
+  }
+
+  Source_Files {
   }
 }
 
@@ -1552,6 +1560,7 @@ project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
 
   Source_Files {
     tests/test_any.cpp
+    tests/capnfiles
   }
 }
 
@@ -1593,6 +1602,7 @@ project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_loc
 
   Source_Files {
     tests/test_any_transport_multicast.cpp
+    tests/capnfiles
   }
 }
 
