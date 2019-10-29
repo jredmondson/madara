@@ -609,7 +609,7 @@ project (Test_Modifieds) : using_madara, no_karl, no_xml, null_lock, using_simti
   }
 }
 
-project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing
   
@@ -619,12 +619,10 @@ project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_x
   }
   
   Header_Files {
-    tests/capnfiles
   }
 
   Source_Files {
     tests/test_checkpointing.cpp
-    tests/capnfiles
   }
 }
 
@@ -1528,24 +1526,32 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Test_CapnFiles) : capnp_files, using_capnp {
+project (Generate_CapnFiles) : capnp_files, using_capnp {
   requires += tests capnp
 
   CAPNP_Files {
     tests/capnfiles
   }
+}
 
+project (Compile_CapnFiles) : capnp_files, using_capnp {
+  requires += tests capnp
+
+  after += Generate_CapnFiles
+  
   Header_Files {
+    tests/capnfiles
   }
 
   Source_Files {
+    tests/capnfiles
   }
 }
 
-project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
   requires += tests capnp
 
-  after += Test_CapnFiles
+  after += Compile_CapnFiles
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_any
@@ -1555,12 +1561,10 @@ project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   }
 
   Header_Files {
-    tests/capnfiles
   }
 
   Source_Files {
     tests/test_any.cpp
-    tests/capnfiles
   }
 }
 
@@ -1585,10 +1589,10 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
   }
 }
 
-project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
   requires += tests capnp
 
-  after += Test_CapnFiles
+  after += Compile_CapnFiles
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_any_transport_multicast
@@ -1597,20 +1601,20 @@ project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_loc
   }
 
   Header_Files {
-    tests/capnfiles
   }
 
   Source_Files {
     tests/test_any_transport_multicast.cpp
-    tests/capnfiles
   }
 }
 
-project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_circular_buffer
+  
+  after += Compile_CapnFiles
   
   Documentation_Files {
   }

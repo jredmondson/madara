@@ -1,0 +1,12 @@
+feature(capnp) {
+  after += Compile_CapnFiles
+  
+  Header_Files {
+    tests/capnfiles
+  }
+
+  Source_Files {
+    tests/capnfiles
+  }
+}
+
