@@ -1,4 +1,4 @@
-feature(capnp) {
+feature (capnp) {
   macros += _USE_CAPNP_
 
   includes += $(CAPNP_ROOT)/c++/src

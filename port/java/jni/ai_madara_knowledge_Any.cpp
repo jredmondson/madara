@@ -6,7 +6,11 @@
 #include "ai_madara_knowledge_KnowledgeRecord.h"
 
 #include "madara/knowledge/KnowledgeBase.h"
+
+#ifdef _USE_CAPNP_
 #include "madara/knowledge/CapnObject.h"
+#endif
+
 
 using namespace madara;
 using namespace knowledge;
@@ -764,6 +768,8 @@ Java_ai_madara_knowledge_KnowledgeBase_jni_1setAnySettings(JNIEnv* env, jclass,
   });
 }
 
+
+#ifdef _USE_CAPNP_
 /*
  * Class:     ai_madara_knowledge_AnyRef
  * Method:    jni_reader
@@ -822,3 +828,5 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1register_1tag(
     }
   });
 }
+
+#endif

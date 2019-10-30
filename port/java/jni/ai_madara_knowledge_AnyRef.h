@@ -162,6 +162,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1list_1fields(
 JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1get_1tag(
     JNIEnv*, jclass, jlong, jlong, jobjectArray);
 
+#ifdef _USE_CAPNP_
 /*
  * Class:     ai_madara_knowledge_AnyRef
  * Method:    jni_register_tag
@@ -177,6 +178,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1register_1tag(
  */
 JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_AnyRef_jni_1reader(
     JNIEnv*, jclass, jlong, jlong, jobjectArray);
+#endif
 
 /*
  * Class:     ai_madara_knowledge_AnyRef

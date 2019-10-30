@@ -15,6 +15,7 @@ extern "C" {
 JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1construct(
     JNIEnv*, jclass, jstring, jlongArray);
 
+#ifdef _USE_CAPNP_
 /*
  * Class:     ai_madara_knowledge_Any
  * Method:    jni_emplace_capnp
@@ -22,6 +23,7 @@ JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1construct(
  */
 JNIEXPORT jstring JNICALL Java_ai_madara_knowledge_Any_jni_1emplace_1capnp(
     JNIEnv*, jclass, jstring, jbyteArray, jlongArray);
+#endif
 
 /*
  * Class:     ai_madara_knowledge_Any

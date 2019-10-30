@@ -7,14 +7,6 @@ feature (java) {
   
   macros += _MADARA_JAVA_
 
-  
- 
-  Define_Custom (JAVA_CAPNP) {
-    command = capnp compile -I $(CAPNP_ROOT)/c++/src -ojava
-    inputext = .capnp
-    generic_outputext = .java,.capnp.bin
-  }
-
   specific (prop:windows) {
     includes += $(JAVA_HOME)/include/win32
   } else {
@@ -35,25 +27,35 @@ feature (java) {
     include/madara/filters/java
   }
 
-  JAVA_CAPNP_Files {
-    tests/capnfiles
-  }
-
   
 	postbuild += mvn -f port/java versions:set -DnewVersion=`<%cat%> $(MADARA_ROOT)/VERSION.txt`
 	postbuild += mvn -f port/java versions:commit
-        postbuild += mvn -f port/java "-Dtest=ai/madara/tests/basic/**" -P development clean package test
-  	postbuild += mvn -f port/java -DskipTests -P development package jar:test-jar install
+  postbuild += mvn -f port/java "-Dtest=ai/madara/tests/basic/**" -P development clean package test
+  postbuild += mvn -f port/java -DskipTests -P development package jar:test-jar install
 }
 
 //Amit added this. Couldn't find a better way to selectively add postbuild statements. 
 //Fixme: Add the postbuild statements inside feature(java).
 
-feature (lz4){
+feature (java,lz4){
    postbuild += mvn -f port/java "-Dtest=ai/madara/tests/lz4/**" -P development test
 }
 
-feature (ssl){
+feature (java,ssl){
   postbuild += mvn -f port/java "-Dtest=ai/madara/tests/ssl/**" -P development test
 }
 
+feature (capnp,java) {
+  Define_Custom (JAVA_CAPNP) {
+    command = capnp
+    commandflags = compile -I $(CAPNP_ROOT)/c++/src -ojava++
+    inputext = .capnp
+    source_outputext = .capnp.java
+
+    keyword capnp_flags = commandflags
+  }
+
+  JAVA_CAPNP_Files {
+    tests/capnfiles
+  }
+}
