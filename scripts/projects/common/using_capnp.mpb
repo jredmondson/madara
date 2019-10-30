@@ -10,13 +10,14 @@ feature(capnp) {
     Debug::libpaths += $(CAPNP_ROOT)/c++/src/capnp/Debug $(CAPNP_ROOT)/c++/src/kj/Debug
     Release::libpaths += $(CAPNP_ROOT)/c++/src/capnp/Release $(CAPNP_ROOT)/c++/src/kj/Release
     
+    lit_libs += capnpc
     lit_libs += capnp
     lit_libs += capnp-json
     lit_libs += kj
   } else {
     libpaths += $(CAPNP_ROOT)/c++/.libs
 
-    libs += capnp
+    libs += capnpc capnp
     libs += capnp-json
     libs += kj
   }
