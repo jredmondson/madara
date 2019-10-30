@@ -12,7 +12,10 @@
 #include "madara/utility/SupportTest.h"
 #include "madara/knowledge/CapnAdapt.h"
 
+#ifdef _USE_CAPNP_
 #include "capnfiles/Geo.capnp.h"
+#endif
+
 
 #include "test.h"
 
@@ -334,6 +337,8 @@ void test_map(ThreadSafeContext& kb)
   kb.save_as_json("/tmp/madara_test_any.json");
 }
 
+#ifdef _USE_CAPNP_
+
 namespace geo
 {
 struct Point
@@ -387,6 +392,7 @@ struct Pose : Point, Quaternion
 MADARA_CAPN_MEMBERS(
     Pose, geo_capn::Pose, (x, X)(y, Y)(z, Z)(w, W)(i, I)(j, J)(k, K))
 
+
 struct Stamp
 {
   int64_t time;
@@ -395,7 +401,9 @@ struct Stamp
 
 MADARA_CAPN_MEMBERS(Stamp, geo_capn::Stamp, (time, Time)(frame, Frame))
 
+
 static_assert(supports_for_each_member<Stamp>::value, "");
+
 static_assert(supports_madara_capn_struct_Stamp_hasFrame<
                   typename geo_capn::Stamp::Builder>::value,
     "");
@@ -725,6 +733,7 @@ void test_geo()
     std::cerr << cur.first << ": " << cur.second << std::endl;
   }
 }
+#endif
 
 struct Example
 {

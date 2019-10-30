@@ -1,11 +1,5 @@
-feature(capnp) {
-  after += Compile_CapnFiles
-  
-  Header_Files {
-    tests/capnfiles
-  }
-
-  Source_Files {
+feature(capnp) : capnp_files {
+  CAPNP_Files {
     tests/capnfiles
   }
 }

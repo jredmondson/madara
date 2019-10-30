@@ -1526,33 +1526,9 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Generate_CapnFiles) : capnp_files, using_capnp {
-  requires += tests capnp
-
-  CAPNP_Files {
-    tests/capnfiles
-  }
-}
-
-project (Compile_CapnFiles) : capnp_files, using_capnp {
-  requires += tests capnp
-
-  after += Generate_CapnFiles
-  
-  Header_Files {
-    tests/capnfiles
-  }
-
-  Source_Files {
-    tests/capnfiles
-  }
-}
-
 project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
   requires += tests capnp
 
-  after += Compile_CapnFiles
-  
   exeout = $(MADARA_ROOT)/bin
   exename = test_any
   includes += .
@@ -1590,10 +1566,9 @@ project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime 
 }
 
 project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
+
   requires += tests capnp
 
-  after += Compile_CapnFiles
-  
   exeout = $(MADARA_ROOT)/bin
   exename = test_any_transport_multicast
   
@@ -1613,8 +1588,6 @@ project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using
   
   exeout = $(MADARA_ROOT)/bin
   exename = test_circular_buffer
-  
-  after += Compile_CapnFiles
   
   Documentation_Files {
   }
