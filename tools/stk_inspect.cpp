@@ -1077,7 +1077,7 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
       std::back_inserter(argvp_config_files),
       [](const std::string &s) { return s.c_str(); });
 
-  handle_arguments(argvp_config_files.size(), argvp_config_files.data(),
+  handle_arguments((int)argvp_config_files.size(), argvp_config_files.data(),
       recursion_limit - 1);
 
   return true;
