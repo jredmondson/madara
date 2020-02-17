@@ -225,10 +225,10 @@ public:
     {
       // if we don't have buffer filters, do a check to see if we should
       filters::BufferFilterHeader header;
-      int64_t buffer_size =
+      int64_t local_buffer_size =
           (int64_t)filters::BufferFilterHeader::encoded_size();
 
-      header.read((char*)source, buffer_size);
+      header.read((char*)source, local_buffer_size);
 
       header.id[4] = 0;
 
@@ -261,10 +261,10 @@ public:
       if (size > (int)filters::BufferFilterHeader::encoded_size())
       {
         filters::BufferFilterHeader header;
-        int64_t buffer_size =
+        int64_t local_buffer_size =
             (int64_t)filters::BufferFilterHeader::encoded_size();
 
-        header.read((char*)source, buffer_size);
+        header.read((char*)source, local_buffer_size);
 
         if (header.size > (uint64_t)max_size)
         {

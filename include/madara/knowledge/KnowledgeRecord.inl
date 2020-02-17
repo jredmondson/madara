@@ -1838,14 +1838,15 @@ inline char* KnowledgeRecord::write(
       {
         // TODO catch more specific exception for this
 
-        std::stringstream buffer;
-        buffer << "KnowledgeRecord::write: ";
-        buffer << "Any encoding cannot fit in ";
-        buffer << buffer_remaining << " byte buffer\n";
+        std::stringstream local_buffer;
+        local_buffer << "KnowledgeRecord::write: ";
+        local_buffer << "Any encoding cannot fit in ";
+        local_buffer << buffer_remaining << " byte buffer\n";
 
-        madara_logger_ptr_log(logger_, logger::LOG_ERROR, buffer.str().c_str());
+        madara_logger_ptr_log(
+          logger_, logger::LOG_ERROR, local_buffer.str().c_str());
 
-        throw exceptions::MemoryException(buffer.str());
+        throw exceptions::MemoryException(local_buffer.str());
       }
     }
 
@@ -1860,14 +1861,15 @@ inline char* KnowledgeRecord::write(
   }
   else
   {
-    std::stringstream buffer;
-    buffer << "KnowledgeRecord::write: ";
-    buffer << encoded_size << " byte encoding cannot fit in ";
-    buffer << buffer_remaining << " byte buffer\n";
+    std::stringstream local_buffer;
+    local_buffer << "KnowledgeRecord::write: ";
+    local_buffer << encoded_size << " byte encoding cannot fit in ";
+    local_buffer << buffer_remaining << " byte buffer\n";
 
-    madara_logger_ptr_log(logger_, logger::LOG_ERROR, buffer.str().c_str());
+    madara_logger_ptr_log(
+      logger_, logger::LOG_ERROR, local_buffer.str().c_str());
 
-    throw exceptions::MemoryException(buffer.str());
+    throw exceptions::MemoryException(local_buffer.str());
   }
   return buffer;
 }
@@ -1915,14 +1917,14 @@ inline char* KnowledgeRecord::write(
   }
   else
   {
-    std::stringstream buffer;
-    buffer << "KnowledgeRecord::write: ";
-    buffer << encoded_size << " byte encoding cannot fit in ";
-    buffer << buffer_remaining << " byte buffer\n";
+    std::stringstream local_buffer;
+    local_buffer << "KnowledgeRecord::write: ";
+    local_buffer << encoded_size << " byte encoding cannot fit in ";
+    local_buffer << buffer_remaining << " byte buffer\n";
 
-    madara_logger_ptr_log(logger_, logger::LOG_ERROR, buffer.str().c_str());
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR, local_buffer.str().c_str());
 
-    throw exceptions::MemoryException(buffer.str());
+    throw exceptions::MemoryException(local_buffer.str());
   }
   return buffer;
 }
@@ -1957,14 +1959,14 @@ inline char* KnowledgeRecord::write(
   }
   else
   {
-    std::stringstream buffer;
-    buffer << "KnowledgeRecord::write: ";
-    buffer << encoded_size << " byte encoding cannot fit in ";
-    buffer << buffer_remaining << " byte buffer\n";
+    std::stringstream local_buffer;
+    local_buffer << "KnowledgeRecord::write: ";
+    local_buffer << encoded_size << " byte encoding cannot fit in ";
+    local_buffer << buffer_remaining << " byte buffer\n";
 
-    madara_logger_ptr_log(logger_, logger::LOG_ERROR, buffer.str().c_str());
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR, local_buffer.str().c_str());
 
-    throw exceptions::MemoryException(buffer.str());
+    throw exceptions::MemoryException(local_buffer.str());
   }
   return buffer;
 }

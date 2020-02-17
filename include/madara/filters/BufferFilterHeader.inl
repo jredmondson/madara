@@ -73,12 +73,12 @@ inline const char* BufferFilterHeader::read(
   }
   else
   {
-    std::stringstream buffer;
-    buffer << "BufferFilterHeader::read: ";
-    buffer << " 20 byte size encoding cannot fit in ";
-    buffer << buffer_remaining << " byte buffer\n";
+    std::stringstream local_buffer;
+    local_buffer << "BufferFilterHeader::read: ";
+    local_buffer << " 20 byte size encoding cannot fit in ";
+    local_buffer << buffer_remaining << " byte buffer\n";
 
-    throw exceptions::MemoryException(buffer.str());
+    throw exceptions::MemoryException(local_buffer.str());
   }
 
   return buffer;
@@ -100,12 +100,12 @@ inline char* BufferFilterHeader::write(char* buffer, int64_t& buffer_remaining)
   }
   else
   {
-    std::stringstream buffer;
-    buffer << "BufferFilterHeader::write: ";
-    buffer << " 20 byte size encoding cannot fit in ";
-    buffer << buffer_remaining << " byte buffer\n";
+    std::stringstream local_buffer;
+    local_buffer << "BufferFilterHeader::write: ";
+    local_buffer << " 20 byte size encoding cannot fit in ";
+    local_buffer << buffer_remaining << " byte buffer\n";
 
-    throw exceptions::MemoryException(buffer.str());
+    throw exceptions::MemoryException(local_buffer.str());
   }
 
   return buffer;
