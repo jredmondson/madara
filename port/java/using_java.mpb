@@ -44,18 +44,3 @@ feature (java,lz4){
 feature (java,ssl){
   postbuild += mvn -f port/java "-Dtest=ai/madara/tests/ssl/**" -P development test
 }
-
-feature (capnp,java) {
-  Define_Custom (JAVA_CAPNP) {
-    command = capnp
-    commandflags = compile -I $(CAPNP_ROOT)/c++/src -ojava++
-    inputext = .capnp
-    source_outputext = .capnp.java
-
-    keyword capnp_flags = commandflags
-  }
-
-  JAVA_CAPNP_Files {
-    tests/capnfiles
-  }
-}
