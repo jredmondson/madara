@@ -130,7 +130,26 @@ public:
    * Adds a read domain to the list of domains to read from
    * @param  domain   domain to add to the read list
    **/
-  void add_read_domain(const std::string domain);
+  void add_read_domain(const std::string & domain);
+
+  /**
+   * Safely add hosts to the settings. If you are unsure if
+   * the user application and the library will be compiled with
+   * the same STL implementation for strings and vectors, this
+   * function combined with the clear_hosts function are safe
+   * ways to force the MADARA library to contain the full
+   * implementations of deallocation.
+   * @param  host   host to add to the list
+   **/
+  void add_host(const std::string & host);
+
+  /**
+   * Safely clears hosts from the settings. If you are unsure if
+   * the user application and the library will be compiled with
+   * the same STL implementation for strings and vectors, this
+   * function provides a safe way to clear the vector of strings.
+   **/
+  void clear_hosts(void);
 
   /**
    * Clears the list of read domains

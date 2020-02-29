@@ -1345,6 +1345,12 @@ bool KnowledgeRecord::is_true(void) const
     return false;
   }
 }
+
+void safe_clear(KnowledgeMap & map)
+{
+  map.clear();
+}
+
 }
 }
 

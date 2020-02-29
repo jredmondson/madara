@@ -800,5 +800,12 @@ std::pair<std::string, uint16_t> parse_address(std::string addr)
   addr.resize(colon_pos);
   return {std::move(addr), port};
 }
+
+
+void safe_clear(std::vector<std::string> & strings)
+{
+  strings.clear();
+}
+
 }
 }

@@ -535,6 +535,13 @@ size_t file_size(std::ifstream& input);
 uint32_t file_crc(const std::string& filename, size_t max_block = 1000000);
 
 /**
+ * Safely clear a vector of STL strings when an application has been compiled
+ * with a different version of STL than the MADARA library.
+ * @param strings   the vector to clear
+ **/
+MADARA_EXPORT void safe_clear(std::vector<std::string> & strings);
+
+/**
  * Waits on a knowledge record to be true without needing KaRL language
  * @param  knowledge  the knowledge base
  * @param  variable   the variable to wait on

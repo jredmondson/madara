@@ -11,7 +11,7 @@
 #include "TransportSettings.h"
 
 inline void madara::transport::TransportSettings::add_read_domain(
-    const std::string domain)
+    const std::string & domain)
 {
   read_domains_[domain] = 1;
 }

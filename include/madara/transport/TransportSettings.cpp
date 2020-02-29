@@ -132,6 +132,19 @@ madara::transport::TransportSettings::~TransportSettings()
       delete_fragments(clock->second);
     }
   }
+
+  hosts.clear();
+}
+
+void madara::transport::TransportSettings::add_host(
+  const std::string & host)
+{
+  hosts.push_back(host);
+}
+
+void madara::transport::TransportSettings::clear_hosts()
+{
+  hosts.clear();
 }
 
 void madara::transport::TransportSettings::load(

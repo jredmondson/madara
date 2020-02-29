@@ -2123,6 +2123,8 @@ typedef ::std::map<std::string, KnowledgeRecord*> KnowledgeRecords;
 typedef std::string KnowledgeKey;
 typedef KnowledgeRecord KnowledgeValue;
 
+MADARA_EXPORT void safe_clear(KnowledgeMap & map);
+
 /**
  * Returns the maximum quality within the records
  * @param    records     the list of records to gauge quality of
