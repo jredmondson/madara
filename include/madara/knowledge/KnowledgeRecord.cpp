@@ -325,6 +325,69 @@ std::vector<double> KnowledgeRecord::to_doubles(void) const
   return doubles;
 }
 
+size_t KnowledgeRecord::to_managed_buffer(
+  char * buffer, size_t buf_size) const
+{
+  size_t actual_size = 0;
+
+  if (is_string_type(type_))
+  {
+    actual_size = std::min(str_value_->size(), buf_size);
+    memcpy(buffer, str_value_->c_str(), actual_size);
+  }
+  else if (is_binary_file_type(type_))
+  {
+    actual_size = std::min(file_value_->size(), buf_size);
+    memcpy(buffer, &(*file_value_)[0], actual_size);
+  }
+  else if (type_ == INTEGER)
+  {
+    if (sizeof(Integer) <= buf_size)
+    {
+      actual_size = std::min(sizeof(Integer), buf_size);
+      memcpy(buffer, &int_value_, actual_size);
+    }
+  }
+  else if (type_ == DOUBLE)
+  {
+    if (sizeof(Integer) <= buf_size)
+    {
+      actual_size = std::min(sizeof(double), buf_size);
+      memcpy(buffer, &double_value_, actual_size);
+    }
+  }
+  else if (type_ == INTEGER_ARRAY)
+  {
+    if (sizeof(Integer) * int_array_->size() <= buf_size)
+    {
+      actual_size = std::min(sizeof(Integer) * int_array_->size(), buf_size);
+      memcpy(buffer, &(*int_array_)[0], actual_size);
+    }
+  }
+  else if (type_ == DOUBLE_ARRAY)
+  {
+    if (sizeof(double) * int_array_->size() <= buf_size)
+    {
+      actual_size = std::min(sizeof(double) * int_array_->size(), buf_size);
+      memcpy(buffer, &(*double_array_)[0], actual_size);
+    }
+  }
+  else if (has_history() && !buf_->empty())
+  {
+    actual_size = ref_newest().to_managed_buffer(buffer, buf_size);
+  }
+  else
+  {
+    if (buf_size > 0)
+    {
+      buffer[0] = 0;
+    }
+    actual_size = 0;
+  }
+
+  return actual_size;
+}
+
 // read the value_ in a string format
 std::string KnowledgeRecord::to_string(const std::string& delimiter) const
 {

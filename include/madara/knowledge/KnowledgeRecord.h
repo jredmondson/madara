@@ -576,6 +576,19 @@ public:
   std::string to_string(const std::string& delimiter = ", ") const;
 
   /**
+   * converts the value to a c string. Similar to unmanaged buffer except
+   * the user is expected to have malloc'd, new'd, etc. the buffer beforehand.
+   * Of note, this method is intended to provide an exact copy of a record's
+   * contents and not the string equivalent. In other words, this will not
+   * be a null-delimited string. This will be a raw string with no null ending
+   * unless a 0 was an actual element of the character buffer.
+   * @param   buffer     the user-managed character buffer to fill
+   * @param   buf_size   the character buffer max size
+   * @return  the number of characters placed in buffer
+   **/
+  size_t to_managed_buffer(char * buffer, size_t buf_size) const;
+
+  /**
    * @return a shared_ptr, sharing with the internal one.
    * If this record is not a string, returns NULL shared_ptr
    **/
