@@ -1,6 +1,5 @@
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
-#include "madara/knowledge/Any.h"
 #include "test.h"
 
 #include <vector>
@@ -161,61 +160,6 @@ void check_basic_types_records()
   TEST_EQ(string_record.type(), KnowledgeRecord::EMPTY);
 }
 
-void check_non_basic_types_records()
-{
-  KnowledgeRecord record(2);
-  std::vector<unsigned char> data = {0, 1, 2, 4};
-  record.emplace_any(data);
-  TEST_EQ(record.type(), KnowledgeRecord::ANY);
-  // it throws error if no any type
-  ConstAnyRef ref = record.get_any_cref();
-  TEST_EQ(record.is_any_type(), true);
-  TEST_EQ(ref.to_string().find("ANY") != std::string::npos, true);
-
-  // check clone
-  KnowledgeRecord* cloned_rec = record.clone();
-  TEST_EQ(cloned_rec == nullptr, false);
-
-  // check write and getting encoded size
-  cloned_rec->emplace_string("writing string");
-  int64_t buf_size = cloned_rec->get_encoded_size();
-  char* buf = new char[buf_size];
-  TEST_GT(buf_size, 0);
-  cloned_rec->write(buf, buf_size);
-  TEST_EQ(buf == nullptr, false);
-
-  // make sure share any doesn't share anything and share_string works
-  TEST_EQ(cloned_rec->is_any_type(), false);
-  TEST_EQ(cloned_rec->share_any() == nullptr, true);
-  TEST_EQ(cloned_rec->share_string() == nullptr, false);
-
-  // make sure copied into any
-  Any output_any = cloned_rec->to_any();
-  TEST_EQ(output_any.ref<std::string>(), "writing string");
-
-  TEST_EQ(buf_size, 0);
-  buf_size = cloned_rec->get_encoded_size();
-
-  size_t new_vec_size = 100;
-  cloned_rec->emplace_any(std::vector<double>(new_vec_size));
-  TEST_EQ(cloned_rec->get_any_ref().to_doubles().size(), new_vec_size);
-
-  cloned_rec->emplace_any(Any(nullptr));
-  TEST_EQ(cloned_rec->type(), KnowledgeRecord::ANY);
-  TEST_EQ(cloned_rec->share_any() == nullptr, false);
-
-  delete cloned_rec;
-
-  // check read method and size
-  KnowledgeRecord new_rec(0);
-  new_rec.read(buf, buf_size);
-
-  TEST_EQ(new_rec.size(), size_t(15));
-  TEST_EQ(new_rec.is_string_type(), true);
-
-  delete[] buf;
-}
-
 void check_file_records()
 {
   // create a record and read a file into it
@@ -281,8 +225,6 @@ void check_file_records()
 int main()
 {
   check_basic_types_records();
-
-  check_non_basic_types_records();
 
   check_file_records();
 

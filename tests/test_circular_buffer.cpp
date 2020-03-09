@@ -1,7 +1,6 @@
 #include <string>
 #include <iostream>
 
-#include "madara/utility/SupportTest.h"
 #include "madara/utility/CircularBuffer.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"

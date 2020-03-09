@@ -5483,31 +5483,6 @@ void madara::expression::Interpreter::system_call_insert(
           call = new LogLevel(context);
         }
         break;
-      case 'm':
-        if (name == "#make_any")
-        {
-          using namespace madara::knowledge;
-
-          call = new GenericSystemCall(context, "#make_any",
-              [](std::vector<KnowledgeRecord> recs) -> KnowledgeRecord {
-                if (recs.size() != 2)
-                {
-                  throw exceptions::KarlException(
-                      "#make_any: expects 2 string arguments");
-                }
-
-                std::string tag =
-                    knowledge_cast<std::string>(std::move(recs[0]));
-                std::string json =
-                    knowledge_cast<std::string>(std::move(recs[1]));
-
-                Any ret;
-                ret.unserialize_json(tag.c_str(), json);
-
-                return KnowledgeRecord(std::move(ret));
-              });
-        }
-        break;
       case 'p':
         if (name == "#pow")
         {

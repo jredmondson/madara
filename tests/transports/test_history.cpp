@@ -8,10 +8,6 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/containers/Integer.h"
 
-#ifdef _USE_CAPNP_
-#include "../capnfiles/Geo.capnp.h"
-#endif
-
 #include "../test.h"
 
 using namespace madara;
@@ -57,7 +53,6 @@ int main(int argc, char** argv)
 {
   handle_arguments(argc, argv);
 
-#ifdef _USE_CAPNP_
   KnowledgeBase from_kb;
   TransportSettings from_settings;
   from_settings.type = UDP;
@@ -139,7 +134,6 @@ int main(int argc, char** argv)
   TEST_EQ(to_kb.get_history("cap5", -4).to_integer(), 11);
   TEST_EQ(to_kb.get_history("cap5", -5).exists(), false);
   TEST_EQ(to_kb.get_history_size("cap9"), 2UL);
-#else
+
   return 0;
-#endif _USE_CAPNP_
 }

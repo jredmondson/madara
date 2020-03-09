@@ -215,15 +215,6 @@ MADARA_EXPORT jlong JNICALL
 Java_ai_madara_knowledge_KnowledgeRecord_jni_1KnowledgeRecord__JJ(
     JNIEnv*, jclass, jlong, jlong);
 
-/*
- * Class:     ai_madara_knowledge_KnowledgeRecord
- * Method:    jni_toAny
- * Signature: (J[J)Ljava/lang/String;
- */
-MADARA_EXPORT jstring JNICALL
-Java_ai_madara_knowledge_KnowledgeRecord_jni_1toAny(
-    JNIEnv*, jclass, jlong, jlongArray);
-
 #ifdef __cplusplus
 }
 #endif

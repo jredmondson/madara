@@ -217,32 +217,6 @@ public:
   }
 
   /**
-   * Returns a shared_ptr, sharing with the internal one.
-   * If this record is not a string, returns NULL shared_ptr
-   **/
-  template<typename K>
-  std::shared_ptr<const ConstAny> share_any(
-      K&& key, const KnowledgeReferenceSettings& settings =
-                   KnowledgeReferenceSettings()) const
-  {
-    return map_.share_any(std::forward<K>(key), settings);
-  }
-
-  /**
-   * Gets the contents of a record as a shared pointer to the given type.
-   * @tparam T type requested
-   * @return a shared_ptr, sharing with the internal one.
-   * @throw BadAnyAccess if this record is not an Any holding the given type
-   **/
-  template<typename T, typename K>
-  std::shared_ptr<const T> share_any(
-      K&& key, const KnowledgeReferenceSettings& settings =
-                   KnowledgeReferenceSettings()) const
-  {
-    return map_.share_any<T>(std::forward<K>(key), settings);
-  }
-
-  /**
    * Marks the variable reference as updated
    * @param   variable  reference to a variable (@see get_ref)
    * @param   settings  settings for applying the update
@@ -491,24 +465,6 @@ public:
 
     send_modifieds("KnowledgeBaseImpl:set", settings);
 
-    return result;
-  }
-
-  template<typename K, typename V>
-  int set_any(K&& key, V&& val, const EvalSettings& settings)
-  {
-    int result =
-        map_.set_any(std::forward<K>(key), std::forward<V>(val), settings);
-    send_modifieds("KnowledgeBaseImpl:set_any", settings);
-    return result;
-  }
-
-  template<typename K, typename... Args>
-  int emplace_any(K&& key, const EvalSettings& settings, Args&&... args)
-  {
-    int result = map_.emplace_any(
-        std::forward<K>(key), settings, std::forward<Args>(args)...);
-    send_modifieds("KnowledgeBaseImpl:emplace_any", settings);
     return result;
   }
 

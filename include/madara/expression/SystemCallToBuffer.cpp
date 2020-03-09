@@ -6,6 +6,8 @@
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/expression/Visitor.h"
 
+typedef madara::knowledge::KnowledgeRecord KnowlegeRecord;
+
 madara::expression::SystemCallToBuffer::SystemCallToBuffer(
     madara::knowledge::ThreadSafeContext& context, const ComponentNodes& nodes)
   : SystemCallNode(context, nodes)

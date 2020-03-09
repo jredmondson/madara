@@ -6,6 +6,7 @@
 #include "madara/logger/GlobalLogger.h"
 
 #include "madara/utility/Utility.h"
+#include "madara/utility/StlHelper.h"
 
 #include "madara/filters/ssl/AESBufferFilter.h"
 #include "madara/filters/lz4/LZ4BufferFilter.h"
@@ -14,11 +15,6 @@
 #include "madara/exceptions/FilterException.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/CheckpointPlayer.h"
-#include "madara/knowledge/Any.h"
-
-#ifdef _USE_CAPNP_
-#include "capnfiles/Geo.capnp.h"
-#endif // _USE_CAPNP_
 
 #include <stdio.h>
 #include <iostream>
@@ -1037,15 +1033,6 @@ void test_streaming()
 
   std::cerr << "Attempting to stream to STK file and read back..." << std::endl;
 
-  using madara::knowledge::Any;
-#ifdef _USE_CAPNP_
-  using madara::knowledge::CapnObject;
-
-  Any::register_type<CapnObject<geo_capn::Point>>("capn_point");
-
-  Any::construct("capn_point");
-#endif
-
   knowledge::CheckpointSettings settings;
   settings.filename = "stream_test.stk";
 
@@ -1057,15 +1044,6 @@ void test_streaming()
 
   kb.set(".loc1", 2);
   kb.set(".loc2", "foo");
-
-#ifdef _USE_CAPNP_
-  capnp::MallocMessageBuilder msg;
-  auto builder = msg.initRoot<geo_capn::Point>();
-  builder.setX(3);
-  builder.setY(6);
-  builder.setZ(9);
-  kb.emplace_any(".any0", madara::type<CapnObject<geo_capn::Point>>{}, msg);
-#endif
 
   kb.set_history_capacity("hist", 10);
   kb.set("hist", 1);

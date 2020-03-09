@@ -166,13 +166,6 @@ inline madara::knowledge::KnowledgeRecord::Integer CircularBuffer::increment(
   }
 }
 
-template<typename T>
-void CircularBuffer::add(const T& value)
-{
-  Any any_record(value);
-  add(KnowledgeRecord(any_record));
-}
-
 inline void CircularBuffer::add(const knowledge::KnowledgeRecord& record)
 {
   check_all(__func__);
@@ -186,15 +179,6 @@ inline void CircularBuffer::add(const knowledge::KnowledgeRecord& record)
   context_->mark_modified(size_ref_);
 
   ++index_;
-}
-
-template<typename T>
-void CircularBuffer::add(const std::vector<T>& records)
-{
-  for (auto record : records)
-  {
-    add(record);
-  }
 }
 
 inline void CircularBuffer::add(const std::vector<KnowledgeRecord>& records)
@@ -217,12 +201,6 @@ inline void CircularBuffer::add(const std::vector<KnowledgeRecord>& records)
   index_ += (KnowledgeRecord::Integer)records.size();
 }
 
-template<typename T>
-void CircularBuffer::get(T& value) const
-{
-  value = get().to_any<T>();
-}
-
 inline madara::knowledge::KnowledgeRecord CircularBuffer::get(void) const
 {
   check_all(__func__);
@@ -236,12 +214,6 @@ inline madara::knowledge::KnowledgeRecord CircularBuffer::get(void) const
     return context_->get(buffer_.vector_[(size_t)index], settings_);
   else
     return KnowledgeRecord();
-}
-
-template<typename T>
-void CircularBuffer::inspect(KnowledgeRecord::Integer position, T& value) const
-{
-  value = inspect(position).to_any<T>();
 }
 
 inline madara::knowledge::KnowledgeRecord CircularBuffer::inspect(
@@ -268,18 +240,6 @@ inline madara::knowledge::KnowledgeRecord CircularBuffer::inspect(
     message << "Invalid access for " << position << " element when count is ";
     message << inserted << "\n";
     throw exceptions::IndexException(message.str());
-  }
-}
-
-template<typename T>
-void CircularBuffer::inspect(KnowledgeRecord::Integer position, size_t count,
-    std::vector<T>& values) const
-{
-  // iterate over the returned records
-  for (auto record : inspect(position, count))
-  {
-    // add them to the values
-    values.push_back(record.to_any<T>());
   }
 }
 
@@ -419,17 +379,6 @@ inline void CircularBuffer::set_index(KnowledgeRecord::Integer index)
   index_ = index;
 }
 
-template<typename T>
-void CircularBuffer::get_latest(size_t count, std::vector<T>& values) const
-{
-  // iterate over the returned records
-  for (auto record : get_latest(count))
-  {
-    // add them to the values
-    values.push_back(record.to_any<T>());
-  }
-}
-
 inline std::vector<KnowledgeRecord> CircularBuffer::get_latest(
     size_t count) const
 {
@@ -449,17 +398,6 @@ inline std::vector<KnowledgeRecord> CircularBuffer::get_latest(
   }
 
   return result;
-}
-
-template<typename T>
-void CircularBuffer::get_earliest(size_t count, std::vector<T>& values) const
-{
-  // iterate over the returned records
-  for (auto record : get_earliest(count))
-  {
-    // add them to the values
-    values.push_back(record.to_any<T>());
-  }
 }
 
 inline std::vector<KnowledgeRecord> CircularBuffer::get_earliest(

@@ -1,5 +1,5 @@
 
-project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, capnp_test_types, using_simtime, debug_build, using_boost, using_clang, using_android, using_capnp, using_nothreadlocal, using_filesystem, using_warnings, no_warnings {
+project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android, using_nothreadlocal, using_filesystem, using_warnings, no_warnings {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL
@@ -154,7 +154,7 @@ project (KaRL) : using_madara, no_karl, using_ssl, using_lz4 {
   }
 }
 
-project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4, using_capnp {
+project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = stk_inspect
 
@@ -168,40 +168,6 @@ project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4, using_capnp
 
   Source_Files {
     tools/stk_inspect.cpp
-  }
-}
-
-project (mabundle) : using_madara, no_karl, using_ssl, using_lz4, using_filesystem {
-  exeout = $(MADARA_ROOT)/bin
-  exename = mabundle
-
-  after = Madara
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tools/mabundle.cpp
-  }
-}
-
-project (mfs) : using_madara, no_karl, using_ssl, using_lz4, using_filesystem {
-  exeout = $(MADARA_ROOT)/bin
-  exename = mfs
-
-  after = Madara
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tools/mfs.cpp
   }
 }
 

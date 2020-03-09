@@ -36,7 +36,7 @@ void test_shared_record(void)
   KnowledgeRecord rec;
 
   std::string str = "Hello World";
-  auto s1 = mk_unique<std::string>(std::move(str));
+  auto s1 = utility::mk_unique<std::string>(std::move(str));
   const char* orig_ptr = s1->c_str();
   rec.set_value(std::move(s1));
 

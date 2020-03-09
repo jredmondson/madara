@@ -2,6 +2,8 @@
 #include "madara/knowledge/rcw/Transaction.h"
 #include "madara/knowledge/rcw/Tracked.h"
 #include "madara/utility/Utility.h"
+#include "madara/utility/StlHelper.h"
+#include "madara/utility/StlHelper.h"
 #include <stdio.h>
 #include <iostream>
 #include <string>
@@ -13,6 +15,7 @@
 using namespace madara;
 using namespace knowledge;
 using namespace madara::knowledge::rcw;
+namespace utility = madara::utility;
 
 int main(int, char**)
 {
@@ -218,7 +221,8 @@ int main(int, char**)
   test_eq((void*)&knowledge_cast(std::move(i64vector)).share_integers()->at(0),
       i64vector_orig);
 
-  auto uni_farray = mk_unique<std::vector<double>>(&farray[0], &farray[5]);
+  auto uni_farray = utility::mk_unique<std::vector<double>>(
+    &farray[0], &farray[5]);
   auto ptr_farray = uni_farray.get();
   auto rec_farray = knowledge_cast(std::move(uni_farray));
   test_eq(rec_farray.share_doubles()->at(4), 5.5L);

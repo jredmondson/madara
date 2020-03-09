@@ -1,6 +1,0 @@
-feature (capnp) : capnp_files {
-  CAPNP_Files {
-    tests/capnfiles
-  }
-}
-

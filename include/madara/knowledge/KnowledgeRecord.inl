@@ -27,12 +27,42 @@ inline KnowledgeRecord::KnowledgeRecord(logger::Logger& logger) noexcept
 {
 }
 
-template<typename T, enable_if_<is_int_numeric<T>(), int>>
 inline KnowledgeRecord::KnowledgeRecord(
-    T value, logger::Logger& logger) noexcept
+  Integer value, logger::Logger& logger) noexcept
   : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
 {
 }
+
+inline KnowledgeRecord::KnowledgeRecord(
+  int value, logger::Logger& logger) noexcept
+  : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
+{
+}
+
+inline KnowledgeRecord::KnowledgeRecord(
+  uint64_t value, logger::Logger& logger) noexcept
+  : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
+{
+}
+
+inline KnowledgeRecord::KnowledgeRecord(
+  uint32_t value, logger::Logger& logger) noexcept
+  : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
+{
+}
+
+inline KnowledgeRecord::KnowledgeRecord(
+  double value, logger::Logger& logger) noexcept
+  : logger_(&logger), double_value_((double)value), type_(DOUBLE)
+{
+}
+
+inline KnowledgeRecord::KnowledgeRecord(
+  float value, logger::Logger& logger) noexcept
+  : logger_(&logger), double_value_((double)value), type_(DOUBLE)
+{
+}
+
 
 inline KnowledgeRecord::KnowledgeRecord(
     const std::vector<Integer>& value, logger::Logger& logger)
@@ -54,14 +84,6 @@ inline KnowledgeRecord::KnowledgeRecord(
   : logger_(&logger)
 {
   set_value(std::move(value));
-}
-
-template<typename T,
-    typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
-inline KnowledgeRecord::KnowledgeRecord(
-    T value, logger::Logger& logger) noexcept
-  : logger_(&logger), double_value_((double)value), type_(DOUBLE)
-{
 }
 
 inline KnowledgeRecord::KnowledgeRecord(
@@ -122,34 +144,6 @@ inline KnowledgeRecord::KnowledgeRecord(
 }
 
 inline KnowledgeRecord::KnowledgeRecord(
-    const Any& value, logger::Logger& logger)
-  : logger_(&logger)
-{
-  emplace_any(value);
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
-    Any&& value, logger::Logger& logger) noexcept
-  : logger_(&logger)
-{
-  emplace_any(std::move(value));
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
-    const ConstAny& value, logger::Logger& logger)
-  : logger_(&logger)
-{
-  emplace_any(value);
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
-    ConstAny&& value, logger::Logger& logger) noexcept
-  : logger_(&logger)
-{
-  emplace_any(std::move(value));
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
     const CircBuf& buffer, logger::Logger& logger)
   : logger_(&logger)
 {
@@ -188,8 +182,6 @@ inline KnowledgeRecord::KnowledgeRecord(const knowledge::KnowledgeRecord& rhs)
   else if (is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
-  else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
   else if (rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(rhs.buf_);
 }
@@ -222,8 +214,6 @@ inline KnowledgeRecord::KnowledgeRecord(
   else if (is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
-  else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
   else if (rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(std::move(rhs.buf_));
 
@@ -338,8 +328,6 @@ inline void KnowledgeRecord::overwrite(const KnowledgeRecord& rhs)
   else if (is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(rhs.file_value_);
-  else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<ConstAny>(rhs.any_value_);
   else if (rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(rhs.buf_);
 }
@@ -374,8 +362,6 @@ inline void KnowledgeRecord::overwrite(KnowledgeRecord&& rhs)
   else if (is_binary_file_type(rhs.type_))
     new (&file_value_)
         std::shared_ptr<std::vector<unsigned char>>(std::move(rhs.file_value_));
-  else if (rhs.type_ == ANY)
-    new (&any_value_) std::shared_ptr<ConstAny>(std::move(rhs.any_value_));
   else if (rhs.type_ == BUFFER)
     new (&buf_) std::shared_ptr<CircBuf>(std::move(rhs.buf_));
 
@@ -725,10 +711,6 @@ inline void KnowledgeRecord::unshare(void)
     {
       emplace_doubles(*double_array_);
     }
-    else if (type_ == ANY)
-    {
-      emplace_any(*any_value_);
-    }
     else if (type_ == BUFFER)
     {
       overwrite_circular_buffer(*buf_);
@@ -802,13 +784,6 @@ inline uint32_t KnowledgeRecord::size(void) const
   {
     return (uint32_t)double_array_->size();
   }
-  else if (type_ == ANY)
-  {
-    if (any_value_->supports_size())
-    {
-      return (uint32_t)any_value_->size();
-    }
-  }
   else if (type_ == BUFFER)
   {
     return buf_->empty() ? 1 : ref_newest().size();
@@ -868,11 +843,6 @@ inline int64_t KnowledgeRecord::get_encoded_size(void) const
   else if (is_binary_file_type(type_))
   {
     buffer_size += file_value_->size();
-  }
-  else if (type_ == ANY)
-  {
-    // TODO calculate real size
-    buffer_size += 1024;
   }
   else if (type_ == BUFFER && !buf_->empty())
   {
@@ -976,16 +946,6 @@ inline bool KnowledgeRecord::is_binary_file_type(uint32_t type)
   return type == IMAGE_JPEG || type == UNKNOWN_FILE_TYPE;
 }
 
-inline bool KnowledgeRecord::is_any_type(void) const
-{
-  return is_any_type(type());
-}
-
-inline bool KnowledgeRecord::is_any_type(uint32_t type)
-{
-  return type == ANY;
-}
-
 inline uint32_t max_quality(const knowledge::KnowledgeRecords& records)
 {
   uint32_t max = 0;
@@ -1030,8 +990,6 @@ inline void KnowledgeRecord::clear_union(void) noexcept
       destruct(str_value_);
     else if (is_binary_file_type(type_))
       destruct(file_value_);
-    else if (type_ == ANY)
-      destruct(any_value_);
     else if (type_ == BUFFER)
       destruct(buf_);
     shared_ = OWNED;
@@ -1164,16 +1122,6 @@ inline const char* KnowledgeRecord::read(
       const unsigned char* b = (const unsigned char*)buffer;
       emplace_file(b, b + size);
     }
-
-    else if (is_any_type(type))
-    {
-      // madara_logger_ptr_log (logger_, logger::LOG_TRACE,
-      //"KnowledgeRecord::read: reading Any type of size %d\n", size);
-      Any any;
-      any.tagged_unserialize(buffer, size);
-      emplace_any(std::move(any));
-    }
-
     else
     {
       buffer_remaining = -1;
@@ -1399,9 +1347,7 @@ inline void KnowledgeRecord::set_file(
       &KnowledgeRecord::file_value_>(std::move(new_value));
 }
 
-// set the value_ to an integer
-template<typename T, enable_if_<is_int_numeric<T>(), int>>
-inline void KnowledgeRecord::set_value(T new_value)
+inline void KnowledgeRecord::set_value(Integer new_value)
 {
   if (has_history())
   {
@@ -1417,6 +1363,80 @@ inline void KnowledgeRecord::set_value(T new_value)
     type_ = INTEGER;
   }
   int_value_ = new_value;
+}
+
+inline void KnowledgeRecord::set_value(int new_value)
+{
+  if (has_history())
+  {
+    KnowledgeRecord tmp;
+    tmp.copy_metadata(*this);
+    tmp.set_value(new_value);
+    set_value(std::move(tmp));
+    return;
+  }
+  if (type_ != INTEGER)
+  {
+    clear_union();
+    type_ = INTEGER;
+  }
+  int_value_ = (Integer)new_value;
+}
+
+inline void KnowledgeRecord::set_value(size_t new_value)
+{
+  if (has_history())
+  {
+    KnowledgeRecord tmp;
+    tmp.copy_metadata(*this);
+    tmp.set_value(new_value);
+    set_value(std::move(tmp));
+    return;
+  }
+  if (type_ != INTEGER)
+  {
+    clear_union();
+    type_ = INTEGER;
+  }
+  int_value_ = (Integer)new_value;
+}
+
+// set the value_ to a double
+inline void KnowledgeRecord::set_value(double new_value)
+{
+  if (has_history())
+  {
+    KnowledgeRecord tmp;
+    tmp.copy_metadata(*this);
+    tmp.set_value(new_value);
+    set_value(std::move(tmp));
+    return;
+  }
+  if (type_ != DOUBLE)
+  {
+    clear_union();
+    type_ = DOUBLE;
+  }
+  double_value_ = new_value;
+}
+
+// set the value_ to a float
+inline void KnowledgeRecord::set_value(float new_value)
+{
+  if (has_history())
+  {
+    KnowledgeRecord tmp;
+    tmp.copy_metadata(*this);
+    tmp.set_value(new_value);
+    set_value(std::move(tmp));
+    return;
+  }
+  if (type_ != DOUBLE)
+  {
+    clear_union();
+    type_ = DOUBLE;
+  }
+  double_value_ = (double)new_value;
 }
 
 // set the value_ to an array of doubles
@@ -1445,27 +1465,6 @@ inline void KnowledgeRecord::set_value(
       std::move(new_value));
 }
 
-// set the value_ to a double
-template<typename T,
-    typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
-inline void KnowledgeRecord::set_value(T new_value)
-{
-  if (has_history())
-  {
-    KnowledgeRecord tmp;
-    tmp.copy_metadata(*this);
-    tmp.set_value(new_value);
-    set_value(std::move(tmp));
-    return;
-  }
-  if (type_ != DOUBLE)
-  {
-    clear_union();
-    type_ = DOUBLE;
-  }
-  double_value_ = new_value;
-}
-
 // set the value_ to an array of doubles
 inline void KnowledgeRecord::set_value(const double* new_value, uint32_t size)
 {
@@ -1492,12 +1491,13 @@ inline void KnowledgeRecord::set_value(
       std::move(new_value));
 }
 
+#ifdef _MADARA_USE_CEREAL_
 /**
  * sets the value at the index to the specified value. If the
  * record was previously not an array or if the array is not
  * large enough, a new array is created.
  **/
-template<typename T, enable_if_<is_int_numeric<T>(), int>>
+template<typename T, utility::enable_if_<is_int_numeric<T>(), int>>
 inline void KnowledgeRecord::set_index(size_t index, T value)
 {
   if (has_history())
@@ -1572,6 +1572,87 @@ inline void KnowledgeRecord::set_index(size_t index, T value)
 
   double_array_->at(index) = value;
 }
+#else 
+
+/**
+ * sets the value at the index to the specified value. If the
+ * record was previously not an array or if the array is not
+ * large enough, a new array is created.
+ **/
+inline void KnowledgeRecord::set_index(size_t index, Integer value)
+{
+  if (has_history())
+  {
+    KnowledgeRecord tmp = get_newest();
+    tmp.set_index(index, value);
+    set_value(std::move(tmp));
+    return;
+  }
+  if (type_ == DOUBLE_ARRAY)
+  {
+    // let the set_index for doubles take care of this
+    set_index(index, double(value));
+    return;
+  }
+  else if (type_ == INTEGER_ARRAY)
+  {
+    unshare();
+
+    if (index >= int_array_->size())
+    {
+      int_array_->resize(index + 1);
+    }
+  }
+  else
+  {
+    emplace_integers(index + 1);
+  }
+
+  int_array_->at(index) = value;
+}
+
+/**
+ * sets the value at the index to the specified value. If the
+ * record was previously not an array or if the array is not
+ * large enough, a new array is created.
+ **/
+inline void KnowledgeRecord::set_index(size_t index, double value)
+{
+  if (has_history())
+  {
+    KnowledgeRecord tmp = get_newest();
+    tmp.set_index(index, value);
+    set_value(std::move(tmp));
+    return;
+  }
+  if (type_ == INTEGER_ARRAY)
+  {
+    std::vector<double> tmp(int_array_->begin(), int_array_->end());
+    emplace_doubles(std::move(tmp));
+
+    if (index >= double_array_->size())
+    {
+      double_array_->resize(index + 1);
+    }
+  }
+  else if (type_ != DOUBLE_ARRAY)
+  {
+    emplace_doubles(index + 1);
+  }
+  else
+  {
+    unshare();
+
+    if (index >= double_array_->size())
+    {
+      double_array_->resize(index + 1);
+    }
+  }
+
+  double_array_->at(index) = value;
+}
+#endif // _MADARA_USE_CEREAL_
+
 
 inline std::shared_ptr<const std::string> KnowledgeRecord::share_string() const
 {
@@ -1630,33 +1711,6 @@ KnowledgeRecord::share_binary() const
     return ref_newest().share_binary();
   }
   return nullptr;
-}
-
-inline std::shared_ptr<const ConstAny> KnowledgeRecord::share_any() const
-{
-  if (is_any_type(type_))
-  {
-    shared_ = SHARED;
-    return any_value_;
-  }
-  else if (has_history() && !buf_->empty())
-  {
-    return ref_newest().share_any();
-  }
-  return nullptr;
-}
-
-template<typename T>
-inline std::shared_ptr<const T> KnowledgeRecord::share_any() const
-{
-  auto any_ptr = share_any();
-  if (!any_ptr)
-  {
-    throw exceptions::BadAnyAccess("KnowledgeRecord::share_any<T>: "
-        "value in record is not an Any");
-  }
-  const T &ref = any_ptr->template ref<T>();
-  return {any_ptr, &ref};
 }
 
 inline std::shared_ptr<KnowledgeRecord::CircBuf>
@@ -1815,41 +1869,7 @@ inline char* KnowledgeRecord::write(
         memcpy(buffer, &(*file_value_)[0], size);
       }
     }
-    else if (is_any_type(type_))
-    {
-      // madara_logger_ptr_log (logger_, logger::LOG_TRACE,
-      //"KnowledgeRecord::write: encoding an Any type\n");
-
-      try
-      {
-        size_intermediate =
-            (uint32_t)any_value_->tagged_serialize(buffer, buffer_remaining);
-        size = size_intermediate;
-
-        // madara_logger_ptr_log (logger_, logger::LOG_TRACE,
-        //"KnowledgeRecord::write: encoded an Any type of size %d\n",
-        // size_intermediate);
-      }
-      catch (const exceptions::BadAnyAccess&)
-      {
-        throw;
-      }
-      catch (const std::exception&)
-      {
-        // TODO catch more specific exception for this
-
-        std::stringstream local_buffer;
-        local_buffer << "KnowledgeRecord::write: ";
-        local_buffer << "Any encoding cannot fit in ";
-        local_buffer << buffer_remaining << " byte buffer\n";
-
-        madara_logger_ptr_log(
-          logger_, logger::LOG_ERROR, local_buffer.str().c_str());
-
-        throw exceptions::MemoryException(local_buffer.str());
-      }
-    }
-
+    
     if (size_location)
     {
       buffer_remaining -= size_intermediate;

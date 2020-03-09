@@ -1,5 +1,0 @@
-feature (capnp,java) : java_capnp_files {
-  JAVA_CAPNP_Files {
-    tests/capnfiles
-  }
-}

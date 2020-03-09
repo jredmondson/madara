@@ -164,11 +164,6 @@ fi
 echo "Copying MADARA source trees for developers"
 cp -r $MADARA_ROOT/include/madara $ROOT_DIR/include/
 
-# copy the CAPNP source includes into the appropriate directory
-echo "Copying CAPNP source trees for developers"
-cp -r $CAPNP_ROOT/c++/src/capnp $ROOT_DIR/include/
-cp -r $CAPNP_ROOT/c++/src/kj $ROOT_DIR/include/
-
 # remove any shared objects, symbolic links and svn from the include directory
 echo "Removing all symbolic links from source tree"
 find $ROOT_DIR/include -type l -exec rm -f {} \;
@@ -191,11 +186,6 @@ dos2unix $ROOT_DIR/doc/madara/copyright
 #cp $MADARA_ROOT/libMADARA.so.$LIB_VERSION $ROOT_DIR/lib
 echo "Copying libMADARA.so to $ROOT_DIR/lib"
 cp $MADARA_ROOT/libMADARA.so $ROOT_DIR/lib
-
-echo "Copying capnp.so to $ROOT_DIR/lib"
-cp $CAPNP_ROOT/c++/.libs/libcapnp.so $ROOT_DIR/lib
-cp $CAPNP_ROOT/c++/.libs/libcapnp-json.so $ROOT_DIR/lib
-cp $CAPNP_ROOT/c++/.libs/libkj.so $ROOT_DIR/lib
 
 if [ $DEPENDS_PYTHON -eq 1 ] ; then
   echo "Copying Python madara.so to $ROOT_DIR/lib"

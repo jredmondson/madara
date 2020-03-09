@@ -22,6 +22,7 @@
 #include "madara/transport/Transport.h"
 #include "madara/expression/Interpreter.h"
 #include "madara/utility/Refcounter.h"
+#include "madara/utility/StlHelper.h"
 #include "madara/knowledge/KnowledgeBaseImpl.h"
 #include "madara/knowledge/CompiledExpression.h"
 #include "madara/knowledge/VariableReference.h"
@@ -352,92 +353,6 @@ public:
   }
 
   /**
-   * @return a shared_ptr, sharing with the internal one.
-   * If this record is not an Any, returns NULL shared_ptr
-   **/
-  std::shared_ptr<const ConstAny> share_any(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    if (impl_)
-    {
-      return impl_->share_any(key, settings);
-    }
-    else if (context_)
-    {
-      return context_->share_any(key, settings);
-    }
-
-    return nullptr;
-  }
-
-  /**
-   * @return a shared_ptr, sharing with the internal one.
-   * If this record is not an Any, returns NULL shared_ptr
-   **/
-  std::shared_ptr<const ConstAny> share_any(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    if (impl_)
-    {
-      return impl_->share_any(key, settings);
-    }
-    else if (context_)
-    {
-      return context_->share_any(key, settings);
-    }
-
-    return nullptr;
-  }
-
-  /**
-   * Gets the contents of a record as a shared pointer to the given type.
-   * @tparam T type requested
-   * @return a shared_ptr, sharing with the internal one.
-   * @throw BadAnyAccess if this record is not an Any holding the given type
-   **/
-  template<typename T>
-  std::shared_ptr<const T> share_any(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    if (impl_)
-    {
-      return impl_->share_any<T>(key, settings);
-    }
-    else if (context_)
-    {
-      return context_->share_any<T>(key, settings);
-    }
-
-    return nullptr;
-  }
-
-  /**
-   * Gets the contents of a record as a shared pointer to the given type.
-   * @tparam T type requested
-   * @return a shared_ptr, sharing with the internal one.
-   * @throw BadAnyAccess if this record is not an Any holding the given type
-   **/
-  template<typename T>
-  std::shared_ptr<const T> share_any(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    if (impl_)
-    {
-      return impl_->share_any<T>(key, settings);
-    }
-    else if (context_)
-    {
-      return context_->share_any<T>(key, settings);
-    }
-
-    return nullptr;
-  }
-
-  /**
    * Marks the variable reference as updated
    * @param   variable  reference to a variable (@see get_ref)
    * @param   settings  settings for applying the update
@@ -749,109 +664,6 @@ public:
   int set_xml(const VariableReference& variable, const char* value, size_t size,
       const EvalSettings& settings = EvalSettings(
           true, false, true, false, false));
-
-  /**
-   * Atomically sets the record to the value specified, as an Any value.
-   *
-   * Note, this does not copy meta information (e.g. quality, clock).
-   * @param   key       unique identifier of the variable
-   * @param   value     new value of the variable
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename T>
-  int set_any(const std::string& key, T&& value,
-      const EvalSettings& settings = EvalSettings());
-
-  /**
-   * Atomically sets the record to the value specified, as an Any value.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   value     new value of the variable
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename T>
-  int set_any(const VariableReference& variable, T&& value,
-      const EvalSettings& settings = EvalSettings());
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   key       unique identifier of the variable
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename... Args>
-  int emplace_any(
-      const std::string& key, const EvalSettings& settings, Args&&... args);
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename... Args>
-  int emplace_any(const VariableReference& variable,
-      const EvalSettings& settings, Args&&... args);
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   key       unique identifier of the variable
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename Arg, typename... Args,
-      enable_if_<!is_convertible<Arg, const KnowledgeReferenceSettings&>(),
-          int> = 0>
-  int emplace_any(const std::string& key, Arg&& arg, Args&&... args)
-  {
-    return emplace_any(key, EvalSettings{}, std::forward<Arg>(arg),
-        std::forward<Args>(args)...);
-  }
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename Arg, typename... Args,
-      enable_if_<!is_convertible<Arg, const KnowledgeReferenceSettings&>(),
-          int> = 0>
-  int emplace_any(const VariableReference& variable, Arg&& arg, Args&&... args)
-  {
-    return emplace_any(variable, EvalSettings{}, std::forward<Arg>(arg),
-        std::forward<Args>(args)...);
-  }
-
-  /**
-   * Atomically emplaces an empty Any value within the given variable.
-   *
-   * @param   key       unique identifier of the variable
-   * @return   0 if the value was set. -1 if null key
-   **/
-  int emplace_any(const std::string& key)
-  {
-    return emplace_any(key, EvalSettings{});
-  }
-
-  /**
-   * Atomically emplaces an empty Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @return   0 if the value was set. -1 if null key
-   **/
-  int emplace_any(const VariableReference& variable)
-  {
-    return emplace_any(variable, EvalSettings{});
-  }
 
   /**
    * Retrieves a value at a specified index within a knowledge array
@@ -1724,7 +1536,7 @@ public:
   }
 
   template<typename Callable>
-  auto invoke(VariableReference key, Callable&& callable,
+  auto invoke(VariableReference& key, Callable&& callable,
       const EvalSettings& settings = EvalSettings())
       -> decltype(invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
@@ -1887,7 +1699,7 @@ public:
       ConstOutputIterator out_end,
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
-      -> enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) {
@@ -1934,7 +1746,7 @@ public:
       ConstOutputIterator out_end,
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
-      -> enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) {
@@ -1969,20 +1781,6 @@ public:
   }
 
   /**
-   * Return the oldest stored history entry of this record as the type
-   * given (which must support knowledge_cast<> from a KnowledgeRecord)
-   **/
-  template<typename T>
-  T get_oldest(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest<T>(); },
-        settings);
-  }
-
-  /**
    * Return the newest stored history entry of this record
    **/
   KnowledgeRecord get_newest(
@@ -1991,20 +1789,6 @@ public:
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) { return ref.get_newest(); }, settings);
-  }
-
-  /**
-   * Return the newest stored history entry of this record as the type
-   * given (which must support knowledge_cast<> from a KnowledgeRecord)
-   **/
-  template<typename T>
-  T get_newest(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest<T>(); },
-        settings);
   }
 
   /**
@@ -2017,21 +1801,6 @@ public:
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) { return ref.get_oldest(count); },
-        settings);
-  }
-
-  /**
-   * Return the @a count oldest stored history entries of this record in
-   * a vector of the given element type, which must support knoweldge_cast<>
-   * from KnowledgeRecord.
-   **/
-  template<typename T>
-  std::vector<T> get_oldest(const std::string& key, size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest<T>(count); },
         settings);
   }
 
@@ -2049,21 +1818,6 @@ public:
   }
 
   /**
-   * Return the @a count newest stored history entries of this record in
-   * a vector of the given element type, which must support knoweldge_cast<>
-   * from KnowledgeRecord.
-   **/
-  template<typename T>
-  std::vector<T> get_newest(const std::string& key, size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest<T>(count); },
-        settings);
-  }
-
-  /**
    * Get a copy of the entire stored history of this record.
    **/
   std::vector<KnowledgeRecord> get_history(
@@ -2072,21 +1826,6 @@ public:
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) { return ref.get_history(); },
-        settings);
-  }
-
-  /**
-   * Get a copy of the entire stored history of this record in a vector of
-   * the given element type, which must support knoweldge_cast<>
-   * from KnowledgeRecord.
-   **/
-  template<typename T>
-  std::vector<T> get_history(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history<T>(); },
         settings);
   }
 
@@ -2233,7 +1972,7 @@ public:
       ConstOutputIterator out_end,
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
-      -> enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) {
@@ -2281,7 +2020,7 @@ public:
       ConstOutputIterator out_end,
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
-      -> enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) {
@@ -2316,20 +2055,6 @@ public:
   }
 
   /**
-   * Return the oldest stored history entry of this record as the type
-   * given (which must support knowledge_cast<> from a KnowledgeRecord)
-   **/
-  template<typename T>
-  T get_oldest(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest<T>(); },
-        settings);
-  }
-
-  /**
    * Return the newest stored history entry of this record
    **/
   KnowledgeRecord get_newest(
@@ -2338,20 +2063,6 @@ public:
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) { return ref.get_newest(); }, settings);
-  }
-
-  /**
-   * Return the newest stored history entry of this record as the type
-   * given (which must support knowledge_cast<> from a KnowledgeRecord)
-   **/
-  template<typename T>
-  T get_newest(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest<T>(); },
-        settings);
   }
 
   /**
@@ -2365,21 +2076,6 @@ public:
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) { return ref.get_oldest(count); },
-        settings);
-  }
-
-  /**
-   * Return the @a count oldest stored history entries of this record in
-   * a vector of the given element type, which must support knoweldge_cast<>
-   * from KnowledgeRecord.
-   **/
-  template<typename T>
-  std::vector<T> get_oldest(const VariableReference& key, size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest<T>(count); },
         settings);
   }
 
@@ -2398,21 +2094,6 @@ public:
   }
 
   /**
-   * Return the @a count newest stored history entries of this record in
-   * a vector of the given element type, which must support knoweldge_cast<>
-   * from KnowledgeRecord.
-   **/
-  template<typename T>
-  std::vector<T> get_newest(const VariableReference& key, size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest<T>(count); },
-        settings);
-  }
-
-  /**
    * Get a copy of the entire stored history of this record.
    **/
   std::vector<KnowledgeRecord> get_history(
@@ -2421,21 +2102,6 @@ public:
   {
     return invoke(key,
         [&](const KnowledgeRecord& ref) { return ref.get_history(); },
-        settings);
-  }
-
-  /**
-   * Get a copy of the entire stored history of this record in a vector of
-   * the given element type, which must support knoweldge_cast<>
-   * from KnowledgeRecord.
-   **/
-  template<typename T>
-  std::vector<T> get_history(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history<T>(); },
         settings);
   }
 

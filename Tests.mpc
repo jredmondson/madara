@@ -609,7 +609,7 @@ project (Test_Modifieds) : using_madara, no_karl, no_xml, null_lock, using_simti
   }
 }
 
-project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
+project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_checkpointing
   
@@ -1526,64 +1526,7 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
   }
 }
 
-project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
-  requires += tests capnp
-
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_any
-  includes += .
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_any.cpp
-  }
-}
-
-project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests capnp
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_any_so
-
-  after += Test_Datatypes_Lib
-
-  libs += datatypes_test
-
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_any_so.cpp
-  }
-}
-
-project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
-
-  requires += tests capnp
-
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_any_transport_multicast
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_any_transport_multicast.cpp
-  }
-}
-
-project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using_simtime, capnp_test_types {
+project (Test_Circular_Buffer) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
   exeout = $(MADARA_ROOT)/bin

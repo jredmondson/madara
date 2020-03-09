@@ -18,7 +18,6 @@ env:
     - MADARA_ROOT=$TRAVIS_BUILD_DIR
     - GAMS_ROOT=$TRAVIS_BUILD_DIR/gams
     - MPC_ROOT=$TRAVIS_BUILD_DIR/MPC
-    - CAPNP_ROOT=$TRAVIS_BUILD_DIR/capnproto
     - LD_LIBRARY_PATH=$CAPNP_ROOT/c++/.libs:$MADARA_ROOT/lib:$GAMS_ROOT/lib:$LD_LIBRARY_PATH
     - PATH=$CAPNP_ROOT/c++:$PATH
     - CORES=6
@@ -27,11 +26,7 @@ env:
 
 matrix:
   allow_failures:
-    #- env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-    - env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS="" CAPNP="capnp"
-    - env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS="" CAPNP="capnp"
-    - env: NAME="Ubuntu 16.04 capnp" CAPNP="capnp"
-    - env: NAME="Ubuntu 16.04 clang capnp" CAPNP="capnp" CLANG="clang"
+
   include:
       ################MAC#####################
 
@@ -49,7 +44,7 @@ matrix:
 
       # clang, osx, java
     - compiler: clang
-      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java" CAPNP="capnp"
+      env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
       os: osx
       osx_image: xcode9.3
 
@@ -98,7 +93,7 @@ matrix:
       # g++, linux, java
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 g++ java" JAVA="java" CAPNP="capnp"
+      env: NAME="Ubuntu 16.04 g++ java" JAVA="java"
 
       # g++, linux, zmq
     - compiler: gcc
@@ -108,7 +103,7 @@ matrix:
       # g++, linux, zmq
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 g++ python" PYTHON="python" CAPNP="capnp"
+      env: NAME="Ubuntu 16.04 g++ python" PYTHON="python"
 
       # g++, linux, simtime
     - compiler: gcc
@@ -123,12 +118,12 @@ matrix:
     # g++, linux, android, zmq
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android zmq capnp" ANDROID="android" ZMQ="zmq" TESTS="" CAPNP="capnp"
+      env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
 
     # g++, linux, android, ssl
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android capnp" ANDROID="android" SSL="ssl" TESTS=""
+      env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS=""
 
 addons:
   apt:
@@ -162,7 +157,6 @@ script:
   - $GAMS_ROOT/scripts/$OS/base_build.sh prereqs $CAPNP $CLANG madara $TESTS $SSL $JAVA $PYTHON $ZMQ $SIMTIME $ANDROID $LZ4 $CLANG
   # now run functionality unit tests 
   - echo "Testing basic functionality..."
-  - if [ ! -z $TESTS ] && [ "$CAPNP" == "capnp" ]; then $MADARA_ROOT/bin/test_any ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_bandwidth_monitor ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_basic_reasoning ; fi
   - if [ ! -z $TESTS ]; then $MADARA_ROOT/bin/test_checkpointing ; fi

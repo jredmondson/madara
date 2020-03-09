@@ -23,7 +23,6 @@
 #include "madara/MadaraExport.h"
 #include "madara/knowledge/VariableReference.h"
 #include "madara/knowledge/KnowledgeBase.h"
-#include "madara/knowledge/KnowledgeCast.h"
 #include "madara/knowledge/ContextGuard.h"
 
 namespace madara

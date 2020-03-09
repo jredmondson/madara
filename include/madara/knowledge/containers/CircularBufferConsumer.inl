@@ -131,21 +131,6 @@ CircularBufferConsumer::increment(
   }
 }
 
-template<typename T>
-void CircularBufferConsumer::consume(T& value) const
-{
-  check_context(__func__);
-
-  ContextGuard context_guard(*context_);
-
-  if (remaining() > 0)
-    value = consume().to_any<T>();
-  else
-    throw exceptions::IndexException(
-        "CircularBufferConsumer::consume<T>: "
-        "attempted consume on empty consumer buffer");
-}
-
 inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::consume(
     void) const
 {
@@ -198,13 +183,6 @@ inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::consume(
     return KnowledgeRecord();
 }
 
-template<typename T>
-void CircularBufferConsumer::inspect(
-    KnowledgeRecord::Integer position, T& value) const
-{
-  value = inspect(position).to_any<T>();
-}
-
 inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::inspect(
     KnowledgeRecord::Integer position) const
 {
@@ -239,24 +217,6 @@ inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::inspect(
     message << *index_ << " and local index is : " << local_index_
             << " and size is : " << size() << "\n";
     throw exceptions::IndexException(message.str());
-  }
-}
-
-template<typename T>
-void CircularBufferConsumer::inspect(KnowledgeRecord::Integer position,
-    size_t count, std::vector<T>& values) const
-{
-  uint64_t latest_toi = 0;
-
-  // iterate over the returned records
-  for (auto record : inspect(position, count))
-  {
-    // add them to the values if valid and increasing toi
-    if (record.is_valid() && record.toi() >= latest_toi)
-    {
-      latest_toi = record.toi();
-      values.push_back(record.to_any<T>());
-    }
   }
 }
 
@@ -402,34 +362,6 @@ inline void CircularBufferConsumer::set_index(KnowledgeRecord::Integer index)
   local_index_ = index;
 }
 
-template<typename T>
-void CircularBufferConsumer::consume_latest(
-    size_t count, std::vector<T>& values) const
-{
-  // iterate over the returned records
-  for (auto record : consume_latest(count))
-  {
-    // add them to the values
-    if (record.is_valid())
-      values.push_back(record.to_any<T>());
-  }
-}
-
-template<typename T>
-void CircularBufferConsumer::consume_latest(
-    size_t count, std::vector<T>& values, size_t& dropped) const
-{
-  dropped = get_dropped();
-
-  // iterate over the returned records
-  for (auto record : consume_latest(count))
-  {
-    // add them to the values
-    if (record.is_valid())
-      values.push_back(record.to_any<T>());
-  }
-}
-
 inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_latest(
     size_t count) const
 {
@@ -478,42 +410,6 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_latest(
   local_index_ = *index_;
 
   return result;
-}
-
-template<typename T>
-void CircularBufferConsumer::consume_earliest(
-    size_t count, std::vector<T>& values) const
-{
-  uint64_t latest_toi = 0;
-  // iterate over the returned records
-  for (auto record : consume_earliest(count))
-  {
-    // add them to the values if valid
-    if (record.is_valid() && record.toi() >= latest_toi)
-    {
-      latest_toi = record.toi();
-      values.push_back(record.to_any<T>());
-    }
-  }
-}
-
-template<typename T>
-void CircularBufferConsumer::consume_earliest(
-    size_t count, std::vector<T>& values, size_t& dropped) const
-{
-  dropped = get_dropped();
-
-  uint64_t latest_toi = 0;
-  // iterate over the returned records
-  for (auto record : consume_earliest(count))
-  {
-    // add them to the values if valid and increasing toi
-    if (record.is_valid() && record.toi() >= latest_toi)
-    {
-      latest_toi = record.toi();
-      values.push_back(record.to_any<T>());
-    }
-  }
 }
 
 inline std::vector<KnowledgeRecord> CircularBufferConsumer::consume_earliest(
@@ -600,19 +496,6 @@ inline size_t CircularBufferConsumer::get_dropped(void) const
   }
 }
 
-template<typename T>
-void CircularBufferConsumer::peek_latest(
-    size_t count, std::vector<T>& values) const
-{
-  // iterate over the returned records
-  for (auto record : peek_latest(count))
-  {
-    // add them to the values
-    if (record.is_valid())
-      values.push_back(record.to_any<T>());
-  }
-}
-
 inline std::vector<KnowledgeRecord> CircularBufferConsumer::peek_latest(
     size_t count) const
 {
@@ -632,21 +515,6 @@ inline std::vector<KnowledgeRecord> CircularBufferConsumer::peek_latest(
   }
 
   return result;
-}
-
-template<typename T>
-void CircularBufferConsumer::peek_latest(T& value) const
-{
-  check_all(__func__);
-
-  ContextGuard context_guard(*context_);
-
-  if (count() > 0)
-    value = peek_latest().to_any<T>();
-  else
-    throw exceptions::IndexException(
-        "CircularBufferConsumer::peek_latest<T>: "
-        "attempted consume on empty consumer buffer");
 }
 
 inline madara::knowledge::KnowledgeRecord CircularBufferConsumer::peek_latest(
