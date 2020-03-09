@@ -173,7 +173,7 @@ public:
     logger::Logger& logger = *logger::global_logger.get()) noexcept;
 
   /* Double constructor */
-  explicit KnowledgeRecord(double value,
+  KnowledgeRecord(double value,
     logger::Logger& logger = *logger::global_logger.get()) noexcept;
 
   /* Float constructor */
@@ -205,7 +205,7 @@ public:
       logger::Logger& logger = *logger::global_logger.get()) noexcept;
 
   /* String constructor */
-  explicit KnowledgeRecord(const std::string& value,
+  KnowledgeRecord(const std::string& value,
       logger::Logger& logger = *logger::global_logger.get());
 
   /* String move constructor */
@@ -1345,7 +1345,15 @@ public:
    **/
   template<typename OutputIterator>
   size_t get_history_range(
-      OutputIterator out, size_t index, size_t count) const;
+      OutputIterator out, size_t index, size_t count) const
+  {
+    return for_history_range(
+        [&out](const KnowledgeRecord& rec) {
+          *out = rec;
+          ++out;
+        },
+        index, count);
+  }
 
   /**
    * Copy the @a count oldest stored history entries of this record to the

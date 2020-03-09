@@ -1028,61 +1028,6 @@ private:
   };
 
 public:
-  template<typename Callable>
-  auto invoke(const std::string& key, Callable&& callable,
-      const EvalSettings& settings = EvalSettings())
-      -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    ModifiedsSender sender = {this, "KnowledgeBase::invoke", &settings};
-    return map_.invoke(key, std::forward<Callable>(callable), settings);
-  }
-
-  template<typename Callable>
-  auto invoke(const VariableReference& key, Callable&& callable,
-      const EvalSettings& settings = EvalSettings())
-      -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    ModifiedsSender sender = {this, "KnowledgeBase::invoke", &settings};
-    return map_.invoke(key, std::forward<Callable>(callable), settings);
-  }
-
-  template<typename Callable>
-  auto invoke(const std::string& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    return map_.invoke(key, std::forward<Callable>(callable), settings);
-  }
-
-  template<typename Callable>
-  auto invoke(const VariableReference& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    return map_.invoke(key, std::forward<Callable>(callable), settings);
-  }
-
-  template<typename Callable>
-  auto cinvoke(const std::string& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    return map_.cinvoke(key, std::forward<Callable>(callable), settings);
-  }
-
-  template<typename Callable>
-  auto cinvoke(const VariableReference& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    return map_.cinvoke(key, std::forward<Callable>(callable), settings);
-  }
 
   /**
    * Call given Callable on each element in this KB. Note that the context

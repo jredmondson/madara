@@ -17,9 +17,207 @@ namespace madara
 {
 namespace knowledge
 {
-#ifndef _MADARA_NO_KARL_
+bool KnowledgeBase::has_history(
+    const VariableReference& key,
+	const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->has_history();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->has_history();
+  }
+  throw_null_context();
+}
 
-KnowledgeRecord KnowledgeBase::wait(
+size_t KnowledgeBase::get_history_size(const VariableReference& key,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_history_size();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_history_size();
+  }
+  throw_null_context();
+}
+
+size_t KnowledgeBase::get_history_capacity(const VariableReference& key,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_history_capacity();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_history_capacity();
+  }
+  throw_null_context();
+}
+
+void KnowledgeBase::set_history_capacity(
+    const VariableReference& key, size_t size, const EvalSettings& settings)
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->set_history_capacity(size);
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->set_history_capacity(size);
+  }
+  throw_null_context();
+}
+
+void KnowledgeBase::clear_history(
+	const VariableReference& key, const EvalSettings& settings)
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->clear_history();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->clear_history();
+  }
+  throw_null_context();
+}
+
+KnowledgeRecord KnowledgeBase::get_oldest(const VariableReference& key,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_oldest();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_oldest();
+  }
+  throw_null_context();
+}
+
+KnowledgeRecord KnowledgeBase::get_newest(const VariableReference& key,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_newest();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_newest();
+  }
+  throw_null_context();
+}
+
+std::vector<KnowledgeRecord> KnowledgeBase::get_oldest(
+    const VariableReference& key, size_t count,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_oldest(count);
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_oldest(count);
+  }
+  throw_null_context();
+}
+
+std::vector<KnowledgeRecord> KnowledgeBase::get_newest(
+    const VariableReference& key, size_t count,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_newest(count);
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_newest(count);
+  }
+  throw_null_context();
+}
+
+std::vector<KnowledgeRecord> KnowledgeBase::get_history(
+    const VariableReference& key,
+	const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_history();
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_history();
+  }
+  throw_null_context();
+}
+
+std::vector<KnowledgeRecord> KnowledgeBase::get_history(
+    const VariableReference& key, size_t index, size_t count,
+    const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_history(index, count);
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_history(index, count);
+  }
+  throw_null_context();
+}
+
+KnowledgeRecord KnowledgeBase::get_history(const VariableReference& key,
+    size_t index, const KnowledgeReferenceSettings& settings) const
+{
+  if (impl_.get())
+  {
+    ContextGuard guard(this->get_context());
+    return key.get_record_unsafe()->get_history(index);
+  }
+  else if (context_)
+  {
+    ContextGuard guard(*context_);
+    return key.get_record_unsafe()->get_history(index);
+  }
+  throw_null_context();
+}
+  
+#ifndef _MADARA_NO_KARL_
+	
+KnowledgeRecord
+KnowledgeBase::wait(
     CompiledExpression& expression, const WaitSettings& settings)
 {
   KnowledgeRecord result;
@@ -125,4 +323,4 @@ KnowledgeRecord KnowledgeBase::wait(
 }
 #endif  // _MADARA_NO_KARL_
 }
-}
+}  // namespace madara

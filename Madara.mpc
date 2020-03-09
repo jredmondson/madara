@@ -41,7 +41,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   Inline_Files {
     include/madara/knowledge
     include/madara/knowledge/containers
-    include/madara/knowledge/rcw
     include/madara/filters
     include/madara/logger/Logger.inl
     include/madara/utility
@@ -67,7 +66,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
-    include/madara/knowledge/rcw
     include/madara/logger
     include/madara/threads
     include/madara/transport/udp
@@ -95,7 +93,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
-    include/madara/knowledge/rcw
     include/madara/logger
     include/madara/threads
     include/madara/transport/udp

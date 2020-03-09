@@ -1511,124 +1511,30 @@ public:
   void facade_for(ThreadSafeContext& target);
 
 private:
-  [[noreturn]] void throw_null_context() const
-  {
+  [[noreturn]] void throw_null_context() const {
     throw exceptions::ContextException(
         "KnowledgeBase as no context or impl set");
   }
 
-public:
-  template<typename Callable>
-  auto invoke(const std::string& key, Callable&& callable,
-      const EvalSettings& settings = EvalSettings())
-      -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
+  public :
+
+      /**
+       * Return true if this record has a circular buffer history. Use
+       * set_history_capacity to add a buffer
+       **/
+      bool has_history(
+          const std::string& key, const KnowledgeReferenceSettings& settings =
+                                      KnowledgeReferenceSettings()) const
   {
     if (impl_.get())
     {
-      return impl_->invoke(key, std::forward<Callable>(callable), settings);
+      return impl_->get(key, settings).has_history();
     }
     else if (context_)
     {
-      return context_->invoke(key, std::forward<Callable>(callable), settings);
+      return context_->get(key, settings).has_history();
     }
     throw_null_context();
-  }
-
-  template<typename Callable>
-  auto invoke(VariableReference& key, Callable&& callable,
-      const EvalSettings& settings = EvalSettings())
-      -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    if (impl_.get())
-    {
-      return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    }
-    else if (context_)
-    {
-      return context_->invoke(key, std::forward<Callable>(callable), settings);
-    }
-    throw_null_context();
-  }
-
-  template<typename Callable>
-  auto invoke(const std::string& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    if (impl_.get())
-    {
-      return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    }
-    else if (context_)
-    {
-      return context_->invoke(key, std::forward<Callable>(callable), settings);
-    }
-    throw_null_context();
-  }
-
-  template<typename Callable>
-  auto invoke(const VariableReference& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    if (impl_.get())
-    {
-      return impl_->invoke(key, std::forward<Callable>(callable), settings);
-    }
-    else if (context_)
-    {
-      return context_->invoke(key, std::forward<Callable>(callable), settings);
-    }
-    throw_null_context();
-  }
-
-  template<typename Callable>
-  auto cinvoke(const std::string& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    if (impl_.get())
-    {
-      return impl_->cinvoke(key, std::forward<Callable>(callable), settings);
-    }
-    else if (context_)
-    {
-      return context_->cinvoke(key, std::forward<Callable>(callable), settings);
-    }
-    throw_null_context();
-  }
-
-  template<typename Callable>
-  auto cinvoke(const VariableReference& key, Callable&& callable,
-      const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
-          std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
-  {
-    if (impl_.get())
-    {
-      return impl_->cinvoke(key, std::forward<Callable>(callable), settings);
-    }
-    else if (context_)
-    {
-      return context_->cinvoke(key, std::forward<Callable>(callable), settings);
-    }
-    throw_null_context();
-  }
-
-  /**
-   * Return true if this record has a circular buffer history. Use
-   * set_history_capacity to add a buffer
-   **/
-  bool has_history(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    return invoke(key, &KnowledgeRecord::has_history, settings);
   }
 
   /**
@@ -1638,7 +1544,15 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    return invoke(key, &KnowledgeRecord::get_history_size, settings);
+    if (impl_.get())
+    {
+      return impl_->get(key, settings).get_history_size();
+    }
+    else if (context_)
+    {
+      return context_->get(key, settings).get_history_size();
+    }
+    throw_null_context();
   }
 
   /**
@@ -1649,7 +1563,15 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    return invoke(key, &KnowledgeRecord::get_history_capacity, settings);
+    if (impl_.get())
+    {
+      return impl_->get(key, settings).get_history_capacity();
+    }
+    else if (context_)
+    {
+      return context_->get(key, settings).get_history_capacity();
+    }
+    throw_null_context();
   }
 
   /**
@@ -1661,9 +1583,19 @@ public:
   void set_history_capacity(const std::string& key, size_t size,
       const EvalSettings& settings = EvalSettings())
   {
-    return invoke(key,
-        [&](KnowledgeRecord& ref) { return ref.set_history_capacity(size); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->set_history_capacity(size);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->set_history_capacity(size);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1672,7 +1604,17 @@ public:
   void clear_history(
       const std::string& key, const EvalSettings& settings = EvalSettings())
   {
-    return invoke(key, &KnowledgeRecord::clear_history, settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings).get_record_unsafe()->clear_history();
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->clear_history();
+    }
+    throw_null_context();
   }
 
   /**
@@ -1684,9 +1626,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(out, count); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, count);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, count);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1699,13 +1651,22 @@ public:
       ConstOutputIterator out_end,
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
-      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value,
+          size_t>
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_oldest(out, out_end);
-        },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, out_end);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, out_end);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1717,9 +1678,17 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const -> decltype(*out, size_t{})
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(out); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings).get_record_unsafe()->get_oldest(out);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1731,9 +1700,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(out, count); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, count);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, count);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1746,13 +1725,22 @@ public:
       ConstOutputIterator out_end,
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
-      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
+      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value,
+          size_t>
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_newest(out, out_end);
-        },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, out_end);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out, out_end);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1764,9 +1752,17 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const -> decltype(*out, size_t{})
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(out); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings).get_record_unsafe()->get_oldest(out);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(out);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1776,8 +1772,15 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(); }, settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings).get_record_unsafe()->get_oldest();
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings).get_record_unsafe()->get_oldest();
+    }
+    throw_null_context();
   }
 
   /**
@@ -1787,8 +1790,15 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(); }, settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings).get_record_unsafe()->get_newest();
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings).get_record_unsafe()->get_newest();
+    }
+    throw_null_context();
   }
 
   /**
@@ -1799,9 +1809,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(count); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(count);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_oldest(count);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1812,9 +1832,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(count); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_newest(count);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_newest(count);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1824,9 +1854,17 @@ public:
       const std::string& key, const KnowledgeReferenceSettings& settings =
                                   KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history(); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings).get_record_unsafe()->get_history();
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history();
+    }
+    throw_null_context();
   }
 
   /**
@@ -1840,11 +1878,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_history(out, index, count);
-        },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(out, index, count);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(out, index, count);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1856,9 +1902,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const -> decltype(*out, size_t{})
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history(out); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(out);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(out);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1871,11 +1927,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_history(index, count);
-        },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(index, count);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(index, count);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1887,9 +1951,19 @@ public:
       const KnowledgeReferenceSettings& settings =
           KnowledgeReferenceSettings()) const
   {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history(index); },
-        settings);
+    if (impl_.get())
+    {
+      return impl_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(index);
+    }
+    else if (context_)
+    {
+      return context_->get_ref(key, settings)
+          .get_record_unsafe()
+          ->get_history(index);
+    }
+    throw_null_context();
   }
 
   /**
@@ -1898,20 +1972,14 @@ public:
    **/
   bool has_history(
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key, &KnowledgeRecord::has_history, settings);
-  }
+                                        KnowledgeReferenceSettings()) const;
 
   /**
    * Return the amount of history this record holds.
    **/
   size_t get_history_size(
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key, &KnowledgeRecord::get_history_size, settings);
-  }
+                                        KnowledgeReferenceSettings()) const;
 
   /**
    * Return the maximum amount of history this record can hold. Use
@@ -1919,10 +1987,7 @@ public:
    **/
   size_t get_history_capacity(
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key, &KnowledgeRecord::get_history_capacity, settings);
-  }
+                                        KnowledgeReferenceSettings()) const;
 
   /**
    * Set the capacity of this record's history circular buffer. Every
@@ -1931,139 +1996,27 @@ public:
    * entries are added.
    **/
   void set_history_capacity(const VariableReference& key, size_t size,
-      const EvalSettings& settings = EvalSettings())
-  {
-    return invoke(key,
-        [&](KnowledgeRecord& ref) { return ref.set_history_capacity(size); },
-        settings);
-  }
+      const EvalSettings& settings = EvalSettings());
 
   /**
    * Clear all history for this record, keeping the current value.
    **/
   void clear_history(const VariableReference& key,
-      const EvalSettings& settings = EvalSettings())
-  {
-    return invoke(key, &KnowledgeRecord::clear_history, settings);
-  }
-
-  /**
-   * Copy the @a count oldest stored history entries of this record to the
-   * given output iterator, in order from oldest to newest.
-   **/
-  template<typename OutputIterator>
-  size_t get_oldest(const VariableReference& key, OutputIterator out,
-      size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(out, count); },
-        settings);
-  }
-
-  /**
-   * Copy the oldest stored history entries of this record to the
-   * given output iterator, up to the given ending iterator, in order
-   * from oldest to newest.
-   **/
-  template<typename OutputIterator, typename ConstOutputIterator>
-  auto get_oldest(const VariableReference& key, OutputIterator out,
-      ConstOutputIterator out_end,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_oldest(out, out_end);
-        },
-        settings);
-  }
-
-  /**
-   * Copy the oldest stored history entry of this record to the
-   * given output iterator
-   **/
-  template<typename OutputIterator>
-  auto get_oldest(const VariableReference& key, OutputIterator out,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const -> decltype(*out, size_t{})
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(out); },
-        settings);
-  }
-
-  /**
-   * Copy the @a count newest stored history entries of this record to the
-   * given output iterator, in order from oldest to newest.
-   **/
-  template<typename OutputIterator>
-  size_t get_newest(const VariableReference& key, OutputIterator out,
-      size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(out, count); },
-        settings);
-  }
-
-  /**
-   * Copy the newest stored history entries of this record to the
-   * given output iterator, up to the given ending iterator, in order
-   * from oldest to newest.
-   **/
-  template<typename OutputIterator, typename ConstOutputIterator>
-  auto get_newest(const VariableReference& key, OutputIterator out,
-      ConstOutputIterator out_end,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-      -> utility::enable_if_<!std::is_arithmetic<ConstOutputIterator>::value, size_t>
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_newest(out, out_end);
-        },
-        settings);
-  }
-
-  /**
-   * Copy the newest stored history entry of this record to the
-   * given output iterator
-   **/
-  template<typename OutputIterator>
-  auto get_newest(const VariableReference& key, OutputIterator out,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const -> decltype(*out, size_t{})
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(out); },
-        settings);
-  }
+      const EvalSettings& settings = EvalSettings());
 
   /**
    * Return the oldest stored history entry of this record
    **/
   KnowledgeRecord get_oldest(
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(); }, settings);
-  }
+                                        KnowledgeReferenceSettings()) const;
 
   /**
    * Return the newest stored history entry of this record
    **/
   KnowledgeRecord get_newest(
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(); }, settings);
-  }
+                                        KnowledgeReferenceSettings()) const;
 
   /**
    * Return the @a count oldest stored history entries of this record in
@@ -2072,12 +2025,7 @@ public:
   std::vector<KnowledgeRecord> get_oldest(const VariableReference& key,
       size_t count,
       const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_oldest(count); },
-        settings);
-  }
+          KnowledgeReferenceSettings()) const;
 
   /**
    * Return the @a count newest stored history entries of this record in
@@ -2086,56 +2034,14 @@ public:
   std::vector<KnowledgeRecord> get_newest(const VariableReference& key,
       size_t count,
       const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_newest(count); },
-        settings);
-  }
+          KnowledgeReferenceSettings()) const;
 
   /**
    * Get a copy of the entire stored history of this record.
    **/
   std::vector<KnowledgeRecord> get_history(
       const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history(); },
-        settings);
-  }
-
-  /**
-   * Copy the given range of history to the output iterator given. Indexing
-   * starts from oldest history entry in the buffer at index 0. Negative
-   * indices count from newest entries (-1 is newest).
-   **/
-  template<typename OutputIterator>
-  size_t get_history(const VariableReference& key, OutputIterator out,
-      ssize_t index, size_t count,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_history(out, index, count);
-        },
-        settings);
-  }
-
-  /**
-   * Copy the stored history of this record to the given output iterator,
-   * in order from oldest to newest.
-   **/
-  template<typename OutputIterator>
-  auto get_history(const VariableReference& key, OutputIterator out,
-      const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const -> decltype(*out, size_t{})
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history(out); },
-        settings);
-  }
+                                        KnowledgeReferenceSettings()) const;
 
   /**
    * Return a copy of the given range of history in a vector. Indexing
@@ -2145,14 +2051,7 @@ public:
   std::vector<KnowledgeRecord> get_history(const VariableReference& key,
       size_t index, size_t count,
       const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) {
-          return ref.get_history(index, count);
-        },
-        settings);
-  }
+          KnowledgeReferenceSettings()) const;
 
   /**
    * Return the given entry in this record's history. Indexing
@@ -2161,12 +2060,7 @@ public:
    **/
   KnowledgeRecord get_history(const VariableReference& key, size_t index,
       const KnowledgeReferenceSettings& settings =
-          KnowledgeReferenceSettings()) const
-  {
-    return invoke(key,
-        [&](const KnowledgeRecord& ref) { return ref.get_history(index); },
-        settings);
-  }
+          KnowledgeReferenceSettings()) const;
 
   /**
    * Call given Callable on each element in this KB. Note that the context
@@ -2198,8 +2092,8 @@ private:
   /// A knowledge base can also be a facade for another knowledge base
   ThreadSafeContext* context_;
 };
-}
-}
+}  // namespace knowledge
+}  // namespace madara
 
 // include the inline functions
 #include "KnowledgeBase.inl"

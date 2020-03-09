@@ -25,11 +25,6 @@ class ThreadSafeContext;
 class KnolwedgeBaseImpl;
 class Variables;
 
-namespace rcw
-{
-class BaseTracker;
-}
-
 /**
  * @class VariableReference
  * @brief Optimized reference to a variable within the knowledge base
@@ -40,7 +35,6 @@ public:
   friend class ThreadSafeContext;
   friend class KnowledgeBaseImpl;
   friend class Variables;
-  friend class rcw::BaseTracker;
 
   using pair_ptr = KnowledgeMap::value_type*;
 
