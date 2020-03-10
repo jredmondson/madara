@@ -51,6 +51,13 @@ std::unique_ptr<decay_<T>> into_unique(T&& val)
 }
 
 
+/// Less verbose equivalent for std::is_same
+template<typename T, typename U>
+constexpr bool is_same()
+{
+  return std::is_same<T, U>::value;
+}
+
 
 /// Composition of std::is_same and std::decay
 template<typename T, typename U>
