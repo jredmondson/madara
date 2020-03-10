@@ -1,32 +1,4 @@
 
-project (Test_Datatypes_Lib) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, using_simtime, debug_build, using_boost, using_clang, using_madara {
-
-  requires += tests
-
-  sharedname = datatypes_test
-  dynamicflags += MADARA_BUILD_DLL
-  staticflags += MADARA_BUILD_STATIC
-  libout = $(MADARA_ROOT)/lib
-
-  prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
-
-  specific(prop:microsoft) {
-    DisableSpecificWarnings += 4005 4251 4275 4244
-    macros += _CRT_SECURE_NO_WARNINGS
-  }
-
-  specific(prop:make) {
-    postbuild += ln -sf $(MADARA_ROOT)/lib/libdatatypes_test.so $(MADARA_ROOT)/.
-  }
-
-  Source_Files {
-    tests/datatypes_test.cpp
-  }
-
-  Header_Files {
-  }
-}
-
 project (Test_Multicast_Mutex) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_mutex

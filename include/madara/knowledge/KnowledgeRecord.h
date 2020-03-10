@@ -16,6 +16,7 @@
 #include <memory>
 #include <type_traits>
 #include "madara/MadaraExport.h"
+#include "madara/utility/StlHelper.h"
 #include "madara/utility/StdInt.h"
 #include "madara/utility/Refcounter.h"
 #include "madara/logger/GlobalLogger.h"
@@ -28,6 +29,55 @@ namespace madara
 namespace knowledge
 {
 class ThreadSafeContext;
+
+/**
+ * Tags to specify what type to construct in KnowledgeRecord forwarding
+ * constructors. If you give one of the values defined in this namespace
+ * as the first argument to the KnowledgeRecord constructor, the remaining
+ * arguments will be forwarded to construct the underlying type in-place.
+ **/
+namespace tags
+{
+using utility::type;
+
+using integer_t = type<int64_t>;
+static const integer_t integer;
+static const integer_t int_;
+using double_t = type<double>;
+static const double_t double_;
+static const double_t dbl;
+using integers_t = type<std::vector<int64_t>>;
+static const integers_t integers;
+static const integers_t ints;
+using doubles_t = type<std::vector<double>>;
+static const doubles_t doubles;
+static const doubles_t dbls;
+using string_t = type<std::string>;
+static const string_t string;
+static const string_t str;
+using binary_t = type<std::vector<unsigned char>>;
+static const binary_t binary;
+
+template<typename T>
+struct any
+{
+  any() {}
+};
+
+template<typename T>
+struct shared_t
+{
+  shared_t() {}
+};
+
+/// Used to signal in-place shared_ptr construction in KnowledgeRecord
+/// Example: tags::shared(tags::integers)
+template<typename T>
+inline shared_t<T> shared(T)
+{
+  return shared_t<T>{};
+}
+}  // namespace tags
 
 /**
  * @class KnowledgeRecord
@@ -156,29 +206,17 @@ public:
 
   explicit KnowledgeRecord(logger::Logger& logger) noexcept;
 
-  /* Integer (int64_t) constructor, the default */
-  KnowledgeRecord(Integer value,
-    logger::Logger& logger = *logger::global_logger.get()) noexcept;
+  /* Integer constructor */
+  template<typename T,
+      utility::enable_if_<utility::is_int_numeric<T>(), int> = 0>
+  explicit KnowledgeRecord(
+      T value, logger::Logger& logger = *logger::global_logger.get()) noexcept;
 
-  /* int constructor */
-  explicit KnowledgeRecord(int value,
-    logger::Logger& logger = *logger::global_logger.get()) noexcept;
-
-  /* size_t constructor */
-  explicit KnowledgeRecord(uint64_t value,
-    logger::Logger& logger = *logger::global_logger.get()) noexcept;
-
-  /* uint32_t constructor */
-  explicit KnowledgeRecord(uint32_t value,
-    logger::Logger& logger = *logger::global_logger.get()) noexcept;
-
-  /* Double constructor */
-  KnowledgeRecord(double value,
-    logger::Logger& logger = *logger::global_logger.get()) noexcept;
-
-  /* Float constructor */
-  explicit KnowledgeRecord(float value,
-    logger::Logger& logger = *logger::global_logger.get()) noexcept;
+  /* Floating point constructor */
+  template<typename T, typename std::enable_if<std::is_floating_point<T>::value,
+                           void*>::type = nullptr>
+  explicit KnowledgeRecord(
+      T value, logger::Logger& logger = *logger::global_logger.get()) noexcept;
 
   /* Integer array constructor */
   explicit KnowledgeRecord(const std::vector<Integer>& value,
@@ -265,6 +303,17 @@ public:
   }
 
   /**
+   * Construct a vector of integers within this KnowledgeRecord.
+   *
+   * @param args arguments forwarded to the vector constructor
+   **/
+  template<typename... Args>
+  void emplace(tags::integers_t, Args&&... args)
+  {
+    emplace_integers(std::forward<Args>(args)...);
+  }
+
+  /**
    * Construct a vector of doubles within this KnowledgeRecord.
    *
    * @param args All arguments are forwarded to the vector constructor
@@ -274,6 +323,17 @@ public:
   {
     emplace_vec<double, DOUBLE_ARRAY, &KnowledgeRecord::double_array_>(
         std::forward<Args>(args)...);
+  }
+
+  /**
+   * Construct a vector of doubles within this KnowledgeRecord.
+   *
+   * @param args arguments forwarded to the vector constructor
+   **/
+  template<typename... Args>
+  void emplace(tags::doubles_t, Args&&... args)
+  {
+    emplace_doubles(std::forward<Args>(args)...);
   }
 
   /**
@@ -289,6 +349,17 @@ public:
   }
 
   /**
+   * Construct a string within this KnowledgeRecord.
+   *
+   * @param args arguments forwarded to the string constructor
+   **/
+  template<typename... Args>
+  void emplace(tags::string_t, Args&&... args)
+  {
+    emplace_string(std::forward<Args>(args)...);
+  }
+
+  /**
    * Construct a file (vector of unsigned char) within this KnowledgeRecord.
    *
    * @param args All arguments are forwarded to the vector constructor
@@ -298,6 +369,17 @@ public:
   {
     emplace_vec<unsigned char, UNKNOWN_FILE_TYPE,
         &KnowledgeRecord::file_value_>(std::forward<Args>(args)...);
+  }
+
+  /**
+   * Construct a binary (vector of unsigned char) within this KnowledgeRecord.
+   *
+   * @param args arguments forwarded to the vector constructor
+   **/
+  template<typename... Args>
+  void emplace(tags::binary_t, Args&&... args)
+  {
+    emplace_binary(std::forward<Args>(args)...);
   }
 
   /**
@@ -313,6 +395,60 @@ public:
   {
     emplace_val<CircBuf, BUFFER, &KnowledgeRecord::buf_, true>(
         std::forward<Args>(args)...);
+  }
+
+  /**
+   * Forwarding constructor for integer arrays
+   * Each argument past the first will be forwarded to construct a
+   * std::vector<Integer> in-place within the new record.
+   **/
+  template<typename... Args>
+  KnowledgeRecord(tags::integers_t, Args&&... args)
+    : int_array_(
+          std::make_shared<std::vector<Integer>>(std::forward<Args>(args)...)),
+      type_(INTEGER_ARRAY)
+  {
+  }
+
+  /**
+   * Forwarding constructor for double arrays
+   * Each argument past the first will be forwarded to construct a
+   * std::vector<double> in-place within the new record.
+   **/
+  template<typename... Args>
+  KnowledgeRecord(tags::doubles_t, Args&&... args)
+    : double_array_(
+          std::make_shared<std::vector<double>>(std::forward<Args>(args)...)),
+      type_(DOUBLE_ARRAY)
+  {
+  }
+
+  /**
+   * Forwarding constructor for strings
+   * Each argument past the first will be forwarded to construct a
+   * std::string in-place within the new record.
+   *
+   * For example:
+   * KnowledgeRecord rec (tags::string, "Hello World");
+   **/
+  template<typename... Args>
+  KnowledgeRecord(tags::string_t, Args&&... args)
+    : str_value_(std::make_shared<std::string>(std::forward<Args>(args)...)),
+      type_(STRING)
+  {
+  }
+
+  /**
+   * Forwarding constructor for binary files (blobs)
+   * Each argument past the first will be forwarded to construct a
+   * std::vector<unsigned char> in-place within the new record.
+   **/
+  template<typename... Args>
+  KnowledgeRecord(tags::binary_t, Args&&... args)
+    : file_value_(std::make_shared<std::vector<unsigned char>>(
+          std::forward<Args>(args)...)),
+      type_(UNKNOWN_FILE_TYPE)
+  {
   }
 
   /**
@@ -352,7 +488,9 @@ public:
    * @param    index   index of the value to set
    * @param    value   the value to set at the specified index
    **/
-  void set_index(size_t index, Integer value);
+  template<typename T,
+      utility::enable_if_<utility::is_int_numeric<T>(), int> = 0>
+  void set_index(size_t index, T value);
 
   /**
    * sets the value at the index to the specified value. If the
@@ -361,7 +499,9 @@ public:
    * @param    index   index of the value to set
    * @param    value   the value to set at the specified index
    **/
-  void set_index(size_t index, double value);
+  template<typename T, typename std::enable_if<std::is_floating_point<T>::value,
+                           void*>::type = nullptr>
+  void set_index(size_t index, T value);
 
   /**
    * converts the value to a string.
@@ -382,7 +522,7 @@ public:
    * @param   buf_size   the character buffer max size
    * @return  the number of characters placed in buffer
    **/
-  size_t to_managed_buffer(char * buffer, size_t buf_size) const;
+  size_t to_managed_buffer(char* buffer, size_t buf_size) const;
 
   /**
    * @return a shared_ptr, sharing with the internal one.
@@ -965,7 +1105,7 @@ public:
   /**
    * Logical not.
    **/
-  bool operator!(void)const;
+  bool operator!(void) const;
 
   /**
    * Negate.
@@ -981,6 +1121,18 @@ public:
    * Move Assignment
    **/
   KnowledgeRecord& operator=(KnowledgeRecord&& rhs) noexcept;
+
+  /**
+   * Assigns a convertible value to the knowledge record
+   **/
+  template<typename T>
+  auto operator=(T&& t) ->
+      typename std::enable_if<!std::is_convertible<T, KnowledgeRecord>::value,
+          decltype(this->set_value(std::forward<T>(t)), *this)>::type
+  {
+    this->set_value(std::forward<T>(t));
+    return *this;
+  }
 
   /**
    * In-place addition operator
@@ -1345,15 +1497,7 @@ public:
    **/
   template<typename OutputIterator>
   size_t get_history_range(
-      OutputIterator out, size_t index, size_t count) const
-  {
-    return for_history_range(
-        [&out](const KnowledgeRecord& rec) {
-          *out = rec;
-          ++out;
-        },
-        index, count);
-  }
+      OutputIterator out, size_t index, size_t count) const;
 
   /**
    * Copy the @a count oldest stored history entries of this record to the
@@ -1439,12 +1583,38 @@ public:
   }
 
   /**
+   * Return the @a count oldest stored history entries of this record in
+   * a vector of the given element type, which must support knoweldge_cast<>
+   * from KnowledgeRecord.
+   **/
+  template<typename T>
+  std::vector<T> get_oldest(size_t count) const
+  {
+    std::vector<T> ret;
+    get_oldest(std::back_inserter(ret), count);
+    return ret;
+  }
+
+  /**
    * Return the @a count newest stored history entries of this record in
    * a vector.
    **/
   std::vector<KnowledgeRecord> get_newest(size_t count) const
   {
     std::vector<KnowledgeRecord> ret;
+    get_newest(std::back_inserter(ret), count);
+    return ret;
+  }
+
+  /**
+   * Return the @a count newest stored history entries of this record in
+   * a vector of the given element type, which must support knoweldge_cast<>
+   * from KnowledgeRecord.
+   **/
+  template<typename T>
+  std::vector<T> get_newest(size_t count) const
+  {
+    std::vector<T> ret;
     get_newest(std::back_inserter(ret), count);
     return ret;
   }
@@ -1478,6 +1648,19 @@ public:
   auto get_history(OutputIterator out) const -> decltype(*out, size_t{})
   {
     return get_history_range(out, 0, std::numeric_limits<size_t>::max());
+  }
+
+  /**
+   * Get a copy of the entire stored history of this record in a vector of
+   * the given element type, which must support knoweldge_cast<>
+   * from KnowledgeRecord.
+   **/
+  template<typename T>
+  std::vector<T> get_history() const
+  {
+    std::vector<T> ret;
+    get_history(std::back_inserter(ret));
+    return ret;
   }
 
   /**
@@ -1624,7 +1807,7 @@ typedef ::std::map<std::string, KnowledgeRecord*> KnowledgeRecords;
 typedef std::string KnowledgeKey;
 typedef KnowledgeRecord KnowledgeValue;
 
-MADARA_EXPORT void safe_clear(KnowledgeMap & map);
+MADARA_EXPORT void safe_clear(KnowledgeMap& map);
 
 /**
  * Returns the maximum quality within the records
@@ -1640,8 +1823,8 @@ uint32_t max_quality(const KnowledgeRecords& records);
  **/
 uint32_t max_quality(const KnowledgeMap& records);
 
-}
-}
+}  // namespace knowledge
+}  // namespace madara
 
 /**
  * output stream buffering
@@ -1652,3 +1835,5 @@ uint32_t max_quality(const KnowledgeMap& records);
 #include "KnowledgeRecord.inl"
 
 #endif  // _MADARA_KNOWLEDGE_RECORD_H_
+
+#include "KnowledgeCast.h"

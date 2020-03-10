@@ -60,90 +60,19 @@
 #include <cstring>
 #include <type_traits>
 #include <stdbool.h>
-#include <madara/knowledge/KnowledgeRecord.h>
+#include "madara/knowledge/KnowledgeRecord.h"
+#include "madara/utility/StlHelper.h"
 
 namespace madara
 {
 namespace knowledge
 {
-#ifdef DOXYGEN
-
-/**
- * Convert a KnowledgeRecord into a specified type.
- *
- * Supports std::string, bool, all arithmetic primitives, and std::vector of
- * arithmetic primitives. This is implemented using the appropriate "to_..."
- * methods provided by KnowledgeRecord, so refer to those for details on
- * type coercion.
- *
- * Internally this overload calls the version which takes type<Out> as first
- * parameter, so to support custom types, overload that form.
- *
- * @tparam Out the type to try to convert to (must be specified explicitly)
- * @param in the KnowledgeRecord to read from
- * @return a value of type Out
- **/
-template<class Out>
-inline Out knowledge_cast(const KnowledgeRecord& in);
-
-/**
- * Convert a KnowledgeRecord into a specified type, using the "type" helper
- * struct to specify type.
- *
- * Supports std::string, bool, all arithmetic primitives, and std::vector of
- * arithmetic primitives. This is implemented using the appropriate "to_..."
- * methods provided by KnowledgeRecord, so refer to those for details on
- * type coercion.
- *
- * To support custom types, overload this form with other Out types. These
- * overloads should exist in the same namespace as the types themselves so
- * they can be found with ADL.
- *
- * @param t an instance of the type helper struct to infer target type
- * @param in the KnowledgeRecord to read from
- * @return a value of type Out
- * @tparam Out the type to try to convert to (inferred from t)
- **/
-template<class Out>
-inline Out knowledge_cast(type<T> t, const KnowledgeRecord& in);
-
-template<class Out>
-/**
- * Convert a KnowledgeRecord into a specified type, using an output parameter.
- *
- * Supports std::string, bool, all arithmetic primitives, and STL containers of
- * arithmetic primitives. This is implemented using the appropriate "to_..."
- * methods provided by KnowledgeRecord, so refer to those for details on
- * type coercion.
- *
- * For most types, this calls the form which takes a type struct, and returns
- * by value, putting that value into out. For STL containers, it modifies those
- * containers inplace. For resizable containers, such as std::vector, the
- * container will be resized to fit the value. For unresizable containers,
- * such as std::array and native C arrays, excess values will be discarded,
- * and any extra values in the target will be zeroed.
- *
- * @param in the KnowledgeRecord to read from
- * @param out output parameter to put converted value
- * @return a value of type Out
- * @tparam Out the type to try to convert to (inferred from out)
- **/
-inline Out& knowledge_cast(const KnowledgeRecord& in, Out& out);
-
-/**
- * Convert a given value into a KnowledgeRecord
- *
- * Supports std::string, bool, all arithmetic primitives, and std::vector of
- * arithmetic primitives.
- *
- * @param in the value to convert
- * @return a new KnowledgeRecord initialized from in
- * @tparam In the type to convert from (inferred from in)
- **/
-template<class In>
-inline KnowledgeRecord knowledge_cast(const In& in);
-
-#else
+template<class T>
+struct type
+{
+  type() = default;
+  using self = T;
+};
 
 /// By default, call constructor of target class;
 /// for other semantics, define specializations
@@ -158,7 +87,7 @@ inline auto knowledge_cast(type<O>, const KnowledgeRecord& in) ->
 /// Convert KnowledgeRecord to floating point
 template<class O>
 inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
-    -> enable_if_<std::is_floating_point<O>::value, O>
+    -> utility::enable_if_<std::is_floating_point<O>::value, O>
 {
   return static_cast<O>(in.to_double());
 }
@@ -166,7 +95,8 @@ inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
 /// Convert KnowledgeRecord to integer
 template<class O>
 inline auto knowledge_cast(type<O>, const KnowledgeRecord& in)
-    -> enable_if_<std::is_integral<O>::value || std::is_enum<O>::value, O>
+    -> utility::enable_if_<std::is_integral<O>::value || std::is_enum<O>::value,
+        O>
 {
   return static_cast<O>(in.to_integer());
 }
@@ -232,8 +162,6 @@ inline size_t get_size(const T (&arr)[N])
   (void)arr;
   return N;
 }
-
-//MADARA_MAKE_VAL_SUPPORT_TEST(resize, x, x.resize(size_t{}));
 
 template<typename T>
 inline auto share_array(const KnowledgeRecord& in) ->
@@ -311,20 +239,6 @@ simple_span<T> make_span(T* ptr, size_t size)
   return {ptr, size};
 }
 
-}  // namespace impl
-
-/// Convert KnowledgeRecord via an output parameter. This overload calls the
-/// underlying version that returns by value, and sets to out
-template<typename T>
-inline auto knowledge_cast(const KnowledgeRecord& in, T& out) ->
-    typename std::enable_if<!impl::supports_target_container<T&>::value,
-        decltype(out = knowledge_cast(type<T>{}, in))>::type
-{
-  return (out = knowledge_cast(type<T>{}, in));
-}
-
-namespace impl
-{
 template<typename T>
 struct is_basic_string : std::false_type
 {
@@ -349,42 +263,18 @@ inline std::basic_string<CharT, Traits, Allocator>& knowledge_cast(
   return (out = knowledge_cast(type<std::string>{}, in));
 }
 
-/// Conert KnowlegeRecord into an existing container (such as std::vector,
-/// std::array, and native C arrays)
-template<typename T>
-inline auto knowledge_cast(const KnowledgeRecord& in, T& out) ->
-    typename std::enable_if<impl::supports_target_container<T&>::value &&
-                                !impl::is_basic_string<T>::value,
-        decltype(out)>::type
-{
-  auto ints = impl::share_array<T>(in);
-  if (ints)
-  {
-    size_t count = ints->size();
-    count = std::min(impl::resize_or_clear(out, count), count);
-    std::copy_n(std::begin(*ints), count, std::begin(out));
-  }
-  else
-  {
-    auto ints_arr = impl::to_array<T>(in);
-    size_t count = ints_arr.size();
-    count = std::min(impl::resize_or_clear(out, count), count);
-    std::copy_n(std::begin(ints_arr), count, std::begin(out));
-  }
-  return out;
-}
-
 /// Convert KnowledgeRecord into an existing native C array, passed via
 /// a pointer and size
-template<typename T>
-inline auto knowledge_cast(const KnowledgeRecord& in, T* out, size_t size)
-    -> decltype(
-        knowledge_cast(in, std::declval<impl::simple_span<T>&>()), (T*)nullptr)
-{
-  auto span = impl::make_span(out, size);
-  knowledge_cast(in, span);
-  return out;
-}
+// template<typename T>
+// inline auto knowledge_cast(const KnowledgeRecord& in, T* out, size_t size)
+//    -> decltype(
+//        knowledge_cast(in, std::declval<impl::simple_span<T>&>()),
+//        (T*)nullptr)
+//{
+//  auto span = impl::make_span(out, size);
+//  knowledge_cast(in, span);
+//  return out;
+//}
 
 /// Identity NOP for converting KnowledgeRecord to KnowledgeRecord
 inline KnowledgeRecord knowledge_cast(
@@ -464,15 +354,15 @@ inline auto knowledge_cast(const T& in) -> typename std::enable_if<
 template<typename T>
 inline auto knowledge_cast(const KnowledgeRecord& in, T&& out)
     -> decltype(*out = knowledge_cast(
-                    type<typename decay_<T>::container_type::value_type>{}, in))
+                    type<typename utility::decay_<T>::container_type::value_type>{}, in))
 {
   return (*out = knowledge_cast(
               type<typename decay_<T>::container_type::value_type>{}, in));
 }
 
 template<typename Container>
-inline const void knowledge_cast(const KnowledgeRecord& in,
-	std::back_insert_iterator<Container> iter)
+inline const void knowledge_cast(
+    const KnowledgeRecord& in, std::back_insert_iterator<Container> iter)
 {
   using out_type = typename Container::value_type;
   iter = knowledge_cast(type<out_type>{}, in);
@@ -496,8 +386,6 @@ inline const KnowledgeRecord& knowledge_cast(
 {
   return out = in;
 }
-
-#endif  // !DOXYGEN
 
 /// Generates comparison operators for KnowledgeRecords, in combination with
 /// types that can be knowledge_cast into KnowledgeRecords
@@ -634,13 +522,19 @@ MADARA_KNOWLEDGE_COMPOSITE_OP(/=)
 MADARA_KNOWLEDGE_COMPOSITE_OP(*=)
 MADARA_KNOWLEDGE_COMPOSITE_OP(%=)
 
-//MADARA_MAKE_VAL_SUPPORT_TEST(cast_to_record, x, knowledge_cast(x));
-//MADARA_MAKE_VAL_SUPPORT_TEST(
-//    cast_from_record, x, knowledge_cast(KnowledgeRecord{}, x));
-
+template<typename OutputIterator>
+size_t KnowledgeRecord::get_history_range(
+    OutputIterator out, size_t index, size_t count) const
+{
+  return for_history_range(
+      [&out](const KnowledgeRecord& rec) {
+        knowledge_cast(rec, *out);
+        ++out;
+      },
+      index, count);
+}
 
 }  // namespace knowledge
-
 }  // namespace madara
 
 #endif

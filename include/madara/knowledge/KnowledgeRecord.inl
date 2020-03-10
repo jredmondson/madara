@@ -27,42 +27,21 @@ inline KnowledgeRecord::KnowledgeRecord(logger::Logger& logger) noexcept
 {
 }
 
+
+template<typename T, utility::enable_if_<utility::is_int_numeric<T>(), int>>
 inline KnowledgeRecord::KnowledgeRecord(
-  Integer value, logger::Logger& logger) noexcept
+    T value, logger::Logger& logger) noexcept
   : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
 {
 }
 
+template<typename T,
+    typename std::enable_if<std::is_floating_point<T>::value, void*>::type>
 inline KnowledgeRecord::KnowledgeRecord(
-  int value, logger::Logger& logger) noexcept
-  : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
-{
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
-  uint64_t value, logger::Logger& logger) noexcept
-  : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
-{
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
-  uint32_t value, logger::Logger& logger) noexcept
-  : logger_(&logger), int_value_((Integer)value), type_(INTEGER)
-{
-}
-
-inline KnowledgeRecord::KnowledgeRecord(
-  double value, logger::Logger& logger) noexcept
+    T value, logger::Logger& logger) noexcept
   : logger_(&logger), double_value_((double)value), type_(DOUBLE)
 {
 }
-
-inline KnowledgeRecord::KnowledgeRecord(
-  float value, logger::Logger& logger) noexcept
-  : logger_(&logger), double_value_((double)value), type_(DOUBLE)
-{
-}
-
 
 inline KnowledgeRecord::KnowledgeRecord(
     const std::vector<Integer>& value, logger::Logger& logger)
@@ -1491,13 +1470,12 @@ inline void KnowledgeRecord::set_value(
       std::move(new_value));
 }
 
-#ifdef _MADARA_USE_CEREAL_
 /**
  * sets the value at the index to the specified value. If the
  * record was previously not an array or if the array is not
  * large enough, a new array is created.
  **/
-template<typename T, utility::enable_if_<is_int_numeric<T>(), int>>
+template<typename T, utility::enable_if_<utility::is_int_numeric<T>(), int>>
 inline void KnowledgeRecord::set_index(size_t index, T value)
 {
   if (has_history())
@@ -1572,86 +1550,7 @@ inline void KnowledgeRecord::set_index(size_t index, T value)
 
   double_array_->at(index) = value;
 }
-#else 
 
-/**
- * sets the value at the index to the specified value. If the
- * record was previously not an array or if the array is not
- * large enough, a new array is created.
- **/
-inline void KnowledgeRecord::set_index(size_t index, Integer value)
-{
-  if (has_history())
-  {
-    KnowledgeRecord tmp = get_newest();
-    tmp.set_index(index, value);
-    set_value(std::move(tmp));
-    return;
-  }
-  if (type_ == DOUBLE_ARRAY)
-  {
-    // let the set_index for doubles take care of this
-    set_index(index, double(value));
-    return;
-  }
-  else if (type_ == INTEGER_ARRAY)
-  {
-    unshare();
-
-    if (index >= int_array_->size())
-    {
-      int_array_->resize(index + 1);
-    }
-  }
-  else
-  {
-    emplace_integers(index + 1);
-  }
-
-  int_array_->at(index) = value;
-}
-
-/**
- * sets the value at the index to the specified value. If the
- * record was previously not an array or if the array is not
- * large enough, a new array is created.
- **/
-inline void KnowledgeRecord::set_index(size_t index, double value)
-{
-  if (has_history())
-  {
-    KnowledgeRecord tmp = get_newest();
-    tmp.set_index(index, value);
-    set_value(std::move(tmp));
-    return;
-  }
-  if (type_ == INTEGER_ARRAY)
-  {
-    std::vector<double> tmp(int_array_->begin(), int_array_->end());
-    emplace_doubles(std::move(tmp));
-
-    if (index >= double_array_->size())
-    {
-      double_array_->resize(index + 1);
-    }
-  }
-  else if (type_ != DOUBLE_ARRAY)
-  {
-    emplace_doubles(index + 1);
-  }
-  else
-  {
-    unshare();
-
-    if (index >= double_array_->size())
-    {
-      double_array_->resize(index + 1);
-    }
-  }
-
-  double_array_->at(index) = value;
-}
-#endif // _MADARA_USE_CEREAL_
 
 
 inline std::shared_ptr<const std::string> KnowledgeRecord::share_string() const
