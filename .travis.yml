@@ -1,4 +1,3 @@
-#sudo: required
 dist: xenial
 group: travis_latest
 language: cpp
@@ -49,12 +48,6 @@ jobs:
       env: NAME="OSX 10.13 clang java" CLANG="clang" JAVA="java"
       os: osx
       osx_image: xcode9.3
-
-    # ICEBOXED: clang, osx, zeromq
-    #- compiler: clang
-    #  env: NAME="OSX 10.13 clang zmq" CLANG="clang" ZMQ="zmq"
-    #  os: osx
-    #  osx_image: xcode9.3
 
       # clang, osx, simtime
     - compiler: clang
