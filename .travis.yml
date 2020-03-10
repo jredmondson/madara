@@ -120,12 +120,12 @@ jobs:
     # g++, linux, android, zmq
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq" TESTS=""
+      env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq"
 
     # g++, linux, android, ssl
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android ssl" ANDROID="android" SSL="ssl" TESTS=""
+      env: NAME="Ubuntu 16.04 android ssl" ANDROID="android" SSL="ssl"
 
 addons:
   apt:
