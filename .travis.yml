@@ -1,4 +1,4 @@
-sudo: required
+#sudo: required
 dist: xenial
 group: travis_latest
 language: cpp
@@ -6,14 +6,14 @@ os:
   - linux
 
 branches:
-  excludes:
+  exclude:
     - gh-pages
 
 compiler:
   - gcc
 
 env:
-  matrix:
+  jobs:
   global:
     - MADARA_ROOT=$TRAVIS_BUILD_DIR
     - GAMS_ROOT=$TRAVIS_BUILD_DIR/gams
@@ -24,9 +24,11 @@ env:
     - TESTS="tests"
     - DYLD_LIBRARY_PATH=$CAPNP_ROOT/c++/.libs:$DYLD_LIBRARY_PATH:$MADARA_ROOT/lib:$GAMS_ROOT/lib:$VREP_ROOT
 
-matrix:
+jobs:
   allow_failures:
 
+    - env: NAME="Ubuntu 16.04 android ssl" ANDROID="android" SSL="ssl"
+    - env: NAME="Ubuntu 16.04 android zmq" ANDROID="android" ZMQ="zmq"
   include:
       ################MAC#####################
 
@@ -123,7 +125,7 @@ matrix:
     # g++, linux, android, ssl
     - compiler: gcc
       os: linux
-      env: NAME="Ubuntu 16.04 android" ANDROID="android" SSL="ssl" TESTS=""
+      env: NAME="Ubuntu 16.04 android ssl" ANDROID="android" SSL="ssl" TESTS=""
 
 addons:
   apt:
