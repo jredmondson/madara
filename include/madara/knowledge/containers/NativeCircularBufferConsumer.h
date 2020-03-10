@@ -393,9 +393,9 @@ private:
   static void check_name(const char* func, const char* name);
   void check_context(const char* func) const;
 };
-}
-}
-}
+} // containers
+} // knowledge
+} // madara
 
 #include "NativeCircularBufferConsumer.inl"
 

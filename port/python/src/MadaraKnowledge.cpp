@@ -12,17 +12,10 @@
 #include "madara/knowledge/FileFragmenter.h"
 #include "madara/knowledge/FileRequester.h"
 #include "madara/knowledge/CheckpointPlayer.h"
-#include "madara/knowledge/AnyRegistry.h"
 #include "madara/filters/GenericFilters.h"
 #include "FunctionDefaults.h"
 #include "MadaraKnowledgeContainers.h"
 #include "MadaraKnowledge.h"
-
-/// to do: find a way to excise capnp feature where possible in python port
-#ifdef _USE_CAPNP_
-#include "capnp/schema-loader.h"
-#include "capnp/schema.h"
-#endif
 
 /**
  * @file MadaraModule.cpp
@@ -80,144 +73,6 @@ struct DontDestruct
   }
 };
 
-static capnp::SchemaLoader schema_loader;
-static std::map<std::string, DontDestruct<object>> registered_types;
-static std::map<uint64_t,
-    const std::pair<const std::string, DontDestruct<object>>*>
-    registered_tags;
-
-#define MADARA_MEMB(ret, klass, name, args) \
-  static_cast<ret(klass::*) args>(&klass::name)
-
-template<typename T, typename I>
-class_<T> define_basic_any(const char* name, const char* doc, I init)
-{
-  using namespace madara::knowledge;
-  using namespace madara::exceptions;
-
-  static auto get_capnp_bytes = [](const T& a) -> object
-    {
-      auto buf = a.get_capnp_buffer().asChars();
-      Py_buffer pybuf;
-      int err = PyBuffer_FillInfo(&pybuf, 0, (char*)buf.begin(),
-          buf.size(), true, PyBUF_CONTIG_RO);
-      if (err == -1)
-      {
-        PyErr_Print();
-        throw madara::exceptions::MadaraException("Bad python buffer");
-      }
-      return object(handle<>(PyMemoryView_FromBuffer(&pybuf)));
-    };
-
-#define MADARA_PYSETITEM(Key, Val)                                   \
-  .def("__setitem__", +[](T& a, Key key, Val val) { a[key] = val; }, \
-      "Set an element at the given index to a C++ " #Val)
-
-#define MADARA_PYASSIGN(Type)                                      \
-  .def("assign", MADARA_MEMB(void, T, assign, (const Type&)const), \
-      "Set the value to a C++ " #Type)
-
-#define MADARA_PYSETATTR(Type)                                  \
-  .def("__setattr__",                                           \
-      +[](T& a, const char* name, Type val) { a(name) = val; }, \
-      "Set a field of the given name to a C++ " #Type)
-
-  return class_<T>(name, doc, init)
-      .def("ref", MADARA_MEMB(AnyRef, T, ref, () const),
-          "Reference the object "
-          "with an AnyRef")
-      .def("ref", MADARA_MEMB(AnyRef, T, ref, (const char*)const),
-          "Get the named field as an AnyRef")
-      .def("ref", MADARA_MEMB(AnyRef, T, ref, (const std::string&)const),
-          "Get the named field as an AnyRef")
-      .def("__getattr__", MADARA_MEMB(AnyRef, T, ref, (const char*)const),
-          "Get the named field as an AnyRef")
-      .def("__getattr__",
-          MADARA_MEMB(AnyRef, T, ref, (const std::string&)const),
-          "Get the named field as an AnyRef")
-      .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (size_t) const),
-          "Get the indexed element as an AnyRef")
-      .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const char*)const),
-          "Get the indexed element as an AnyRef")
-      .def("__getitem__", MADARA_MEMB(AnyRef, T, at, (const std::string&)const),
-          "Get the indexed element as an AnyRef") MADARA_PYSETITEM(const char*,
-          Any) MADARA_PYSETITEM(const char*, AnyRef)
-          MADARA_PYSETITEM(const char*, int64_t) MADARA_PYSETITEM(
-              const char*, double) MADARA_PYSETITEM(const char*,
-              std::string) MADARA_PYSETITEM(const char*,
-              std::vector<int64_t>) MADARA_PYSETITEM(const char*,
-              std::vector<double>) MADARA_PYSETITEM(size_t,
-              Any) MADARA_PYSETITEM(size_t, AnyRef) MADARA_PYSETITEM(size_t,
-              int64_t) MADARA_PYSETITEM(size_t, double) MADARA_PYSETITEM(size_t,
-              std::string) MADARA_PYSETITEM(size_t, std::vector<int64_t>)
-              MADARA_PYSETITEM(size_t, std::vector<double>) MADARA_PYASSIGN(Any)
-                  MADARA_PYASSIGN(AnyRef) MADARA_PYASSIGN(int64_t)
-                      MADARA_PYASSIGN(double) MADARA_PYASSIGN(std::string)
-                          MADARA_PYASSIGN(std::vector<int64_t>) MADARA_PYASSIGN(
-                              std::vector<double>) MADARA_PYSETATTR(Any)
-                              MADARA_PYSETATTR(AnyRef) MADARA_PYSETATTR(int64_t)
-                                  MADARA_PYSETATTR(double) MADARA_PYSETATTR(
-                                      std::string)
-                                      MADARA_PYSETATTR(std::vector<int64_t>)
-                                          MADARA_PYSETATTR(std::vector<double>)
-      .def("to_integer", &T::to_integer,
-          "Convert to an integer. Zero by default")
-      .def("__int__", &T::to_integer, "Convert to an integer. Zero by default")
-      .def("to_double", &T::to_double, "Convert to an integer. Zero by default")
-      .def("__float__", &T::to_double, "Convert to an integer. Zero by default")
-      .def("to_integers", &T::to_integers,
-          "Convert to a list of integers. "
-          "Empty by default.")
-      .def("to_doubles", &T::to_doubles,
-          "Convert to a list of doubles. "
-          "Empty by default.")
-      .def("to_string", &T::to_string,
-          "Convert to a string. "
-          "If no other conversion is available, serialize to JSON.")
-      .def("__str__", &T::to_string,
-          "Convert to a string. "
-          "If no other conversion is available, serialize to JSON.")
-      .def("to_record", &T::to_record, "Convert to a KnowledgeRecord")
-      .def("__bool__",
-          +[](T& a) { return !a.empty() && a.template to<bool>(); },
-          "False if empty, otherwise based on held object.")
-      .def("size", &T::size, "Call .size() on held object")
-      .def("__len__", &T::size, "Call .size() on held object")
-      .def("empty", &T::empty, "Return true if there is no held object")
-      .def("list_fields",
-          +[](const T& a) {
-            std::vector<std::string> ret;
-            for (const auto& cur : a.list_fields())
-            {
-              ret.emplace_back(cur.name());
-            }
-            return ret;
-          },
-          "Return all registered field names as a list of strings")
-      .def("tag", &T::tag, "Gets the tag of the stored object")
-      .def("to_json", &T::to_json, "Serialize object as JSON")
-      .def("supports_size", &T::supports_size, "Check if size() is supported")
-      .def("supports_int_index", &T::supports_int_index,
-          "Check if integer indexing is supported")
-      .def("supports_string_index", &T::supports_string_index,
-          "Check if string indexing is supported")
-      .def("supports_fields", &T::supports_fields,
-          "Check if fields are supported")
-      .def("get_capnp_bytes", +get_capnp_bytes,
-          "Get a bytes array for the held object. Throws if held object "
-          "isn't a Cap'n Proto message.")
-      .def("reader",
-          +[](const T& a) -> object {
-            object bytes = get_capnp_bytes(a);
-            // object bytes(handle<>(PyByteArray_FromStringAndSize(buf.begin(),
-            // buf.size())));  std::vector<unsigned char> sbuf(buf.begin(),
-            // buf.begin() + buf.size());
-            return registered_types.at(a.tag())->attr("from_bytes")(bytes);
-          },
-          "Get a Cap'n Proto reader for held object. Throws if held object "
-          "isn't a Cap'n Proto message.");
-}
-
 void define_knowledge(void)
 {
   object ke = object(handle<>(PyModule_New("madara.knowledge")));
@@ -239,117 +94,6 @@ void define_knowledge(void)
 
   using namespace madara::knowledge;
   using namespace madara::exceptions;
-
-  define_basic_any<AnyRef>("AnyRef",
-      "A class that can refer to any type in a KnowledgeRecord", no_init);
-
-#define MADARA_REGIMPL(name, ...)                               \
-  .def("register_" #name,                                       \
-      +[](const char* tag) {                                    \
-        static const std::string my_tag = tag;                  \
-        Any::register_type<__VA_ARGS__>(my_tag.c_str());        \
-      },                                                        \
-      "Register C++ type " #name ". If called multiple times, " \
-      "calls after first are ignored.")                         \
-      .staticmethod("register_" #name)
-
-#define MADARA_REGIMPL_VECTOR(name, type) \
-  MADARA_REGIMPL(name##_vector, std::vector<type>)
-
-  static const auto load_capn = [](object obj) {
-    uint64_t id = extract<uint64_t>(obj.attr("schema").attr("node").attr("id"));
-
-    std::string buf = extract<std::string>(obj.attr("to_bytes")());
-
-    auto tag_info = registered_tags.at(id);
-
-    auto tag = tag_info->first.c_str();
-
-    return RegCapnObject(tag, buf.data(), buf.size());
-  };
-
-  define_basic_any<Any>(
-      "Any", "A class that can store any type in a KnowledgeRecord", no_init)
-      .def("__init__", make_constructor(+[](object obj) {
-        extract<const char*> exstr(obj);
-        if (exstr.check())
-        {
-          return std::make_shared<Any>(Any::construct(exstr()));
-        }
-
-        auto capnobj = load_capn(obj);
-
-        return std::make_shared<Any>(std::move(capnobj));
-      }),
-          "Construct from a Cap'n Proto message object, or a string type "
-          "tag previously registered with an Any.register_* function."
-          "In the latter case, the object will be default constructed.")
-      .def("replace",
-          +[](Any& a, object obj) {
-            extract<const char*> exstr(obj);
-            if (exstr.check())
-            {
-              a.emplace(exstr());
-              return;
-            }
-
-            auto capnobj = load_capn(obj);
-
-            a.set(std::move(capnobj));
-          },
-          "Replace using a Cap'n Proto message object, or a string type "
-          "tag previously registered with an Any.register_* function."
-          "In the latter case, the object will be default constructed.")
-          MADARA_REGIMPL(char, char) MADARA_REGIMPL(
-              uchar, unsigned char) MADARA_REGIMPL(schar,
-              signed char) MADARA_REGIMPL(int16, int16_t) MADARA_REGIMPL(int32,
-              int32_t) MADARA_REGIMPL(int64, int64_t) MADARA_REGIMPL(uint16,
-              uint16_t) MADARA_REGIMPL(uint32, uint32_t) MADARA_REGIMPL(uint64,
-              uint64_t) MADARA_REGIMPL(float, float) MADARA_REGIMPL(double,
-              double) MADARA_REGIMPL(string, std::string)
-              MADARA_REGIMPL_VECTOR(char, char) MADARA_REGIMPL_VECTOR(
-                  uchar, unsigned char) MADARA_REGIMPL_VECTOR(schar,
-                  signed char) MADARA_REGIMPL_VECTOR(int16, int16_t)
-                  MADARA_REGIMPL_VECTOR(int32, int32_t) MADARA_REGIMPL_VECTOR(
-                      int64, int64_t) MADARA_REGIMPL_VECTOR(uint16,
-                      uint16_t) MADARA_REGIMPL_VECTOR(uint32, uint32_t)
-                      MADARA_REGIMPL_VECTOR(uint64, uint64_t)
-                          MADARA_REGIMPL_VECTOR(float, float)
-                              MADARA_REGIMPL_VECTOR(double, double)
-                                  MADARA_REGIMPL_VECTOR(string, std::string)
-                                      MADARA_REGIMPL(string_string_map,
-                                          std::map<std::string, std::string>)
-                                          MADARA_REGIMPL(string_int64_map,
-                                              std::map<std::string, int64_t>)
-                                              MADARA_REGIMPL(string_double_map,
-                                                  std::map<std::string, double>)
-      .def("register_class",
-          +[](const std::string& a, const object& klass) {
-            uint64_t id =
-                extract<uint64_t>(klass.attr("schema").attr("node").attr("id"));
-
-            const std::string schema_raw = extract<std::string>(
-                klass.attr("schema").attr("node").attr("as_builder")().attr(
-                    "to_bytes")());
-            capnp::FlatArrayMessageReader msg(
-                {(const capnp::word*)schema_raw.data(), schema_raw.size()});
-            auto reader = msg.getRoot<capnp::schema::Node>();
-            capnp::StructSchema schema = schema_loader.load(reader).asStruct();
-
-            std::unique_ptr<std::string> copy(new std::string(a));
-            if (Any::register_schema(copy->c_str(), schema))
-            {
-              // Schema is registered, and name will be needed for remainder of
-              // process execution. OK to leak the copy.
-              copy.release();
-            }
-
-            registered_tags[id] =
-                &*(registered_types
-                        .emplace(a, DontDestruct<object>(std::move(klass)))
-                        .first);
-          })
-      .staticmethod("register_class");
 
   class_<madara::knowledge::CheckpointSettings>(
       "CheckpointSettings", "Settings for checkpoints and file saves", init<>())
@@ -548,8 +292,6 @@ void define_knowledge(void)
 
       .def(init<std::string>())
 
-      .def(init<const Any&>())
-
       .def(init<const madara::knowledge::KnowledgeRecord&>())
 
       // apply knowledge record to a context
@@ -581,13 +323,7 @@ void define_knowledge(void)
       .def("inc_index", &madara::knowledge::KnowledgeRecord::inc_index,
           "Increments an array element at a particular index")
 
-      // checks if record is any type
-      .def("is_any_type",
-          static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const>(
-              &madara::knowledge::KnowledgeRecord::is_any_type),
-          "returns if the record is Any type")
-
-      // checks if record is any type
+      // checks if record is array type
       .def("is_array_type",
           static_cast<bool (madara::knowledge::KnowledgeRecord::*)(void) const>(
               &madara::knowledge::KnowledgeRecord::is_array_type),
@@ -688,11 +424,6 @@ void define_knowledge(void)
               const std::string&)>(
               &madara::knowledge::KnowledgeRecord::set_value),
           "Sets the value to a string")
-
-      // sets a knowledge record to an Any
-      .def("set",
-          +[](KnowledgeRecord& rec, const Any& any) { rec.emplace_any(any); },
-          "Sets the value to an Any")
 
       // sets the contents of the record to a file
       .def("set_file",
@@ -950,9 +681,6 @@ void define_knowledge(void)
       .def("operator--", &madara::knowledge::KnowledgeRecord::operator--,
           "Subtracts one from the record",
           return_value_policy<reference_existing_object>())
-
-      .def("to_any", MADARA_MEMB(Any, KnowledgeRecord, to_any, () const),
-          "Convert this record to an Any")
 
       .staticmethod("get_precision")
       .staticmethod("set_fixed")
@@ -1565,20 +1293,6 @@ void define_knowledge(void)
               &madara::knowledge::KnowledgeBase::define_function),
           "Defines a MADARA KaRL function")
 
-      // emplace an empty Any value within a variable
-      .def("emplace_any",
-          static_cast<int (madara::knowledge::KnowledgeBase::*)(
-              const std::string&)>(
-              &madara::knowledge::KnowledgeBase::emplace_any),
-          "Atomically emplaces an empty Any value within the given variable")
-
-      // emplace an empty Any value within a variable
-      .def("emplace_any",
-          static_cast<int (madara::knowledge::KnowledgeBase::*)(
-              const madara::knowledge::VariableReference&)>(
-              &madara::knowledge::KnowledgeBase::emplace_any),
-          "Atomically emplaces an empty Any value within the given variable")
-
       // evaluate an expression
       .def("evaluate",
           static_cast<madara::knowledge::KnowledgeRecord (
@@ -2139,21 +1853,6 @@ void define_knowledge(void)
               &madara::knowledge::KnowledgeBase::set),
           m_set_2_of_3(args("key", "value", "settings"),
               "Sets a knowledge record to a string"))
-
-      // sets a knowledge record to an Any
-      .def("set",
-          +[](KnowledgeBase& kb, const std::string& key, const Any& value,
-               const madara::knowledge::EvalSettings& settings) {
-            kb.emplace_any(key, settings, value);
-          },
-          "Sets a knowledge record to an Any")
-
-      // sets a knowledge record to an Any
-      .def("set",
-          +[](KnowledgeBase& kb, const std::string& key, const Any& value) {
-            kb.emplace_any(key, value);
-          },
-          "Sets a knowledge record to an Any")
 
       // set the log level
       .def("set_log_level", &madara::knowledge::KnowledgeBase::set_log_level,

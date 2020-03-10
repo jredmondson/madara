@@ -7,7 +7,7 @@ feature (android) {
   verbatim (make, local, true) {
     SYSROOT = $(NDK_TOOLS)/sysroot
     
-    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared -lcapnp-0.6.1 -lcapnpc-0.6.1 -lcapnp-json-0.6.1 -lkj-0.6.1
+    LDLIBS = -l:libboost_system.a -l:libboost_filesystem.a -llog -lc++_shared
    
     ifeq ($(LZ4),1) 
         LDLIBS +=-llz4

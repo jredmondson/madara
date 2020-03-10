@@ -16,10 +16,6 @@ android                 = 0
 /// Enable this feature to enable boost (is required now)
 boost                   = 1
 
-/// @feature nocapnp
-/// Enable this feature if you want capnp support for custom types for variables
-capnp                     = 0
-
 /// @feature clang
 /// Enable this feature if you want to compile with clang++ and libc++
 clang                   = 0

@@ -16,7 +16,6 @@
 #include "madara/MadaraExport.h"
 #include "madara/logger/GlobalLogger.h"
 #include "madara/utility/IntTypes.h"
-#include "madara/utility/SupportTest.h"
 
 namespace madara
 {

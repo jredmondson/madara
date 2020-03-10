@@ -401,11 +401,6 @@ std::string KnowledgeRecord::to_string(const std::string& delimiter) const
     return ref_newest().to_string();
   }
 
-  if (type_ == ANY)
-  {
-    return any_value_->to_json();
-  }
-
   if (!is_string_type(type_))
   {
     madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
@@ -1394,10 +1389,6 @@ bool KnowledgeRecord::is_true(void) const
   else if (is_binary_file_type(type_))
   {
     return file_value_->size() >= 1;
-  }
-  else if (is_any_type(type_))
-  {
-    return !any_value_->empty();
   }
   else if (has_history())
   {

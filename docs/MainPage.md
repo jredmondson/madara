@@ -68,4 +68,4 @@ Places in the API documentation to start looking for information on:
 ___
 
 
-If you have any questions, please contact us through our main website at http://madara.sourceforge.net. Thanks!
+If you have any questions, please contact us through our main website at http://madara.ai. Thanks!

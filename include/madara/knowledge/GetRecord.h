@@ -11,7 +11,7 @@
 
 #include <madara/knowledge/KnowledgeRecord.h>
 #include <madara/knowledge/KnowledgeCast.h>
-#include <madara/utility/SupportTest.h>
+#include <madara/utility/StlHelper.h>
 
 #include "madara/exceptions/MadaraException.h"
 

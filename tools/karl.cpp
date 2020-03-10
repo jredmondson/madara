@@ -11,8 +11,8 @@
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/KnowledgeBase.h"
-#include "madara/knowledge/AnyRegistry.h"
 #include "madara/threads/Threader.h"
+#include "madara/utility/StlHelper.h"
 
 #include "madara/utility/Utility.h"
 #include "madara/utility/NamedVectorCombinator.h"
@@ -26,12 +26,6 @@
 
 #ifdef _USE_LZ4_
 #include "madara/filters/lz4/LZ4BufferFilter.h"
-#endif
-
-#ifdef _USE_CAPNP_
-#include "capnp/schema-parser.h"
-#include "capnp/schema.h"
-#include <boost/algorithm/string.hpp>
 #endif
 
 // convenience namespaces and typedefs
@@ -294,15 +288,6 @@ public:
 // originator debug filter to add if requested
 StatsFilter stats_filter;
 
-#ifdef _USE_CAPNP_
-// Capnp types and globals
-kj::Vector<kj::StringPtr> capnp_import_dirs;
-std::vector<std::string> capnp_msg;
-std::vector<std::string> capnp_type;
-bool capnp_msg_type_param_flag = false;
-bool capnp_import_dirs_flag = false;
-#endif
-
 // handle command line arguments
 void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 {
@@ -525,18 +510,6 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "\n",
           argv[0]);
 
-#ifdef _USE_CAPNP_
-          madara_logger_ptr_log (logger::global_logger.get (), logger::LOG_ALWAYS,
-            "  [-n|--capnp tag:msg_type] register tag with given message "
-            "schema.\n"
-            "                            See also -nf and -ni.\n"
-            "  [-nf|--capnp-file]       load capnp file. Must appear after -n "
-            "and -ni.\n"
-            "  [-ni|--capnp-import ]    add directory to capnp directory "
-            "imports.\n"
-            "                           Must appear before all -n and -nf.\n\n");
-#endif   // _USE_CAPNP_
-
       exit(0);
     }
     else if(arg1 == "-i" || arg1 == "--input")
@@ -741,151 +714,6 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
       }
       ++i;
     }
-#ifdef _USE_CAPNP_
-    else if(arg1 == "-ni")
-    {
-      if(i + 1 < argc)
-      {
-        std::string dirnames = argv[i + 1];
-
-        std::vector<std::string> splitters, tokens, pivot_list;
-        splitters.push_back(":");
-
-        utility::tokenizer(dirnames, splitters, tokens, pivot_list);
-
-        for(auto token : tokens)
-        {
-          capnp_import_dirs.add(token);
-        }
-
-        capnp_import_dirs_flag = true;
-      }
-      else
-      {
-        // print out error log
-        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-            "ERROR: parameter -ni dir1[:dir2:dir3]\n");
-        exit(-1);
-      }
-
-      ++i;
-    }
-    else if(arg1 == "-n")
-    {
-      if(i + 1 < argc)
-      {
-        std::string msgtype_pair = argv[i + 1];
-
-        std::vector<std::string> splitters, tokens, pivot_list;
-        splitters.push_back(":");
-
-        utility::tokenizer(msgtype_pair, splitters, tokens, pivot_list);
-
-        if(tokens.size() == 2)
-        {
-          capnp_msg.push_back(tokens[0]);
-          capnp_type.push_back(tokens[1]);
-        }
-        else
-        {
-          // print out error log
-          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-              "ERROR: parameter -n requires two tokens, "
-              "in the form 'msg:type'\n");
-          exit(-1);
-        }
-
-        capnp_msg_type_param_flag = true;
-      }
-      else
-      {
-        // print out error log
-        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-            "ERROR: parameter [-n|] msg:type\n");
-        exit(-1);
-      }
-
-      ++i;
-    }
-    else if(arg1 == "-nf" || arg1 == "--capnp")
-    {
-      if(i + 1 < argc)
-      {
-        // capnp_import_dirs_flag && capnp_msg_type_param_flag
-        if(!capnp_import_dirs_flag)
-        {
-          // write loggercode and continue
-          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-              "ERROR: parameter -ni is missing or must precede -nf param\n");
-          ++i;
-          continue;
-        }
-
-        if(!capnp_msg_type_param_flag)
-        {
-          // write loggercode and continue
-          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-              "ERROR: parameter -n is missing or must precede -nf param\n");
-          ++i;
-          continue;
-        }
-
-        std::string tagname;
-
-        std::string filename = argv[i + 1];
-
-        static capnp::SchemaParser schparser;
-        capnp::ParsedSchema ps;
-        //ps = schparser.parseDiskFile(utility::extract_filename(filename),
-        //    filename, capnp_import_dirs.asPtr());
-        //ps = schparser.parseFromDirectory (
-        //  "", utility::extract_filename (filename),
-        //  capnp_import_dirs.asPtr ());
-        auto fs = kj::newDiskFilesystem ();
-        ps = schparser.parseFromDirectory(fs->getCurrent(),
-            kj::Path::parse(filename), nullptr);
-
-        //auto dir = kj::newInMemoryDirectory (kj::nullClock ());
-        //auto path = kj::Path::parse(filename);
-        //dir->openFile(path, kj::WriteMode::CREATE | kj::WriteMode::CREATE_PARENT)
-        //     ->writeAll("struct Foo {}");
-        //auto schema = parser->parseFromDirectory(*dir, path, nullptr);
-
-        std::string msg;
-        std::string typestr;
-        capnp::ParsedSchema ps_type;
-        size_t idx = 0;
-
-        for(idx = 0; idx < capnp_msg.size(); ++idx)
-        {
-          msg = capnp_msg[idx];
-          typestr = capnp_type[idx];
-          ps_type = ps.getNested(typestr);
-
-          if(!madara::knowledge::AnyRegistry::register_schema(
-                  capnp_msg[idx].c_str(), ps_type.asStruct()))
-          {
-            madara_logger_ptr_log(logger::global_logger.get(),
-                logger::LOG_ERROR, "CAPNP Failed on file  %s ",
-                utility::extract_filename(filename).c_str());
-          }
-          else
-          {
-            madara_logger_ptr_log(logger::global_logger.get(),
-                logger::LOG_TRACE, "CAPNP Loaded file  %s ",
-                utility::extract_filename(filename).c_str());
-          }
-        }
-      }
-      else
-      {
-        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-            "ERROR: parameter [-nf|--capnp] filename\n");
-      }
-
-      ++i;
-    }
-#endif
     else if(arg1 == "-o" || arg1 == "--host")
     {
       if(i + 1 < argc)

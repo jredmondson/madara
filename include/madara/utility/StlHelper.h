@@ -1,16 +1,13 @@
-#ifndef INCL_MADARA_UTILITY_SUPPORT_TEST_H
-#define INCL_MADARA_UTILITY_SUPPORT_TEST_H
+#pragma once
 
 /**
- * @file SupportTest.h
- * @author David Kyle <dskyle@sei.cmu.edu>
+ * @file Comparators.h
+ * @author James Edmondson <jedmondson@gmail.com>
  *
- * Provides MADARA_MAKE_SUPPORT_TEST macro
+ * General helpers for STL conversions and usage
  **/
 
 #include <type_traits>
-#include <memory>
-#include <initializer_list>
 
 /**
  * Macro which generates feature testing traits, to allow enabling features
@@ -62,8 +59,6 @@ namespace madara
 {
 namespace utility
 {
-inline namespace core
-{
 /// helper type for specifying template type parameters using a function
 /// argument instead of inside explicit "<...>". This interacts more flexibly
 /// with overloading and ADL.
@@ -82,9 +77,25 @@ using enable_if_ = typename std::enable_if<Pred, T>::type;
 template<typename T>
 using decay_ = typename std::decay<T>::type;
 
-/// Less verbose synonym for std::remove_reference
+/**
+ * Creates a unique_ptr for the templated type
+ **/
+template<typename T, typename... Args>
+std::unique_ptr<T> mk_unique(Args&&... args)
+{
+  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+}
+
+/**
+ * Converts a typed value into a unique_ptr of a decayed type
+ **/
 template<typename T>
-using remove_reference_ = typename std::remove_reference<T>::type;
+std::unique_ptr<decay_<T>> into_unique(T&& val)
+{
+  using V = decay_<T>;
+  return mk_unique<V>(std::forward<T>(val));
+}
+
 
 /// Less verbose equivalent for std::is_same
 template<typename T, typename U>
@@ -92,6 +103,7 @@ constexpr bool is_same()
 {
   return std::is_same<T, U>::value;
 }
+
 
 /// Composition of std::is_same and std::decay
 template<typename T, typename U>
@@ -163,134 +175,6 @@ constexpr bool is_int_numeric()
   return is_integral<T>() || is_enum<T>();
 }
 
-/// Convenience trait for accepting various reference types of the same
-/// underlying type
-template<typename TParam, typename Actual, typename T = void>
-using enable_if_same_decayed = enable_if_<is_same_decayed<TParam, Actual>(), T>;
-
-/// Helper function for forwarding std::initializer_list through perfect-
-/// forwarding interfaces (such as emplace methods). Wrap the braced list
-/// in mk_init() to force it to be treated as an initializer_list and forward
-/// correctly.
-template<class T>
-constexpr std::initializer_list<T> mk_init(std::initializer_list<T> i)
-{
-  return i;
-}
-
-/// Functor which ignores all arguments when called, and always returns a
-/// default-constructed Ret
-template<class Ret = void>
-struct ignore_all
-{
-  template<typename... Args>
-  constexpr Ret operator()(Args&&...) const
-  {
-    return Ret();
-  }
-};
-
-/// Helper type for managing overload priority. Use overload_priority alias
-template<int N>
-struct overload_priority_t : overload_priority_t<N + 1>
-{
-};
-
-/// Base case for overload_priority implementation
-template<>
-struct overload_priority_t<16>
-{
-};
-
-/// Helper type for managing overload priority. Include an instantiation as
-/// argument to allow otherwise ambiguous overloads to coexist. The overload
-/// which has an instantiation of lowest number will be chosen, if otherwise
-/// applicable.
-template<int N>
-using overload_priority = overload_priority_t<N>*;
-
-/// Weakest overload_priority. Any lower value will take precedence.
-using overload_priority_weakest = overload_priority<16>;
-
-/// Strongest overload_priority. Nothing can take precedence, unless other
-/// arguments are applicable to overload resolution.
-using overload_priority_strongest = overload_priority<0>;
-
-/// Call this to pass into the overload_priority argument of a function.
-inline overload_priority_strongest select_overload()
-{
-  return {};
-}
-
-/// Internal use. Implementation helper for is_type_tag.
-template<typename T, typename = void>
-struct is_type_tag_impl : std::false_type
-{
-};
-
-/// Internal use. Implementation helper for is_type_tag.
-template<typename T>
-struct is_type_tag_impl<type<T>> : std::true_type
-{
-};
-
-/// Test if T is a madara::utility::type<> instantiation
-template<typename T>
-constexpr bool is_type_tag()
-{
-  return is_type_tag_impl<decay_<T>>::value;
-}
-
-template<typename T, typename As>
-As&& forward_as(decay_<T>&& t)
-{
-  return t;
-}
-
-template<typename T, typename As>
-As& forward_as(decay_<T>& t)
-{
-  return t;
-}
-
-template<typename T, typename As>
-const As&& forward_as(const decay_<T>&& t)
-{
-  return t;
-}
-
-template<typename T, typename As>
-const As& forward_as(const decay_<T>& t)
-{
-  return t;
-}
-
-template<typename T, typename... Args>
-std::unique_ptr<T> mk_unique(Args&&... args)
-{
-  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-}
-
-template<typename T>
-std::unique_ptr<decay_<T>> into_unique(T&& val)
-{
-  using V = decay_<T>;
-  return mk_unique<V>(std::forward<T>(val));
-}
-
-template<typename Type, typename Class>
-Class class_of_pointer_to_member_impl(Type Class::*);
-
-template<typename T>
-using class_of_pointer_to_member =
-    decltype(class_of_pointer_to_member_impl(T()));
-
-template<typename Type, typename Class>
-Type type_of_pointer_to_member_impl(Type Class::*);
-
-template<typename T>
-using type_of_pointer_to_member = decltype(type_of_pointer_to_member_impl(T()));
-
 #define MADARA_AUTORET_FUNC(NAME, ARGS, ...)                       \
   inline auto NAME                                                 \
       ARGS->::madara::utility::core::decay_<decltype(__VA_ARGS__)> \
@@ -315,10 +199,6 @@ MADARA_AUTORET_REF_FUNC(invoke_, (Func func, Arg0&& arg0, Args&&... args),
 template<typename Func, typename... Args>
 MADARA_AUTORET_REF_FUNC(
     invoke_, (Func func, Args&&... args), func(std::forward<Args>(args)...))
-}  // namespace core
+
 }  // namespace utility
-
-using namespace utility::core;
 }  // namespace madara
-
-#endif

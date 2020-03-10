@@ -50,10 +50,6 @@ class VariableNode;
 
 namespace knowledge
 {
-namespace rcw
-{
-class BaseTracker;
-}
 
 /**
  * Typedef for set of copyable keys. @see copy. We use map instead
@@ -82,7 +78,6 @@ public:
   friend class KnowledgeBaseImpl;
   friend class expression::CompositeArrayReference;
   friend class expression::VariableNode;
-  friend class rcw::BaseTracker;
 
   /**
    * Constructor.
@@ -312,60 +307,6 @@ public:
   }
 
   /**
-   * @return a shared_ptr, sharing with the internal one.
-   * If this record is not an Any type, returns NULL shared_ptr
-   **/
-  std::shared_ptr<const ConstAny> share_any(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    return get_shared<const ConstAny, &KnowledgeRecord::share_any>(
-        key, settings);
-  }
-
-  /**
-   * @return a shared_ptr, sharing with the internal one.
-   * If this record is not an Any type, returns NULL shared_ptr
-   **/
-  std::shared_ptr<const ConstAny> share_any(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return get_shared<const ConstAny, &KnowledgeRecord::share_any>(
-        key, settings);
-  }
-
-  /**
-   * Gets the contents of a record as a shared pointer to the given type.
-   * @tparam T type requested
-   * @return a shared_ptr, sharing with the internal one.
-   * @throw BadAnyAccess if this record is not an Any holding the given type
-   **/
-  template<typename T>
-  std::shared_ptr<const T> share_any(
-      const std::string& key, const KnowledgeReferenceSettings& settings =
-                                  KnowledgeReferenceSettings()) const
-  {
-    return get_shared<const T, &KnowledgeRecord::share_any>(
-        key, settings);
-  }
-
-  /**
-   * Gets the contents of a record as a shared pointer to the given type.
-   * @tparam T type requested
-   * @return a shared_ptr, sharing with the internal one.
-   * @throw BadAnyAccess if this record is not an Any holding the given type
-   **/
-  template<typename T>
-  std::shared_ptr<const T> share_any(
-      const VariableReference& key, const KnowledgeReferenceSettings& settings =
-                                        KnowledgeReferenceSettings()) const
-  {
-    return get_shared<const T, &KnowledgeRecord::share_any>(
-        key, settings);
-  }
-
-  /**
    * Atomically returns a reference to the variable. Variable references are
    * efficient mechanisms for reference variables individually--similar to
    * speedups seen from CompiledExpression.
@@ -575,119 +516,6 @@ public:
   template<typename T>
   int set(const VariableReference& variable, T&& value,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
-
-  /**
-   * Atomically sets the record to the value specified, as an Any value.
-   *
-   * Note, this does not copy meta information (e.g. quality, clock).
-   * @param   key       unique identifier of the variable
-   * @param   value     new value of the variable
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename T>
-  int set_any(const std::string& key, T&& value,
-      const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
-
-  /**
-   * Atomically sets the record to the value specified, as an Any value.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   value     new value of the variable
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename T>
-  int set_any(const VariableReference& variable, T&& value,
-      const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   key       unique identifier of the variable
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename... Args>
-  int emplace_any(const std::string& key,
-      const KnowledgeUpdateSettings& settings, Args&&... args);
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename... Args>
-  int emplace_any(const VariableReference& variable,
-      const KnowledgeUpdateSettings& settings, Args&&... args);
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   key       unique identifier of the variable
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename Arg, typename... Args>
-  auto emplace_any(const std::string& key, Arg&& arg, Args&&... args)
-      -> enable_if_<!is_convertible<Arg, const KnowledgeUpdateSettings&>(), int>
-  {
-    return emplace_any(key, KnowledgeUpdateSettings{}, std::forward<Arg>(arg),
-        std::forward<Args>(args)...);
-  }
-
-  /**
-   * Atomically emplaces an Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename Arg, typename... Args>
-  auto emplace_any(const VariableReference& variable, Arg&& arg, Args&&... args)
-      -> enable_if_<!is_convertible<Arg, const KnowledgeUpdateSettings&>(), int>
-  {
-    return emplace_any(variable, KnowledgeUpdateSettings{},
-        std::forward<Arg>(arg), std::forward<Args>(args)...);
-  }
-
-  /**
-   * Atomically emplaces an empty Any value within the given variable.
-   *
-   * @param   key       unique identifier of the variable
-   * @return   0 if the value was set. -1 if null key
-   **/
-  int emplace_any(const std::string& key)
-  {
-    return emplace_any(key, KnowledgeUpdateSettings{});
-  }
-
-  /**
-   * Atomically emplaces an empty Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @return   0 if the value was set. -1 if null key
-   **/
-  int emplace_any(const VariableReference& variable)
-  {
-    return emplace_any(variable, KnowledgeUpdateSettings{});
-  }
-
-  /**
-   * NON-ATOMICALLY emplaces an Any value within the given variable.
-   *
-   * @param   variable  reference to a variable (@see get_ref)
-   * @param   args      arguments to emplace_any of KnowledgeRecord
-   * @param   settings  settings for applying the update
-   * @return   0 if the value was set. -1 if null key
-   **/
-  template<typename... Args>
-  int emplace_any_unsafe(const VariableReference& variable,
-      const KnowledgeUpdateSettings& settings, Args&&... args);
 
   /**
    * Atomically sets the value of a variable to an array.
@@ -1749,61 +1577,61 @@ public:
   {
     return map_;
   }
-
+  
   template<typename Callable>
   auto invoke(const std::string& key, Callable&& callable,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings())
-      -> decltype(invoke_(
+      -> decltype(utility::invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
     MADARA_GUARD_TYPE guard(mutex_);
     auto ref = get_ref(key, settings);
-    return invoke_(std::forward<Callable>(callable), *ref.get_record_unsafe());
+    return utility::invoke_(std::forward<Callable>(callable), *ref.get_record_unsafe());
   }
 
   template<typename Callable>
   auto invoke(const VariableReference& key, Callable&& callable,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings())
-      -> decltype(invoke_(
+      -> decltype(utility::invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
     MADARA_GUARD_TYPE guard(mutex_);
     (void)settings;
-    return invoke_(std::forward<Callable>(callable), *key.get_record_unsafe());
+    return utility::invoke_(std::forward<Callable>(callable), *key.get_record_unsafe());
   }
 
   template<typename Callable>
   auto invoke(const std::string& key, Callable&& callable,
       const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
+      const -> decltype(utility::invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
     MADARA_GUARD_TYPE guard(mutex_);
     const KnowledgeRecord* ptr = with(key, settings);
     if (ptr)
     {
-      return invoke_(std::forward<Callable>(callable), *ptr);
+      return utility::invoke_(std::forward<Callable>(callable), *ptr);
     }
     const KnowledgeRecord empty;
-    return invoke_(std::forward<Callable>(callable), empty);
+    return utility::invoke_(std::forward<Callable>(callable), empty);
   }
 
   template<typename Callable>
   auto invoke(const VariableReference& key, Callable&& callable,
       const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
+      const -> decltype(utility::invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
     MADARA_GUARD_TYPE guard(mutex_);
     (void)settings;
-    return invoke_(std::forward<Callable>(callable),
+    return utility::invoke_(std::forward<Callable>(callable),
         const_cast<const KnowledgeRecord&>(*key.get_record_unsafe()));
   }
 
   template<typename Callable>
   auto cinvoke(const std::string& key, Callable&& callable,
       const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
+      const -> decltype(utility::invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
     return invoke(key, std::forward<Callable>(callable), settings);
@@ -1812,7 +1640,7 @@ public:
   template<typename Callable>
   auto cinvoke(const VariableReference& key, Callable&& callable,
       const KnowledgeReferenceSettings& settings = KnowledgeReferenceSettings())
-      const -> decltype(invoke_(
+      const -> decltype(utility::invoke_(
           std::forward<Callable>(callable), std::declval<KnowledgeRecord&>()))
   {
     return invoke(key, std::forward<Callable>(callable), settings);
@@ -1866,10 +1694,6 @@ private:
 
   template<typename... Args>
   int set_unsafe_impl(const VariableReference& variable,
-      const KnowledgeUpdateSettings& settings, Args&&... args);
-
-  template<typename... Args>
-  int emplace_any_unsafe_impl(const VariableReference& variable,
       const KnowledgeUpdateSettings& settings, Args&&... args);
 
   template<typename T>
