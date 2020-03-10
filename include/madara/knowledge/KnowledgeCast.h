@@ -357,7 +357,7 @@ inline auto knowledge_cast(const KnowledgeRecord& in, T&& out)
                     type<typename utility::decay_<T>::container_type::value_type>{}, in))
 {
   return (*out = knowledge_cast(
-              type<typename decay_<T>::container_type::value_type>{}, in));
+              type<typename utility::decay_<T>::container_type::value_type>{}, in));
 }
 
 template<typename Container>
