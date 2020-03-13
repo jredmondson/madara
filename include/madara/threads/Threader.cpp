@@ -251,3 +251,58 @@ bool madara::threads::Threader::wait(const knowledge::WaitSettings& ws)
 
   return result;
 }
+
+bool madara::threads::Threader::wait_for_paused(
+    const std::string name, const knowledge::WaitSettings& ws)
+{
+  bool result(false);
+
+#ifndef _MADARA_NO_KARL_
+  NamedWorkerThreads::iterator found = threads_.find(name);
+
+  if (found != threads_.end())
+  {
+    std::string condition = "!";
+    condition += found->second->running_.get_name();
+
+    result = this->control_.wait(condition, ws).is_true();
+  }
+#endif  // _MADARA_NO_KARL_
+
+  return result;
+}
+
+bool madara::threads::Threader::wait_for_paused(
+    const knowledge::WaitSettings& ws)
+{
+  bool result(false);
+
+#ifndef _MADARA_NO_KARL_
+  std::stringstream condition;
+
+  NamedWorkerThreads::iterator i = threads_.begin();
+
+  // create a condition with the first thread's finished state
+  if (i != threads_.end())
+  {
+    condition << "!" << 
+      i->second->running_.get_name();
+    ++i;
+  }
+
+  // add each other thread to the condition
+  for (; i != threads_.end(); ++i)
+  {
+    condition << "&& !";
+    condition << i->second->running_.get_name();
+  }
+
+  if (threads_.size() > 0)
+  {
+    result = this->control_.wait(condition.str(), ws).is_true();
+  }
+
+#endif  // _MADARA_NO_KARL_
+
+  return result;
+}

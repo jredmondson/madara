@@ -257,6 +257,25 @@ project (Test_Threader_Producer_Consumer) : using_madara, no_karl, no_xml, null_
   }
 }
 
+project (Test_Threader_Wait_For_Pause) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_wait_for_pause
+  
+  
+  requires += tests
+
+
+  Documentation_Files {
+  }
+  
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_wait_for_pause.cpp
+  }
+}
+
 project (Test_Threader_Hello_World) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_threader_hello_world

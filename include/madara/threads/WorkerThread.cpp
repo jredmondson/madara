@@ -58,7 +58,10 @@ WorkerThread::WorkerThread(const std::string& name, BaseThread* thread,
     max_duration_.set_name(base_string.str() + ".max_duration", *kb);
 
     debug_.set_name(base_string.str() + ".debug", control);
-
+    
+    paused_.set_name(base_string.str() + ".paused", *kb);
+    running_.set_name(base_string.str() + ".running", *kb);
+    
     finished_ = 0;
     started_ = 0;
     new_hertz_ = hertz_;
@@ -189,7 +192,7 @@ int WorkerThread::svc(void)
       knowledge::VariableReference paused;
 
       terminated = control_.get_ref(name_ + ".terminated");
-      paused = control_.get_ref(name_ + ".paused");
+      //paused = control_.get_ref(name_ + ".paused");
 
       // change thread frequency
       change_frequency(
@@ -210,8 +213,10 @@ int WorkerThread::svc(void)
             " thread checking for pause\n",
             name_.c_str());
 
-        if (control_.get(paused).is_false())
+        if (paused_.is_false())
         {
+          running_ = 1;
+
           madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_MAJOR,
               "WorkerThread(%s)::svc:"
               " thread calling run function\n",
@@ -226,7 +231,7 @@ int WorkerThread::svc(void)
             {
               start_time = utility::get_time();
               ++executions_;
-            }
+            } // debug
 
             thread_->run();
 
@@ -274,6 +279,8 @@ int WorkerThread::svc(void)
                 " exception thrown: %s\n",
                 name_.c_str(), e.what());
           }
+
+          running_ = 0;
         }
 
         if (one_shot)
