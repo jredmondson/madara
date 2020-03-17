@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <iomanip>
 #include <iostream>
+#include <cstring>
 #include "madara/utility/IntTypes.h"
 
 namespace
@@ -17,7 +18,7 @@ namespace
 int madara_double_precision(-1);
 
 bool madara_use_scientific(false);
-}
+}  // namespace
 
 namespace madara
 {
@@ -325,8 +326,17 @@ std::vector<double> KnowledgeRecord::to_doubles(void) const
   return doubles;
 }
 
-size_t KnowledgeRecord::to_managed_buffer(
-  char * buffer, size_t buf_size) const
+size_t KnowledgeRecord::to_managed_string(char* buffer, size_t buf_size) const
+{
+  std::string contents = to_string();
+  size_t len = std::min(buf_size - 1, contents.length() + 1);
+  strncpy(buffer, contents.c_str(), len);
+  buffer[len] = 0;
+
+  return len + 1;
+}
+
+size_t KnowledgeRecord::to_managed_buffer(char* buffer, size_t buf_size) const
 {
   size_t actual_size = 0;
 
@@ -1400,12 +1410,12 @@ bool KnowledgeRecord::is_true(void) const
   }
 }
 
-void safe_clear(KnowledgeMap & map)
+void safe_clear(KnowledgeMap& map)
 {
   map.clear();
 }
 
-}
-}
+}  // namespace knowledge
+}  // namespace madara
 
 #endif  // _KNOWLEDGE_RECORD_CPP_

@@ -523,6 +523,16 @@ public:
    * @return  the number of characters placed in buffer
    **/
   size_t to_managed_buffer(char* buffer, size_t buf_size) const;
+  
+  /**
+   * converts the value to a c string. This is the equivalent to calling
+   * to_string and then copying it to the buffer. It just doesn't cause
+   * exceptions with STL errors (e.g., in Unreal Engine plugins)
+   * @param   buffer     the user-managed character buffer to fill
+   * @param   buf_size   the character buffer max size
+   * @return  the number of characters placed in buffer
+   **/
+  size_t to_managed_string(char* buffer, size_t buf_size) const;
 
   /**
    * @return a shared_ptr, sharing with the internal one.
