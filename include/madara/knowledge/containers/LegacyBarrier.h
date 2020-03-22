@@ -1,6 +1,6 @@
 
-#ifndef _MADARA_CONTAINERS_BARRIER_H_
-#define _MADARA_CONTAINERS_BARRIER_H_
+#ifndef _MADARA_CONTAINERS_LEGACY_BARRIER_H_
+#define _MADARA_CONTAINERS_LEGACY_BARRIER_H_
 
 #include <vector>
 #include <string>
@@ -8,11 +8,10 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
-#include "madara/knowledge/containers/IntegerStaged.h"
 #include "BaseContainer.h"
 
 /**
- * @file Barrier.h
+ * @file LegacyBarrier.h
  * @author James Edmondson <jedmondson@gmail.com>
  *
  * This file contains a distributed barrier that may be
@@ -26,10 +25,10 @@ namespace knowledge
 namespace containers
 {
 /**
- * @class Barrier
+ * @class LegacyBarrier
  * @brief This class stores an integer within a variable context
  */
-class MADARA_EXPORT Barrier : public BaseContainer
+class MADARA_EXPORT LegacyBarrier : public BaseContainer
 {
 public:
   /// trait that describes the value type
@@ -38,7 +37,7 @@ public:
   /**
    * Default constructor
    **/
-  Barrier(const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
+  LegacyBarrier(const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
 
   /**
    * Constructor
@@ -46,7 +45,7 @@ public:
    * @param  knowledge  the knowledge base that will contain the vector
    * @param  settings   settings for evaluating the vector
    **/
-  Barrier(const std::string& name, KnowledgeBase& knowledge,
+  LegacyBarrier(const std::string& name, KnowledgeBase& knowledge,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
 
   /**
@@ -55,7 +54,7 @@ public:
    * @param  knowledge the variable context
    * @param  settings  settings to apply by default
    **/
-  Barrier(const std::string& name, Variables& knowledge,
+  LegacyBarrier(const std::string& name, Variables& knowledge,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
 
   /**
@@ -66,7 +65,7 @@ public:
    * @param  participants   the number of participants in the barrier ring
    * @param  settings   settings for evaluating the vector
    **/
-  Barrier(const std::string& name, KnowledgeBase& knowledge, int id,
+  LegacyBarrier(const std::string& name, KnowledgeBase& knowledge, int id,
       int participants,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
 
@@ -78,25 +77,25 @@ public:
    * @param  participants  the number of participants in the barrier ring
    * @param  settings   settings for evaluating the vector
    **/
-  Barrier(const std::string& name, Variables& knowledge, int id,
+  LegacyBarrier(const std::string& name, Variables& knowledge, int id,
       int participants,
       const KnowledgeUpdateSettings& settings = KnowledgeUpdateSettings());
 
   /**
    * Copy constructor
    **/
-  Barrier(const Barrier& rhs);
+  LegacyBarrier(const LegacyBarrier& rhs);
 
   /**
    * Destructor
    **/
-  ~Barrier();
+  ~LegacyBarrier();
 
   /**
    * Assignment operator
    * @param  rhs    value to copy
    **/
-  void operator=(const Barrier& rhs);
+  void operator=(const LegacyBarrier& rhs);
 
   /**
    * Returns the id of the barrier in the barrier ring
@@ -209,14 +208,14 @@ public:
    * @param  value  the value to compare to
    * @return true if equal, false otherwise
    **/
-  bool operator==(const Barrier& value) const;
+  bool operator==(const LegacyBarrier& value) const;
 
   /**
    * Checks for inequality
    * @param  value  the value to compare to
    * @return true if inequal, false otherwise
    **/
-  bool operator!=(const Barrier& value) const;
+  bool operator!=(const LegacyBarrier& value) const;
 
   /**
    * Sets the quality of writing to the barrier variables
@@ -310,33 +309,33 @@ private:
    **/
   inline type barrier_result(void) const
   {
-    type result = 1;
-
-    // check the barriers for 
-    for ( ; last_failed_check_ < participants_ ; ++last_failed_check_)
-    {
-      // this guy isn't up to our barrier yet?
-      if (barrier_[last_failed_check_] < *barrier_[id_])
-      {
-        // load from the kb to check for updates
-        barrier_[last_failed_check_].read();
-
-        // if he's still not up to our barrier yet, the barrier isn't done
-        if (barrier_[last_failed_check_] < *barrier_[id_])
-        {
-          result = 0;
-          break;
-        }
-      }
-    }
-
-    return result;
+#ifndef _MADARA_NO_KARL_
+    return context_->evaluate(aggregate_barrier_, no_harm).to_integer();
+#else
+    // note this means that barriers are always successful if no_karl=1
+    return type(1);
+#endif
   }
+
+  /**
+   * Builds the variable that is actually incremented
+   **/
+  void build_var(void);
+
+  /**
+   * Initialize the no harm eval settings
+   **/
+  void init_noharm(void);
 
   /**
    * Variable context that we are modifying
    **/
   mutable ThreadSafeContext* context_;
+
+  /**
+   * Variable reference
+   **/
+  VariableReference variable_;
 
   /**
    * id of this barrier in the barrier ring
@@ -347,16 +346,26 @@ private:
    * the number of participants in the barrier ring
    **/
   size_t participants_;
-  
+
+#ifndef _MADARA_NO_KARL_
   /**
-   * id of this barrier in the barrier ring
+   * Expression for aggregating barrier in one atomic operation
    **/
-  mutable size_t last_failed_check_;
+  CompiledExpression aggregate_barrier_;
+#endif
 
-  mutable std::vector<IntegerStaged> barrier_;
+  /**
+   * Settings we'll use for all evaluations
+   **/
+  EvalSettings no_harm;
+
+  /**
+   * Holder for variable name to quickly refresh modified status
+   **/
+  std::string variable_name_;
 };
-}  // namespace containers
-}  // namespace knowledge
-}  // namespace madara
+}
+}
+}
 
-#endif  // _MADARA_CONTAINERS_BARRIER_H_
+#endif  // _MADARA_CONTAINERS_LEGACY_BARRIER_H_

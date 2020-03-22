@@ -86,6 +86,8 @@ private:
   /// the end of the timer duration
   std::chrono::time_point<CLOCK> end_;
 };
+
+typedef Timer<std::chrono::steady_clock> TimerSteady;
 }
 }
 
