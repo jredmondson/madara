@@ -1,0 +1,17 @@
+
+# compile tutorials
+
+madara_app(bandwidth_filtering advanced/bandwidth_filtering.cpp)
+madara_app(bandwidth_filtering_send_limit advanced/bandwidth_filtering_send_limit.cpp)
+madara_app(bandwidth_filtering_total_limit advanced/bandwidth_filtering_total_limit.cpp)
+madara_app(deadline_filtering advanced/deadline_filtering.cpp)
+madara_app(counting_agents distributed_knowledge/counting_agents.cpp)
+madara_app(packet_aggregation distributed_knowledge/packet_aggregation.cpp)
+madara_app(hello_world hello_world/hello_world.cpp)
+madara_app(bad_career_counsellor local_reasoning/bad_career_counsellor.cpp)
+madara_app(system_calls system_calls/system_calls.cpp)
+madara_app(controlling_types system_primitives/controlling_types.cpp)
+madara_app(files system_primitives/files.cpp)
+madara_app(fractions system_primitives/fractions.cpp)
+madara_app(functions system_primitives/functions.cpp)
+madara_app(integer_types system_primitives/integer_types.cpp)

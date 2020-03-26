@@ -7,6 +7,10 @@ list(GET VERSION_LIST 0 MADARA_MAJOR_VERSION)
 list(GET VERSION_LIST 1 MADARA_MINOR_VERSION)
 list(GET VERSION_LIST 2 MADARA_PATCH_VERSION)
 
+# Get helper cmake macros
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(madara_macros)
+  
 # Define the MADARA project and version
 project(MADARA VERSION "${MADARA_VERSION}")
 
@@ -26,7 +30,7 @@ option(KARL "Build with KaRL scripting language support (eval/wait)" ON)
 option(LZ4 "Build with LZ4 support" OFF)
 option(NDDS "Build with RTI NDDS support" OFF)
 option(PYTHON "Build with python support (via Boost.Python)" OFF)
-option(SIMTIME "Build with support for simulation/virtual time" OFF)
+option(SIMTIME "Build with support for simulation/virtual time" ON)
 option(SPLICE "Build with PrismTech OpenSplice DDS support" OFF)
 option(SSL "Build with SSL support" OFF)
 option(TESTS "Build tests" OFF)
@@ -43,6 +47,42 @@ add_custom_command(
   OUTPUT ${MADARA_INCLUDE_DIR}/Version.h
   COMMAND ${MADARA_BIN_DIR}/generate_version_include.pl
 )
+
+if(ANDROID)
+  add_definitions(-D_MADARA_ANDROID_ -D__STDC_FORMAT_MACROS)
+endif()
+
+if(LZ4)
+  add_definitions(-D_USE_LZ4_)
+endif()
+
+if(JAVA)
+  add_definitions(-D_MADARA_JAVA_)
+endif()
+
+if(NOT KARL)
+  add_definitions(-D_MADARA_NO_KARL_)
+endif()
+
+if(NDDS)
+  add_definitions(-D_MADARA_NDDS_)
+endif()
+
+if(PYTHON)
+  add_definitions(-D_MADARA_PYTHON_CALLBACKS_)
+endif()
+
+if(SIMTIME)
+  add_definitions(-DMADARA_FEATURE_SIMTIME)
+endif()
+
+if(SSL)
+  add_definitions(-D_USE_SSL_)
+endif()
+
+if(ZMQ)
+  add_definitions(-D_MADARA_USING_ZMQ_)
+endif()
 
 if(THREADLOCAL)
   add_definitions(-DMADARA_THREAD_LOCAL)
@@ -71,6 +111,7 @@ endif()
 	
 # Build the main library
 add_subdirectory(include)
+add_subdirectory(tools)
 
 # Build tests
 if(TESTS)

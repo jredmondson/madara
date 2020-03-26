@@ -108,9 +108,10 @@ if(Boost_FOUND)
     ${MADARA_HEADER_FILES}
 	${MADARA_SRC_FILES}) 
   #target_link_libraries(MADARA_LIBRARY Boost::filesystem)
-  target_include_directories(madara PRIVATE ${Boost_INCLUDE_DIRS})
+  target_include_directories(madara PUBLIC ${Boost_INCLUDE_DIRS})
   target_include_directories(madara PUBLIC ${PROJECT_SOURCE_DIR}/include)
-  target_compile_definitions(madara PRIVATE -DMADARA_BUILD_DLL -D_WINSOCK_DEPRECATED_NO_WARNINGS -DBOOST_ALL_NO_LIB)
+  target_compile_definitions(madara PRIVATE -DMADARA_BUILD_DLL)
+  target_compile_definitions(madara PUBLIC -D_WINSOCK_DEPRECATED_NO_WARNINGS -DBOOST_ALL_NO_LIB)
 
   # All users of this library will need at least C++11
   target_compile_features(madara PUBLIC cxx_std_14)
