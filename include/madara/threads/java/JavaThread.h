@@ -3,6 +3,7 @@
 #ifndef _MADARA_THREADS_JAVA_THREAD_H_
 #define _MADARA_THREADS_JAVA_THREAD_H_
 
+#ifdef _MADARA_JAVA_
 /**
  * @file BaseThread.h
  * @author James Edmondson <jedmondson@gmail.com>
@@ -96,4 +97,5 @@ protected:
 }
 }
 
+#endif // _MADARA_JAVA_
 #endif  // _MADARA_THREADS_JAVA_THREAD_H_

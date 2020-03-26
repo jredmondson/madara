@@ -3,6 +3,8 @@ feature (ndds) : ndds_ts_defaults {
   libpaths += $(NDDSHOME)/lib/$(NDDSARCHITECTURE)
   includes += $(NDDSHOME)/include $(NDDSHOME)/include/ndds
 
+  macros += _MADARA_NDDS_
+
   specific(prop:windows) {
     macros += RTI_WIN32 NDDS_DLL_VARIABLE
   } else {

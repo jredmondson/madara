@@ -7,7 +7,6 @@
 #include "SimTime.h"
 
 #include "boost/crc.hpp"
-#include "boost/filesystem.hpp"
 #include "madara/logger/GlobalLogger.h"
 
 #include <sys/stat.h>

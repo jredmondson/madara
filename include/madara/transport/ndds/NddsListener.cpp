@@ -1,3 +1,5 @@
+#ifdef _MADARA_NDDS_
+
 #include "NddsListener.h"
 #include "madara/knowledge/UpdateTypes.h"
 #include "madara/utility/Utility.h"
@@ -180,3 +182,5 @@ void madara::transport::NddsListener::on_data_available(DDSDataReader* reader)
         print_prefix);
   }
 }
+
+#endif

@@ -38,6 +38,8 @@ docs/maal/*
 docs/maml/*
 docs/VERSION.txt
 
+build
+install
 Debug/*
 Release/*
 .vs/*

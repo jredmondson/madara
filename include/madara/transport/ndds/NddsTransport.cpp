@@ -1,3 +1,5 @@
+#ifdef _MADARA_NDDS_
+
 #include "madara/transport/ndds/NddsTransport.h"
 //#include "madara/transport/ndds/NddsTransportReadThread.h"
 #include "madara/knowledge/UpdateTypes.h"
@@ -317,3 +319,6 @@ long madara::transport::NddsTransport::send_data(
 
   return rc;
 }
+
+#endif // _MADARA_NDDS_
+

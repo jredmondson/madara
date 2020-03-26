@@ -221,7 +221,7 @@ public:
    **/
   static int get_thread_level(void);
 
-#ifndef MADARA_NO_THREAD_LOCAL
+#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
   /**
    * Fetches thread local storage value for thread name
    * @return the thread name of the local thread
@@ -254,7 +254,7 @@ public:
 #endif
 
 private:
-#ifndef MADARA_NO_THREAD_LOCAL
+#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
   static thread_local int thread_level_;
   static thread_local std::string thread_name_;
   static thread_local double thread_hertz_;

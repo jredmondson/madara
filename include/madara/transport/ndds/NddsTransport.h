@@ -1,6 +1,8 @@
 #ifndef _NDDS_TRANSPORT_H_
 #define _NDDS_TRANSPORT_H_
 
+#ifdef _MADARA_NDDS_
+
 #include <string>
 
 #include "madara/knowledge/ThreadSafeContext.h"
@@ -86,4 +88,6 @@ private:
 }
 }
 
-#endif
+#endif // _MADARA_NDDS_
+
+#endif // header include

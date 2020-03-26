@@ -1,6 +1,8 @@
 #ifndef _MADARA_NDDS_LISTENER_H_
 #define _MADARA_NDDS_LISTENER_H_
 
+#ifdef _MADARA_NDDS_
+
 #include <string>
 
 #include "madara/knowledge/ThreadSafeContext.h"
@@ -98,5 +100,7 @@ private:
 };  // End of class NddsListener
 }
 }
+
+#endif // _MADARA_NDDS_
 
 #endif  // _MADARA_NDDS_LISTENER_H_
