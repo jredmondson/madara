@@ -115,7 +115,11 @@ if(Boost_FOUND)
 
   # All users of this library will need at least C++11
   target_compile_features(madara PUBLIC cxx_std_14)
-  target_compile_options(madara PRIVATE /MP)
+  
+  if(MSVC)
+    target_compile_options(gams PRIVATE /MP)
+  endif()
+  
   target_link_libraries(madara ${Boost_LIBRARIES})
 
 
