@@ -122,3 +122,5 @@ if(SIMTIME)
 endif()
 
 	
+install(TARGETS test_reasoning_throughput DESTINATION bin)
+install(TARGETS profile_architecture DESTINATION bin)

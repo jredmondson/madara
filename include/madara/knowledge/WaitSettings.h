@@ -11,6 +11,7 @@
 
 #include <string>
 #include "madara/knowledge/EvalSettings.h"
+#include "madara/MadaraExport.h"
 
 namespace madara
 {
@@ -20,7 +21,7 @@ namespace knowledge
  * @class WaitSettings
  * @brief Encapsulates settings for a wait statement
  **/
-struct WaitSettings : public EvalSettings
+struct MADARA_EXPORT WaitSettings : public EvalSettings
 {
   /* Convenient pre-defined settings objects for common use cases */
 
@@ -102,8 +103,7 @@ struct WaitSettings : public EvalSettings
       bool t_track_local_changes, std::string t_pre_print_statement,
       std::string t_post_print_statement, double t_poll_frequency,
       double t_max_wait_time, uint64_t t_clock_increment = 1,
-      bool t_treat_locals_as_globals = false,
-      bool t_stream_changes = true,
+      bool t_treat_locals_as_globals = false, bool t_stream_changes = true,
       bool t_exceptions_on_unitialized = false)
     : EvalSettings(t_delay_sending_modifieds, t_treat_globals_as_locals,
           t_signal_updates, t_always_overwrite, t_always_expand,
@@ -135,6 +135,6 @@ struct WaitSettings : public EvalSettings
    **/
   double max_wait_time;
 };
-}
-}
+}  // namespace knowledge
+}  // namespace madara
 #endif  // _MADARA_WAIT_SETTINGS_

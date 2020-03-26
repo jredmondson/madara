@@ -16,12 +16,51 @@ project(MADARA VERSION "${MADARA_VERSION}")
 
 # Provide a lowercase version of project
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER)
+string(TOUPPER ${PROJECT_NAME} PROJECT_NAME_UPPER)
 
 set(MADARA_CMAKE_DIR ${PROJECT_SOURCE_DIR}/cmake CACHE PATH "Location of CMake scripts")
 set(MADARA_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include CACHE PATH "Location of MADARA source")
 set(MADARA_BIN_DIR ${PROJECT_SOURCE_DIR}/bin CACHE PATH "Location of MADARA scripts and binaries")
 set(MADARA_LIB_DIR ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Location of MADARA libraries")
 
+set(CMAKE_DEBUG_POSTFIX d)
+
+########################################
+# Package Creation: 
+include (${MADARA_CMAKE_DIR}/madara_cpack.cmake)
+set (CPACK_PACKAGE_VERSION "${MADARA_VERSION}")
+set (CPACK_PACKAGE_VERSION_MAJOR "${MADARA_MAJOR_VERSION}")
+set (CPACK_PACKAGE_VERSION_MINOR "${MADARA_MINOR_VERSION}")
+set (CPACK_PACKAGE_VERSION_PATCH "${MADARA_PATCH_VERSION}")
+
+if (CPACK_GENERATOR)
+  message(STATUS "Found CPack generators: ${CPACK_GENERATOR}")
+
+  configure_file("${MADARA_CMAKE_DIR}/cpack_options.cmake.in" ${MADARA_CPACK_CFG_FILE} @ONLY)
+  set(CPACK_PROJECT_CONFIG_FILE ${MADARA_CPACK_CFG_FILE})
+  include (CPack)
+endif()
+
+
+# Use GNUInstallDirst to get canonical paths
+include(GNUInstallDirs)
+
+set (CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
+
+
+# developer's option to cache PKG_CONFIG_PATH and
+# LD_LIBRARY_PATH for local installs
+if(PKG_CONFIG_PATH)
+  set (ENV{PKG_CONFIG_PATH} ${PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH})
+endif()
+if(LD_LIBRARY_PATH)
+  set (ENV{LD_LIBRARY_PATH} ${LD_LIBRARY_PATH}:$ENV{LD_LIBRARY_PATH})
+endif()
+
+set (INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/madara-${MADARA_VERSION}/madara") 
+set (LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
+set (BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
+    
 
 # Options
 option(ANDROID "Build with Android support" OFF)
@@ -122,3 +161,15 @@ endif()
 if(TUTORIALS)
   add_subdirectory(tutorials)
 endif()
+
+if(DOCS)
+  add_subdirectory(docs)
+endif()
+
+
+set(PKG_NAME ${PROJECT_NAME_UPPER})
+set(PKG_LIBRARIES madara)
+set(PKG_DEPENDS Boost)
+
+install(FILES "${PROJECT_SOURCE_DIR}/VERSION.txt" DESTINATION .)
+install(FILES "${PROJECT_SOURCE_DIR}/LICENSE.txt" DESTINATION .)

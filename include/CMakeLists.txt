@@ -122,5 +122,12 @@ if(Boost_FOUND)
 endif()
 
 # IDEs should put the headers in a nice place
-source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${MADARA_HEADER_FILES})
+#source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${MADARA_HEADER_FILES})
 
+set_property(TARGET madara PROPERTY VERSION "${MADARA_VERSION}")
+set_property(TARGET madara PROPERTY SOVERSION "${MADARA_VERSION}")
+
+install(TARGETS madara DESTINATION lib)
+INSTALL( DIRECTORY "${PROJECT_SOURCE_DIR}/include/madara" DESTINATION include )
+
+#install(FILES ${MADARA_HEADER_FILES} DESTINATION include)
