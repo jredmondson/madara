@@ -121,6 +121,7 @@ if(SIMTIME)
   madara_test(test_simtime test_simtime.cpp)
 endif()
 
-	
-install(TARGETS test_reasoning_throughput DESTINATION bin)
-install(TARGETS profile_architecture DESTINATION bin)
+install(TARGETS test_reasoning_throughput EXPORT madaraTargets
+           RUNTIME DESTINATION ${MADARA_RUNTIME_INSTALL_DIR})
+install(TARGETS profile_architecture EXPORT madaraTargets
+           RUNTIME DESTINATION ${MADARA_RUNTIME_INSTALL_DIR})

@@ -41,10 +41,6 @@ if (CPACK_GENERATOR)
   include (CPack)
 endif()
 
-
-# Use GNUInstallDirst to get canonical paths
-include(GNUInstallDirs)
-
 set (CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
 
@@ -61,23 +57,6 @@ set (INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/madara-${MADARA_VERSION}/m
 set (LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
 set (BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
     
-
-# Options
-option(ANDROID "Build with Android support" OFF)
-option(DOCS "Run doxygen or javadocs on code" OFF)
-option(KARL "Build with KaRL scripting language support (eval/wait)" ON)
-option(LZ4 "Build with LZ4 support" OFF)
-option(NDDS "Build with RTI NDDS support" OFF)
-option(PYTHON "Build with python support (via Boost.Python)" OFF)
-option(SIMTIME "Build with support for simulation/virtual time" ON)
-option(SPLICE "Build with PrismTech OpenSplice DDS support" OFF)
-option(SSL "Build with SSL support" OFF)
-option(TESTS "Build tests" OFF)
-option(THREADLOCAL "Build with support for threadlocal variables" OFF)
-option(TUTORIALS "Build tutorials" OFF)
-option(XML "Build with XML library support" OFF)
-option(ZMQ "Build with ZMQ/0MQ support" OFF)
-
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -87,50 +66,18 @@ add_custom_command(
   COMMAND ${MADARA_BIN_DIR}/generate_version_include.pl
 )
 
-if(ANDROID)
-  add_definitions(-D_MADARA_ANDROID_ -D__STDC_FORMAT_MACROS)
-endif()
-
-if(LZ4)
-  add_definitions(-D_USE_LZ4_)
-endif()
-
-if(JAVA)
-  add_definitions(-D_MADARA_JAVA_)
-endif()
-
-if(NOT KARL)
-  add_definitions(-D_MADARA_NO_KARL_)
-endif()
-
-if(NDDS)
-  add_definitions(-D_MADARA_NDDS_)
-endif()
-
-if(PYTHON)
-  add_definitions(-D_MADARA_PYTHON_CALLBACKS_)
-endif()
-
-if(SIMTIME)
-  add_definitions(-DMADARA_FEATURE_SIMTIME)
-endif()
-
-if(SSL)
-  add_definitions(-D_USE_SSL_)
-endif()
-
-if(ZMQ)
-  add_definitions(-D_MADARA_USING_ZMQ_)
-endif()
-
-if(THREADLOCAL)
-  add_definitions(-DMADARA_THREAD_LOCAL)
-else()
-  add_definitions(-DMADARA_NO_THREAD_LOCAL)
-endif()
-
 # disable certain warnings that will occur in VS
 if(MSVC)
+
+  set(MADARA_INC_INSTALL_DIR "include/madara")
+  set(MADARA_RUNTIME_INSTALL_DIR   "bin")
+  set(MADARA_LIBRARY_INSTALL_DIR   "bin")
+  set(MADARA_ARCHIVE_INSTALL_DIR   "lib")
+  set(MADARA_FRAMEWORK_INSTALL_DIR "bin")
+
+  set(MADARA_CMAKE_CONFIG_INSTALL_DIR "share/madara/cmake")
+  set(MADARA_ADDITIONAL_FILES_INSTALL_DIR "share/madara")
+
   add_compile_options(/wd4005)
   add_compile_options(/wd4251)
   add_compile_options(/wd4275)
@@ -139,15 +86,27 @@ if(MSVC)
   add_compile_options(/wd4996)
   add_compile_options(/MP)
   
-  # boost on windows is built into a stage/lib directory,
-  # so let's help the Find utility find Boost
-  set(ENV{Boost_LIBRARY_DIR} ENV{BOOST_ROOT}/stage/lib)
-  
 # make linux/mac compilation stricter
-elseif(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
+elseif(UNIX)
+  include(GNUInstallDirs)
+
+  set(MADARA_INC_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/madara")
+  set(MADARA_RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_BINDIR}")
+  set(MADARA_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+  set(MADARA_ARCHIVE_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+  set(MADARA_FRAMEWORK_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}")
+
+  set(MADARA_CMAKE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_LIBDIR}/madara/cmake")
+  set(MADARA_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/madara")
+
+  set(MADARA_RUNTIME_INSTALL_DIR "bin")
+  set(MADARA_INC_INSTALL_DIR "include/madara") # header filestree
+
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 endif()
 	
+include(cmake/configuration.cmake)
+
 # Build the main library
 add_subdirectory(include)
 add_subdirectory(tools)
@@ -171,5 +130,8 @@ set(PKG_NAME ${PROJECT_NAME_UPPER})
 set(PKG_LIBRARIES madara)
 set(PKG_DEPENDS Boost)
 
-install(FILES "${PROJECT_SOURCE_DIR}/VERSION.txt" DESTINATION .)
-install(FILES "${PROJECT_SOURCE_DIR}/LICENSE.txt" DESTINATION .)
+# install readme and license
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt" "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" "${CMAKE_CURRENT_SOURCE_DIR}/README.md" DESTINATION ${MADARA_ADDITIONAL_FILES_INSTALL_DIR})
+
+install(EXPORT madaraTargets DESTINATION ${MADARA_CMAKE_CONFIG_INSTALL_DIR}
+                                       FILE madara-config.cmake)
