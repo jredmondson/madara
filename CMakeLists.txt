@@ -23,8 +23,6 @@ set(MADARA_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include CACHE PATH "Location of MAD
 set(MADARA_BIN_DIR ${PROJECT_SOURCE_DIR}/bin CACHE PATH "Location of MADARA scripts and binaries")
 set(MADARA_LIB_DIR ${PROJECT_SOURCE_DIR}/lib CACHE PATH "Location of MADARA libraries")
 
-set(CMAKE_DEBUG_POSTFIX d)
-
 ########################################
 # Package Creation: 
 include(${MADARA_CMAKE_DIR}/madara_cpack.cmake)
@@ -132,7 +130,7 @@ endif()
 
 set(PKG_NAME ${PROJECT_NAME_UPPER})
 set(PKG_LIBRARIES madara)
-set(PKG_DEPENDS Boost)
+set(PKG_DEPENDS Boost::boost)
 
 # install readme and license
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt" "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" "${CMAKE_CURRENT_SOURCE_DIR}/README.md" DESTINATION ${MADARA_ADDITIONAL_FILES_INSTALL_DIR})
@@ -140,3 +138,4 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt" "${CMAKE_CURRENT_SOURCE_
 install(EXPORT madaraTargets NAMESPACE madara:: 
   DESTINATION ${MADARA_CMAKE_CONFIG_INSTALL_DIR}
   FILE madara-config.cmake)
+  

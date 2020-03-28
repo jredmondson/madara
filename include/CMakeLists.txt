@@ -96,8 +96,8 @@ set(Boost_USE_DEBUG_LIBS         ON) # ignore debug libs and
 set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME     ON)
-#find_package(Boost 1.73.0) # REQUIRED COMPONENTS filesystem) 
-find_package(Boost 1.60.0 REQUIRED) # REQUIRED COMPONENTS filesystem) 
+
+find_package(Boost 1.60.0 REQUIRED)
 
 if(Boost_FOUND)
   
@@ -105,7 +105,6 @@ if(Boost_FOUND)
     ${MADARA_HEADER_FILES}
 	${MADARA_SRC_FILES}) 
 	
-  message("Boost_INCLUDE_DIRS=${Boost_INCLUDE_DIRS}")
   target_include_directories(madara PUBLIC ${Boost_INCLUDE_DIRS})
   
   target_include_directories(madara
@@ -114,6 +113,9 @@ if(Boost_FOUND)
          $<INSTALL_INTERFACE:${MADARA_INC_INSTALL_DIR}>
     PRIVATE ${header_path})
 	
+  set_target_properties(madara PROPERTIES 
+    DEBUG_POSTFIX d)
+
   target_compile_definitions(madara PUBLIC
                             MADARA=1
                             MADARA_VERSION_MAJOR=${MADARA_VERSION_MAJOR}
@@ -172,7 +174,7 @@ if(Boost_FOUND)
     target_compile_options(madara PRIVATE /MP)
   endif()
   
-  target_link_libraries(madara ${Boost_LIBRARIES})
+  target_link_libraries(madara Boost::boost)
 
   set_target_properties(madara PROPERTIES
     OUTPUT_NAME "madara-${MADARA_VERSION}"

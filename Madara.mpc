@@ -129,7 +129,7 @@ project (Madara_Version) : using_madara, no_karl {
   }
 
   Source_Files {
-    tests/madara_version.cpp
+    tools/madara_version.cpp
   }
 }
 
