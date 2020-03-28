@@ -16,7 +16,7 @@ file(GLOB_RECURSE MADARA_SRC_FILES CONFIGURE_DEPENDS
 
 file(GLOB_RECURSE MADARA_HEADER_FILES CONFIGURE_DEPENDS
     ${PROJECT_SOURCE_DIR}/include/*.h
-    ${PROJECT_SOURCE_DIR}/*.inl
+    ${PROJECT_SOURCE_DIR}/include/*.inl
 )
 
 # remove all files in the ndds tree if it isn't feature-enabled
@@ -73,7 +73,7 @@ if(NOT ZMQ)
   endforeach(TMP_PATH)
 endif()
 
-# remove all files in the splice tree if it isn't feature-enabled
+# remove all files in the java tree if it isn't feature-enabled
 if(NOT JAVA)
   set(EXCLUDE_DIR "/java/")
   foreach(TMP_PATH ${MADARA_SRC_FILES})
@@ -96,23 +96,30 @@ set(Boost_USE_DEBUG_LIBS         ON) # ignore debug libs and
 set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME     ON)
-find_package(Boost 1.73.0) # REQUIRED COMPONENTS filesystem) 
+#find_package(Boost 1.73.0) # REQUIRED COMPONENTS filesystem) 
+find_package(Boost 1.60.0 REQUIRED) # REQUIRED COMPONENTS filesystem) 
 
 if(Boost_FOUND)
   
   add_library(madara SHARED
     ${MADARA_HEADER_FILES}
 	${MADARA_SRC_FILES}) 
-  #target_link_libraries(MADARA_LIBRARY Boost::filesystem)
+	
+  message("Boost_INCLUDE_DIRS=${Boost_INCLUDE_DIRS}")
   target_include_directories(madara PUBLIC ${Boost_INCLUDE_DIRS})
-  #target_include_directories(madara PUBLIC ${PROJECT_SOURCE_DIR}/include)
   
   target_include_directories(madara
     PUBLIC $<BUILD_INTERFACE:${MADARA_SOURCE_DIR}/include/>
          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
          $<INSTALL_INTERFACE:${MADARA_INC_INSTALL_DIR}>
     PRIVATE ${header_path})
-  
+	
+  target_compile_definitions(madara PUBLIC
+                            MADARA=1
+                            MADARA_VERSION_MAJOR=${MADARA_VERSION_MAJOR}
+                            MADARA_VERSION_MINOR=${MADARA_VERSION_MINOR}
+                            MADARA_VERSION_PATCH=${MADARA_VERSION_PATCH})
+							
   target_compile_definitions(madara PRIVATE -DMADARA_BUILD_DLL)
   target_compile_definitions(madara PUBLIC -D_WINSOCK_DEPRECATED_NO_WARNINGS -DBOOST_ALL_NO_LIB)
 							
@@ -177,16 +184,17 @@ if(Boost_FOUND)
     ARCHIVE       DESTINATION ${MADARA_ARCHIVE_INSTALL_DIR}
     FRAMEWORK     DESTINATION ${MADARA_FRAMEWORK_INSTALL_DIR})
 
+  # Write/install version file
+  include(CMakePackageConfigHelpers)
+  set(version_file "${CMAKE_CURRENT_BINARY_DIR}/cmake/madara-config-version.cmake")
+  write_basic_package_version_file(${version_file}
+    VERSION ${MADARA_VERSION}
+    COMPATIBILITY AnyNewerVersion)
+  
+  set_property(TARGET madara PROPERTY VERSION "${MADARA_VERSION}")
+  set_property(TARGET madara PROPERTY SOVERSION "${MADARA_VERSION}")
 
+  install(TARGETS madara DESTINATION lib)
+  install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/madara" DESTINATION include)
+  install(FILES ${version_file} DESTINATION ${MADARA_CMAKE_CONFIG_INSTALL_DIR})	 
 endif()
-
-# IDEs should put the headers in a nice place
-#source_group(TREE "${PROJECT_SOURCE_DIR}/include" PREFIX "Header Files" FILES ${MADARA_HEADER_FILES})
-
-set_property(TARGET madara PROPERTY VERSION "${MADARA_VERSION}")
-set_property(TARGET madara PROPERTY SOVERSION "${MADARA_VERSION}")
-
-install(TARGETS madara DESTINATION lib)
-INSTALL( DIRECTORY "${PROJECT_SOURCE_DIR}/include/madara" DESTINATION include )
-
-#install(FILES ${MADARA_HEADER_FILES} DESTINATION include)

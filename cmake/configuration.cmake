@@ -1,5 +1,5 @@
 
-# Options
+# Build options for feature-enabled compilation and installation
 option(madara_ANDROID "Build with Android support" OFF)
 option(madara_DOCS "Run doxygen or javadocs on code" OFF)
 option(madara_KARL "Build with KaRL scripting language support (eval/wait)" ON)

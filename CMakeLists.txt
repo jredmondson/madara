@@ -27,35 +27,39 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 ########################################
 # Package Creation: 
-include (${MADARA_CMAKE_DIR}/madara_cpack.cmake)
-set (CPACK_PACKAGE_VERSION "${MADARA_VERSION}")
-set (CPACK_PACKAGE_VERSION_MAJOR "${MADARA_MAJOR_VERSION}")
-set (CPACK_PACKAGE_VERSION_MINOR "${MADARA_MINOR_VERSION}")
-set (CPACK_PACKAGE_VERSION_PATCH "${MADARA_PATCH_VERSION}")
+include(${MADARA_CMAKE_DIR}/madara_cpack.cmake)
+set(CPACK_PACKAGE_VERSION "${MADARA_VERSION}")
+set(CPACK_PACKAGE_VERSION_MAJOR "${MADARA_MAJOR_VERSION}")
+set(CPACK_PACKAGE_VERSION_MINOR "${MADARA_MINOR_VERSION}")
+set(CPACK_PACKAGE_VERSION_PATCH "${MADARA_PATCH_VERSION}")
+set(CPACK_INSTALL_CMAKE_PROJECTS
+  "debug;madara;ALL;/"
+  "release;madara;ALL;/"
+)
 
-if (CPACK_GENERATOR)
+if(CPACK_GENERATOR)
   message(STATUS "Found CPack generators: ${CPACK_GENERATOR}")
 
   configure_file("${MADARA_CMAKE_DIR}/cpack_options.cmake.in" ${MADARA_CPACK_CFG_FILE} @ONLY)
   set(CPACK_PROJECT_CONFIG_FILE ${MADARA_CPACK_CFG_FILE})
-  include (CPack)
+  include(CPack)
 endif()
 
-set (CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
+set(CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE ON)
 
 
 # developer's option to cache PKG_CONFIG_PATH and
 # LD_LIBRARY_PATH for local installs
 if(PKG_CONFIG_PATH)
-  set (ENV{PKG_CONFIG_PATH} ${PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH})
+  set(ENV{PKG_CONFIG_PATH} ${PKG_CONFIG_PATH}:$ENV{PKG_CONFIG_PATH})
 endif()
 if(LD_LIBRARY_PATH)
-  set (ENV{LD_LIBRARY_PATH} ${LD_LIBRARY_PATH}:$ENV{LD_LIBRARY_PATH})
+  set(ENV{LD_LIBRARY_PATH} ${LD_LIBRARY_PATH}:$ENV{LD_LIBRARY_PATH})
 endif()
 
-set (INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/madara-${MADARA_VERSION}/madara") 
-set (LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
-set (BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
+set(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_INCLUDEDIR}/madara-${MADARA_VERSION}/madara") 
+set(LIB_INSTALL_DIR ${CMAKE_INSTALL_LIBDIR})
+set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
     
 # specify the C++ standard
 set(CMAKE_CXX_STANDARD 14)
@@ -69,7 +73,7 @@ add_custom_command(
 # disable certain warnings that will occur in VS
 if(MSVC)
 
-  set(MADARA_INC_INSTALL_DIR "include/madara")
+  set(MADARA_INC_INSTALL_DIR "include")
   set(MADARA_RUNTIME_INSTALL_DIR   "bin")
   set(MADARA_LIBRARY_INSTALL_DIR   "bin")
   set(MADARA_ARCHIVE_INSTALL_DIR   "lib")
@@ -100,7 +104,7 @@ elseif(UNIX)
   set(MADARA_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_DATADIR}/madara")
 
   set(MADARA_RUNTIME_INSTALL_DIR "bin")
-  set(MADARA_INC_INSTALL_DIR "include/madara") # header filestree
+  set(MADARA_INC_INSTALL_DIR "include") # header filestree
 
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
 endif()
@@ -133,5 +137,6 @@ set(PKG_DEPENDS Boost)
 # install readme and license
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt" "${CMAKE_CURRENT_SOURCE_DIR}/VERSION.txt" "${CMAKE_CURRENT_SOURCE_DIR}/README.md" DESTINATION ${MADARA_ADDITIONAL_FILES_INSTALL_DIR})
 
-install(EXPORT madaraTargets DESTINATION ${MADARA_CMAKE_CONFIG_INSTALL_DIR}
-                                       FILE madara-config.cmake)
+install(EXPORT madaraTargets NAMESPACE madara:: 
+  DESTINATION ${MADARA_CMAKE_CONFIG_INSTALL_DIR}
+  FILE madara-config.cmake)
