@@ -119,8 +119,6 @@ VariableReference ThreadSafeContext::get_ref(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  VariableReference record;
-
   // expand the key if the user asked for it
   if (settings.expand_variables)
   {

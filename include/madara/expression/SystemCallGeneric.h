@@ -5,6 +5,7 @@
 
 #include <string>
 #include <stdexcept>
+#include <functional>
 #include "madara/utility/StdInt.h"
 #include "madara/expression/SystemCallNode.h"
 #include "madara/expression/Visitor.h"

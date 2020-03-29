@@ -2,7 +2,7 @@
 # Note that headers are optional, and do not affect add_library, but they will not
 # show up in IDEs unless they are listed in add_library.
 
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.10)
 
 # Optionally glob, but only for CMake 3.12 or later:
 # file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
@@ -91,13 +91,22 @@ if(NOT JAVA)
   endforeach(TMP_PATH)
 endif()
 
-set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
-set(Boost_USE_DEBUG_LIBS         ON) # ignore debug libs and
-set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
-set(Boost_USE_MULTITHREADED      ON)
-set(Boost_USE_STATIC_RUNTIME     ON)
+if(MSVC)
+  set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
+  set(Boost_USE_DEBUG_LIBS         ON) # ignore debug libs and
+  set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
+  set(Boost_USE_MULTITHREADED      ON)
+  set(Boost_USE_STATIC_RUNTIME     ON)
+else()
+  set(Boost_USE_STATIC_LIBS        OFF)  # only find static libs
+  set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
+  set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
+  set(Boost_USE_MULTITHREADED      ON)
+  set(Boost_USE_STATIC_RUNTIME     OFF)
+endif()
 
-find_package(Boost 1.60.0 REQUIRED)
+
+find_package(Boost 1.60.0 REQUIRED COMPONENTS system)
 
 if(Boost_FOUND)
   
@@ -105,8 +114,9 @@ if(Boost_FOUND)
     ${MADARA_HEADER_FILES}
 	${MADARA_SRC_FILES}) 
 	
+  #target_include_directories(madara PUBLIC Boost::boost)
   target_include_directories(madara PUBLIC ${Boost_INCLUDE_DIRS})
-  
+
   target_include_directories(madara
     PUBLIC $<BUILD_INTERFACE:${MADARA_SOURCE_DIR}/include/>
          $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
@@ -123,7 +133,7 @@ if(Boost_FOUND)
                             MADARA_VERSION_PATCH=${MADARA_VERSION_PATCH})
 							
   target_compile_definitions(madara PRIVATE -DMADARA_BUILD_DLL)
-  target_compile_definitions(madara PUBLIC -D_WINSOCK_DEPRECATED_NO_WARNINGS -DBOOST_ALL_NO_LIB)
+  target_compile_definitions(madara PUBLIC -D_WINSOCK_DEPRECATED_NO_WARNINGS -DBOOST_ALL_NO_LIB -DBOOST_DISABLE_ABI_HEADERS)
 							
   if(madara_ANDROID)
     target_compile_definitions(madara PUBLIC -D_MADARA_ANDROID_ -D__STDC_FORMAT_MACROS)
@@ -172,9 +182,13 @@ if(Boost_FOUND)
   
   if(MSVC)
     target_compile_options(madara PRIVATE /MP)
+  else()
+    target_compile_options(madara PUBLIC -fPIC)
+    target_link_libraries(madara PUBLIC pthread)
   endif()
   
-  target_link_libraries(madara Boost::boost)
+  target_link_libraries(madara PUBLIC Boost::boost Boost::system)
+  #target_link_libraries(madara PUBLIC ${Boost_LIBRARIES})
 
   set_target_properties(madara PROPERTIES
     OUTPUT_NAME "madara-${MADARA_VERSION}"
@@ -193,8 +207,8 @@ if(Boost_FOUND)
     VERSION ${MADARA_VERSION}
     COMPATIBILITY AnyNewerVersion)
   
-  set_property(TARGET madara PROPERTY VERSION "${MADARA_VERSION}")
-  set_property(TARGET madara PROPERTY SOVERSION "${MADARA_VERSION}")
+  #set_property(TARGET madara PROPERTY VERSION "${MADARA_VERSION}")
+  set_property(TARGET madara PROPERTY SOVERSION "${MADARA_VERSION_MAJOR}.${MADARA_VERSION_MINOR}")
 
   install(TARGETS madara DESTINATION lib)
   install(DIRECTORY "${PROJECT_SOURCE_DIR}/include/madara" DESTINATION include)

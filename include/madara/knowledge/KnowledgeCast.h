@@ -361,7 +361,7 @@ inline auto knowledge_cast(const KnowledgeRecord& in, T&& out)
 }
 
 template<typename Container>
-inline const void knowledge_cast(
+inline void knowledge_cast(
     const KnowledgeRecord& in, std::back_insert_iterator<Container> iter)
 {
   using out_type = typename Container::value_type;

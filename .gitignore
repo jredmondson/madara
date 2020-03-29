@@ -48,6 +48,7 @@ Release/*
 target/
 .settings
 
+cmake/cpack_options.cmake
 
 #ignore generated file
 Geo.java

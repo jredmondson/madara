@@ -189,10 +189,8 @@ int WorkerThread::svc(void)
       bool debug = debug_.is_true();
 
       knowledge::VariableReference terminated;
-      knowledge::VariableReference paused;
 
       terminated = control_.get_ref(name_ + ".terminated");
-      //paused = control_.get_ref(name_ + ".paused");
 
       // change thread frequency
       change_frequency(

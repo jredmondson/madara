@@ -60,10 +60,10 @@ madara::knowledge::containers::Barrier::Barrier(const std::string& name,
 madara::knowledge::containers::Barrier::Barrier(const Barrier& rhs)
   : BaseContainer(rhs),
     context_(rhs.context_),
-    barrier_(rhs.barrier_),
     id_(rhs.id_),
     participants_(rhs.participants_),
-    last_failed_check_(rhs.last_failed_check_)
+    last_failed_check_(rhs.last_failed_check_),
+    barrier_(rhs.barrier_)
 {
 }
 
