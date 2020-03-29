@@ -64,11 +64,6 @@ set(BIN_INSTALL_DIR ${CMAKE_INSTALL_BINDIR})
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-add_custom_command(
-  OUTPUT ${MADARA_INCLUDE_DIR}/Version.h
-  COMMAND ${MADARA_BIN_DIR}/generate_version_include.pl
-)
-
 # disable certain warnings that will occur in VS
 if(MSVC)
 

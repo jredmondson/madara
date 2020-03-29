@@ -4,6 +4,10 @@
 
 cmake_minimum_required(VERSION 3.10)
 
+if(CMP0074)
+  cmake_policy(SET CMP0074 NEW)
+endif()
+
 # Optionally glob, but only for CMake 3.12 or later:
 # file(GLOB HEADER_LIST CONFIGURE_DEPENDS "${ModernCMakeExample_SOURCE_DIR}/include/modern/*.hpp")
 
@@ -97,22 +101,36 @@ if(MSVC)
   set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
   set(Boost_USE_MULTITHREADED      ON)
   set(Boost_USE_STATIC_RUNTIME     ON)
+  find_package(Boost 1.60.0 REQUIRED)
 else()
   set(Boost_USE_STATIC_LIBS        OFF)  # only find static libs
   set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
   set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
   set(Boost_USE_MULTITHREADED      ON)
   set(Boost_USE_STATIC_RUNTIME     OFF)
+  find_package(Boost 1.60.0 REQUIRED COMPONENTS system)
 endif()
 
 
-find_package(Boost 1.60.0 REQUIRED COMPONENTS system)
+add_custom_command(
+  OUTPUT ${header_path}/Version.h
+  COMMAND perl
+  ARGS ${MADARA_BIN_DIR}/generate_version_include.pl
+  DEPENDS ${MADARA_SOURCE_DIR}/VERSION.txt
+)
+
+add_custom_target(
+  madara_lib_version
+  DEPENDS ${header_path}/Version.h
+)
 
 if(Boost_FOUND)
   
   add_library(madara SHARED
     ${MADARA_HEADER_FILES}
 	${MADARA_SRC_FILES}) 
+  
+  add_dependencies(madara madara_lib_version)
 	
   #target_include_directories(madara PUBLIC Boost::boost)
   target_include_directories(madara PUBLIC ${Boost_INCLUDE_DIRS})
@@ -182,12 +200,13 @@ if(Boost_FOUND)
   
   if(MSVC)
     target_compile_options(madara PRIVATE /MP)
+    target_link_libraries(madara PUBLIC Boost::boost)
   else()
     target_compile_options(madara PUBLIC -fPIC)
     target_link_libraries(madara PUBLIC pthread)
+    target_link_libraries(madara PUBLIC Boost::boost Boost::system)
   endif()
   
-  target_link_libraries(madara PUBLIC Boost::boost Boost::system)
   #target_link_libraries(madara PUBLIC ${Boost_LIBRARIES})
 
   set_target_properties(madara PROPERTIES

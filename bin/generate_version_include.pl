@@ -6,7 +6,7 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # @author   James Edmondson <jedmondson@gmail.com>
 #
 # This perl script is useful for generating a dynamic
-# version number for inclusion with C++. After the
+# version number for inclusion with C++.
 ###################################################
 
 my $txt_fname = $ENV{'MADARA_ROOT'} . "/VERSION.txt";
@@ -18,6 +18,8 @@ if ($txt_mdate < $h_mdate) {
   exit 0;
 }
 
+print "Generating: reading from $txt_fname\n";
+
 open VERSION_FILE, "<", $txt_fname  or
     die "Unable to open ../VERSION.txt for reading.";
   $version = <VERSION_FILE>;
@@ -27,6 +29,8 @@ chomp ($version);
 
 $git_sha = `git rev-parse HEAD`;
 chomp ($git_sha);
+
+print "Generating: generating $h_fname\n";
 
 open OUTPUT_FILE, ">",  $h_fname or
     die "Unable to open Version.h for writing.";
