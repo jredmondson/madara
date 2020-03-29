@@ -191,7 +191,7 @@ if(Boost_FOUND)
   #target_link_libraries(madara PUBLIC ${Boost_LIBRARIES})
 
   set_target_properties(madara PROPERTIES
-    OUTPUT_NAME "madara-${MADARA_VERSION}"
+    OUTPUT_NAME "madara"
     POSITION_INDEPENDENT_CODE ON)
 									   
   install(TARGETS madara EXPORT madaraTargets
