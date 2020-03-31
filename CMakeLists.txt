@@ -110,16 +110,16 @@ add_subdirectory(include)
 add_subdirectory(tools)
 
 # Build tests
-if(TESTS)
+if(madara_TESTS)
   add_subdirectory(tests)
 endif()
 
 # Build tutorials
-if(TUTORIALS)
+if(madara_TUTORIALS)
   add_subdirectory(tutorials)
 endif()
 
-if(DOCS)
+if(madara_DOCS)
   add_subdirectory(docs)
 endif()
 
