@@ -56,10 +56,6 @@ madara::knowledge::Hive::Hive()
 
 madara::knowledge::Hive::~Hive()
 {
-  for (auto kb : kbs_)
-  {
-    kb.close_transport();
-  }
 }
 
 void

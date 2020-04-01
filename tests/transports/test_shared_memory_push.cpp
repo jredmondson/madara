@@ -13,8 +13,8 @@ void test_hive(void)
 {
   knowledge::Hive hive;
   hive.resize(3);
-
-  std::vector<knowledge::KnowledgeBase>& kbs = hive.get_kbs();
+  /*
+  std::vector<knowledge::KnowledgeBase> kbs = hive.get_kbs();
   
   kbs[0].set("agent.0.name", "Sam Brandy", knowledge::EvalSettings::SEND);
 
@@ -83,7 +83,7 @@ void test_hive(void)
   else
   {
     std::cerr << "Hive: OVERALL: SUCCESS.\n";
-  }
+  }*/
 
 }
 
@@ -180,7 +180,7 @@ int main(int, char**)
     std::cerr << "SharedPush: OVERALL: SUCCESS.\n";
   }
 
-  //test_hive();
+  test_hive();
 
   return madara_fails;
 }
