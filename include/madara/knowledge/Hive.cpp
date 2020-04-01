@@ -56,9 +56,9 @@ madara::knowledge::Hive::Hive()
 
 madara::knowledge::Hive::~Hive()
 {
-  for (size_t i = 0; i < transports_.size(); ++i)
+  for (auto kb : kbs_)
   {
-    delete transports_[i];
+    kb.close_transport();
   }
 }
 

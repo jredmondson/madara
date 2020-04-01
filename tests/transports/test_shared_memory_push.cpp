@@ -180,7 +180,7 @@ int main(int, char**)
     std::cerr << "SharedPush: OVERALL: SUCCESS.\n";
   }
 
-  test_hive();
+  //test_hive();
 
   return madara_fails;
 }
