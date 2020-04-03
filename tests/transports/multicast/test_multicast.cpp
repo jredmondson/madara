@@ -134,15 +134,6 @@ int main(int argc, char** argv)
   knowledge.get_context().set_clock(10);
   knowledge.set(".id", settings.id, madara::knowledge::EvalSettings::SEND);
 
-  auto print_clocks = [&]() {
-    std::cerr << "kb clock: " << knowledge.get_context().get_clock()
-              << std::endl;
-    std::cerr << "var1 clock: " << knowledge.get("var1").clock << std::endl;
-    std::cerr << "var2 clock: " << knowledge.get("var2").clock << std::endl;
-    std::cerr << "var3 clock: " << knowledge.get("var3").clock << std::endl;
-    std::cerr << "var4 clock: " << knowledge.get("var4").clock << std::endl;
-  };
-
   if (settings.id == 0)
   {
     madara::knowledge::CompiledExpression compiled = knowledge.compile(
