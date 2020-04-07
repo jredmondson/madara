@@ -119,8 +119,6 @@ VariableReference ThreadSafeContext::get_ref(
   const std::string* key_ptr;
   MADARA_GUARD_TYPE guard(mutex_);
 
-  VariableReference record;
-
   // expand the key if the user asked for it
   if (settings.expand_variables)
   {
@@ -810,7 +808,7 @@ void ThreadSafeContext::to_string(std::string& target,
     // separate the key/value pairing with the key_val_delimiter
     buffer << key_val_delimiter;
 
-    if (i->second.is_string_type() || i->second.is_any_type())
+    if (i->second.is_string_type())
     {
       buffer << "'";
     }
@@ -823,7 +821,7 @@ void ThreadSafeContext::to_string(std::string& target,
     // use the array_delimiter for the underlying to_string functions
     buffer << i->second.to_string(array_delimiter);
 
-    if (i->second.is_string_type() || i->second.is_any_type())
+    if (i->second.is_string_type())
     {
       buffer << "'";
     }
@@ -1907,8 +1905,8 @@ int64_t ThreadSafeContext::save_as_karl(
       char* result_copy = new char[settings.buffer_size];
       memcpy(result_copy, result.c_str(), result.size() + 1);
 
-      int size =
-          settings.encode(result_copy, result.size(), settings.buffer_size);
+      int size = settings.encode(
+        result_copy, (int)result.size(), (int)settings.buffer_size);
 
       if (size < 0)
       {
@@ -2014,18 +2012,7 @@ int64_t ThreadSafeContext::save_as_json(
         buffer << i->first;
         buffer << "\" : ";
 
-        if (i->second.is_any_type())
-        {
-          const Any& any = i->second.get_any_cref();
-          /*
-          const char *tag = any.tag();
-          json_oarchive json_out(buffer);
-          json_out.setNextName(tag ?
-              (std::string("Any<") + tag + ">").c_str() :
-              "Any<UKNOWN_ANY_TYPE>");*/
-          any.serialize_json(buffer);
-        }
-        else if (!i->second.is_binary_file_type())
+        if (!i->second.is_binary_file_type())
         {
           // record is a non binary file type
           if (i->second.is_string_type())
@@ -2467,19 +2454,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
     }  // end if larger than buffer remaining
 
     auto pre_write = current;
-    try
-    {
-      current = record->write(current, name, buffer_remaining);
-    }
-    catch (exceptions::BadAnyAccess& e)
-    {
-      madara_logger_ptr_log(logger_, logger::LOG_ERROR,
-          "ThreadSafeContext::write_record: Caught\n"
-          "%s \n"
-          "While writing %s\n",
-          e.what(), name.c_str());
-      throw e;
-    }
+    current = record->write(current, name, buffer_remaining);
     encoded_size = current - pre_write;
 
     ++checkpoint_header.updates;

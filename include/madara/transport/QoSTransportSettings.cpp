@@ -823,19 +823,44 @@ void madara::transport::QoSTransportSettings::load(
   {
     banned_peers_[banned_keys[i]] = 1;
   }
+  
+  knowledge::KnowledgeRecord value;
 
-  packet_drop_rate_ = knowledge.get(prefix + ".packet_drop_rate").to_double();
-  packet_drop_type_ =
-      (int)knowledge.get(prefix + ".packet_drop_type").to_integer();
-  packet_drop_burst_ =
-      (uint64_t)knowledge.get(prefix + ".packet_drop_burst").to_integer();
-
-  max_send_bandwidth_ =
-      (int64_t)knowledge.get(prefix + ".max_send_bandwidth").to_integer();
-  max_total_bandwidth_ =
-      (int64_t)knowledge.get(prefix + ".max_total_bandwidth").to_integer();
-
-  deadline_ = knowledge.get(prefix + ".deadline").to_double();
+  value = knowledge.get(prefix + ".packet_drop_rate");
+  if (value.exists())
+  {
+    packet_drop_rate_ = (uint32_t)value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".packet_drop_type");
+  if (value.exists())
+  {
+    packet_drop_type_ = (int)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".packet_drop_burst");
+  if (value.exists())
+  {
+    packet_drop_burst_ = (uint64_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".max_send_bandwidth");
+  if (value.exists())
+  {
+    max_send_bandwidth_ = (int64_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".max_total_bandwidth");
+  if (value.exists())
+  {
+    max_total_bandwidth_ = (int64_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".deadline");
+  if (value.exists())
+  {
+    deadline_ = value.to_double();
+  }
 }
 
 void madara::transport::QoSTransportSettings::load_text(
@@ -875,19 +900,44 @@ void madara::transport::QoSTransportSettings::load_text(
   {
     banned_peers_[banned_keys[i]] = 1;
   }
+  
+  knowledge::KnowledgeRecord value;
 
-  packet_drop_rate_ = knowledge.get(prefix + ".packet_drop_rate").to_double();
-  packet_drop_type_ =
-      (int)knowledge.get(prefix + ".packet_drop_type").to_integer();
-  packet_drop_burst_ =
-      (uint64_t)knowledge.get(prefix + ".packet_drop_burst").to_integer();
-
-  max_send_bandwidth_ =
-      (int64_t)knowledge.get(prefix + ".max_send_bandwidth").to_integer();
-  max_total_bandwidth_ =
-      (int64_t)knowledge.get(prefix + ".max_total_bandwidth").to_integer();
-
-  deadline_ = knowledge.get(prefix + ".deadline").to_double();
+  value = knowledge.get(prefix + ".packet_drop_rate");
+  if (value.exists())
+  {
+    packet_drop_rate_ = (uint32_t)value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".packet_drop_type");
+  if (value.exists())
+  {
+    packet_drop_type_ = (int)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".packet_drop_burst");
+  if (value.exists())
+  {
+    packet_drop_burst_ = (uint64_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".max_send_bandwidth");
+  if (value.exists())
+  {
+    max_send_bandwidth_ = (int64_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".max_total_bandwidth");
+  if (value.exists())
+  {
+    max_total_bandwidth_ = (int64_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".deadline");
+  if (value.exists())
+  {
+    deadline_ = value.to_double();
+  }
 }
 
 void madara::transport::QoSTransportSettings::save(

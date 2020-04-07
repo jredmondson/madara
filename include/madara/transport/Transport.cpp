@@ -1075,7 +1075,7 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
   {
     madara_logger_log(context_.get_logger(), logger::LOG_EMERGENCY,
         "%s:"
-        " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
+        " Unable to allocate buffer of size %" PRIu32 ". Exiting thread.\n",
         print_prefix, settings_.queue_length);
 
     return -3;

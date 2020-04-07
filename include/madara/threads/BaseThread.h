@@ -72,13 +72,16 @@ public:
 
 protected:
   /**
-   * Initializes the Java thread implementation's control plane variables
+   * Initializes the thread implementation's control plane variables
    * @param control the control plane between Threader and threads
    **/
   virtual void init_control_vars(knowledge::KnowledgeBase& control)
   {
     terminated.set_name(name + ".terminated", control);
     paused.set_name(name + ".paused", control);
+
+    terminated = 0;
+    paused = 0;
   }
 
   /**
@@ -97,7 +100,7 @@ protected:
    **/
   madara::knowledge::containers::Integer paused;
 };
-}
-}
+}  // namespace threads
+}  // namespace madara
 
 #endif  // _MADARA_THREADS_BASE_THREAD_H_

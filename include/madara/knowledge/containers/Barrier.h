@@ -8,6 +8,7 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/ThreadSafeContext.h"
 #include "madara/knowledge/KnowledgeUpdateSettings.h"
+#include "madara/knowledge/containers/IntegerStaged.h"
 #include "BaseContainer.h"
 
 /**
@@ -309,33 +310,33 @@ private:
    **/
   inline type barrier_result(void) const
   {
-#ifndef _MADARA_NO_KARL_
-    return context_->evaluate(aggregate_barrier_, no_harm).to_integer();
-#else
-    // note this means that barriers are always successful if no_karl=1
-    return type(1);
-#endif
+    type result = 1;
+
+    // check the barriers for 
+    for ( ; last_failed_check_ < participants_ ; ++last_failed_check_)
+    {
+      // this guy isn't up to our barrier yet?
+      if (barrier_[last_failed_check_] < *barrier_[id_])
+      {
+        // load from the kb to check for updates
+        barrier_[last_failed_check_].read();
+
+        // if he's still not up to our barrier yet, the barrier isn't done
+        if (barrier_[last_failed_check_] < *barrier_[id_])
+        {
+          result = 0;
+          break;
+        }
+      }
+    }
+
+    return result;
   }
-
-  /**
-   * Builds the variable that is actually incremented
-   **/
-  void build_var(void);
-
-  /**
-   * Initialize the no harm eval settings
-   **/
-  void init_noharm(void);
 
   /**
    * Variable context that we are modifying
    **/
   mutable ThreadSafeContext* context_;
-
-  /**
-   * Variable reference
-   **/
-  VariableReference variable_;
 
   /**
    * id of this barrier in the barrier ring
@@ -346,26 +347,16 @@ private:
    * the number of participants in the barrier ring
    **/
   size_t participants_;
-
-#ifndef _MADARA_NO_KARL_
+  
   /**
-   * Expression for aggregating barrier in one atomic operation
+   * id of this barrier in the barrier ring
    **/
-  CompiledExpression aggregate_barrier_;
-#endif
+  mutable size_t last_failed_check_;
 
-  /**
-   * Settings we'll use for all evaluations
-   **/
-  EvalSettings no_harm;
-
-  /**
-   * Holder for variable name to quickly refresh modified status
-   **/
-  std::string variable_name_;
+  mutable std::vector<IntegerStaged> barrier_;
 };
-}
-}
-}
+}  // namespace containers
+}  // namespace knowledge
+}  // namespace madara
 
 #endif  // _MADARA_CONTAINERS_BARRIER_H_

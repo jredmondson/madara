@@ -1537,19 +1537,19 @@ void test_arrays(void)
   madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
       "Testing inline array creation ([0,1,2])\n");
 
-  knowledge::KnowledgeBase knowledge;
+  knowledge::KnowledgeBase kb;
 
 #ifndef _MADARA_NO_KARL_
 
   madara::knowledge::KnowledgeRecord result =
-      knowledge.evaluate("my_array = [0, 1, 2]");
+      kb.evaluate("my_array = [0, 1, 2]");
 
   assert(result.type() == madara::knowledge::KnowledgeRecord::INTEGER_ARRAY &&
          result.retrieve_index(0).to_integer() == 0 &&
          result.retrieve_index(1).to_integer() == 1 &&
          result.retrieve_index(2).to_integer() == 2);
 
-  result = knowledge.evaluate(
+  result = kb.evaluate(
       "some_var = 1;> my_array = [some_var, some_var + 5, 2]");
 
   assert(result.type() == madara::knowledge::KnowledgeRecord::INTEGER_ARRAY &&
@@ -1558,6 +1558,39 @@ void test_arrays(void)
          result.retrieve_index(2).to_integer() == 2);
 
 #endif // end karl evaluation supported
+
+  result.clear_value();
+  
+  madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
+      "Testing set_index array creation\n");
+
+  kb.set_index("a_test_array", 2, 2.0);
+  kb.set_index("a_test_array", 1, 1.0);
+  kb.set_index("a_test_array", 0, 0.0);
+
+  result = kb.get("a_test_array");
+  
+  assert(result.type() == madara::knowledge::KnowledgeRecord::DOUBLE_ARRAY &&
+         result.retrieve_index(0).to_integer() == 0.0 &&
+         result.retrieve_index(1).to_integer() == 1.0 &&
+         result.retrieve_index(2).to_integer() == 2.0);
+  
+  // test scoping of array creation to make sure the shared implementation
+  // is correct
+  {
+    kb.set_index("second_test_array", 2, 2.0);
+    kb.set_index("second_test_array", 0, 0.0);
+    kb.set_index("second_test_array", 1, 1.0);
+  }
+  
+  result = kb.get("second_test_array");
+  
+  assert(result.type() == madara::knowledge::KnowledgeRecord::DOUBLE_ARRAY &&
+         result.retrieve_index(0).to_integer() == 0.0 &&
+         result.retrieve_index(1).to_integer() == 1.0 &&
+         result.retrieve_index(2).to_integer() == 2.0);
+  
+
 }
 
 #define MADARA_TEST_TRIOP(lhs, op, rhs, method, cmp, target) \

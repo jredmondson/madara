@@ -5,10 +5,12 @@
 #include <thread>
 #include <memory>
 
+#include "madara/MadaraExport.h"
 #include "madara/utility/ScopedArray.h"
 #include "madara/knowledge/CheckpointSettings.h"
 #include "madara/knowledge/FileHeader.h"
 #include "madara/transport/MessageHeader.h"
+#include "madara/utility/StlHelper.h"
 
 /**
  * @file CheckpointPlayer.h
@@ -24,7 +26,7 @@ namespace knowledge
 /**
  * Class for iterating binary checkpoint files
  **/
-class CheckpointReader
+class MADARA_EXPORT CheckpointReader
 {
 public:
   /**
@@ -112,7 +114,7 @@ private:
 /**
  * Plays back a checkpoint over time, based on recorded TOI
  **/
-class CheckpointPlayer
+class MADARA_EXPORT CheckpointPlayer
 {
 public:
   /**
@@ -144,7 +146,7 @@ public:
     : context_(&context),
       settings_(reader.get_checkpoint_settings()),
       update_settings_(update_settings),
-      reader_(mk_unique<CheckpointReader>(std::move(reader)))
+      reader_(utility::mk_unique<CheckpointReader>(std::move(reader)))
   {
   }
 
@@ -202,7 +204,7 @@ private:
   {
     if (!reader_)
     {
-      reader_ = mk_unique<CheckpointReader>(settings_);
+      reader_ = utility::mk_unique<CheckpointReader>(settings_);
     }
   }
 

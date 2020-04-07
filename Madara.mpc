@@ -1,5 +1,5 @@
 
-project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android, using_capnp, using_nothreadlocal, using_filesystem, using_warnings, no_warnings {
+project (Madara) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, port/java/using_java, port/java/using_android, port/java/using_openjdk, using_simtime, debug_build, using_boost, using_clang, using_android, using_nothreadlocal, using_filesystem, using_warnings, no_warnings {
 
   sharedname = MADARA
   dynamicflags += MADARA_BUILD_DLL
@@ -21,7 +21,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   libpaths += $(MADARA_ROOT)/lib
 
   verbatim (make, local, true) {
-    CPPFLAGS := -std=c++11 -O3 $(CPPFLAGS)
+    CPPFLAGS := -std=c++14 -O3 $(CPPFLAGS)
   }
 
   Build_Files {
@@ -41,7 +41,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   Inline_Files {
     include/madara/knowledge
     include/madara/knowledge/containers
-    include/madara/knowledge/rcw
     include/madara/filters
     include/madara/logger/Logger.inl
     include/madara/utility
@@ -67,7 +66,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
-    include/madara/knowledge/rcw
     include/madara/logger
     include/madara/threads
     include/madara/transport/udp
@@ -95,7 +93,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/filters
     include/madara/knowledge
     include/madara/knowledge/containers
-    include/madara/knowledge/rcw
     include/madara/logger
     include/madara/threads
     include/madara/transport/udp
@@ -114,7 +111,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/transport/TransportContext.h
     include/madara/utility
     include/madara/Boost.h
-    include/madara/MADARA_export.h
+    include/madara/MadaraExport.h
     include/madara/LockType.h
     include/madara/Namespaces.h
     include/pugi
@@ -132,7 +129,7 @@ project (Madara_Version) : using_madara, no_karl {
   }
 
   Source_Files {
-    tests/madara_version.cpp
+    tools/madara_version.cpp
   }
 }
 
@@ -141,9 +138,6 @@ project (KaRL) : using_madara, no_karl, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = karl
 
-  libs += boost_filesystem
-  libs += capnpc 
-  
   after = Madara
   
   Documentation_Files {
@@ -161,8 +155,6 @@ project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4 {
   exeout = $(MADARA_ROOT)/bin
   exename = stk_inspect
 
-  libs += capnpc 
-  
   after = Madara
   
   Documentation_Files {
@@ -173,40 +165,6 @@ project (Stk_Inspect) : using_madara, no_karl, using_ssl, using_lz4 {
 
   Source_Files {
     tools/stk_inspect.cpp
-  }
-}
-
-project (mabundle) : using_madara, no_karl, using_ssl, using_lz4, using_filesystem {
-  exeout = $(MADARA_ROOT)/bin
-  exename = mabundle
-
-  after = Madara
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tools/mabundle.cpp
-  }
-}
-
-project (mfs) : using_madara, no_karl, using_ssl, using_lz4, using_filesystem {
-  exeout = $(MADARA_ROOT)/bin
-  exename = mfs
-
-  after = Madara
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tools/mfs.cpp
   }
 }
 

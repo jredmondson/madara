@@ -14,6 +14,8 @@
 #include "madara/MadaraExport.h"
 #include "madara/expression/ExpressionTree.h"
 #include "madara/utility/ScopedArray.h"
+#include "madara/utility/Comparators.h"
+#include "madara/utility/StlHelper.h"
 
 namespace madara
 {
@@ -22,11 +24,6 @@ namespace knowledge
 class ThreadSafeContext;
 class KnolwedgeBaseImpl;
 class Variables;
-
-namespace rcw
-{
-class BaseTracker;
-}
 
 /**
  * @class VariableReference
@@ -38,7 +35,6 @@ public:
   friend class ThreadSafeContext;
   friend class KnowledgeBaseImpl;
   friend class Variables;
-  friend class rcw::BaseTracker;
 
   using pair_ptr = KnowledgeMap::value_type*;
 
@@ -100,7 +96,7 @@ private:
 typedef std::vector<VariableReference> VariableReferences;
 
 /// a map of variable references
-typedef std::map<const char*, VariableReference, compare_const_char_ptr>
+typedef std::map<const char*, VariableReference, utility::ComparisonLessThan>
     VariableReferenceMap;
 
 /**

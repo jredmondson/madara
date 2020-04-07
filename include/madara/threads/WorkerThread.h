@@ -128,6 +128,18 @@ protected:
    * base on completion of the thread
    **/
   knowledge::containers::Integer finished_;
+  
+  /**
+   * thread safe paused flag that will be sent to the knowledge base
+   * to indicate thread activities should pause
+   **/
+  madara::knowledge::containers::Integer paused_;
+  
+  /**
+   * thread safe paused flag that will be sent to the knowledge base
+   * to indicate thread activities should pause
+   **/
+  madara::knowledge::containers::Integer running_;
 
   /**
    * thread safe start flag that will be sent to the knowledge

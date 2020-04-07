@@ -87,7 +87,8 @@ inline bool NativeCircularBufferConsumer::operator!=(
 template<typename T>
 void NativeCircularBufferConsumer::consume(T& value, size_t& dropped) const
 {
-  value = consume(dropped).to_any<T>();
+  //value = consume(dropped).to_any<T>();
+  value = knowledge_cast<T>(consume(dropped));
 }
 
 template<typename T>
@@ -99,7 +100,8 @@ void NativeCircularBufferConsumer::peek_latest(
   {
     // add them to the values
     if (record.is_valid())
-      values.push_back(record.to_any<T>());
+      //values.push_back(record.to_any<T>());
+      values.push_back(knowledge_cast<T>(record));
   }
 }
 
@@ -150,7 +152,7 @@ void NativeCircularBufferConsumer::consume_latest(
   {
     // add them to the values
     if (record.is_valid())
-      values.push_back(record.to_any<T>());
+      values.push_back(knowledge_cast<T>(record));
   }
 }
 
@@ -165,7 +167,7 @@ void NativeCircularBufferConsumer::consume_latest(
   {
     // add them to the values
     if (record.is_valid())
-      values.push_back(record.to_any<T>());
+      values.push_back(knowledge_cast<T>(record));
   }
 }
 
@@ -283,7 +285,8 @@ void NativeCircularBufferConsumer::consume_many(
 {
   for (auto record : consume_many(count))
   {
-    values.push_back(record.to_any<T>());
+    //values.push_back(record.to_any<T>());
+    values.push_back(knowledge_cast<T>(record));
   }
 }
 
@@ -325,7 +328,8 @@ template<typename T>
 void NativeCircularBufferConsumer::inspect(
     KnowledgeRecord::Integer position, T& value) const
 {
-  value = inspect(position).to_any<T>();
+  //value = inspect(position).to_any<T>();
+  value = knowledge_cast<T>(inspect(position));
 }
 
 inline madara::knowledge::KnowledgeRecord NativeCircularBufferConsumer::inspect(
@@ -350,7 +354,8 @@ void NativeCircularBufferConsumer::inspect(KnowledgeRecord::Integer position,
   // iterate over the returned records
   for (auto record : inspect(position, count))
   {
-    values.push_back(record.to_any<T>());
+    //values.push_back(record.to_any<T>());
+    values.push_back(knowledge_cast<T>(record));
   }
 }
 

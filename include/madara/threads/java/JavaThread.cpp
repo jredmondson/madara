@@ -1,3 +1,5 @@
+#ifdef _MADARA_JAVA_
+
 #include "JavaThread.h"
 
 #include "madara/utility/java/Acquire_VM.h"
@@ -274,3 +276,5 @@ void threads::JavaThread::init_control_vars(knowledge::KnowledgeBase& control)
   jvm.env->DeleteLocalRef(jterminate);
   jvm.env->DeleteLocalRef(jpaused);
 }
+
+#endif // _MADARA_JAVA_

@@ -305,27 +305,6 @@ inline int ThreadSafeContext::set(const VariableReference& variable, T&& value,
 }
 
 template<typename T>
-inline int ThreadSafeContext::set_any(
-    const std::string& key, T&& value, const KnowledgeUpdateSettings& settings)
-{
-  VariableReference variable = get_ref(key, settings);
-  return set_any(variable, std::forward<T>(value), settings);
-}
-
-template<typename T>
-inline int ThreadSafeContext::set_any(const VariableReference& variable,
-    T&& value, const KnowledgeUpdateSettings& settings)
-{
-  MADARA_GUARD_TYPE guard(mutex_);
-
-  if (variable.is_valid())
-    return emplace_any_unsafe(
-        variable, settings, type<decay_<T>>{}, std::forward<T>(value));
-  else
-    return -1;
-}
-
-template<typename T>
 inline int ThreadSafeContext::set(const std::string& key, const T* value,
     uint32_t size, const KnowledgeUpdateSettings& settings)
 {
@@ -372,61 +351,6 @@ inline int ThreadSafeContext::set_unsafe(const VariableReference& variable,
     T&& value, const KnowledgeUpdateSettings& settings)
 {
   int ret = set_unsafe_impl(variable, settings, std::forward<T>(value));
-
-  if (ret == 0)
-    mark_and_signal(variable, settings);
-
-  return ret;
-}
-
-template<typename... Args>
-inline int ThreadSafeContext::emplace_any(const std::string& key,
-    const KnowledgeUpdateSettings& settings, Args&&... args)
-{
-  VariableReference variable = get_ref(key, settings);
-  return emplace_any(variable, settings, std::forward<Args>(args)...);
-}
-
-template<typename... Args>
-inline int ThreadSafeContext::emplace_any(const VariableReference& variable,
-    const KnowledgeUpdateSettings& settings, Args&&... args)
-{
-  MADARA_GUARD_TYPE guard(mutex_);
-
-  if (variable.is_valid())
-    return emplace_any_unsafe(variable, settings, std::forward<Args>(args)...);
-  else
-    return -1;
-}
-
-template<typename... Args>
-inline int ThreadSafeContext::emplace_any_unsafe_impl(
-    const VariableReference& variable, const KnowledgeUpdateSettings& settings,
-    Args&&... args)
-{
-  auto record = variable.get_record_unsafe();
-
-  // check if we have the appropriate write quality
-  if (!settings.always_overwrite && record->write_quality < record->quality)
-    return -2;
-  else
-    record->quality = 0;
-
-  record->emplace_any(std::forward<Args>(args)...);
-  record->quality = record->write_quality;
-  record->clock = clock_;
-  record->set_toi(utility::get_time());
-
-  return 0;
-}
-
-template<typename... Args>
-inline int ThreadSafeContext::emplace_any_unsafe(
-    const VariableReference& variable, const KnowledgeUpdateSettings& settings,
-    Args&&... args)
-{
-  int ret =
-      emplace_any_unsafe_impl(variable, settings, std::forward<Args>(args)...);
 
   if (ret == 0)
     mark_and_signal(variable, settings);

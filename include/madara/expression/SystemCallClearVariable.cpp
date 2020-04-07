@@ -50,14 +50,14 @@ madara::expression::SystemCallClearVariable::prune(bool& can_change)
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallClearVariable: "
         "KARL COMPILE ERROR:"
-        "System call delete_variable requires 1 argument,"
-        "e.g., #delete_variable ('var')\n");
+        "System call clear requires 1 argument,"
+        "e.g., #clear ('var')\n");
 
     throw exceptions::KarlException(
         "madara::expression::SystemCallClearVariable: "
         "KARL COMPILE ERROR: "
-        "System call delete_variable requires 1 argument,"
-        "e.g., #delete_variable ('var')\n");
+        "System call clear requires 1 argument,"
+        "e.g., #clear ('var')\n");
   }
 
   return result;
@@ -88,14 +88,14 @@ madara::expression::SystemCallClearVariable::evaluate(
     madara_logger_ptr_log(logger_, logger::LOG_ERROR,
         "madara::expression::SystemCallClearVariable: "
         "KARL RUNTIME ERROR:"
-        "System call delete_variable requires 1 argument,"
-        "e.g., #delete_variable ('var')\n");
+        "System call clear requires 1 argument,"
+        "e.g., #clear ('var')\n");
 
     throw exceptions::KarlException(
         "madara::expression::SystemCallClearVariable: "
         "KARL RUNTIME ERROR: "
-        "System call delete_variable requires 1 argument,"
-        "e.g., #delete_variable ('var')\n");
+        "System call clear requires 1 argument,"
+        "e.g., #clear ('var')\n");
   }
 
   return return_value;

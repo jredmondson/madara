@@ -257,6 +257,22 @@ public:
    * @return        true if thread was terminated, false if timeout
    **/
   bool wait(const knowledge::WaitSettings& ws = knowledge::WaitSettings());
+  
+  /**
+   * Wait for a specific thread to reach paused state
+   * @param name    unique thread name for the thread
+   * @param ws      wait settings for specifying period and timeout
+   * @return  true if thread was terminated, false if timeout
+   **/
+  bool wait_for_paused(const std::string name,
+      const knowledge::WaitSettings& ws = knowledge::WaitSettings());
+
+  /**
+   * Wait for all threads to reach paused state
+   * @param ws      wait settings for specifying period and timeout
+   * @return        true if thread was terminated, false if timeout
+   **/
+  bool wait_for_paused(const knowledge::WaitSettings& ws = knowledge::WaitSettings());
 
 private:
   /**

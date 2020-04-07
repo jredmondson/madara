@@ -45,7 +45,7 @@ MADARA_EXTERN_C const double minrate;
 #ifdef __cplusplus
 constexpr bool simtime = true;
 
-class SimTime
+class MADARA_EXPORT SimTime
 {
 private:
   static std::mutex mutex_;
@@ -118,9 +118,9 @@ public:
    **/
   static uint64_t future(uint64_t sim_offset);
 
-  friend sim_time_callback_fn set_sim_time_callback(sim_time_callback_fn fn);
+  friend sim_time_callback_fn utility::set_sim_time_callback(sim_time_callback_fn fn);
 
-  friend void sim_time_notify(uint64_t, double);
+  friend void utility::sim_time_notify(uint64_t, double);
 };
 
 #endif  // ifdef __cplusplus

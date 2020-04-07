@@ -17,9 +17,11 @@ namespace madara
 {
 namespace knowledge
 {
+  
 #ifndef _MADARA_NO_KARL_
-
-KnowledgeRecord KnowledgeBase::wait(
+	
+KnowledgeRecord
+KnowledgeBase::wait(
     CompiledExpression& expression, const WaitSettings& settings)
 {
   KnowledgeRecord result;
@@ -125,4 +127,4 @@ KnowledgeRecord KnowledgeBase::wait(
 }
 #endif  // _MADARA_NO_KARL_
 }
-}
+}  // namespace madara

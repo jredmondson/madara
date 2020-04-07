@@ -168,20 +168,6 @@ public:
   {
     ++counter;
     data.print(message);
-    int rnd = std::rand() % 19 + (-9);
-    int logger_rnd = std::rand() % 3 + (-1);
-
-    /// Test thread local key string in normal logger and log level
-    /// overrides in macro madara_logger_ptr_log
-    madara::logger::Logger::set_thread_level(logger_rnd);
-    madara_logger_ptr_log(logger::global_logger.get(), rnd,
-        "CounterThread::Run MGT: %MGT  rnd=%d lrnd=%d\n", rnd, logger_rnd);
-
-    madara_logger_ptr_log(logger::global_logger.get(), rnd,
-        "CounterThread::Run MTN: %MTN rnd=%d lrnd=%d\n", rnd, logger_rnd);
-
-    madara_logger_ptr_log(logger::global_logger.get(), rnd,
-        "CounterThread::Run MTZ: %MTZ rnd=%d lrnd=%d\n", rnd, logger_rnd);
   }
 
 private:

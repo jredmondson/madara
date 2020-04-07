@@ -6,7 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include <iomanip>
 
-#ifndef MADARA_NO_THREAD_LOCAL
+#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
 thread_local int madara::logger::Logger::thread_level_(
     madara::logger::TLS_THREAD_LEVEL_DEFAULT);
 
@@ -93,7 +93,7 @@ std::string madara::logger::Logger::search_and_insert_custom_tstamp(
     else if (ts_str == MADARA_THREAD_NAME_)
     {
     // insert thread name into message buffer copy
-#ifndef MADARA_NO_THREAD_LOCAL
+#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
       ret_string.replace(ret_string.find(ts_str), ts_str.length(),
           madara::logger::Logger::get_thread_name());
 #else

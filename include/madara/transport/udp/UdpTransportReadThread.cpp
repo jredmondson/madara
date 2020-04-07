@@ -146,7 +146,7 @@ void UdpTransportReadThread::run(void)
   {
     madara_logger_log(this->context_->get_logger(), logger::LOG_EMERGENCY,
         "%s:"
-        " Unable to allocate buffer of size " PRIu32 ". Exiting thread.\n",
+        " Unable to allocate buffer of size %" PRIu32 ". Exiting thread.\n",
         print_prefix, settings_.queue_length);
 
     return;

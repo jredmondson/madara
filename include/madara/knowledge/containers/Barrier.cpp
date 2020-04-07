@@ -6,9 +6,9 @@
 
 madara::knowledge::containers::Barrier::Barrier(
     const KnowledgeUpdateSettings& settings)
-  : BaseContainer("", settings), context_(0), id_(0), participants_(1)
+  : BaseContainer("", settings), context_(0), id_(0), participants_(1),
+    last_failed_check_(0)
 {
-  init_noharm();
 }
 
 madara::knowledge::containers::Barrier::Barrier(const std::string& name,
@@ -16,10 +16,9 @@ madara::knowledge::containers::Barrier::Barrier(const std::string& name,
   : BaseContainer(name, settings),
     context_(&(knowledge.get_context())),
     id_(0),
-    participants_(1)
+    participants_(1),
+    last_failed_check_(0)
 {
-  init_noharm();
-  build_var();
   build_aggregate_barrier();
 }
 
@@ -28,10 +27,9 @@ madara::knowledge::containers::Barrier::Barrier(const std::string& name,
   : BaseContainer(name, settings),
     context_(knowledge.get_context()),
     id_(0),
-    participants_(1)
+    participants_(1),
+    last_failed_check_(0)
 {
-  init_noharm();
-  build_var();
   build_aggregate_barrier();
 }
 
@@ -41,10 +39,9 @@ madara::knowledge::containers::Barrier::Barrier(const std::string& name,
   : BaseContainer(name, settings),
     context_(&(knowledge.get_context())),
     id_(id),
-    participants_(participants)
+    participants_(participants),
+    last_failed_check_(0)
 {
-  init_noharm();
-  build_var();
   build_aggregate_barrier();
 }
 
@@ -54,23 +51,19 @@ madara::knowledge::containers::Barrier::Barrier(const std::string& name,
   : BaseContainer(name, settings),
     context_(knowledge.get_context()),
     id_(id),
-    participants_(participants)
+    participants_(participants),
+    last_failed_check_(0)
 {
-  init_noharm();
-  build_var();
   build_aggregate_barrier();
 }
 
 madara::knowledge::containers::Barrier::Barrier(const Barrier& rhs)
   : BaseContainer(rhs),
     context_(rhs.context_),
-    variable_(rhs.variable_),
     id_(rhs.id_),
     participants_(rhs.participants_),
-#ifndef _MADARA_NO_KARL_
-    aggregate_barrier_(rhs.aggregate_barrier_),
-#endif
-    variable_name_(rhs.variable_name_)
+    last_failed_check_(rhs.last_failed_check_),
+    barrier_(rhs.barrier_)
 {
 }
 
@@ -87,11 +80,8 @@ void madara::knowledge::containers::Barrier::operator=(const Barrier& rhs)
     this->id_ = rhs.id_;
     this->participants_ = rhs.participants_;
     this->settings_ = rhs.settings_;
-    this->variable_ = rhs.variable_;
-#ifndef _MADARA_NO_KARL_
-    this->aggregate_barrier_ = rhs.aggregate_barrier_;
-#endif
-    this->variable_name_ = rhs.variable_name_;
+    this->barrier_ = rhs.barrier_;
+    last_failed_check_ = rhs.last_failed_check_;
   }
 }
 
@@ -102,37 +92,25 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
 
-    std::stringstream buffer;
-    if (participants_ > 0)
+    barrier_.resize(participants_);
+
+    // add all other barrierer variables
+    for (size_t i = 0; i < participants_; ++i)
     {
-      // barrier logic is that everyone else is at least to your barrier
-      buffer << name_;
-      buffer << ".0 >= ";
+      std::stringstream buffer;
       buffer << name_;
       buffer << ".";
-      buffer << id_;
+      buffer << i;
 
-      // add all other barrierer variables
-      for (size_t i = 1; i < participants_; ++i)
-      {
-        buffer << " && ";
-        buffer << name_;
-        buffer << ".";
-        buffer << i;
-        buffer << " >= ";
-        buffer << name_;
-        buffer << ".";
-        buffer << id_;
-      }
+      barrier_[i].set_name(buffer.str(), *context_);
     }
 
-#ifndef _MADARA_NO_KARL_
-    aggregate_barrier_ = context_->compile(buffer.str());
-#endif
+    barrier_[id_] = 0;
+    barrier_[id_].write();
 
     madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
-        "Barrier::build_aggregate_barrier: building barrier string of %s\n",
-        buffer.str().c_str());
+        "Barrier::build_aggregate_barrier: built %d member barrier\n",
+        (int)participants_);
   }
   else if (name_ == "")
   {
@@ -142,47 +120,6 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
   {
     context_->print("ERROR: Container::Barrier needs a context.\n", 0);
   }
-}
-
-void madara::knowledge::containers::Barrier::build_var(void)
-{
-  if (context_ && name_ != "")
-  {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-
-    std::stringstream buffer;
-
-    buffer << name_;
-    buffer << ".";
-    buffer << id_;
-
-    variable_name_ = buffer.str();
-
-    madara_logger_log(context_->get_logger(), logger::LOG_MAJOR,
-        "Barrier::build_var: settings variable reference to %s\n",
-        variable_name_.c_str());
-
-    variable_ = context_->get_ref(buffer.str(), no_harm);
-  }
-  else if (name_ == "")
-  {
-    context_->print("ERROR: Container::Barrier needs a name.\n", 0);
-  }
-  else if (!context_)
-  {
-    context_->print("ERROR: Container::Barrier needs a context.\n", 0);
-  }
-}
-
-void madara::knowledge::containers::Barrier::init_noharm(void)
-{
-  no_harm.always_overwrite = false;
-  no_harm.delay_sending_modifieds = true;
-  no_harm.expand_variables = false;
-  no_harm.signal_changes = false;
-  no_harm.track_local_changes = false;
-  no_harm.treat_globals_as_locals = true;
 }
 
 size_t madara::knowledge::containers::Barrier::get_id(void) const
@@ -210,8 +147,8 @@ void madara::knowledge::containers::Barrier::set_name(
   name_ = var_name;
   id_ = id;
   participants_ = participants;
+  last_failed_check_ = 0;
 
-  this->build_var();
   this->build_aggregate_barrier();
 }
 
@@ -227,8 +164,8 @@ void madara::knowledge::containers::Barrier::set_name(
   name_ = var_name;
   id_ = id;
   participants_ = participants;
+  last_failed_check_ = 0;
 
-  this->build_var();
   this->build_aggregate_barrier();
 }
 
@@ -245,8 +182,8 @@ void madara::knowledge::containers::Barrier::set_name(
   name_ = var_name;
   id_ = id;
   participants_ = participants;
+  last_failed_check_ = 0;
 
-  this->build_var();
   this->build_aggregate_barrier();
 }
 
@@ -260,8 +197,8 @@ void madara::knowledge::containers::Barrier::resize(
 
     id_ = id;
     participants_ = participants;
+    last_failed_check_ = 0;
 
-    this->build_var();
     this->build_aggregate_barrier();
   }
 }
@@ -273,7 +210,10 @@ madara::knowledge::containers::Barrier::operator=(type value)
   {
     ContextGuard context_guard(*context_);
     MADARA_GUARD_TYPE guard(mutex_);
-    context_->set(variable_, value, settings_);
+    // context_->set(variable_, value, settings_);
+    barrier_[id_] = value;
+
+    last_failed_check_ = 0;
   }
 
   return value;
@@ -286,9 +226,7 @@ madara::knowledge::containers::Barrier::to_record(void) const
 
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-    result = context_->get(variable_, no_harm);
+    result = *barrier_[id_];
   }
 
   return result;
@@ -301,9 +239,7 @@ madara::knowledge::containers::Barrier::to_integer(void) const
 
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-    result = context_->get(variable_, no_harm).to_integer();
+    result = *barrier_[id_];
   }
 
   return result;
@@ -313,9 +249,9 @@ void madara::knowledge::containers::Barrier::next(void)
 {
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-    context_->inc(variable_, settings_);
+    ++barrier_[id_];
+    last_failed_check_ = 0;
+    barrier_[id_].write();
   }
 }
 
@@ -339,7 +275,7 @@ bool madara::knowledge::containers::Barrier::is_done(void)
           "Barrier::is_true: barrier is not true, remarking barrier "
           "variable\n");
 
-      context_->mark_modified(variable_);
+      barrier_[id_].write();
 
       context_->print(logger::LOG_DETAILED);
     }
@@ -357,7 +293,7 @@ void madara::knowledge::containers::Barrier::set(type value)
 {
   if (context_ && name_ != "")
   {
-    context_->set(variable_, value, settings_);
+    barrier_[id_] = value;
   }
 }
 
@@ -365,7 +301,7 @@ void madara::knowledge::containers::Barrier::modify(void)
 {
   if (context_ && name_ != "")
   {
-    context_->mark_modified(variable_);
+    barrier_[id_].write();
   }
 }
 
@@ -375,28 +311,18 @@ std::string madara::knowledge::containers::Barrier::get_debug_info(void)
 
   result << "Barrier: ";
 
+  // if at all possible, do not try to touch the KB with any locks
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-
-    result << this->name_;
-    result << " = " << context_->get(variable_).to_string() << "\n";
-
-    std::string prefix = name_ + ".";
-
-    // add all other barrierer variables
+    // note that because the variables are staged, we should only
     for (size_t i = 0; i < participants_; ++i)
     {
-      std::stringstream temp_buffer;
-      temp_buffer << prefix;
-      temp_buffer << i;
-
-      std::string this_var = temp_buffer.str();
-
-      result << "  " << this_var;
+      // we could speed this up by creating unsafe versions of functions like
+      // get name that do not lock the vars local mutex, but this should be
+      // reasonable
+      result << barrier_[i].get_name();
       result << "={";
-      result << this_var;
+      result << *barrier_[i];
       result << "}\n";
     }
   }
@@ -426,9 +352,7 @@ double madara::knowledge::containers::Barrier::to_double(void) const
 
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-    result = context_->get(variable_, no_harm).to_double();
+    result = barrier_[id_].to_double();
   }
 
   return result;
@@ -440,9 +364,7 @@ std::string madara::knowledge::containers::Barrier::to_string(void) const
 
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-    result = context_->get(variable_, no_harm).to_string();
+    result = barrier_[id_].to_string();
   }
 
   return result;
@@ -453,9 +375,7 @@ void madara::knowledge::containers::Barrier::set_quality(
 {
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
-    context_->set_quality(name_, quality, true, settings);
+    barrier_[id_].set_quality(quality, settings);
   }
 }
 
@@ -468,8 +388,10 @@ bool madara::knowledge::containers::Barrier::is_true(void) const
 
   if (context_)
   {
-    ContextGuard context_guard(*context_);
-    MADARA_GUARD_TYPE guard(mutex_);
+    // this could be dangerous in that if someone changes barrier name in
+    // the middle of this, we're not thread safe. However, this is an
+    // optimization decision that is extremely performant in comparison.
+    // and it would be weird if someone wanted to change the barrier name
     result = barrier_result() == 1;
   }
 

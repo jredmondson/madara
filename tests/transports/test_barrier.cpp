@@ -8,8 +8,11 @@
 #include "madara/knowledge/KnowledgeBase.h"
 
 #include "madara/knowledge/containers/Barrier.h"
+#include "madara/knowledge/containers/LegacyBarrier.h"
 #include "madara/filters/GenericFilters.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/utility/Utility.h"
+#include "madara/utility/Timer.h"
 
 namespace logger = madara::logger;
 
@@ -216,6 +219,183 @@ void handle_arguments(int argc, char** argv)
   }
 }
 
+void test_throughput(void)
+{
+  knowledge::KnowledgeBase kb, stats_kb;
+
+  std::vector<containers::Barrier> barriers;
+  std::vector<containers::LegacyBarrier> legacy_barriers;
+  utility::TimerSteady timer;
+
+  int participants = 100;
+  uint64_t barrier_init_time = 0;
+  uint64_t legacy_init_time = 0;
+  uint64_t barrier_update_time = 0;
+  uint64_t legacy_update_time = 0;
+  uint64_t barrier_10percent_is_done_time = 0;
+  uint64_t legacy_10percent_is_done_time = 0;
+  uint64_t barrier_50percent_is_done_time = 0;
+  uint64_t legacy_50percent_is_done_time = 0;
+  uint64_t barrier_100percent_is_done_time = 0;
+  uint64_t legacy_100percent_is_done_time = 0;
+
+  // barrier init time
+  timer.start();
+  barriers.resize(participants);
+  for (int i = 0; i < participants; ++i)
+  {
+    barriers[i].set_name("barrier", kb, i, participants);
+  }
+  timer.stop();
+  barrier_init_time = timer.duration_ns();
+  
+  // legacy barrier init time
+  timer.start();
+  legacy_barriers.resize(participants);
+  for (int i = 0; i < participants; ++i)
+  {
+    legacy_barriers[i].set_name("legacy_barrier", kb, i, participants);
+  }
+  timer.stop();
+  legacy_init_time = timer.duration_ns();
+  
+  // barrier update
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    barriers[i] = 1;
+  }
+  timer.stop();
+  barrier_update_time = timer.duration_ns();
+  
+  // legacy barrier update time
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    legacy_barriers[i] = 1;
+  }
+  timer.stop();
+  legacy_update_time = timer.duration_ns();
+  
+  // barrier is done 100 percent check
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+  }
+  timer.stop();
+  barrier_100percent_is_done_time = timer.duration_ns();
+  
+  // legacy barrier is done 100 percent check
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+  }
+  timer.stop();
+  legacy_100percent_is_done_time = timer.duration_ns();
+
+  // clear 50 percent of the barrier entries
+  for (int i = 50; i < participants; ++i)
+  {
+    barriers[i] = 0;
+  }
+  
+  // clear 50 percent of the legacy barrier entries
+  for (int i = 50; i < participants; ++i)
+  {
+    legacy_barriers[i] = 0;
+  }
+
+  // barrier is done 100 percent check
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    // test 5x
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+  }
+  timer.stop();
+  barrier_50percent_is_done_time = timer.duration_ns();
+  
+  // legacy barrier is done 100 percent check
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    // test 5x
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+  }
+  timer.stop();
+  legacy_50percent_is_done_time = timer.duration_ns();
+  
+  // clear 40 percent of the barrier entries
+  for (int i = 10; i < 50; ++i)
+  {
+    barriers[i] = 0;
+  }
+  
+  // clear 40 percent of the legacy barrier entries
+  for (int i = 10; i < 50; ++i)
+  {
+    legacy_barriers[i] = 0;
+  }
+
+  // barrier is done 100 percent check
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    // test 5x
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+    barriers[i].is_done();
+  }
+  timer.stop();
+  barrier_10percent_is_done_time = timer.duration_ns();
+  
+  // legacy barrier is done 100 percent check
+  timer.start();
+  for (int i = 0; i < participants; ++i)
+  {
+    // test 5x
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+    legacy_barriers[i].is_done();
+  }
+  timer.stop();
+  legacy_10percent_is_done_time = timer.duration_ns();
+
+  stats_kb.set("barrier.init.time", barrier_init_time);
+  stats_kb.set("legacy_barrier.init.time", legacy_init_time);
+  stats_kb.set("barrier.update.time", barrier_update_time);
+  stats_kb.set("legacy_barrier.update.time", legacy_update_time);
+  stats_kb.set("barrier.10percent_is_done.time", barrier_10percent_is_done_time);
+  stats_kb.set("legacy_barrier.10percent_is_done.time", legacy_10percent_is_done_time);
+  stats_kb.set("barrier.50percent_is_done.time", barrier_50percent_is_done_time);
+  stats_kb.set("legacy_barrier.50percent_is_done.time", legacy_50percent_is_done_time);
+  stats_kb.set("barrier.100percent_is_done.time", barrier_100percent_is_done_time);
+  stats_kb.set("legacy_barrier.100percent_is_done.time", legacy_10percent_is_done_time);
+  stats_kb.print();
+}
+
 int main(int argc, char** argv)
 {
   // set defaults
@@ -253,7 +433,10 @@ int main(int argc, char** argv)
   {
     barrier.next();
     while (!barrier.is_done())
+    {
       knowledge.send_modifieds();
+      madara::utility::sleep(0.5);
+    }
   }
 
   // send another update just in case a late joiner didn't get a chance to
@@ -272,6 +455,8 @@ int main(int argc, char** argv)
 
   // print the aggregate counter to the screen
   knowledge.print();
+
+  test_throughput();
 
 #else
   std::cout << "This test is disabled due to karl feature being disabled.\n";

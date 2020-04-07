@@ -1,32 +1,4 @@
 
-project (Test_Datatypes_Lib) : build_files, using_splice, splice_transport, using_ndds, madara_zmq, using_ssl, ssl_filters, lz4_filters, ndds_transport, no_karl, no_xml, port/python/using_python, python_callbacks, null_lock, using_simtime, debug_build, using_boost, using_clang, using_madara {
-
-  requires += tests
-
-  sharedname = datatypes_test
-  dynamicflags += MADARA_BUILD_DLL
-  staticflags += MADARA_BUILD_STATIC
-  libout = $(MADARA_ROOT)/lib
-
-  prebuild = perl $(MADARA_ROOT)/bin/generate_version_include.pl
-
-  specific(prop:microsoft) {
-    DisableSpecificWarnings += 4005 4251 4275 4244
-    macros += _CRT_SECURE_NO_WARNINGS
-  }
-
-  specific(prop:make) {
-    postbuild += ln -sf $(MADARA_ROOT)/lib/libdatatypes_test.so $(MADARA_ROOT)/.
-  }
-
-  Source_Files {
-    tests/datatypes_test.cpp
-  }
-
-  Header_Files {
-  }
-}
-
 project (Test_Multicast_Mutex) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_mutex
@@ -282,6 +254,25 @@ project (Test_Threader_Producer_Consumer) : using_madara, no_karl, no_xml, null_
 
   Source_Files {
     tests/threads/test_threader_producer_consumer.cpp
+  }
+}
+
+project (Test_Threader_Wait_For_Pause) : using_madara, no_karl, no_xml, null_lock, using_simtime {
+  exeout = $(MADARA_ROOT)/bin
+  exename = test_threader_wait_for_pause
+  
+  
+  requires += tests
+
+
+  Documentation_Files {
+  }
+  
+  Header_Files {
+  }
+
+  Source_Files {
+    tests/threads/test_threader_wait_for_pause.cpp
   }
 }
 
@@ -619,10 +610,6 @@ project (Test_Checkpointing) : using_madara, using_ssl, using_lz4, no_karl, no_x
   }
   
   Header_Files {
-  }
-
-  CAPN_Files {
-    tests/capnfiles
   }
 
   Source_Files {
@@ -1372,95 +1359,6 @@ project (Test_Logging) : using_madara, no_karl, no_xml, null_lock, using_simtime
   }
 }
 
-project (Test_RCWThread) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_rcwthread
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/rcw/test_rcwthread.cpp
-  }
-}
-
-project (Test_RCW_Transaction) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_rcw_transaction
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-    tests/rcw/test.h
-  }
-
-  Source_Files {
-    tests/rcw/test_rcw_transaction.cpp
-  }
-}
-
-project (Test_RCW_Tracked) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_rcw_tracked
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-    tests/rcw/test.h
-  }
-
-  Source_Files {
-    tests/rcw/test_rcw_tracked.cpp
-  }
-}
-
-project (Test_RCW_Custom) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_rcw_custom
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-    tests/rcw/test.h
-  }
-
-  Source_Files {
-    tests/rcw/test_rcw_custom.cpp
-  }
-}
-
-project (Test_RCW_ProdCon) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_rcw_prodcon
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-    tests/rcw/test.h
-  }
-
-  Source_Files {
-    tests/rcw/test_rcw_prodcon.cpp
-  }
-}
-
 project (Test_Save_Modifieds) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   requires += tests
   
@@ -1527,75 +1425,6 @@ project (Test_Knowledege_Record) : using_madara, no_karl, no_xml, null_lock, usi
 
   Source_Files {
     tests/test_knowledge_record.cpp
-  }
-}
-
-project (Test_Any) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-
-  after += Test_CapnFiles
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_any
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-    tests/capnfiles
-  }
-
-  CAPN_Files {
-    tests/capnfiles
-  }
-
-  Source_Files {
-    tests/test_any.cpp
-  }
-}
-
-project (Test_Any_So) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_any_so
-
-  after += Test_Datatypes_Lib
-
-  libs += datatypes_test
-
-  Documentation_Files {
-  }
-
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_any_so.cpp
-  }
-}
-
-project (Test_Any_Transport_Multicast) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  requires += tests
-
-  after += Test_CapnFiles
-  
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_any_transport_multicast
-  
-  Documentation_Files {
-  }
-
-  Header_Files {
-    tests/capnfiles
-  }
-
-  CAPN_Files {
-    tests/capnfiles
-  }
-
-  Source_Files {
-    tests/test_any_transport_multicast.cpp
   }
 }
 

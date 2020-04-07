@@ -8,8 +8,6 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/knowledge/containers/Integer.h"
 
-#include "../capnfiles/Geo.capnp.h"
-
 #include "../test.h"
 
 using namespace madara;
@@ -136,4 +134,6 @@ int main(int argc, char** argv)
   TEST_EQ(to_kb.get_history("cap5", -4).to_integer(), 11);
   TEST_EQ(to_kb.get_history("cap5", -5).exists(), false);
   TEST_EQ(to_kb.get_history_size("cap9"), 2UL);
+
+  return 0;
 }

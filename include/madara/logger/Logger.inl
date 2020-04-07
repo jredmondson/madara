@@ -48,7 +48,7 @@ inline std::string madara::logger::Logger::get_tag(void)
   return tag_;
 }
 
-#ifndef MADARA_NO_THREAD_LOCAL
+#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
 
 inline int madara::logger::Logger::get_thread_level(void)
 {

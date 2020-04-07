@@ -11,8 +11,8 @@
 #include "madara/knowledge/CheckpointPlayer.h"
 #include "madara/knowledge/CheckpointStreamer.h"
 #include "madara/knowledge/KnowledgeBase.h"
-#include "madara/knowledge/AnyRegistry.h"
 #include "madara/threads/Threader.h"
+#include "madara/utility/StlHelper.h"
 
 #include "madara/utility/Utility.h"
 #include "madara/utility/NamedVectorCombinator.h"
@@ -27,10 +27,6 @@
 #ifdef _USE_LZ4_
 #include "madara/filters/lz4/LZ4BufferFilter.h"
 #endif
-
-#include "capnp/schema-parser.h"
-#include "capnp/schema.h"
-#include <boost/algorithm/string.hpp>
 
 // convenience namespaces and typedefs
 namespace knowledge = madara::knowledge;
@@ -292,13 +288,6 @@ public:
 // originator debug filter to add if requested
 StatsFilter stats_filter;
 
-// Capnp types and globals
-kj::Vector<kj::StringPtr> capnp_import_dirs;
-std::vector<std::string> capnp_msg;
-std::vector<std::string> capnp_type;
-bool capnp_msg_type_param_flag = false;
-bool capnp_import_dirs_flag = false;
-
 // handle command line arguments
 void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
 {
@@ -440,12 +429,6 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
           "settings from\n"
           "  [-lz4|--lz4]             compress with LZ4 over network\n"
           "  [-m|--multicast ip:port] the multicast ip to send and listen to\n"
-          "  [-n|--capnp tag:msg_type] register tag with given message schema. "
-          "See also -nf and -ni.\n"
-          "  [-nf|--capnp-file]       load capnp file. Must appear after all "
-          "-n and -ni.\n"
-          "  [-ni|--capnp-import ]    add directory to capnp directory "
-          "imports. Must appear before all -n and -nf.\n"
           "  [-o|--host hostname]     the hostname of this process "
           "(def:localhost)\n"
           "  [-ps|--print-stats]      print variable/originator stats at the "
@@ -729,137 +712,6 @@ void handle_arguments(int argc, const char** argv, size_t recursion_limit = 10)
               "Adding UDP multicast host %s\n", argv[i + 1]);
         }
       }
-      ++i;
-    }
-    else if(arg1 == "-ni")
-    {
-      if(i + 1 < argc)
-      {
-        std::string dirnames = argv[i + 1];
-
-        std::vector<std::string> splitters, tokens, pivot_list;
-        splitters.push_back(":");
-
-        utility::tokenizer(dirnames, splitters, tokens, pivot_list);
-
-        for(auto token : tokens)
-        {
-          capnp_import_dirs.add(token);
-        }
-
-        capnp_import_dirs_flag = true;
-      }
-      else
-      {
-        // print out error log
-        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-            "ERROR: parameter -ni dir1[:dir2:dir3]\n");
-        exit(-1);
-      }
-
-      ++i;
-    }
-    else if(arg1 == "-n")
-    {
-      if(i + 1 < argc)
-      {
-        std::string msgtype_pair = argv[i + 1];
-
-        std::vector<std::string> splitters, tokens, pivot_list;
-        splitters.push_back(":");
-
-        utility::tokenizer(msgtype_pair, splitters, tokens, pivot_list);
-
-        if(tokens.size() == 2)
-        {
-          capnp_msg.push_back(tokens[0]);
-          capnp_type.push_back(tokens[1]);
-        }
-        else
-        {
-          // print out error log
-          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-              "ERROR: parameter -n requires two tokens, "
-              "in the form 'msg:type'\n");
-          exit(-1);
-        }
-
-        capnp_msg_type_param_flag = true;
-      }
-      else
-      {
-        // print out error log
-        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-            "ERROR: parameter [-n|] msg:type\n");
-        exit(-1);
-      }
-
-      ++i;
-    }
-    else if(arg1 == "-nf" || arg1 == "--capnp")
-    {
-      if(i + 1 < argc)
-      {
-        // capnp_import_dirs_flag && capnp_msg_type_param_flag
-        if(!capnp_import_dirs_flag)
-        {
-          // write loggercode and continue
-          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-              "ERROR: parameter -ni is missing or must precede -nf param\n");
-          ++i;
-          continue;
-        }
-
-        if(!capnp_msg_type_param_flag)
-        {
-          // write loggercode and continue
-          madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-              "ERROR: parameter -n is missing or must precede -nf param\n");
-          ++i;
-          continue;
-        }
-
-        std::string tagname;
-
-        std::string filename = argv[i + 1];
-
-        static capnp::SchemaParser schparser;
-        capnp::ParsedSchema ps;
-        ps = schparser.parseDiskFile(utility::extract_filename(filename),
-            filename, capnp_import_dirs.asPtr());
-
-        std::string msg;
-        std::string typestr;
-        capnp::ParsedSchema ps_type;
-        size_t idx = 0;
-
-        for(idx = 0; idx < capnp_msg.size(); ++idx)
-        {
-          msg = capnp_msg[idx];
-          typestr = capnp_type[idx];
-          ps_type = ps.getNested(typestr);
-
-          if(!madara::knowledge::AnyRegistry::register_schema(
-                  capnp_msg[idx].c_str(), ps_type.asStruct()))
-          {
-            madara_logger_ptr_log(logger::global_logger.get(),
-                logger::LOG_ERROR, "CAPNP Failed on file  %s ",
-                utility::extract_filename(filename).c_str());
-          }
-          else
-          {
-            madara_logger_ptr_log(logger::global_logger.get(),
-                logger::LOG_TRACE, "CAPNP Loaded file  %s ",
-                utility::extract_filename(filename).c_str());
-          }
-        }
-      }
-      else
-      {
-        madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-            "ERROR: parameter [-nf|--capnp] filename\n");
-      }
-
       ++i;
     }
     else if(arg1 == "-o" || arg1 == "--host")
@@ -1347,7 +1199,7 @@ bool load_config_file(std::string full_path, size_t recursion_limit)
       std::back_inserter(argvp_config_files),
       [](const std::string &s) { return s.c_str(); });
 
-  handle_arguments(argvp_config_files.size(), argvp_config_files.data(),
+  handle_arguments((int)argvp_config_files.size(), argvp_config_files.data(),
       recursion_limit - 1);
 
   return true;

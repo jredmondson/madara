@@ -1,7 +1,6 @@
 #include <string>
 #include <iostream>
 
-#include "madara/utility/SupportTest.h"
 #include "madara/utility/CircularBuffer.h"
 #include "madara/knowledge/KnowledgeRecord.h"
 #include "madara/knowledge/KnowledgeBase.h"
@@ -249,7 +248,7 @@ void test_container()
   TEST_EQ(buf.remaining(), 8UL);
   TEST_EQ(buf.count(), 10UL);
 
-  int c = buf.get_record().get_history_oldest_index();
+  int c = (int)buf.get_record().get_history_oldest_index();
   for (const auto& cur : buf.get_record().get_history())
   {
     std::cerr << c << ": " << cur << std::endl;

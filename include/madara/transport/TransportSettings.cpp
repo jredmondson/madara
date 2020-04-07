@@ -132,6 +132,19 @@ madara::transport::TransportSettings::~TransportSettings()
       delete_fragments(clock->second);
     }
   }
+
+  hosts.clear();
+}
+
+void madara::transport::TransportSettings::add_host(
+  const std::string & host)
+{
+  hosts.push_back(host);
+}
+
+void madara::transport::TransportSettings::clear_hosts()
+{
+  hosts.clear();
 }
 
 void madara::transport::TransportSettings::load(
@@ -139,37 +152,115 @@ void madara::transport::TransportSettings::load(
 {
   knowledge::KnowledgeBase knowledge;
   knowledge.load_context(filename);
+  
+  knowledge::KnowledgeRecord value;
 
-  read_threads = (uint32_t)knowledge.get(prefix + ".read_threads").to_integer();
-  write_domain = knowledge.get(prefix + ".write_domain").to_string();
-  queue_length = (uint32_t)knowledge.get(prefix + ".queue_length").to_integer();
-  type = (uint32_t)knowledge.get(prefix + ".type").to_integer();
-  max_fragment_size =
-      (uint32_t)knowledge.get(prefix + ".max_fragment_size").to_integer();
-  resend_attempts =
-      (uint32_t)knowledge.get(prefix + ".resend_attempts").to_integer();
-  fragment_queue_length =
-      (uint32_t)knowledge.get(prefix + ".fragment_queue_length").to_integer();
-  reliability = (uint32_t)knowledge.get(prefix + ".reliability").to_integer();
-  id = (uint32_t)knowledge.get(prefix + ".id").to_integer();
-  processes = (uint32_t)knowledge.get(prefix + ".processes").to_integer();
+  value = knowledge.get(prefix + ".read_threads");
+  if (value.exists())
+  {
+    read_threads = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".write_domain");
+  if (value.exists())
+  {
+    write_domain = value.to_string();
+  }
+  
+  value = knowledge.get(prefix + ".queue_length");
+  if (value.exists())
+  {
+    queue_length = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".type");
+  if (value.exists())
+  {
+    type = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".max_fragment_size");
+  if (value.exists())
+  {
+    max_fragment_size = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".resend_attempts");
+  if (value.exists())
+  {
+    resend_attempts = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".fragment_queue_length");
+  if (value.exists())
+  {
+    fragment_queue_length = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".reliability");
+  if (value.exists())
+  {
+    reliability = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".id");
+  if (value.exists())
+  {
+    id = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".processes");
+  if (value.exists())
+  {
+    processes = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".on_data_received_logic");
+  if (value.exists())
+  {
+    on_data_received_logic = value.to_string();
+  }
+  
+  value = knowledge.get(prefix + ".delay_launch");
+  if (value.exists())
+  {
+    delay_launch = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".never_exit");
+  if (value.exists())
+  {
+    never_exit = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".send_reduced_message_header");
+  if (value.exists())
+  {
+    send_reduced_message_header = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".slack_time");
+  if (value.exists())
+  {
+    slack_time = value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".max_send_hertz");
+  if (value.exists())
+  {
+    max_send_hertz = value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".hosts.size");
+  if (value.exists())
+  {
+    containers::StringVector kb_hosts(prefix + ".hosts", knowledge);
+    
+    hosts.resize(kb_hosts.size());
+    for (unsigned int i = 0; i < hosts.size(); ++i)
+      hosts[i] = kb_hosts[i];
 
-  on_data_received_logic =
-      knowledge.get(prefix + ".on_data_received_logic").to_string();
-  delay_launch = knowledge.get(prefix + ".delay_launch").is_true();
-  never_exit = knowledge.get(prefix + ".never_exit").is_true();
-
-  send_reduced_message_header =
-      knowledge.get(prefix + ".send_reduced_message_header").is_true();
-  slack_time = knowledge.get(prefix + ".slack_time").to_double();
-  read_thread_hertz = knowledge.get(prefix + ".read_thread_hertz").to_double();
-  max_send_hertz = knowledge.get(prefix + ".max_send_hertz").to_double();
-
-  containers::StringVector kb_hosts(prefix + ".hosts", knowledge);
-
-  hosts.resize(kb_hosts.size());
-  for (unsigned int i = 0; i < hosts.size(); ++i)
-    hosts[i] = kb_hosts[i];
+  }
 
   containers::Map kb_read_domains(prefix + ".read_domains", knowledge);
 
@@ -180,11 +271,24 @@ void madara::transport::TransportSettings::load(
   {
     read_domains_[keys[i]] = 1;
   }
-
-  no_sending = knowledge.get(prefix + ".no_sending").is_true();
-  no_receiving = knowledge.get(prefix + ".no_receiving").is_true();
-  debug_to_kb_prefix =
-      knowledge.get(prefix + ".debug_to_kb_prefix").to_string();
+  
+  value = knowledge.get(prefix + ".no_sending");
+  if (value.exists())
+  {
+    no_sending = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".no_receiving");
+  if (value.exists())
+  {
+    no_receiving = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".debug_to_kb_prefix");
+  if (value.exists())
+  {
+    debug_to_kb_prefix = value.is_true();
+  }
 }
 
 void madara::transport::TransportSettings::load_text(
@@ -198,37 +302,120 @@ void madara::transport::TransportSettings::load_text(
 
 #endif // end karl support
 
+  knowledge::KnowledgeRecord value;
 
-  read_threads = (uint32_t)knowledge.get(prefix + ".read_threads").to_integer();
-  write_domain = knowledge.get(prefix + ".write_domain").to_string();
-  queue_length = (uint32_t)knowledge.get(prefix + ".queue_length").to_integer();
-  type = (uint32_t)knowledge.get(prefix + ".type").to_integer();
-  max_fragment_size =
-      (uint32_t)knowledge.get(prefix + ".max_fragment_size").to_integer();
-  resend_attempts =
-      (uint32_t)knowledge.get(prefix + ".resend_attempts").to_integer();
-  fragment_queue_length =
-      (uint32_t)knowledge.get(prefix + ".fragment_queue_length").to_integer();
-  reliability = (uint32_t)knowledge.get(prefix + ".reliability").to_integer();
-  id = (uint32_t)knowledge.get(prefix + ".id").to_integer();
-  processes = (uint32_t)knowledge.get(prefix + ".processes").to_integer();
+  value = knowledge.get(prefix + ".read_threads");
+  if (value.exists())
+  {
+    read_threads = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".write_domain");
+  if (value.exists())
+  {
+    write_domain = value.to_string();
+  }
+  
+  value = knowledge.get(prefix + ".queue_length");
+  if (value.exists())
+  {
+    queue_length = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".type");
+  if (value.exists())
+  {
+    type = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".max_fragment_size");
+  if (value.exists())
+  {
+    max_fragment_size = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".resend_attempts");
+  if (value.exists())
+  {
+    resend_attempts = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".fragment_queue_length");
+  if (value.exists())
+  {
+    fragment_queue_length = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".reliability");
+  if (value.exists())
+  {
+    reliability = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".id");
+  if (value.exists())
+  {
+    id = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".processes");
+  if (value.exists())
+  {
+    processes = (uint32_t)value.to_integer();
+  }
+  
+  value = knowledge.get(prefix + ".on_data_received_logic");
+  if (value.exists())
+  {
+    on_data_received_logic = value.to_string();
+  }
+  
+  value = knowledge.get(prefix + ".delay_launch");
+  if (value.exists())
+  {
+    delay_launch = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".never_exit");
+  if (value.exists())
+  {
+    never_exit = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".send_reduced_message_header");
+  if (value.exists())
+  {
+    send_reduced_message_header = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".slack_time");
+  if (value.exists())
+  {
+    slack_time = value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".read_thread_hertz");
+  if (value.exists())
+  {
+    read_thread_hertz = value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".max_send_hertz");
+  if (value.exists())
+  {
+    max_send_hertz = value.to_double();
+  }
+  
+  value = knowledge.get(prefix + ".hosts.size");
+  if (value.exists())
+  {
+    containers::StringVector kb_hosts(prefix + ".hosts", knowledge);
+    
+    hosts.resize(kb_hosts.size());
+    for (unsigned int i = 0; i < hosts.size(); ++i)
+      hosts[i] = kb_hosts[i];
 
-  on_data_received_logic =
-      knowledge.get(prefix + ".on_data_received_logic").to_string();
-  delay_launch = knowledge.get(prefix + ".delay_launch").is_true();
-  never_exit = knowledge.get(prefix + ".never_exit").is_true();
-
-  send_reduced_message_header =
-      knowledge.get(prefix + ".send_reduced_message_header").is_true();
-  slack_time = knowledge.get(prefix + ".slack_time").to_double();
-  read_thread_hertz = knowledge.get(prefix + ".read_thread_hertz").to_double();
-  max_send_hertz = knowledge.get(prefix + ".max_send_hertz").to_double();
-
-  containers::StringVector kb_hosts(prefix + ".hosts", knowledge);
-
-  hosts.resize(kb_hosts.size());
-  for (unsigned int i = 0; i < hosts.size(); ++i)
-    hosts[i] = kb_hosts[i];
+  }
 
   containers::Map kb_read_domains(prefix + ".read_domains", knowledge);
 
@@ -239,11 +426,24 @@ void madara::transport::TransportSettings::load_text(
   {
     read_domains_[keys[i]] = 1;
   }
-
-  no_sending = knowledge.get(prefix + ".no_sending").is_true();
-  no_receiving = knowledge.get(prefix + ".no_receiving").is_true();
-  debug_to_kb_prefix =
-      knowledge.get(prefix + ".debug_to_kb_prefix").to_string();
+  
+  value = knowledge.get(prefix + ".no_sending");
+  if (value.exists())
+  {
+    no_sending = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".no_receiving");
+  if (value.exists())
+  {
+    no_receiving = value.is_true();
+  }
+  
+  value = knowledge.get(prefix + ".debug_to_kb_prefix");
+  if (value.exists())
+  {
+    debug_to_kb_prefix = value.is_true();
+  }
 }
 
 void madara::transport::TransportSettings::save(
