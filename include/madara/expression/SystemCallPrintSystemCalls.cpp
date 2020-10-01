@@ -70,6 +70,9 @@ madara::expression::SystemCallPrintSystemCalls::prune(bool& can_change)
   // if calls hasn't been initialized yet, fill the list of system calls
   if (calls_.size() == 0)
   {
+    calls_["#cbrt"] = "\n#cbrt (var) or #cuberoot (var):\n"
+                     "  Returns the cube root of a term (double)\n";
+
     calls_["#clear_variable"] =
         "\n#clear_var (var) or #clear_variable (var):\n"
         "  Clears the variable var in the knowledge base. This is\n"
@@ -77,7 +80,7 @@ madara::expression::SystemCallPrintSystemCalls::prune(bool& can_change)
         "  from printouts and save_modifieds but leaves a phantom record\n"
         "  in the knowledge base to safely reference in VariableReference,\n"
         "  CompiledExpression, etc.\n";
-
+    
     calls_["#cos"] = "\n#cos (var):\n"
                      "  Returns the cosine of a term (radians)\n";
 
@@ -239,7 +242,7 @@ madara::expression::SystemCallPrintSystemCalls::prune(bool& can_change)
     calls_["#to_host_dirs"] =
         "\n#to_host_dirs (directory):\n"
         "  Returns the host appropriate directory structure, e.g.,.\n"
-        "  files/file.txt to files\file.txt on Windows.\n";
+        "  files/file.txt to files\\file.txt on Windows.\n";
 
     calls_["#to_integer"] = "\n#to_integer (value) or #integer (value):\n"
                             "  Converts the value to an integer.\n";

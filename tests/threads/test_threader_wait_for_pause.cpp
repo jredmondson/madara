@@ -184,6 +184,15 @@ int main(int argc, char** argv)
   // create a threader for running threads
   threads::Threader threader(knowledge);
 
+  // test threader functions with no threads started
+  threader.terminate();
+  threader.wait();
+
+  // tests threader functions with one thread run once
+  threader.run("thread", new CounterThread(), false);
+  threader.terminate();
+  threader.wait();
+
   for (int i = 0; i < counters; ++i)
   {
     std::stringstream buffer;

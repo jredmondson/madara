@@ -46,6 +46,7 @@
 #include "madara/expression/CompositeSequentialNode.h"
 #include "madara/expression/CompositeSquareRootNode.h"
 #include "madara/expression/CompositeImpliesNode.h"
+#include "madara/expression/SystemCallCbrt.h"
 #include "madara/expression/SystemCallClearVariable.h"
 #include "madara/expression/SystemCallCos.h"
 #include "madara/expression/SystemCallDeleteVariable.h"
@@ -420,6 +421,26 @@ public:
 
   /// destructor
   virtual ~Power(void);
+};
+
+/**
+ * @class CubeRoot
+ * @brief Returns the cube root of a term
+ */
+class CubeRoot : public SystemCall
+{
+public:
+  /// constructor
+  CubeRoot(madara::knowledge::ThreadSafeContext& context_);
+
+  /// returns the precedence level
+  virtual int add_precedence(int accumulated_precedence);
+
+  /// builds an equivalent ExpressionTree node
+  virtual ComponentNode* build(void);
+
+  /// destructor
+  virtual ~CubeRoot(void);
 };
 
 /**
@@ -2718,6 +2739,39 @@ madara::expression::ComponentNode* madara::expression::Power::build()
   }
 
   return new SystemCallPow(context_, nodes_);
+}
+
+// constructor
+madara::expression::CubeRoot::CubeRoot(
+    madara::knowledge::ThreadSafeContext& context)
+  : SystemCall(context)
+{
+}
+
+// destructor
+madara::expression::CubeRoot::~CubeRoot(void) {}
+
+// returns the precedence level
+int madara::expression::CubeRoot::add_precedence(int precedence)
+{
+  return this->precedence_ = VARIABLE_PRECEDENCE + precedence;
+}
+
+// builds an equivalent ExpressionTree node
+madara::expression::ComponentNode* madara::expression::CubeRoot::build()
+{
+  if (left_ || right_)
+  {
+    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+        "#cbrt::build: KARL COMPILE ERROR: "
+        "#cbrt has a left or right child. Likely missing a semi-colon\n");
+
+    throw exceptions::KarlException(
+        "#cbrt::build: KARL COMPILE ERROR: "
+        "#cbrt has a left or right child. Likely missing a semi-colon\n");
+  }
+
+  return new SystemCallCbrt(context_, nodes_);
 }
 
 // constructor
@@ -5408,6 +5462,10 @@ void madara::expression::Interpreter::system_call_insert(
         else if (name == "#cos")
         {
           call = new Cos(context);
+        }
+        else if (name == "#cbrt" || name == "#cuberoot")
+        {
+          call = new CubeRoot(context);
         }
         break;
       case 'd':

@@ -112,6 +112,8 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
       "array_string = #to_string (array, ' ');"
       "#print ('Array with space delimiter is {array_string}.\n');"
       "two_to_4th = #pow(2,4);"
+      "cube_of_8 = #cbrt(8);"
+      "cube_of_27 = #cbrt(27);"
       "square_of_16 = #sqrt(16);"
       "square_two_to_4th = #sqrt(two_to_4th);"
       "cos_1_1 = #cos(1.1);"
@@ -129,6 +131,12 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
                      "end_ns = #get_time();"
                      "diff_s = end_s - begin_s;"
                      "diff_ns = end_ns - begin_ns;");
+  
+  KnowledgeRecord::Integer cube_of_8 =
+      knowledge.get("cube_of_8").to_integer();
+  
+  KnowledgeRecord::Integer cube_of_27 =
+      knowledge.get("cube_of_27").to_integer();
 
   KnowledgeRecord::Integer two_to_4th =
       knowledge.get("two_to_4th").to_integer();
@@ -149,11 +157,18 @@ void test_system_calls(madara::knowledge::KnowledgeBase& knowledge)
               << " instead of 16.\n";
     ++madara_fails;
   }
-
-  if (square_of_16 != 4)
+  
+  if (cube_of_8 != 2)
   {
-    std::cerr << "FAIL: sqrt(16) returned " << square_of_16
-              << " instead of 4.\n";
+    std::cout << "FAIL: cbrt(8) returned " << square_two_to_4th
+              << " instead of 2. [1]\n";
+    ++madara_fails;
+  }
+
+  if (cube_of_27 != 3)
+  {
+    std::cerr << "FAIL: sqrt(27) returned " << square_of_16
+              << " instead of 3.\n";
     ++madara_fails;
   }
 

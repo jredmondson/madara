@@ -43,6 +43,7 @@ class CompositeDivideNode;
 class CompositeMultiplyNode;
 class CompositeModulusNode;
 class CompositeReturnRightNode;
+class SystemCallCbrt;
 class SystemCallClearVariable;
 class SystemCallCos;
 class SystemCallDeleteVariable;
@@ -202,6 +203,9 @@ public:
 
   /// Visit a CompositeImpliesNode.
   virtual void visit(const CompositeImpliesNode& node) = 0;
+  
+  /// Visit a SystemCallCbrt.
+  virtual void visit(const SystemCallCbrt& node) = 0;
 
   /// Visit a SystemCallClearVariable.
   virtual void visit(const SystemCallClearVariable& node) = 0;
