@@ -19,7 +19,7 @@ inline void WorkerThread::change_frequency(double hertz,
     utility::TimeValue& next_epoch, bool& one_shot, bool& blaster)
 {
   hertz_ = hertz;
-#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
+#if 0
   madara::logger::Logger::set_thread_hertz(hertz);
 #endif
   if (hertz_ > 0.0)

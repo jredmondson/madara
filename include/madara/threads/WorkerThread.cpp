@@ -165,7 +165,7 @@ int WorkerThread::svc(void)
     utility::java::Acquire_VM jvm(false);
 #endif
     
-#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
+#if 0
     madara::logger::Logger::set_thread_name(name_);
 #endif
 
@@ -195,7 +195,7 @@ int WorkerThread::svc(void)
       // change thread frequency
       change_frequency(
           hertz_, current, frequency, next_epoch, one_shot, blaster);
-#if !defined (MADARA_NO_THREAD_LOCAL) || defined(MADARA_THREAD_LOCAL)
+#if 0
       madara::logger::Logger::set_thread_hertz(hertz_);
 #endif
 
