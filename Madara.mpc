@@ -21,7 +21,7 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
   libpaths += $(MADARA_ROOT)/lib
 
   verbatim (make, local, true) {
-    CPPFLAGS := -std=c++14 -O3 $(CPPFLAGS)
+    CPPFLAGS := -std=c++17 -O3 $(CPPFLAGS)
   }
 
   Build_Files {
@@ -85,7 +85,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/utility/Utility.cpp
     include/madara/utility/SimTime.cpp
     include/madara/utility/Refcounter.cpp
-    include/pugi
   }
 
   Header_Files {
@@ -114,7 +113,6 @@ project (Madara) : build_files, using_splice, splice_transport, using_ndds, mada
     include/madara/MadaraExport.h
     include/madara/LockType.h
     include/madara/Namespaces.h
-    include/pugi
   }
 }
 

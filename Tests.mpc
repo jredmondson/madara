@@ -17,24 +17,6 @@ project (Test_Multicast_Mutex) : using_madara, no_karl, no_xml, null_lock, using
   }
 }
 
-project (Test_Pugi) : using_madara, no_karl, no_xml, null_lock, using_simtime {
-  exeout = $(MADARA_ROOT)/bin
-  exename = test_pugi
-  
-  
-  requires += tests
-
-  Documentation_Files {
-  }
-  
-  Header_Files {
-  }
-
-  Source_Files {
-    tests/test_pugi.cpp
-  }
-}
-
 project (TestMulticastCloseAndAttach) : using_madara, no_karl, no_xml, null_lock, using_simtime {
   exeout = $(MADARA_ROOT)/bin
   exename = test_multicast_close_and_attach
