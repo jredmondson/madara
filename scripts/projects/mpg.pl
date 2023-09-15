@@ -448,7 +448,7 @@ $contents =~
       $transport_includes .= "\n#include \"transports/" .
         $transports[$i] . ".h\"";            
       $transport_creation .= "
-  kb.attach_transport(new transports::${transports[$i]} (
+  kb.attach_transport(new transports::${transports[$i]}(
     kb.get_id(), settings, kb));";
     }
     
