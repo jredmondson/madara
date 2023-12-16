@@ -15,7 +15,7 @@ include(madara_macros)
 # Define the MADARA project and version
 project(MADARA VERSION "${MADARA_VERSION}")
 
-set(MADARA_ROOT ${PROJECT_SOURCE_DIR})
+# set(MADARA_ROOT ${PROJECT_SOURCE_DIR})
 
 # Provide a lowercase version of project
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER)
