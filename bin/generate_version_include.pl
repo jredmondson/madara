@@ -9,8 +9,13 @@ eval '(exit $?0)' && eval 'exec perl -w -S $0 ${1+"$@"}'
 # version number for inclusion with C++.
 ###################################################
 
-my $txt_fname = $ENV{'MADARA_ROOT'} . "/VERSION.txt";
-my $h_fname = $ENV{'MADARA_ROOT'} . "/include/madara/Version.h";
+use File::Basename;
+
+my $path = dirname(__FILE__);
+$path .= "/..";
+
+my $txt_fname = "$path/VERSION.txt";
+my $h_fname = "$path/include/madara/Version.h";
 my $txt_mdate = (stat $txt_fname)[9];
 my $h_mdate = (stat $h_fname)[9];
 
