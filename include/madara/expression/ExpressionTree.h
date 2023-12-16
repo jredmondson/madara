@@ -56,6 +56,12 @@ public:
   ExpressionTree(logger::Logger& logger, const ExpressionTree& tree);
 
   /**
+   * Copy constructor
+   * @param    tree       expression tree to copy
+   **/
+  ExpressionTree(const ExpressionTree& tree);
+
+  /**
    * Destructor
    **/
   ~ExpressionTree(void);

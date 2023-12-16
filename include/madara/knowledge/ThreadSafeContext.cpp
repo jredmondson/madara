@@ -1009,6 +1009,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     const CompiledExpression& expression,
     const KnowledgeReferenceSettings& settings)
 {
+#ifndef _MADARA_NO_KARL_
   // enter the mutex
   std::string key_actual;
   const std::string* key_ptr;
@@ -1027,6 +1028,7 @@ void ThreadSafeContext::define_function(const std::string& name,
     return;
 
   functions_[*key_ptr] = Function(expression.expression);
+#endif
 }
 
 Function* ThreadSafeContext::retrieve_function(

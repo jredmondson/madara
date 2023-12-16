@@ -364,6 +364,7 @@ inline bool recursive_mkdir(const std::string& path)
         return 0 == mkdir(path.c_str(), mode);
 #endif
       }
+      return false;
 
     default:
       return false;

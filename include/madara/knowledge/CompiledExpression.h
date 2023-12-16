@@ -27,6 +27,7 @@ class ThreadSafeContext;
 class KnolwedgeBaseImpl;
 class Variables;
 class KnowledgeBase;
+class Function;
 
 /**
  * @class CompiledExpression
@@ -41,6 +42,7 @@ public:
   friend class Variables;
   friend class KnowledgeBase;
   friend class expression::SystemCallEval;
+  friend class Function;
 
   /**
    * Constructor

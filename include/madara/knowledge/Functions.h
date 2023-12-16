@@ -10,6 +10,7 @@
 #include "madara/expression/ExpressionTree.h"
 #include "madara/filters/RecordFilter.h"
 #include "madara/logger/GlobalLogger.h"
+#include "madara/knowledge/CompiledExpression.h"
 
 #ifdef _MADARA_JAVA_
 #include <jni.h>
@@ -114,6 +115,18 @@ public:
     : extern_named(0),
       extern_unnamed(0),
       function_contents(func),
+      functor(0),
+      type(KARL_EXPRESSION)
+  {
+  }
+
+  /**
+   * Constructor for KaRL expression
+   **/
+  Function(const madara::knowledge::CompiledExpression& exp)
+    : extern_named(0),
+      extern_unnamed(0),
+      function_contents(exp.expression),
       functor(0),
       type(KARL_EXPRESSION)
   {

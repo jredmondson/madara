@@ -108,6 +108,7 @@ include(cmake/configuration.cmake)
 # Build the main library
 add_subdirectory(include)
 add_subdirectory(tools)
+add_subdirectory(scripts/projects)
 
 # Build tests
 if(madara_TESTS)
