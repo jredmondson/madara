@@ -21,7 +21,7 @@ if ($txt_mdate < $h_mdate) {
 print "Generating: reading from $txt_fname\n";
 
 open VERSION_FILE, "<", $txt_fname  or
-    die "Unable to open ../VERSION.txt for reading.";
+    die "Unable to open $txt_fname for reading.";
   $version = <VERSION_FILE>;
 close VERSION_FILE;
 
