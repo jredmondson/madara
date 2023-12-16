@@ -11,6 +11,7 @@
 #include <map>
 #include <stdexcept>
 
+#include "madara/logger/GlobalLogger.h"
 #include "madara/expression/ComponentNode.h"
 #include "madara/expression/Iterator.h"
 #include "madara/expression/IteratorImpl.h"
@@ -167,6 +168,14 @@ madara::expression::ExpressionTree::ExpressionTree(logger::Logger& logger,
 madara::expression::ExpressionTree::ExpressionTree(
     logger::Logger& logger, const madara::expression::ExpressionTree& t)
   : logger_(&logger), root_(t.root_)
+{
+}
+
+// Copy ctor
+
+madara::expression::ExpressionTree::ExpressionTree(
+    const madara::expression::ExpressionTree& t)
+  : logger_(t.logger_), root_(t.root_)
 {
 }
 

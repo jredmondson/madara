@@ -39,14 +39,14 @@
  * @param  level   the logging level
  **/
 #define madara_logger_ptr_log(loggering, level, ...)                  \
-  if (loggering && (madara::logger::Logger::get_thread_level() >= 0)) \
+  if (madara::logger::Logger::get_thread_level() >= 0) \
   {                                                                   \
     if (level <= madara::logger::Logger::get_thread_level())          \
     {                                                                 \
       loggering->log(level, __VA_ARGS__);                             \
     }                                                                 \
   }                                                                   \
-  else if (loggering && (level <= loggering->get_level()))            \
+  else if (level <= loggering->get_level())            \
   {                                                                   \
     loggering->log(level, __VA_ARGS__);                               \
   }
@@ -61,7 +61,7 @@
  **/
 #define madara_logger_cond_log_ptrs(                                      \
     conditional, logger_ptr, alt_logger_ptr, level, ...)                  \
-  if (conditional && logger_ptr &&                                        \
+  if (conditional &&                                        \
       (madara::logger::Logger::get_thread_level() >= 0))                  \
   {                                                                       \
     if (level <= madara::logger::Logger::get_thread_level())              \
@@ -73,7 +73,7 @@
       alt_logger_ptr->log(level, __VA_ARGS__);                            \
     }                                                                     \
   }                                                                       \
-  else if (conditional && logger_ptr && level <= logger_ptr->get_level()) \
+  else if (conditional && level <= logger_ptr->get_level()) \
   {                                                                       \
     logger_ptr->log(level, __VA_ARGS__);                                  \
   }                                                                       \
