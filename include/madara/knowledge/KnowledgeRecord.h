@@ -41,22 +41,22 @@ namespace tags
 using utility::type;
 
 using integer_t = type<int64_t>;
-static const integer_t integer;
-static const integer_t int_;
+constexpr integer_t integer;
+constexpr integer_t int_;
 using double_t = type<double>;
-static const double_t double_;
-static const double_t dbl;
+constexpr double_t double_;
+constexpr double_t dbl;
 using integers_t = type<std::vector<int64_t>>;
-static const integers_t integers;
-static const integers_t ints;
+constexpr integers_t integers;
+constexpr integers_t ints;
 using doubles_t = type<std::vector<double>>;
-static const doubles_t doubles;
-static const doubles_t dbls;
+constexpr doubles_t doubles;
+constexpr doubles_t dbls;
 using string_t = type<std::string>;
-static const string_t string;
-static const string_t str;
+constexpr string_t string;
+constexpr string_t str;
 using binary_t = type<std::vector<unsigned char>>;
-static const binary_t binary;
+constexpr binary_t binary;
 
 template<typename T>
 struct any
