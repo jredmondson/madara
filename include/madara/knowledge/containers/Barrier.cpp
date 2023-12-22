@@ -3,6 +3,7 @@
 
 #include "Barrier.h"
 #include "madara/knowledge/ContextGuard.h"
+#include "madara/logger/GlobalLogger.h"
 
 madara::knowledge::containers::Barrier::Barrier(
     const KnowledgeUpdateSettings& settings)
@@ -114,11 +115,12 @@ void madara::knowledge::containers::Barrier::build_aggregate_barrier(void)
   }
   else if (name_ == "")
   {
-    context_->print("ERROR: Container::Barrier needs a name.\n", 0);
+    context_->print("ERROR: containers::Barrier needs a name.\n", 0);
   }
   else if (!context_)
   {
-    context_->print("ERROR: Container::Barrier needs a context.\n", 0);
+    logger::global_logger->log(
+      logger::LOG_ERROR, "ERROR: containers::Barrier needs a context.\n");
   }
 }
 

@@ -3,6 +3,7 @@
 
 #include "LegacyBarrier.h"
 #include "madara/knowledge/ContextGuard.h"
+#include "madara/logger/GlobalLogger.h"
 
 madara::knowledge::containers::LegacyBarrier::LegacyBarrier(
     const KnowledgeUpdateSettings& settings)
@@ -136,11 +137,12 @@ void madara::knowledge::containers::LegacyBarrier::build_aggregate_barrier(void)
   }
   else if (name_ == "")
   {
-    context_->print("ERROR: Container::LegacyBarrier needs a name.\n", 0);
+    context_->print("ERROR: containers::LegacyBarrier needs a name.\n", 0);
   }
   else if (!context_)
   {
-    context_->print("ERROR: Container::LegacyBarrier needs a context.\n", 0);
+    logger::global_logger->log(
+      logger::LOG_ERROR, "ERROR: containers::LegacyBarrier needs a context.\n");
   }
 }
 
@@ -171,7 +173,8 @@ void madara::knowledge::containers::LegacyBarrier::build_var(void)
   }
   else if (!context_)
   {
-    context_->print("ERROR: Container::LegacyBarrier needs a context.\n", 0);
+    logger::global_logger->log(
+      logger::LOG_ERROR, "ERROR: containers::LegacyBarrier needs a context.\n");
   }
 }
 
