@@ -886,6 +886,7 @@ int main(int argc, char** argv)
 {
   handle_arguments(argc, argv);
 
+  std::cerr << "test_knowledge_record:\n";
   test_replace();
   test_sqrt();
   test_version();
@@ -895,8 +896,13 @@ int main(int argc, char** argv)
   test_ints();
   test_sleep();
   test_file_fragmenter();
-  test_file_crc();
-  test_named_vector_combinator();
+  if (madara::utility::expand_envs(
+      "$(MADARA_ROOT)") != "") {
+    test_file_crc();
+    test_named_vector_combinator();
+  } else {
+    std::cerr << "  MADARA_ROOT not set. Can't read files, so aborting test_file_crc\n";
+  }
 
   if(madara_fails > 0)
   {

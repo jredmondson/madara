@@ -23,11 +23,11 @@ typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 // default transport settings
 
 double max_wait(10.0);
-double hertz(0.5);
+double hertz(2);
 
 Integer target(50);
 
-Integer counters(1);
+Integer counters(4);
 Integer readers(0);
 
 // handle command line arguments

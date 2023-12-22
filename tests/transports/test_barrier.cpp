@@ -392,7 +392,7 @@ void test_throughput(void)
   stats_kb.set("barrier.50percent_is_done.time", barrier_50percent_is_done_time);
   stats_kb.set("legacy_barrier.50percent_is_done.time", legacy_50percent_is_done_time);
   stats_kb.set("barrier.100percent_is_done.time", barrier_100percent_is_done_time);
-  stats_kb.set("legacy_barrier.100percent_is_done.time", legacy_10percent_is_done_time);
+  stats_kb.set("legacy_barrier.100percent_is_done.time", legacy_100percent_is_done_time);
   stats_kb.print();
 }
 
