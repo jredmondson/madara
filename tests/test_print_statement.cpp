@@ -50,45 +50,45 @@ void test_print_statement(madara::knowledge::KnowledgeBase& knowledge)
   knowledge.set("MyState.1.2", Integer(10));
 #endif
 
-  statement = "Hello kitty {.var1}\n";
+  statement = "Hello kitty {.var1}";
 
   exp_statement = knowledge.expand_statement(statement);
   std::cerr << "Test 1: ";
-  if (statement == "Hello kitty 1")
+  if (exp_statement == "Hello kitty 1")
   {
     std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL: " << exp_statement << " != 'Hello kitty 1'\n";
     ++madara_fails;
   }
 
-  statement = "Hello kitty {.var{.var2}is{.var22}}\n";
+  statement = "Hello kitty {.var{.var2}is{.var22}}";
 
   exp_statement = knowledge.expand_statement(statement);
   std::cerr << "Test 2: ";
-  if (statement == "Hello kitty 1")
+  if (exp_statement == "Hello kitty 1")
   {
     std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL: " << exp_statement << " != 'Hello kitty 1'";
     ++madara_fails;
   }
 
-  statement = "MyState.{.var1}.{.var2} = {MyState.{.var1}.{.var2}}\n";
+  statement = "MyState.{.var1}.{.var2} = {MyState.{.var1}.{.var2}}";
 
   exp_statement = knowledge.expand_statement(statement);
   std::cerr << "Test 3: ";
-  if (statement == "MyState.1.2 = 10")
+  if (exp_statement == "MyState.1.2 = 10")
   {
     std::cerr << "SUCCESS\n";
   }
   else
   {
-    std::cerr << "FAIL\n";
+    std::cerr << "FAIL: " << exp_statement << " != 'MyState.1.2 = 10'\n";
     ++madara_fails;
   }
 }

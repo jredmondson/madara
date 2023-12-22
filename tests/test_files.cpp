@@ -18,8 +18,8 @@ madara::transport::TransportSettings settings;
 int parse_args(int argc, char* argv[]);
 
 // test functions
-void read_and_create_files(madara::knowledge::KnowledgeBase& knowledge);
-void write_transported_files(madara::knowledge::KnowledgeBase& knowledge);
+int read_and_create_files(madara::knowledge::KnowledgeBase& knowledge);
+int write_transported_files(madara::knowledge::KnowledgeBase& knowledge);
 
 int main(int argc, char* argv[])
 {
@@ -48,25 +48,29 @@ int main(int argc, char* argv[])
   knowledge.set(".id", (madara::knowledge::KnowledgeRecord::Integer)settings.id,
       madara::knowledge::EvalSettings::SEND);
 
+  int result = 0;
+
   // run tests
   //  test_tree_compilation (knowledge);
   if (settings.id == 0)
-    read_and_create_files(knowledge);
+    result += read_and_create_files(knowledge);
   else
   {
     madara::utility::wait_true(
         knowledge, "finished_transmitting", wait_settings);
-    write_transported_files(knowledge);
+    result += write_transported_files(knowledge);
   }
 
   // knowledge.print ();
 
-  return 0;
+  return result;
 }
 
 /// Tests logicals operators (&&, ||)
-void read_and_create_files(madara::knowledge::KnowledgeBase& knowledge)
+int read_and_create_files(madara::knowledge::KnowledgeBase& knowledge)
 {
+  int result = 0;
+
   knowledge.clear();
 
   knowledge.read_file("sample",
@@ -104,16 +108,21 @@ void read_and_create_files(madara::knowledge::KnowledgeBase& knowledge)
 
   knowledge.set(
       "finished_transmitting", 1, madara::knowledge::EvalSettings::SEND);
+
+  return result;
 }
 
 /// Tests logicals operators (&&, ||)
-void write_transported_files(madara::knowledge::KnowledgeBase& knowledge)
+int write_transported_files(madara::knowledge::KnowledgeBase& knowledge)
 {
+  int result = 0;
   knowledge.write_file("a_tree", "/files/an_xml_file_transported.xml");
   knowledge.write_file("double", "/files/twelve_transported.txt");
   knowledge.write_file("ten", "/files/ten_transported.txt");
   knowledge.write_file("hello_world", "/files/hello_world_transported.txt");
   knowledge.write_file("sample", "/files/sample_transported.jpg");
+
+  return result;
 }
 
 int parse_args(int argc, char* argv[])

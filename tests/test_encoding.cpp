@@ -399,7 +399,14 @@ void test_key_id_encoding(void)
 
 int main(int, char**)
 {
-  test_image_encoding();
+  std::cerr << "test_encoding:\n";
+  if (madara::utility::expand_envs(
+      "$(MADARA_ROOT)") != "") {
+    test_image_encoding();
+  } else {
+    std::cerr << "  MADARA_ROOT not set. Can't read images, so aborting test_image_encoding\n";
+  }
+
   test_primitive_encoding();
   test_key_id_encoding();
 

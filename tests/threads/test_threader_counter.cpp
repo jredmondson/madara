@@ -24,9 +24,9 @@ typedef madara::knowledge::KnowledgeRecord::Integer Integer;
 
 double max_wait(10.0);
 
-Integer target(100000000);
+Integer target(10000000);
 
-Integer counters(1);
+Integer counters(4);
 Integer readers(0);
 
 // handle command line arguments
@@ -167,6 +167,10 @@ int main(int argc, char** argv)
 
   // handle all user arguments
   handle_arguments(argc, argv);
+
+  std::cout << "test_thread_counter: \n"; 
+  std::cout << "  threads: " << counters << "\n";
+  std::cout << "  target count: " << target << "\n";
 
   // create a knowledge base and setup our id
   knowledge::KnowledgeBase knowledge;

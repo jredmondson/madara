@@ -112,6 +112,8 @@ add_subdirectory(scripts/projects)
 
 # Build tests
 if(madara_TESTS)
+  set(MADARA_ROOT "${PROJECT_SOURCE_DIR}")
+  enable_testing()
   add_subdirectory(tests)
 endif()
 

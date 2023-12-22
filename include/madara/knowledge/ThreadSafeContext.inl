@@ -830,8 +830,10 @@ inline void ThreadSafeContext::unlock(void) const
 inline void ThreadSafeContext::print(
     const std::string& statement, unsigned int level) const
 {
-  madara_logger_ptr_log(
+  if (logger_) {
+    madara_logger_ptr_log(
       logger_, (int)level, this->expand_statement(statement).c_str());
+  }
 }
 
 // clear all variables and their values

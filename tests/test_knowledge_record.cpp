@@ -226,7 +226,13 @@ int main()
 {
   check_basic_types_records();
 
-  check_file_records();
+  std::cerr << "test_knowledge_record:\n";
+  if (madara::utility::expand_envs(
+      "$(MADARA_ROOT)") != "") {
+    check_file_records();
+  } else {
+    std::cerr << "  MADARA_ROOT not set. Can't read images, so aborting check_file_records\n";
+  }
 
   // this test is checking knowledge record functionaly
   // so you get FAILs this means KnowledgeRecord class is not working properly

@@ -107,7 +107,7 @@ const char* madara::knowledge::FileHeader::read(
   // Remove file_type from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * 8)
   {
-    strncpy(file_type, buffer, 8);
+    strncpy(file_type, buffer, 7);
     buffer += sizeof(char) * 8;
   }
   else
@@ -143,7 +143,7 @@ const char* madara::knowledge::FileHeader::read(
   // Remove originator from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * 64)
   {
-    strncpy(originator, buffer, 64);
+    strncpy(originator, buffer, 63);
     buffer += sizeof(char) * 64;
   }
   else

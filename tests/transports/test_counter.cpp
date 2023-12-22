@@ -177,9 +177,7 @@ void handle_arguments(int argc, char** argv)
     {
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ALWAYS,
           "\nProgram summary for %s:\n\n"
-          "  Attempts to send a file over the network with a certain number\n"
-          "  of rebroadcasts (-h|--hops controls the number of "
-          "rebroadcasts)\n\n"
+          "  Attempts to distribute a counting task over networked agents\n\n"
           " [-b|--broadcast ip:port] the broadcast ip to send and listen to\n"
           " [-d|--domain domain]     the knowledge domain to send and listen "
           "to\n"

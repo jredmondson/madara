@@ -182,6 +182,7 @@ if(Boost_FOUND)
   endif()
 
   if(madara_SSL)
+    find_package(OpenSSL REQUIRED)
     target_compile_definitions(madara PUBLIC -D_USE_SSL_)
   endif()
 
