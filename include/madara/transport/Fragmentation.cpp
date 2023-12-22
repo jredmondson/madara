@@ -78,7 +78,7 @@ const char* madara::transport::FragmentMessageHeader::read(
   // Remove madara_id field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
   {
-    strncpy(madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
+    strncpy(madara_id, buffer, MADARA_IDENTIFIER_LENGTH - 1);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
   }
   else
@@ -95,7 +95,7 @@ const char* madara::transport::FragmentMessageHeader::read(
   // Remove domain field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_DOMAIN_MAX_LENGTH)
   {
-    strncpy(domain, buffer, MADARA_DOMAIN_MAX_LENGTH);
+    strncpy(domain, buffer, MADARA_DOMAIN_MAX_LENGTH - 1);
     buffer += sizeof(char) * MADARA_DOMAIN_MAX_LENGTH;
   }
   else
@@ -113,7 +113,7 @@ const char* madara::transport::FragmentMessageHeader::read(
   // Remove originator from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MAX_ORIGINATOR_LENGTH)
   {
-    strncpy(originator, buffer, MAX_ORIGINATOR_LENGTH);
+    strncpy(originator, buffer, MAX_ORIGINATOR_LENGTH - 1);
     buffer += sizeof(char) * MAX_ORIGINATOR_LENGTH;
   }
   else
@@ -306,7 +306,7 @@ char* madara::transport::FragmentMessageHeader::write(
   // Write madara_id field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
   {
-    strncpy(buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
+    strncpy(buffer, madara_id, MADARA_IDENTIFIER_LENGTH - 1);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
   }
   else
@@ -324,7 +324,7 @@ char* madara::transport::FragmentMessageHeader::write(
   // Write domain field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_DOMAIN_MAX_LENGTH)
   {
-    strncpy(buffer, domain, MADARA_DOMAIN_MAX_LENGTH);
+    strncpy(buffer, domain, MADARA_DOMAIN_MAX_LENGTH - 1);
     buffer += sizeof(char) * MADARA_DOMAIN_MAX_LENGTH;
   }
   else
@@ -342,7 +342,7 @@ char* madara::transport::FragmentMessageHeader::write(
   // Write originator from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MAX_ORIGINATOR_LENGTH)
   {
-    strncpy(buffer, originator, MAX_ORIGINATOR_LENGTH);
+    strncpy(buffer, originator, MAX_ORIGINATOR_LENGTH - 1);
     buffer += sizeof(char) * MAX_ORIGINATOR_LENGTH;
   }
   else
@@ -826,8 +826,8 @@ void madara::transport::FragmentMessageHeader::operator=(MessageHeader& header)
   if(this != &header)
   {
     clock = header.clock;
-    strncpy(domain, header.domain, MADARA_DOMAIN_MAX_LENGTH);
-    strncpy(originator, header.originator, MAX_ORIGINATOR_LENGTH);
+    strncpy(domain, header.domain, MADARA_DOMAIN_MAX_LENGTH - 1);
+    strncpy(originator, header.originator, MAX_ORIGINATOR_LENGTH - 1);
     quality = header.quality;
     size = header.size;
     timestamp = header.timestamp;
@@ -859,8 +859,8 @@ void madara::transport::frag(
     FragmentMessageHeader header;
     header.size = total_size;
     header.total_size = total_size;
-    strncpy(header.originator, originator, MAX_ORIGINATOR_LENGTH);
-    strncpy(header.domain, domain, MADARA_DOMAIN_MAX_LENGTH);
+    strncpy(header.originator, originator, MAX_ORIGINATOR_LENGTH - 1);
+    strncpy(header.domain, domain, MADARA_DOMAIN_MAX_LENGTH - 1);
     header.clock = clock;
     header.timestamp = timestamp;
     header.quality = quality;
