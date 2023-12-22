@@ -151,7 +151,8 @@ void madara::knowledge::containers::Counter::build_var(void)
   }
   else if (!context_)
   {
-    context_->print("ERROR: Container::Counter needs a context.\n", 0);
+    logger::global_logger->log(
+      logger::LOG_ERROR, "ERROR: containers::Counter needs a context.\n");
   }
 }
 
