@@ -445,8 +445,11 @@ inline KnowledgeRecord& KnowledgeRecord::operator--(void)
   else if (has_history())
   {
     KnowledgeRecord tmp = get_newest();
-    --tmp;
-    set_value(std::move(tmp));
+    if (tmp.is_integer_type()) {
+      set_value(tmp.to_integer() - 1);
+    } else if (tmp.is_double_type()) {
+      set_value(tmp.to_double() - 1);
+    }
   }
 
   return *this;
@@ -466,8 +469,11 @@ inline KnowledgeRecord& KnowledgeRecord::operator++(void)
   else if (has_history())
   {
     KnowledgeRecord tmp = get_newest();
-    --tmp;
-    set_value(std::move(tmp));
+    if (tmp.is_integer_type()) {
+      set_value(tmp.to_integer() + 1);
+    } else if (tmp.is_double_type()) {
+      set_value(tmp.to_double() + 1);
+    }
   }
 
   return *this;
@@ -1824,8 +1830,7 @@ inline char* KnowledgeRecord::write(
     if (buffer_remaining >= (int64_t)sizeof(char) * key_size)
     {
       // copy the string and set null terminator in buffer
-      strncpy(buffer, key.c_str(), key_size - 1);
-      buffer[key_size - 1] = 0;
+      utility::strncpy_safe(buffer, key.c_str(), key_size);
 
       buffer += sizeof(char) * key_size;
     }

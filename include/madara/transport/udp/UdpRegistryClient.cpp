@@ -67,10 +67,10 @@ void UdpRegistryClient::send_register(void)
     // Register messages always use the message header to include domain
     MessageHeader header;
     header.type = transport::REGISTER;
-    strncpy(
-        header.originator, this->id_.c_str(), sizeof(header.originator) - 1);
-    strncpy(header.domain, this->settings_.write_domain.c_str(),
-        sizeof(header.domain) - 1);
+    utility::strncpy_safe(
+        header.originator, this->id_.c_str(), sizeof(header.originator));
+    utility::strncpy_safe(header.domain, this->settings_.write_domain.c_str(),
+        sizeof(header.domain));
     header.updates = 0;
     header.clock = context_.get_clock();
     // compute size of this header

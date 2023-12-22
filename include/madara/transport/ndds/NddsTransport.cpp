@@ -300,12 +300,12 @@ long madara::transport::NddsTransport::send_data(
   data.quality = quality;
   data.updates = DDS_UnsignedLong(updates.size());
   data.originator = new char[id_.size() + 1];
-  strncpy(data.originator, id_.c_str(), id_.size() + 1);
+  utility::strncpy_safe(data.originator, id_.c_str(), id_.size() + 1);
   data.type = madara::transport::MULTIASSIGN;
   data.ttl = settings_.get_rebroadcast_ttl();
   data.timestamp = utility::get_time();
   data.madara_id = new char[strlen(MADARA_IDENTIFIER) + 1];
-  strncpy(data.madara_id, MADARA_IDENTIFIER, strlen(MADARA_IDENTIFIER) + 1);
+  utility::strncpy_safe(data.madara_id, MADARA_IDENTIFIER, strlen(MADARA_IDENTIFIER) + 1);
 
   context_.get_logger().log(logger::LOG_MAJOR,
       "NddsTransport::send:"

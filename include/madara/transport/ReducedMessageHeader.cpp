@@ -48,7 +48,7 @@ const char* madara::transport::ReducedMessageHeader::read(
   // Remove madara_id field from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
   {
-    strncpy(madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
+    utility::strncpy_safe(madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
   }
   else
@@ -155,7 +155,7 @@ char* madara::transport::ReducedMessageHeader::write(
   // Write madara_id field from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
   {
-    strncpy(buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
+    utility::strncpy_safe(buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
   }
   else

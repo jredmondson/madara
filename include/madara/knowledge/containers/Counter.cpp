@@ -121,11 +121,12 @@ void madara::knowledge::containers::Counter::build_aggregate_count(void)
   }
   else if (name_ == "")
   {
-    context_->print("ERROR: Container::Counter needs a name.\n", 0);
+    context_->print("ERROR: containers::Counter needs a name.\n", 0);
   }
   else if (!context_)
   {
-    context_->print("ERROR: Container::Counter needs a context.\n", 0);
+    logger::global_logger->log(
+      logger::LOG_ERROR, "ERROR: containers::Counter needs a context.\n");
   }
 }
 
@@ -150,7 +151,8 @@ void madara::knowledge::containers::Counter::build_var(void)
   }
   else if (!context_)
   {
-    context_->print("ERROR: Container::Counter needs a context.\n", 0);
+    logger::global_logger->log(
+      logger::LOG_ERROR, "ERROR: containers::Counter needs a context.\n");
   }
 }
 

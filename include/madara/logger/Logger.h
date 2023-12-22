@@ -52,6 +52,27 @@
   }
 
 /**
+ * Fast version of the madara::logger::log method for Logger pointers.
+ * This macro uses compiler optimizations to ensure that args are not
+ * evaluated unless the level is appropriate for the loggers level.
+ * This makes logging transparent and minimally invasive, performance wise
+ * @param  logger  the logger pointer to use
+ * @param  level   the logging level
+ **/
+#define madara_logger_checked_ptr_log(loggering, level, ...)                  \
+  if (loggering && madara::logger::Logger::get_thread_level() >= 0) \
+  {                                                                   \
+    if (level <= madara::logger::Logger::get_thread_level())          \
+    {                                                                 \
+      loggering->log(level, __VA_ARGS__);                             \
+    }                                                                 \
+  }                                                                   \
+  else if (loggering && level <= loggering->get_level())            \
+  {                                                                   \
+    loggering->log(level, __VA_ARGS__);                               \
+  }
+
+/**
  * High-performance logger that performs conditional logging based on first arg
  * @param  conditional     the primary logger pointer to use (if not null)
  * @param  logger_ptr      the logger that will be used if conditional is true
