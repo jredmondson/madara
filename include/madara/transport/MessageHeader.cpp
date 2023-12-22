@@ -65,7 +65,7 @@ const char* madara::transport::MessageHeader::read(
   // Remove madara_id field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
   {
-    strncpy(madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
+    utility::strncpy_safe(madara_id, buffer, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
   }
   else
@@ -83,7 +83,7 @@ const char* madara::transport::MessageHeader::read(
   // Remove domain field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_DOMAIN_MAX_LENGTH)
   {
-    strncpy(domain, buffer, MADARA_DOMAIN_MAX_LENGTH);
+    utility::strncpy_safe(domain, buffer, MADARA_DOMAIN_MAX_LENGTH);
     buffer += sizeof(char) * MADARA_DOMAIN_MAX_LENGTH;
   }
   else
@@ -102,7 +102,7 @@ const char* madara::transport::MessageHeader::read(
   // Remove originator from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MAX_ORIGINATOR_LENGTH)
   {
-    strncpy(originator, buffer, MAX_ORIGINATOR_LENGTH);
+    utility::strncpy_safe(originator, buffer, MAX_ORIGINATOR_LENGTH);
     buffer += sizeof(char) * MAX_ORIGINATOR_LENGTH;
   }
   else
@@ -247,7 +247,7 @@ char* madara::transport::MessageHeader::write(
   // Write madara_id field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_IDENTIFIER_LENGTH)
   {
-    strncpy(buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
+    utility::strncpy_safe(buffer, madara_id, MADARA_IDENTIFIER_LENGTH);
     buffer += sizeof(char) * MADARA_IDENTIFIER_LENGTH;
   }
   else
@@ -265,7 +265,7 @@ char* madara::transport::MessageHeader::write(
   // Write domain field from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MADARA_DOMAIN_MAX_LENGTH)
   {
-    strncpy(buffer, domain, MADARA_DOMAIN_MAX_LENGTH);
+    utility::strncpy_safe(buffer, domain, MADARA_DOMAIN_MAX_LENGTH);
     buffer += sizeof(char) * MADARA_DOMAIN_MAX_LENGTH;
   }
   else
@@ -283,7 +283,7 @@ char* madara::transport::MessageHeader::write(
   // Write originator from the buffer and update accordingly
   if((size_t)buffer_remaining >= sizeof(char) * MAX_ORIGINATOR_LENGTH)
   {
-    strncpy(buffer, originator, MAX_ORIGINATOR_LENGTH);
+    utility::strncpy_safe(buffer, originator, MAX_ORIGINATOR_LENGTH);
     buffer += sizeof(char) * MAX_ORIGINATOR_LENGTH;
   }
   else

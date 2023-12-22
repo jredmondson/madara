@@ -329,11 +329,10 @@ std::vector<double> KnowledgeRecord::to_doubles(void) const
 size_t KnowledgeRecord::to_managed_string(char* buffer, size_t buf_size) const
 {
   std::string contents = to_string();
-  size_t len = std::min(buf_size - 1, contents.length() + 1);
-  strncpy(buffer, contents.c_str(), len);
-  buffer[len] = 0;
+  size_t len = std::min(buf_size, contents.length() + 1);
+  utility::strncpy_safe(buffer, contents.c_str(), len);
 
-  return len + 1;
+  return len;
 }
 
 size_t KnowledgeRecord::to_managed_buffer(char* buffer, size_t buf_size) const

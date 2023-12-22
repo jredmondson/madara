@@ -196,8 +196,7 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
   {
     // get the text that appears as identifier.
     char identifier[MADARA_IDENTIFIER_LENGTH];
-    strncpy(identifier, buffer + 8, MADARA_IDENTIFIER_LENGTH);
-    identifier[7] = 0;
+    utility::strncpy_safe(identifier, buffer + 8, MADARA_IDENTIFIER_LENGTH);
 
     madara_logger_log(context.get_logger(), logger::LOG_MINOR,
         "%s:"
@@ -607,7 +606,7 @@ int process_received_update(const char* buffer, uint32_t bytes_read,
       header->ttl = 2;
 
     // modify originator to indicate we are the originator of modifications
-    strncpy(header->originator, id.c_str(), sizeof(header->originator) - 1);
+    utility::strncpy_safe(header->originator, id.c_str(), sizeof(header->originator));
   }
 
   // apply aggregate receive filters
@@ -1110,14 +1109,14 @@ long Base::prep_send(const knowledge::KnowledgeMap& orig_updates,
   if(!reduced)
   {
     // copy the domain from settings
-    strncpy(header->domain, this->settings_.write_domain.c_str(),
-        sizeof(header->domain) - 1);
+    utility::strncpy_safe(header->domain, this->settings_.write_domain.c_str(),
+        sizeof(header->domain));
 
     // get the quality of the key
     header->quality = quality;
 
     // copy the message originator (our id)
-    strncpy(header->originator, id_.c_str(), sizeof(header->originator) - 1);
+    utility::strncpy_safe(header->originator, id_.c_str(), sizeof(header->originator));
 
     // send data is generally an assign type. However, MessageHeader is
     // flexible enough to support both, and this will simply our read thread

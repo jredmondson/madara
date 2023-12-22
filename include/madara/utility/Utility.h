@@ -264,6 +264,14 @@ MADARA_EXPORT std::vector<int64_t> get_file_missing_fragments(
 MADARA_EXPORT std::string expand_envs(const std::string& source);
 
 /**
+ * Performs a strncpy in a way that will compile without warnings
+ * @param     src      the c string to copy
+ * @param     dst      the target buffer. Will be null terminated
+ * @param     dst_size the number of bytes in the dst buffer
+ **/
+MADARA_EXPORT void strncpy_safe(char * dst, const char * src, size_t dst_size);
+
+/**
  * Helper function for madara::utility::expand_envs which retrieves an
  * environment variable.
  * @param     source      the string to expand

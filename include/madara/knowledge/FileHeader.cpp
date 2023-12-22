@@ -107,7 +107,7 @@ const char* madara::knowledge::FileHeader::read(
   // Remove file_type from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * 8)
   {
-    strncpy(file_type, buffer, 7);
+    utility::strncpy_safe(file_type, buffer, 8);
     buffer += sizeof(char) * 8;
   }
   else
@@ -143,7 +143,7 @@ const char* madara::knowledge::FileHeader::read(
   // Remove originator from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * 64)
   {
-    strncpy(originator, buffer, 63);
+    utility::strncpy_safe(originator, buffer, 64);
     buffer += sizeof(char) * 64;
   }
   else
@@ -240,7 +240,7 @@ char* madara::knowledge::FileHeader::write(
   // Write file_type field from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * 8)
   {
-    strncpy(buffer, file_type, 8);
+    utility::strncpy_safe(buffer, file_type, 8);
     buffer += sizeof(char) * 8;
   }
   else
@@ -276,7 +276,7 @@ char* madara::knowledge::FileHeader::write(
   // Write originator field from the buffer and update accordingly
   if ((size_t)buffer_remaining >= sizeof(char) * 64)
   {
-    strncpy(buffer, originator, 64);
+    utility::strncpy_safe(buffer, originator, 64);
     buffer += sizeof(char) * 64;
   }
   else

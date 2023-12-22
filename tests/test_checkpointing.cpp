@@ -171,7 +171,7 @@ void test_checkpoint_settings(void)
   buffer[63] = 0;
 
   // copy current message into the buffer
-  strncpy((char*)buffer, test_message.c_str(), test_message.size() + 1);
+  utility::strncpy_safe((char*)buffer, test_message.c_str(), test_message.size() + 1);
 
   int encode_length(0), decode_length(0);
 
@@ -211,7 +211,7 @@ void test_checkpoint_settings(void)
 
   test_message =
       utility::file_to_string(utility::expand_envs("$(MADARA_ROOT)/README.md"));
-  strncpy((char*)buffer, test_message.c_str(), test_message.size());
+  utility::strncpy_safe((char*)buffer, test_message.c_str(), test_message.size());
 
   encode_length =
       filter.encode(buffer, (int)test_message.size(), sizeof(buffer));
@@ -1211,8 +1211,8 @@ int main(int argc, char* argv[])
   source_header.states += 50;
   source_header.size += 50 * 32;
   buffer_remaining = BUFFER_SIZE;
-  strncpy(source_header.file_type, "KaRL1.0\0", 8);
-  strncpy(source_header.originator, "localhost:34000\0", 16);
+  utility::strncpy_safe(source_header.file_type, "KaRL1.0\0", 8);
+  utility::strncpy_safe(source_header.originator, "localhost:34000\0", 16);
 
   std::cerr << "Test 1: encoding source_header to buffer.\n";
 

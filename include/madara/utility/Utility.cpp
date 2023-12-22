@@ -373,6 +373,12 @@ std::string expand_envs(const std::string& source)
   return buffer.str();
 }
 
+MADARA_EXPORT void strncpy_safe(char * dst, const char * src, size_t dst_size)
+{
+  strncpy(dst, src, dst_size);
+  dst[dst_size - 1] = 0;
+}
+
 /// grab an environment variable value (@see expand_envs)
 char* get_var(const std::string& source, size_t cur, size_t& end)
 {

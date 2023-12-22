@@ -1613,7 +1613,7 @@ int64_t ThreadSafeContext::save_context(
 
   FileHeader meta;
   meta.states = 1;
-  strncpy(meta.originator, settings.originator.c_str(),
+  utility::strncpy_safe(meta.originator, settings.originator.c_str(),
       sizeof(meta.originator) < settings.originator.size() + 1
           ? sizeof(meta.originator)
           : settings.originator.size() + 1);
@@ -2327,7 +2327,7 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
         " setting file meta id to %s\n",
         settings.originator.c_str());
 
-    strncpy(meta.originator, settings.originator.c_str(),
+    utility::strncpy_safe(meta.originator, settings.originator.c_str(),
         sizeof(meta.originator) < settings.originator.size() + 1
             ? sizeof(meta.originator)
             : settings.originator.size() + 1);
@@ -2782,7 +2782,7 @@ int64_t ThreadSafeContext::save_checkpoint(
     file.open(settings.filename, std::ios::out | std::ios::binary);
 
     meta.states = 1;
-    strncpy(meta.originator, settings.originator.c_str(),
+    utility::strncpy_safe(meta.originator, settings.originator.c_str(),
         sizeof(meta.originator) < settings.originator.size() + 1
             ? sizeof(meta.originator)
             : settings.originator.size() + 1);

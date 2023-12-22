@@ -29,7 +29,7 @@ int main(int, char**)
     int encode_length(0);
 
     // copy current message into the buffer
-    strncpy((char*)buffer, messages[i].c_str(), messages[i].size() + 1);
+    utility::strncpy_safe((char*)buffer, messages[i].c_str(), messages[i].size() + 1);
 
     // encode and then decode the buffer
     encode_length = filter.encode(buffer, (int)messages[i].size() + 1, 256);
@@ -65,7 +65,7 @@ int main(int, char**)
     int encode_length(0);
 
     // copy current message into the buffer
-    strncpy((char*)buffer, messages[i].c_str(), messages[i].size() + 1);
+    utility::strncpy_safe((char*)buffer, messages[i].c_str(), messages[i].size() + 1);
 
     // encode and then decode the buffer
     encode_length = filter.encode(buffer, (int)messages[i].size() + 1, 256);

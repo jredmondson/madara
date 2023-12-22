@@ -1824,8 +1824,7 @@ inline char* KnowledgeRecord::write(
     if (buffer_remaining >= (int64_t)sizeof(char) * key_size)
     {
       // copy the string and set null terminator in buffer
-      strncpy(buffer, key.c_str(), key_size - 1);
-      buffer[key_size - 1] = 0;
+      utility::strncpy_safe(buffer, key.c_str(), key_size);
 
       buffer += sizeof(char) * key_size;
     }

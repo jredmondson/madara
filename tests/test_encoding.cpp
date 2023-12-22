@@ -39,9 +39,9 @@ void test_primitive_encoding(void)
   memset(buffer, 0, BUFFER_SIZE);
   source_header.clock = 100;
   buffer_remaining = BUFFER_SIZE;
-  strncpy(source_header.domain, "encoding\0", 9);
-  strncpy(source_header.madara_id, "KaRL1.0\0", 8);
-  strncpy(source_header.originator, "localhost:34000\0", 16);
+  madara::utility::strncpy_safe(source_header.domain, "encoding\0", 9);
+  madara::utility::strncpy_safe(source_header.madara_id, "KaRL1.0\0", 8);
+  madara::utility::strncpy_safe(source_header.originator, "localhost:34000\0", 16);
   source_header.size = source_header.encoded_size();
   source_header.type = madara::transport::MULTIASSIGN;
   source_header.updates = 0;
@@ -187,9 +187,9 @@ void test_image_encoding(void)
   // Test 1: create the source header
   memset(buffer, 0, LARGE_BUFFER_SIZE);
   source_header.clock = 100;
-  strncpy(source_header.domain, "encoding\0", 9);
-  strncpy(source_header.madara_id, "KaRL1.0\0", 8);
-  strncpy(source_header.originator, "localhost:34000\0", 16);
+  madara::utility::strncpy_safe(source_header.domain, "encoding\0", 9);
+  madara::utility::strncpy_safe(source_header.madara_id, "KaRL1.0\0", 8);
+  madara::utility::strncpy_safe(source_header.originator, "localhost:34000\0", 16);
   source_header.size = source_header.encoded_size();
   source_header.type = madara::transport::MULTIASSIGN;
   source_header.updates = 0;
