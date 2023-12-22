@@ -8,6 +8,8 @@
 #include "madara/knowledge/KnowledgeBase.h"
 #include "madara/logger/GlobalLogger.h"
 
+#define _unused(x) ((void)(x))
+
 namespace logger = madara::logger;
 
 namespace knowledge = madara::knowledge;
@@ -85,6 +87,9 @@ madara::knowledge::KnowledgeRecord check_vector(
          records[4].to_string() == "6" && records[5].to_string() == "5" &&
          records[6].to_string() == "4" && records[7].to_string() == "3");
 
+  // required to prevent warning in release where assert is removed
+  _unused(variables);
+
   return madara::knowledge::KnowledgeRecord(records.size());
 }
 
@@ -115,6 +120,10 @@ madara::knowledge::KnowledgeRecord check_map(
          records["map4"] != "X7" && records["map5"] != "X6" &&
          records["map6"] != "X5" && records["map7"] != "X4" &&
          records["map8"] != "X3");
+
+
+  // required to prevent warning in release where assert is removed
+  _unused(variables);
 
   return madara::knowledge::KnowledgeRecord(records.size());
 }
