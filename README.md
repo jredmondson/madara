@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jredmondson/madara.svg?branch=master)](https://travis-ci.org/jredmondson/madara) [![Documentation Status](https://readthedocs.org/projects/madara/badge/?version=latest)](https://madara.readthedocs.io/en/latest/?badge=latest) [![Javadocs](https://www.javadoc.io/badge/ai.madara/madara.svg)](https://www.javadoc.io/doc/ai.madara/madara)
+![example event parameter](https://github.com/jredmondson/madara/actions/workflows/madara-tests.yaml/badge.svg?event=push) [![Documentation Status](https://readthedocs.org/projects/madara/badge/?version=latest)](https://madara.readthedocs.io/en/latest/?badge=latest) [![Javadocs](https://www.javadoc.io/badge/ai.madara/madara.svg)](https://www.javadoc.io/doc/ai.madara/madara)
 
 # About MADARA
 

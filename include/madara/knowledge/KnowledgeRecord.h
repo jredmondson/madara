@@ -1765,13 +1765,13 @@ private:
 
   template<typename T, uint32_t Type, MemberType<T> Member,
       bool Overwrite = false, typename... Args>
-  std::shared_ptr<const T>& emplace_shared_val(Args&&... args)
+  std::shared_ptr<const T> emplace_shared_val(Args&&... args)
   {
     if (has_history() && !Overwrite)
     {
       KnowledgeRecord tmp;
       tmp.copy_metadata(*this);
-      auto& ret =
+      auto ret =
           tmp.emplace_shared_val<T, Type, Member>(std::forward<Args>(args)...);
       emplace_hist(std::move(tmp));
       return ret;
@@ -1784,7 +1784,7 @@ private:
 
   template<typename T, uint32_t Type, MemberType<T> Member,
       bool Overwrite = false, typename... Args>
-  std::shared_ptr<const T>& emplace_val(Args&&... args)
+  std::shared_ptr<const T> emplace_val(Args&&... args)
   {
     return emplace_shared_val<T, Type, Member, Overwrite>(
         std::move(std::make_shared<const T>(std::forward<Args>(args)...)));
@@ -1792,7 +1792,7 @@ private:
 
   template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
       bool Overwrite = false, typename... Args>
-  std::shared_ptr<const std::vector<T>>& emplace_shared_vec(Args&&... args)
+  std::shared_ptr<const std::vector<T>> emplace_shared_vec(Args&&... args)
   {
     return emplace_shared_val<std::vector<T>, Type, Member, Overwrite>(
         std::forward<Args>(args)...);
@@ -1800,7 +1800,7 @@ private:
 
   template<typename T, uint32_t Type, MemberType<std::vector<T>> Member,
       bool Overwrite = false, typename... Args>
-  std::shared_ptr<const std::vector<T>>& emplace_vec(Args&&... args)
+  std::shared_ptr<const std::vector<T>> emplace_vec(Args&&... args)
   {
     return emplace_val<std::vector<T>, Type, Member, Overwrite>(
         std::forward<Args>(args)...);
