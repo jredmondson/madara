@@ -779,7 +779,7 @@ void ThreadSafeContext::print(unsigned int level) const
   {
     if (i->second.exists())
     {
-      madara_logger_ptr_log(logger_, (int)level, "%s=%s\n", i->first.c_str(),
+      madara_logger_checked_ptr_log(logger_, (int)level, "%s=%s\n", i->first.c_str(),
           i->second.to_string(", ").c_str());
     }
   }
@@ -887,7 +887,7 @@ std::string ThreadSafeContext::expand_statement(
   // check to see if all brace counts are appropriate
   if (subcount != 0)
   {
-    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_ERROR,
         "KARL COMPILE ERROR : Improperly matched braces in %s\n",
         statement.c_str());
   }
@@ -1056,7 +1056,7 @@ Function* ThreadSafeContext::retrieve_function(
 
 CompiledExpression ThreadSafeContext::compile(const std::string& expression)
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::compile:"
       " compiling %s\n",
       expression.c_str());
@@ -1434,13 +1434,13 @@ KnowledgeMap ThreadSafeContext::to_map_stripped(const std::string& prefix) const
 void ThreadSafeContext::copy(const ThreadSafeContext& source,
     const KnowledgeRequirements& reqs, const KnowledgeUpdateSettings& settings)
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::copy:"
       " copying a context\n");
 
   if (reqs.clear_knowledge)
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::copy:"
         " clearing knowledge in target context\n");
 
@@ -1456,14 +1456,14 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
 
       if (predicate.suffix == "")
       {
-        madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::copy:"
             " matching predicate.prefix=%s\n",
             predicate.prefix.c_str());
 
         for (; iters.first != iters.second; ++iters.first)
         {
-          madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::copy:"
               " looking for %s\n",
               iters.first->first.c_str());
@@ -1472,7 +1472,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
 
           if (where == map_.end() || where->first != iters.first->first)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::copy:"
                 " inserting %s\n",
                 iters.first->first.c_str());
@@ -1482,7 +1482,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
           }
           else
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::copy:"
                 " overwriting %s\n",
                 iters.first->first.c_str());
@@ -1495,7 +1495,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
       }
       else  // we need to match a suffix
       {
-        madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::copy:"
             " matching predicate.suffix=%s\n",
             predicate.suffix.c_str());
@@ -1504,7 +1504,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
         {
           if (madara::utility::ends_with(iters.first->first, predicate.suffix))
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::copy:"
                 " looking for %s\n",
                 iters.first->first.c_str());
@@ -1513,7 +1513,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
 
             if (where == map_.end() || where->first != iters.first->first)
             {
-              madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+              madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::copy:"
                   " inserting %s\n",
                   iters.first->first.c_str());
@@ -1523,7 +1523,7 @@ void ThreadSafeContext::copy(const ThreadSafeContext& source,
             }
             else
             {
-              madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+              madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::copy:"
                   " overwriting %s\n",
                   iters.first->first.c_str());
@@ -1603,7 +1603,7 @@ int64_t ThreadSafeContext::save_context(
 int64_t ThreadSafeContext::save_context(
     const CheckpointSettings& settings) const
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
       "ThreadSafeContext::save_context:"
       " opening file %s\n",
       settings.filename.c_str());
@@ -1625,7 +1625,7 @@ int64_t ThreadSafeContext::save_context(
     int64_t max_buffer(settings.buffer_size);
     int64_t buffer_remaining(max_buffer);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_context:"
         " allocating %d byte buffer\n",
         (int)max_buffer);
@@ -1634,7 +1634,7 @@ int64_t ThreadSafeContext::save_context(
 
     char* current = buffer.get_ptr();
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_context:"
         " generating file meta\n");
 
@@ -1660,7 +1660,7 @@ int64_t ThreadSafeContext::save_context(
 
     current = checkpoint_header.write(current, buffer_remaining);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_context:"
         " writing records\n");
 
@@ -1674,7 +1674,7 @@ int64_t ThreadSafeContext::save_context(
         // check if the prefix is allowed
         if (settings.prefixes.size() > 0)
         {
-          madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_context:"
               " we have %d prefixes to check against.\n",
               (int)settings.prefixes.size());
@@ -1682,14 +1682,14 @@ int64_t ThreadSafeContext::save_context(
           bool prefix_found = false;
           for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_context:"
                 " checking record %s against prefix %s.\n",
                 i->first.c_str(), settings.prefixes[j].c_str());
 
             if (madara::utility::begins_with(i->first, settings.prefixes[j]))
             {
-              madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+              madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_context:"
                   " record has the correct prefix.\n");
 
@@ -1699,7 +1699,7 @@ int64_t ThreadSafeContext::save_context(
 
           if (!prefix_found)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_context:"
                 " record has the wrong prefix. Rejected.\n");
 
@@ -1745,7 +1745,7 @@ int64_t ThreadSafeContext::save_context(
     // update the meta data at the front
     fseek(file, 0, SEEK_SET);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_context:"
         " encoding with buffer filters: %d:%d bytes written to offset %d.\n",
         (int)meta.size, (int)checkpoint_header.size,
@@ -1758,7 +1758,7 @@ int64_t ThreadSafeContext::save_context(
   }
   else
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_context:"
         " couldn't open context file: %s.\n",
         settings.filename.c_str());
@@ -1780,7 +1780,7 @@ int64_t ThreadSafeContext::save_as_karl(const std::string& filename) const
 int64_t ThreadSafeContext::save_as_karl(
     const CheckpointSettings& settings) const
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_as_karl:"
       " opening file %s\n",
       settings.filename.c_str());
@@ -1802,7 +1802,7 @@ int64_t ThreadSafeContext::save_as_karl(
         // check if the prefix is allowed
         if (settings.prefixes.size() > 0)
         {
-          madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_as_karl:"
               " we have %d prefixes to check against.\n",
               (int)settings.prefixes.size());
@@ -1810,14 +1810,14 @@ int64_t ThreadSafeContext::save_as_karl(
           bool prefix_found = false;
           for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_karl:"
                 " checking record %s against prefix %s.\n",
                 i->first.c_str(), settings.prefixes[j].c_str());
 
             if (madara::utility::begins_with(i->first, settings.prefixes[j]))
             {
-              madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+              madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_as_karl:"
                   " the record has the correct prefix.\n");
 
@@ -1827,7 +1827,7 @@ int64_t ThreadSafeContext::save_as_karl(
 
           if (!prefix_found)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_karl:"
                 " the record does not have a correct prefix.\n");
 
@@ -1930,7 +1930,7 @@ int64_t ThreadSafeContext::save_as_karl(
   }
   else
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_as_karl:"
         " couldn't open karl file: %s.\n",
         settings.filename.c_str());
@@ -1952,7 +1952,7 @@ int64_t ThreadSafeContext::save_as_json(const std::string& filename) const
 int64_t ThreadSafeContext::save_as_json(
     const CheckpointSettings& settings) const
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_as_json:"
       " opening file %s\n",
       settings.filename.c_str());
@@ -1977,7 +1977,7 @@ int64_t ThreadSafeContext::save_as_json(
         // check if the prefix is allowed
         if (settings.prefixes.size() > 0)
         {
-          madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+          madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
               "ThreadSafeContext::save_as_json:"
               " we have %d prefixes to check against.\n",
               (int)settings.prefixes.size());
@@ -1985,14 +1985,14 @@ int64_t ThreadSafeContext::save_as_json(
           bool prefix_found = false;
           for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_json:"
                 " checking record %s against prefix %s.\n",
                 i->first.c_str(), settings.prefixes[j].c_str());
 
             if (madara::utility::begins_with(i->first, settings.prefixes[j]))
             {
-              madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+              madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                   "ThreadSafeContext::save_as_json:"
                   " the record has the correct prefix.\n");
 
@@ -2002,7 +2002,7 @@ int64_t ThreadSafeContext::save_as_json(
 
           if (!prefix_found)
           {
-            madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+            madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
                 "ThreadSafeContext::save_as_json:"
                 " the record does not have a correct prefix.\n");
 
@@ -2090,7 +2090,7 @@ int64_t ThreadSafeContext::save_as_json(
   }
   else
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_as_json:"
         " couldn't open json file: %s.\n",
         settings.filename.c_str());
@@ -2114,7 +2114,7 @@ int64_t ThreadSafeContext::load_context(const std::string& filename,
 int64_t ThreadSafeContext::load_context(const std::string& filename,
     FileHeader& meta, const KnowledgeUpdateSettings& settings)
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
       "ThreadSafeContext::load_context:"
       " opening file %s for just header info\n",
       filename.c_str());
@@ -2132,7 +2132,7 @@ int64_t ThreadSafeContext::load_context(const std::string& filename,
     utility::ScopedArray<char> buffer = new char[max_buffer];
     const char* current = buffer.get_ptr();
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::load_context:"
         " reading file meta data\n");
 
@@ -2149,7 +2149,7 @@ int64_t ThreadSafeContext::load_context(const std::string& filename,
     }  // end if total_read > 0
     else
     {
-      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+      madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::load_context:"
           " invalid file or wrong version. No contextual change.\n");
     }
@@ -2158,7 +2158,7 @@ int64_t ThreadSafeContext::load_context(const std::string& filename,
   }
   else
   {
-    madara_logger_ptr_log(logger_, logger::LOG_ALWAYS,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_ALWAYS,
         "ThreadSafeContext::load_context:"
         " could not open file %s for reading. "
         "Check that file exists and that permissions are appropriate.\n",
@@ -2175,7 +2175,7 @@ madara::knowledge::KnowledgeRecord ThreadSafeContext::evaluate_file(
     CheckpointSettings& checkpoint_settings,
     const KnowledgeUpdateSettings& update_settings)
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
       "ThreadSafeContext::evaluate_file:"
       " opening file %s\n",
       checkpoint_settings.filename.c_str());
@@ -2194,7 +2194,7 @@ madara::knowledge::KnowledgeRecord ThreadSafeContext::evaluate_file(
 std::string ThreadSafeContext::file_to_string(
     CheckpointSettings& checkpoint_settings)
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
       "ThreadSafeContext::file_to_string:"
       " opening file %s\n",
       checkpoint_settings.filename.c_str());
@@ -2217,7 +2217,7 @@ std::string ThreadSafeContext::file_to_string(
 
     total_read = fread(buffer.get_ptr(), 1, max_buffer, file);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
         "ThreadSafeContext::file_to_string:"
         " reading file: %d bytes read. Decoding...\n",
         (int)total_read);
@@ -2233,19 +2233,19 @@ std::string ThreadSafeContext::file_to_string(
           "decode () returned a negative encoding size. Bad filter/encode.");
     }
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::file_to_string:"
         " decoded %d bytes. Converting to string.\n",
         size);
 
     std::string script(buffer.get(), (size_t)size);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::file_to_string:"
         " reading file: %d bytes read.\n",
         (int)total_read);
 
-    madara_logger_ptr_log(logger_, logger::LOG_DETAILED,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_DETAILED,
         "ThreadSafeContext::file_to_string:"
         " file_contents: %s.\n",
         script.c_str());
@@ -2303,7 +2303,7 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
 
   if (!file.read(buffer.get(), FileHeader::encoded_size()))
   {
-    madara_logger_ptr_log(logger_, logger::LOG_ERROR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_ERROR,
         "ThreadSafeContext::save_checkpoint:"
         " failed to read existing file header: size=%d\n",
         (int)meta.encoded_size());
@@ -2315,14 +2315,14 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
 
   meta_reader = meta.read(meta_reader, buffer_remaining);
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " init file meta: size=%d, states=%d\n",
       (int)meta.size, (int)meta.states);
 
   if (settings.originator != "")
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " setting file meta id to %s\n",
         settings.originator.c_str());
@@ -2338,7 +2338,7 @@ static uint64_t update_checkpoint_header(logger::Logger* logger_,
 
   checkpoint_header.size = checkpoint_header.encoded_size();
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " meta.size=%d, chkpt.header.size=%d \n",
       (int)meta.size, (int)checkpoint_header.size);
@@ -2368,7 +2368,7 @@ static char* init_checkpoint_header(logger::Logger* logger_, uint64_t clock_,
 {
   char* current = buffer.get_ptr();
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " creating file meta. file.meta.size=%d, state.size=%d\n",
       (int)meta.size, (int)checkpoint_header.encoded_size());
@@ -2409,7 +2409,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
     // check if the prefix is allowed
     if (settings.prefixes.size() > 0)
     {
-      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+      madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"
           " we have %d prefixes to check against.\n",
           (int)settings.prefixes.size());
@@ -2417,7 +2417,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
       bool prefix_found = false;
       for (size_t j = 0; j < settings.prefixes.size() && !prefix_found; ++j)
       {
-        madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:"
             " checking record %s against prefix %s.\n",
             name.c_str(), settings.prefixes[j].c_str());
@@ -2430,7 +2430,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
 
       if (!prefix_found)
       {
-        madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+        madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
             "ThreadSafeContext::save_checkpoint:"
             " record has the wrong prefix. Rejected.\n");
 
@@ -2441,7 +2441,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
     // get the encoded size of the record for checking buffer boundaries
     int64_t encoded_size = record->get_encoded_size(name);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " estimated encoded size of update=%d bytes\n",
         (int)encoded_size);
@@ -2462,7 +2462,7 @@ static void checkpoint_write_record(logger::Logger* logger_,
     ++checkpoint_header.updates;
     checkpoint_header.size += (uint64_t)encoded_size;
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " chkpt.header.size=%d, current->buffer delta=%d\n",
         (int)checkpoint_header.size, (int)(current - buffer.get_ptr()));
@@ -2571,7 +2571,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
   {
     // skip over the checkpoint header. We'll write this later with the records
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " fseek set to %d\n",
         (int)(checkpoint_start));
@@ -2583,7 +2583,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
     // start updates just past the checkpoint header's buffer location
     char* current = checkpoint_header.write(buffer.get_ptr(), buffer_remaining);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " chkpt.header.size=%d, current->buffer delta=%d\n",
         (int)checkpoint_header.encoded_size(),
@@ -2594,12 +2594,12 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
 
     ++meta.states;
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " writing final data to checkpoint for state #%d\n",
         (int)meta.states);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " chkpt.header: size=%d, updates=%d\n",
         (int)checkpoint_header.size, (int)checkpoint_header.updates);
@@ -2610,7 +2610,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
     {
       total_written = (int64_t)(current - buffer.get_ptr());
 
-      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+      madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"
           " encoding %d bytes in checkpoint\n",
           (int)total_written);
@@ -2628,7 +2628,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
             "encode () returned a negative encoding size. Bad filter/encode.");
       }
 
-      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+      madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"
           " encoded %d bytes in buffer. Writing to disk at offset %d bytes\n",
           (int)total_encoded, (int)checkpoint_start);
@@ -2643,7 +2643,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
 
       meta.size += (uint64_t)total_encoded;
 
-      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+      madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"
           " meta.size updated to %d bytes\n",
           total_encoded, (int)meta.size);
@@ -2653,7 +2653,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
     // fseek (file, (long)checkpoint_start, SEEK_SET);
     file.seekp(0, file.beg);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " new file meta: size=%d, states=%d, "
         " lastchkpt.start=%d, lastchkpt.size=%d, encoded=%d\n",
@@ -2663,7 +2663,7 @@ static void checkpoint_do_incremental(const ThreadSafeContext& context,
     // update the meta data at the front
     // fseek (file, 0, SEEK_SET);
 
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " updating file meta data at beginning in the file\n");
     buffer_remaining = max_buffer;
@@ -2692,7 +2692,7 @@ static void checkpoint_do_initial(const ThreadSafeContext& context,
   char* current = init_checkpoint_header(logger_, clock_, settings, meta,
       checkpoint_header, buffer_remaining, buffer);
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " writing diff records\n");
 
@@ -2702,7 +2702,7 @@ static void checkpoint_do_initial(const ThreadSafeContext& context,
   char* final_position = current;
   int full_buffer = final_position - buffer.get_ptr();
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " final_position indicates a buffer of %d bytes,"
       " encode buffer is %d bytes\n",
@@ -2732,7 +2732,7 @@ static void checkpoint_do_initial(const ThreadSafeContext& context,
   // fseek (file, 0, SEEK_SET);
   file.seekp(0, file.beg);
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " encoding with buffer filters: meta.size=%d, chkpt.size=%d, "
       "encoded=%d, chkpt.offset=%d.\n",
@@ -2743,7 +2743,7 @@ static void checkpoint_do_initial(const ThreadSafeContext& context,
   //   (size_t)total + (size_t)FileHeader::encoded_size (), 1, file);
   file.write(buffer.get(), (size_t)total + (size_t)file_header_size);
 
-  madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
       "ThreadSafeContext::save_checkpoint:"
       " wrote: %d bytes to file from beginning.\n",
       (int)total + (int)FileHeader::encoded_size());
@@ -2755,7 +2755,7 @@ static void checkpoint_do_initial(const ThreadSafeContext& context,
 int64_t ThreadSafeContext::save_checkpoint(
     const CheckpointSettings& settings) const
 {
-  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
       "ThreadSafeContext::save_checkpoint:"
       " opening file %s\n",
       settings.filename.c_str());
@@ -2775,7 +2775,7 @@ int64_t ThreadSafeContext::save_checkpoint(
   }  // if file is opened
   else
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_checkpoint:"
         " checkpoint doesn't exist. Creating.\n");
 
@@ -2790,7 +2790,7 @@ int64_t ThreadSafeContext::save_checkpoint(
     // if the new file creation for wb was unsuccessful
     if (!file)
     {
-      madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+      madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
           "ThreadSafeContext::save_checkpoint:"
           " couldn't create checkpoint file: %s.\n",
           settings.filename.c_str());

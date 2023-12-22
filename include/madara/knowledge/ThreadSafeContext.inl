@@ -831,7 +831,7 @@ inline void ThreadSafeContext::print(
     const std::string& statement, unsigned int level) const
 {
   if (logger_) {
-    madara_logger_ptr_log(
+    madara_logger_checked_ptr_log(
       logger_, (int)level, this->expand_statement(statement).c_str());
   }
 }
@@ -1113,14 +1113,14 @@ inline VariableReferences ThreadSafeContext::save_modifieds(void) const
   snapshot.reserve(changed_map_.size());
   int cur = 0;
 
-  madara_logger_ptr_log(logger_, logger::LOG_MAJOR,
+  madara_logger_checked_ptr_log(logger_, logger::LOG_MAJOR,
       "ThreadSafeContext::save_modifieds:"
       " changed_map.size=%d, snapshot.size=%d\n",
       (int)changed_map_.size(), (int)snapshot.size());
 
   for (auto& entry : changed_map_)
   {
-    madara_logger_ptr_log(logger_, logger::LOG_MINOR,
+    madara_logger_checked_ptr_log(logger_, logger::LOG_MINOR,
         "ThreadSafeContext::save_modifieds:"
         " snapshot[%d].name=%s\n",
         cur, entry.first);
