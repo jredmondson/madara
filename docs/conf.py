@@ -20,13 +20,13 @@ import subprocess
 # -- Project information -----------------------------------------------------
 
 project = u'MADARA'
-copyright = u'2018, James Edmondson'
+copyright = u'2018-2023, James Edmondson'
 author = u'James Edmondson'
 
 # The short X.Y version
 version = u''
 # The full version, including alpha/beta/rc tags
-release = u'3.1.10'
+release = u'3.4.0'
 
 subprocess.call('perl get_version.pl; doxygen Doxyfile_MADARA_NoGraphviz.dxy', shell=True)
 
