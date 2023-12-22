@@ -75,11 +75,11 @@ static inline void madara_tests_reset_count()
       log("FAIL    : no exception thrown; expected " #EXCEPTION__ "\n");      \
       ++madara_tests_fail_count;                                              \
     }                                                                         \
-    catch (EXCEPTION__ e)                                                     \
+    catch (EXCEPTION__ & e)                                                     \
     {                                                                         \
       log("SUCCESS : caught exception " #EXCEPTION__ ": %s\n", e.what());     \
     }                                                                         \
-    catch (std::exception e)                                                  \
+    catch (std::exception & e)                                                  \
     {                                                                         \
       log("FAIL    : expected thrown " #EXCEPTION__ ", got: %s\n", e.what()); \
       ++madara_tests_fail_count;                                              \

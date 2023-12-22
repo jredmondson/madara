@@ -62,7 +62,7 @@ inline const char* BufferFilterHeader::read(
   if (buffer_remaining >= 20)
   {
     memcpy(&size, buffer, 8);
-    strncpy(id, buffer + 8, 8);
+    strncpy(id, buffer + 8, 7);
     memcpy(&version, buffer + 16, 4);
 
     size = utility::endian_swap(size);
