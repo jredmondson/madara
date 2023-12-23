@@ -34,7 +34,7 @@
 
 /**
  * Macro which generates feature testing traits, to allow enabling features
- * based on what a given type supports. The tests provide ::value member
+ * based on what a given type supports. The tests provide value member
  * which is true if the given expr can compile correctly with the given
  * type; false otherwise
  *

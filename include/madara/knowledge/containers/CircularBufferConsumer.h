@@ -43,7 +43,6 @@ public:
    * Constructor
    * @param  name       name of the integer in the knowledge base
    * @param  knowledge  the knowledge base that will contain the vector
-   * @param  settings   settings for evaluating the vector
    * @throw exceptions::NameException  bad name ("")
    **/
   CircularBufferConsumer(const std::string& name, KnowledgeBase& knowledge);
@@ -52,7 +51,6 @@ public:
    * Constructor
    * @param  name      the name of the map within the variable context
    * @param  knowledge the variable context
-   * @param  settings  settings to apply by default
    * @throw exceptions::NameException  bad name ("")
    **/
   CircularBufferConsumer(const std::string& name, Variables& knowledge);
