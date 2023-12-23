@@ -14,8 +14,9 @@ build:
     python: "3.12"
   jobs:
     pre_install:
-      - bash ./scripts/pre_install.sh
+      - pwd
     post_build:
+      - pwd
       - ls 
       - ls docs
       - ls docs/madara
