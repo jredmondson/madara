@@ -20,7 +20,6 @@ build:
       - ls 
       - ls docs
       - ls docs/madara
-      - ls docs/build
       - ls _readthedocs
       - cp -rf docs/madara/* _readthedocs/
 
