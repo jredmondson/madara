@@ -59,7 +59,7 @@ namespace knowledge
  * @brief Check if a KnowledgeRecord type matches a specified type
  *
  * @param t an instance of the type helper struct to infer the target type
- * @param in the KnowledgeRecord to read from
+ * @param kr the KnowledgeRecord to read from
  * @return true if the types match
  */
 template<typename T>

@@ -57,7 +57,6 @@ public:
    * Constructor
    * @param  name       name of the integer in the knowledge base
    * @param  knowledge  the knowledge base that will contain the vector
-   * @param  settings   settings for evaluating the vector
    * @throw exceptions::NameException  bad name ("")
    **/
   NativeCircularBufferConsumer(
@@ -66,8 +65,7 @@ public:
   /**
    * Constructor
    * @param  name      the name of the map within the variable context
-   * @param  knowledge the variable context
-   * @param  settings  settings to apply by default
+   * @param  knowledge the variable contex
    * @throw exceptions::NameException  bad name ("")
    **/
   NativeCircularBufferConsumer(const std::string& name, Variables& knowledge);
@@ -85,7 +83,7 @@ public:
 
   /**
    * Sets the variable name that this refers to
-   * @param name  the name of the variable in the knowledge base
+   * @param name       the name of the variable in the knowledge base
    * @param knowledge  the knowledge base the variable is housed in
    * @throw exceptions::NameException  bad name ("")
    **/
@@ -93,7 +91,7 @@ public:
 
   /**
    * Sets the variable name that this refers to
-   * @param name  the name of the variable in the knowledge base
+   * @param name       the name of the variable in the knowledge base
    * @param knowledge  the knowledge base the variable is housed in
    * @throw exceptions::NameException  bad name ("")
    **/
@@ -101,8 +99,8 @@ public:
 
   /**
    * Sets the variable name that this refers to
-   * @param name  the name of the variable in the knowledge base
-   * @param knowledge  the ThreadSafeContext the variable is housed in
+   * @param name     the name of the variable in the knowledge base
+   * @param context  the ThreadSafeContext the variable is housed in
    * @throw exceptions::NameException  bad name ("")
    **/
   void set_name(const std::string& name, ThreadSafeContext& context);

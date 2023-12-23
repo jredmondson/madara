@@ -573,12 +573,13 @@ public:
   }
 
   /**
-   * Compares given index @a i relative to existing range of elements
+   * Compares given index relative to existing range of elements
    * (front_index() to back_index())
+   * @param  i  the index to check for existence within range
    *
    * @return 0 if index is within range of existing elements. Otherwise, if
-   *   @a i < front_index(), return @i - front_index() (negative). Else, if
-   *   @a i > back_index(), return @i - back_index() (positive).
+   *   index < front_index(), return index - front_index() (negative). Else, if
+   *   index i > back_index(), return index - back_index() (positive).
    **/
   ssize_t check_range(size_t i) const
   {

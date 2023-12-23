@@ -44,7 +44,7 @@ public:
    * Constructor
    * @param  data_plane   The data plane for threads to use
    **/
-  Threader(knowledge::KnowledgeBase data_plane);
+  Threader(knowledge::KnowledgeBase& data_plane);
 
   /**
    * Destructor
@@ -66,7 +66,7 @@ public:
    * @param name   unique thread name for the thread
    * @param hertz  new hertz rate for the periodic thread
    **/
-  void change_hertz(const std::string name, double hertz);
+  void change_hertz(const std::string& name, double hertz);
 
   /**
    * Gets the control plane used by threads
@@ -84,7 +84,7 @@ public:
    * Requests a specific thread to pause
    * @param name    unique thread name for the thread.
    **/
-  void pause(const std::string name);
+  void pause(const std::string& name);
 
   /**
    * Requests all threads to pause
@@ -95,7 +95,7 @@ public:
    * Requests a specific thread to resume (unpause)
    * @param name    unique thread name for the thread.
    **/
-  void resume(const std::string name);
+  void resume(const std::string& name);
 
   /**
    * Requests all threads to resume (unpause)
@@ -117,7 +117,7 @@ public:
    * @param paused  create thread in a paused state.
    * @throw exceptions::ThreadException  bad name (null)
    **/
-  void run(const std::string name, BaseThread* thread, bool paused = false);
+  void run(const std::string& name, BaseThread* thread, bool paused = false);
 
   /**
    * Starts a new thread and executes the provided user
@@ -139,7 +139,7 @@ public:
    * @param paused  create thread in a paused state.
    * @throw exceptions::ThreadException  bad name (null)
    **/
-  void run(double hertz, const std::string name, BaseThread* thread,
+  void run(double hertz, const std::string& name, BaseThread* thread,
       bool paused = false);
 
 #ifdef _MADARA_JAVA_
@@ -158,7 +158,7 @@ public:
    * @param thread  user-created thread implementation
    * @param paused  create thread in a paused state.
    **/
-  void run(const std::string name, jobject thread, bool paused = false);
+  void run(const std::string& name, jobject thread, bool paused = false);
 
   /**
    * Starts a new thread and executes the provided user
@@ -179,7 +179,7 @@ public:
    * @param thread  user-created thread implementation
    * @param paused  create thread in a paused state.
    **/
-  void run(double hertz, const std::string name, jobject thread,
+  void run(double hertz, const std::string& name, jobject thread,
       bool paused = false);
 
 #endif
@@ -188,13 +188,13 @@ public:
    * Sets the data plane for new threads
    * @param  data_plane   The data plane for threads to use
    **/
-  void set_data_plane(knowledge::KnowledgeBase data_plane);
+  void set_data_plane(knowledge::KnowledgeBase& data_plane);
 
   /**
    * Requests a specific thread to terminate
    * @param name    unique thread name for the thread.
    **/
-  void terminate(const std::string name);
+  void terminate(const std::string& name);
 
   /**
    * Requests all debugging for threads go into the data plane
@@ -203,7 +203,7 @@ public:
    * if possible.
    * @param prefix    prefix to save debug info into data plane KB
    **/
-  void debug_to_kb(const std::string prefix = ".threader");
+  void debug_to_kb(const std::string& prefix = ".threader");
 
   /**
    * Requests a specific thread to disable debug mode. Debug mode
@@ -211,13 +211,12 @@ public:
    * and executions.
    * @param name    unique thread name for the thread.
    **/
-  void disable_debug(const std::string name);
+  void disable_debug(const std::string& name);
 
   /**
    * Requests that all new threads disable debug mode. Debug mode
    * prints thread performance information such as durations
    * and executions. Disabled is the default mode.
-   * @param name    unique thread name for the thread.
    **/
   void disable_debug(void);
 
@@ -227,13 +226,12 @@ public:
    * and executions.
    * @param name    unique thread name for the thread.
    **/
-  void enable_debug(const std::string name);
+  void enable_debug(const std::string& name);
 
   /**
    * Requests that all new threads to enter debug mode. Debug mode
    * prints thread performance information such as durations
    * and executions. Disabled is the default mode.
-   * @param name    unique thread name for the thread.
    **/
   void enable_debug(void);
 
@@ -248,7 +246,7 @@ public:
    * @param ws      wait settings for specifying period and timeout
    * @return  true if thread was terminated, false if timeout
    **/
-  bool wait(const std::string name,
+  bool wait(const std::string& name,
       const knowledge::WaitSettings& ws = knowledge::WaitSettings());
 
   /**
@@ -264,7 +262,7 @@ public:
    * @param ws      wait settings for specifying period and timeout
    * @return  true if thread was terminated, false if timeout
    **/
-  bool wait_for_paused(const std::string name,
+  bool wait_for_paused(const std::string& name,
       const knowledge::WaitSettings& ws = knowledge::WaitSettings());
 
   /**

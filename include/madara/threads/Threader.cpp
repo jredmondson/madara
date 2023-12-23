@@ -10,7 +10,7 @@
 
 madara::threads::Threader::Threader() {}
 
-madara::threads::Threader::Threader(knowledge::KnowledgeBase data_plane)
+madara::threads::Threader::Threader(knowledge::KnowledgeBase& data_plane)
   : data_(std::move(data_plane))
 {
 }
@@ -21,7 +21,7 @@ madara::threads::Threader::~Threader()
   wait();
 }
 
-void madara::threads::Threader::pause(const std::string name)
+void madara::threads::Threader::pause(const std::string& name)
 {
   NamedWorkerThreads::iterator found = threads_.find(name);
 
@@ -40,7 +40,7 @@ void madara::threads::Threader::pause(void)
   }
 }
 
-void madara::threads::Threader::resume(const std::string name)
+void madara::threads::Threader::resume(const std::string& name)
 {
   NamedWorkerThreads::iterator found = threads_.find(name);
 
@@ -60,7 +60,7 @@ void madara::threads::Threader::resume(void)
 }
 
 void madara::threads::Threader::run(
-    const std::string name, BaseThread* thread, bool paused)
+    const std::string& name, BaseThread* thread, bool paused)
 {
   if (name != "" && thread != 0)
   {
@@ -98,7 +98,7 @@ void madara::threads::Threader::run(
 #ifdef _MADARA_JAVA_
 
 void madara::threads::Threader::run(
-    const std::string name, jobject thread, bool paused)
+    const std::string& name, jobject thread, bool paused)
 {
   if (name != "" && thread != 0)
   {
@@ -114,7 +114,7 @@ void madara::threads::Threader::run(
 }
 
 void madara::threads::Threader::run(
-    double hertz, const std::string name, jobject thread, bool paused)
+    double hertz, const std::string& name, jobject thread, bool paused)
 {
   if (name != "" && thread != 0)
   {
@@ -130,7 +130,7 @@ void madara::threads::Threader::run(
 #endif  // _MADARA_JAVA_
 
 void madara::threads::Threader::run(
-    double hertz, const std::string name, BaseThread* thread, bool paused)
+    double hertz, const std::string& name, BaseThread* thread, bool paused)
 {
   if (name != "" && thread != 0)
   {
@@ -166,12 +166,12 @@ void madara::threads::Threader::run(
 }
 
 void madara::threads::Threader::set_data_plane(
-    knowledge::KnowledgeBase data_plane)
+    knowledge::KnowledgeBase& data_plane)
 {
   data_ = std::move(data_plane);
 }
 
-void madara::threads::Threader::terminate(const std::string name)
+void madara::threads::Threader::terminate(const std::string& name)
 {
   NamedWorkerThreads::iterator found = threads_.find(name);
 
@@ -192,7 +192,7 @@ void madara::threads::Threader::terminate(void)
 }
 
 bool madara::threads::Threader::wait(
-    const std::string name, const knowledge::WaitSettings& ws)
+    const std::string& name, const knowledge::WaitSettings& ws)
 {
   bool result(false);
 
@@ -253,7 +253,7 @@ bool madara::threads::Threader::wait(const knowledge::WaitSettings& ws)
 }
 
 bool madara::threads::Threader::wait_for_paused(
-    const std::string name, const knowledge::WaitSettings& ws)
+    const std::string& name, const knowledge::WaitSettings& ws)
 {
   bool result(false);
 

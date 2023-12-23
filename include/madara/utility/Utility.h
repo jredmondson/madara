@@ -53,7 +53,7 @@ MADARA_EXPORT std::string get_version(void);
  * arbitrary version string, make sure it is in the format
  * x[.x]*. Examples include 1, 1.2, 1.2.3, 1.2.3.4. Version
  * components should not go above 255.
- * @param   string_version   the string version to convert
+ * @param     str_version   the string version to convert
  * @return    the MADARA 4 byte version number
  **/
 MADARA_EXPORT uint32_t get_uint_version(

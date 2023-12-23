@@ -13,22 +13,22 @@
 #include "Threader.h"
 
 inline void madara::threads::Threader::change_hertz(
-    const std::string name, double hertz)
+    const std::string& name, double hertz)
 {
   control_.set(name + ".hertz", hertz);
 }
 
-inline void madara::threads::Threader::enable_debug(const std::string name)
+inline void madara::threads::Threader::enable_debug(const std::string& name)
 {
   control_.set(name + ".debug", true);
 }
 
-inline void madara::threads::Threader::disable_debug(const std::string name)
+inline void madara::threads::Threader::disable_debug(const std::string& name)
 {
   control_.set(name + ".debug", false);
 }
 
-inline void madara::threads::Threader::debug_to_kb(const std::string prefix)
+inline void madara::threads::Threader::debug_to_kb(const std::string& prefix)
 {
   debug_ = true;
   control_.set(".debug_to_kb", prefix);

@@ -49,7 +49,6 @@ public:
   /**
    * Converts the records into integer values
    * @param   records           the aggregate records vector
-   * @param   vars              context for querying current program state
    **/
   inline virtual void filter(knowledge::KnowledgeMap& records,
       const transport::TransportContext&, knowledge::Variables&)
