@@ -16,11 +16,12 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import subprocess
-subprocess.call('cd .. ; doxygen', shell=True)
+import os
 
 # -- Project information -----------------------------------------------------
 
 project = u'MADARA'
+copyright = u'2018-2023, James Edmondson'
 copyright = u'2018-2023, James Edmondson'
 author = u'James Edmondson'
 
@@ -29,7 +30,9 @@ version = u''
 # The full version, including alpha/beta/rc tags
 release = u'3.4.0'
 
-subprocess.call('perl get_version.pl; doxygen Doxyfile_MADARA_NoGraphviz.dxy', shell=True)
+script_path = os.path.dirname(os.path.abspath(__file__))
+
+subprocess.call('perl ' + script_path + '/get_version.pl; doxygen ' + script_path + '/Doxyfile_MADARA_NoGraphviz.dxy', shell=True)
 
 
 # -- General configuration ---------------------------------------------------
