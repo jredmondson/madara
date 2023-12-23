@@ -10,6 +10,7 @@ build:
   apt_packages:
     - doxygen
     - graphviz
+    - texlive-font-utils
 
   tools:
     python: "3.12"
