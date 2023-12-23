@@ -266,7 +266,8 @@ public:
    * Construct using CircularBuffer directly. This buffer will be treated
    * as the history of this record, and used as such going forward.
    *
-   * @params buffer buffer that will be copied into this record
+   * @param buffer buffer that will be copied into this record
+   * @param logger the logger to use for logging
    **/
   explicit KnowledgeRecord(const CircBuf& buffer,
       logger::Logger& logger = *logger::global_logger.get());
@@ -275,15 +276,22 @@ public:
    * Construct using CircularBuffer directly. This buffer will be treated
    * as the history of this record, and used as such going forward.
    *
-   * @params buffer buffer that will be moved into this record
+   * @param buffer buffer that will be copied into this record
+   * @param logger the logger to use for logging
    **/
   explicit KnowledgeRecord(CircBuf&& buffer,
       logger::Logger& logger = *logger::global_logger.get()) noexcept;
 
-  /* copy constructor */
+  /**
+   * copy constructor
+   * @param rhs   value to copy
+   */
   KnowledgeRecord(const KnowledgeRecord& rhs);
 
-  /* move constructor */
+  /**
+   * move constructor
+   * @param rhs   value to copy
+   **/
   KnowledgeRecord(KnowledgeRecord&& rhs) noexcept;
 
   /* destructor */
@@ -387,7 +395,7 @@ public:
    * buffer will be treated as the history of this record, and used as such
    * going forward.
    *
-   * @params args arguments forwarded to the
+   * @param args arguments forwarded to the
    *               madara::utility::CircularBuffer constructor
    **/
   template<typename... Args>
