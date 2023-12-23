@@ -46,6 +46,7 @@ public:
   /**
    * Prints records and transport context information
    * @param   records           the aggregate records vector
+   * @param   transport_context the transport context where metadata is stored
    * @param   vars              context for querying current program state
    **/
   inline virtual void filter(knowledge::KnowledgeMap& records,

@@ -84,6 +84,7 @@ public:
    * @param  t_reset_checkpoint  reset the checkpoint modifieds
    * @param  t_ignore_header_check  if true, ignore header checks
    * @param  t_max_buffer_size   the max size in bytes for buffer growth
+   * @param  t_variables_lister  a custom list of variables to print
    **/
   CheckpointSettings(size_t t_buffer_size, bool t_clear_knowledge,
       std::string t_filename = "", uint64_t t_initial_timestamp = 0,

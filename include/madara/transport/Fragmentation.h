@@ -186,6 +186,7 @@ MADARA_EXPORT void delete_fragments(FragmentMap& map);
  * @param  source         large packet that needs to be fragmented
  * @param  total_size     total size of the source buffer
  * @param  originator     the originator id of the agent
+ * @param  domain         the transport knowledge domain
  * @param  clock          the lamport clock for fragments to use
  * @param  timestamp      the ns timestamp of the message
  * @param  quality        the quality of the sender

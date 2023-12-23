@@ -30,6 +30,7 @@ class PrefixPrint : public AggregateFilter
 public:
   /**
    * Constructor
+   * @param print_verbose   if true, print more verbose information
    * @param source_prefixes the static prefixes to use for printing. If
    *        empty, print all variables. If contains prefixes, only print
    *        variables that begin with contained prefixes

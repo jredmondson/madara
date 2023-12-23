@@ -56,11 +56,13 @@ public:
 
   /**
    * Copy constructor
+   * @param settings   the settings to copy from
    **/
   QoSTransportSettings(const QoSTransportSettings& settings);
 
   /**
    * Copy constructor
+   * @param settings   the settings to copy from
    **/
   QoSTransportSettings(const TransportSettings& settings);
 
@@ -71,11 +73,13 @@ public:
 
   /**
    * Assignment operator
+   * @param settings   the settings to copy from
    **/
   void operator=(const QoSTransportSettings& settings);
 
   /**
    * Assignment operator
+   * @param settings   the settings to copy from
    **/
   void operator=(const TransportSettings& settings);
 
@@ -244,7 +248,8 @@ public:
 
   /**
    * Adds a Java buffer filter to the chain
-   * @param   filter     an instance of a buffer filter
+   * @param   object     a java callback that takes in a list of args
+   *                     and the Variables interface.
    **/
   void add_filter(jobject& object);
 
@@ -304,7 +309,8 @@ public:
 
   /**
    * Adds a python buffer filter to the chain
-   * @param   filter     an instance of a buffer filter
+   * @param   object     a python callback that takes in a list of args
+   *                     and the Variables interface.
    **/
   void add_filter(boost::python::object& object);
 
@@ -358,8 +364,8 @@ public:
 
   /**
    * Filters an input according to send's filter chain
-   * @param   name    variable name of input ("" for unnamed)
    * @param   input   the argument to the filter chain
+   * @param   name    variable name of input ("" for unnamed)
    * @param   context the context of the transport
    * @return  the result of filtering the input
    **/
@@ -377,8 +383,8 @@ public:
 
   /**
    * Filters an input according to the receive filter chain
-   * @param   name    variable name of input ("" for unnamed)
    * @param   input   the argument to the filter chain
+   * @param   name    variable name of input ("" for unnamed)
    * @param   context the context of the transport
    * @return  the result of filtering the input
    **/
@@ -396,8 +402,8 @@ public:
 
   /**
    * Filters an input according to the rebroadcast filter chain
-   * @param   name    variable name of input ("" for unnamed)
    * @param   input   the argument to the filter chain
+   * @param   name    variable name of input ("" for unnamed)
    * @param   context the context of the transport
    * @return  the result of filtering the input
    **/

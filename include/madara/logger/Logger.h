@@ -14,8 +14,8 @@
  * uses compiler optimizations to ensure that args are not
  * evaluated unless the level is appropriate for the loggers level.
  * This makes logging transparent and minimally invasive, performance wise
- * @param  logger  the logger instance to use
- * @param  level   the logging level
+ * @param  loggering  the logger instance to use
+ * @param  level      the logging level
  **/
 #define madara_logger_log(loggering, level, ...)             \
   if (madara::logger::Logger::get_thread_level() >= 0)       \
@@ -35,8 +35,8 @@
  * This macro uses compiler optimizations to ensure that args are not
  * evaluated unless the level is appropriate for the loggers level.
  * This makes logging transparent and minimally invasive, performance wise
- * @param  logger  the logger pointer to use
- * @param  level   the logging level
+ * @param  loggering  the logger to use
+ * @param  level      the logging level
  **/
 #define madara_logger_ptr_log(loggering, level, ...)                  \
   if (madara::logger::Logger::get_thread_level() >= 0) \
@@ -56,8 +56,8 @@
  * This macro uses compiler optimizations to ensure that args are not
  * evaluated unless the level is appropriate for the loggers level.
  * This makes logging transparent and minimally invasive, performance wise
- * @param  logger  the logger pointer to use
- * @param  level   the logging level
+ * @param  loggering  the logger pointer to use
+ * @param  level      the logging level
  **/
 #define madara_logger_checked_ptr_log(loggering, level, ...)                  \
   if (loggering && madara::logger::Logger::get_thread_level() >= 0) \
@@ -106,7 +106,7 @@
 /**
  * High-performance logger that performs conditional logging based on first arg
  * @param  conditional     the primary logger pointer to use (if not null)
- * @param  logger          the logger that will be used if conditional is true
+ * @param  loggering       the logger that will be used if conditional is true
  * @param  alt_logger_ptr  the secondary logger pointer to use (should be
  *                         not null)
  * @param  level           the logging level
