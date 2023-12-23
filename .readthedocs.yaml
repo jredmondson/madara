@@ -10,9 +10,18 @@ build:
     - doxygen
     - graphviz
     - texlive-font-utils
-
   tools:
     python: "3.12"
+  jobs:
+    pre_install:
+      - bash ./scripts/pre_install.sh
+    post_build:
+      - ls 
+      - ls docs
+      - ls docs/madara
+      - ls docs/build
+      - ls _readthedocs
+      - cp -rf docs/madara/* _readthedocs/
 
 sphinx:
   configuration: docs/conf.py
