@@ -13,14 +13,7 @@ build:
   tools:
     python: "3.12"
   jobs:
-    pre_install:
-      - pwd
     post_build:
-      - pwd
-      - ls 
-      - ls docs
-      - ls docs/madara
-      - ls _readthedocs
       - cp -rf docs/madara/* _readthedocs/
 
 sphinx:
