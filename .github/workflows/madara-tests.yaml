@@ -52,13 +52,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Install Boost and SSL (Linux)
-      runs-on: ubuntu-latest
-      run: sudo apt-get install -y libboost-all-dev git libssl-dev
+    - name: Install Boost and SSL
+      with:
+        apt: libboost-all-dev git libssl-dev
+        brew: boost autoconf automake libtool git openssl
+
+    # - name: Install Boost and SSL (Linux)
+    #   runs-on: ubuntu-latest
+    #   run: sudo apt-get install -y libboost-all-dev git libssl-dev
   
-    - name: Install Boost and SSL (Mac)
-      runs-on: macos-latest
-      run: brew install boost autoconf automake libtool git openssl
+    # - name: Install Boost and SSL (Mac)
+    #   runs-on: macos-latest
+    #   run: brew install boost autoconf automake libtool git openssl
   
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
