@@ -55,6 +55,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        build_type: [Release]
         include:
           - job-name: 'Linux 20.04 g++'
             os-version: '20.04'
@@ -115,6 +116,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        build_type: [Release]
         include:
           - os: macos-latest
             c_compiler: clang
