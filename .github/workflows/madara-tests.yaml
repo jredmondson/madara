@@ -55,24 +55,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build_type: [Release]
+        #build_type: [Release]
         include:
           - job-name: 'Linux 20.04 g++'
-            os-version: '20.04'
+            os: ubuntu-22.04
             c_compiler: gcc
             cpp_compiler: g++
+            build_type: [Release]
           - job-name: 'Linux 22.04 g++'
             os-version: '22.04'
             c_compiler: gcc
             cpp_compiler: g++
+            build_type: [Release]
           - job-name: 'Linux 20.04 clang'
-            os-version: '20.04'
+            os: ubuntu-20.04
             c_compiler: clang
             cpp_compiler: clang++
+            build_type: [Release]
           - job-name: 'Linux 22.04 clang'
-            os-version: '22.04'
+            os: ubuntu-22.04
             c_compiler: clang
             cpp_compiler: clang++
+            build_type: [Release]
 
 
     name: Linux ${{ matrix.job-name }}
