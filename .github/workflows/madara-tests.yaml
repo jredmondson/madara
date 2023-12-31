@@ -141,8 +141,9 @@ jobs:
     name: ${{ matrix.job-name }}
     steps:
       - uses: actions/checkout@v3
-      - name: Install Boost and SSL
+      - name: Install Boost and OpenSSL
         run: brew install boost autoconf automake libtool git openssl
+      - name: Force Link OpenSSL
         run: brew link --force openssl
     
       - name: Set reusable strings
