@@ -123,12 +123,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build_type: [Release]
         include:
-          - job-name: 'Mac Latest Clang'
-            os: macos-latest
+          - job-name: 'Mac 12'
+            os: macos-12
+            os-version: '12'
             c_compiler: clang
             cpp_compiler: clang++
+            build_type: [Release]
+          - job-name: 'Mac 11'
+            os: macos-11
+            os-version: '11'
+            c_compiler: clang
+            cpp_compiler: clang++
+            build_type: [Release]
 
 
     name: ${{ matrix.job-name }}
