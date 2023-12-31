@@ -60,7 +60,7 @@ void UdpRegistryClient::send_register(void)
   const char* print_prefix = "UdpRegistryClient::register";
 
   long result(0);
-  uint64_t bytes_sent = 0;
+  //uint64_t bytes_sent = 0;
 
   if (servers_.size() > 0)
   {
@@ -94,7 +94,7 @@ void UdpRegistryClient::send_register(void)
 
       if (actual_sent > 0)
       {
-        bytes_sent += actual_sent;
+        //bytes_sent += actual_sent;
 
         madara_logger_log(context_.get_logger(), logger::LOG_MAJOR,
             "%s:"
