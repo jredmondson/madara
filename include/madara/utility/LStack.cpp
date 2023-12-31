@@ -298,7 +298,7 @@ madara::utility::LStack<T>& madara::utility::LStack<T>::operator=(
 // Perform actions needed when queue goes out of scope.
 
 template<class T>
-madara::utility::LStack<T>::~LStack(void)
+madara::utility::LStack<T>::~LStack<T>(void)
 {
   // delete all elements of the list
   delete_list();
