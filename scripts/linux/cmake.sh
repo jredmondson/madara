@@ -63,6 +63,12 @@ if [ $CLEAN -eq 1 ]; then
   rm -rf build
 fi
 
+if [ $MAC -eq 1 ]; then
+  echo "Mac detected: setting compiler to clang..."
+  C_COMPILER='clang'
+  CPP_COMPILER='clang++'
+fi
+
 mkdir build
 mkdir install
 cd build
