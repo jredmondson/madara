@@ -29,7 +29,7 @@ madara::utility::ScopedArray<T>::ScopedArray(const ScopedArray& rhs)
 
 /// Dtor will delete pointer if refcount becomes 0
 template<typename T>
-madara::utility::ScopedArray<T>::~ScopedArray(void)
+madara::utility::ScopedArray<T>::~ScopedArray<T>(void)
 {
   decrement();
 }

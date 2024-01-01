@@ -581,7 +581,7 @@ inline std::vector<int64_t> get_file_missing_fragments(
   std::ofstream output(filename, std::ios::out | std::ios::binary);
 
   size_t num_fragments = expected_size / fragment_size;
-  size_t actual_size = 0;
+  //size_t actual_size = 0;
 
   if (expected_size % fragment_size > 0)
   {
@@ -610,7 +610,7 @@ inline std::vector<int64_t> get_file_missing_fragments(
       size_t size = 0;
       utility::read_file(frag_file, buffer, size);
 
-      actual_size += size;
+      //actual_size += size;
 
       madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_TRACE,
           "utility::get_file_missing_fragments: checking fragment %d\n", i);

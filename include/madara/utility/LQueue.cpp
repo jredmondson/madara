@@ -269,7 +269,7 @@ madara::utility::LQueue<T>& madara::utility::LQueue<T>::operator=(
 // Perform actions needed when queue goes out of scope.
 
 template<class T>
-madara::utility::LQueue<T>::~LQueue(void)
+madara::utility::LQueue<T>::~LQueue<T>(void)
 {
   // delete all elements of the list
   delete_list();

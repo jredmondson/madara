@@ -25,14 +25,14 @@ madara::utility::ThreadSafeVector<T>::ThreadSafeVector(
 }
 
 template<typename T>
-madara::utility::ThreadSafeVector<T>::~ThreadSafeVector(void)
+madara::utility::ThreadSafeVector<T>::~ThreadSafeVector<T>(void)
 {
   clear();
 }
 
 template<typename T>
 void madara::utility::ThreadSafeVector<T>::operator=(
-    const ThreadSafeVector& rhs)
+    const ThreadSafeVector<T>& rhs)
 {
   MADARA_GUARD_TYPE guard(mutex_);
   MADARA_GUARD_TYPE rhs_guard(rhs.mutex_);
