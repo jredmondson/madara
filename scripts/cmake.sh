@@ -12,6 +12,7 @@ SSL='OFF'
 CLEAN=0
 PREREQS=0
 MAC=0
+PROCESSES=1
 
 echo "Parsing args..."
 for var in "$@"
@@ -48,6 +49,7 @@ do
     echo "  clang           build using clang++ and clang"
     echo "  clean           run 'make clean' before builds (default)"
     echo "  docs            generate API documentation"
+    echo "  mac             build for MacOS (needs to be native/host OS)"
     echo "  gcc             use gcc/g++"
     echo "  tests           build test executables"
     echo "  ssl             build with SSL support"
@@ -56,6 +58,12 @@ do
   fi
 done
 
+
+if [ $MAC -eq 1 ]; then
+  PROCESSES=$(sysctl -n hw.ncpu)
+else
+  PROCESSES=$(nproc)
+fi
 
 echo SCRIPT_PATH=$SCRIPT_PATH
 echo MADARA_PATH=$MADARA_PATH
@@ -90,10 +98,11 @@ if [ $PREREQS -eq 1 ]; then
   fi
 fi
 
+echo "Building with $PROCESSES threads..."
 echo cmake -DCMAKE_CXX_COMPILER=${CPP_COMPILER} -DCMAKE_C_COMPILER=${C_COMPILER} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -Dmadara_TESTS=${TESTS} -Dmadara_SSL=${SSL} -D'CMAKE_INSTALL_PREFIX=/usr/local' -DCMAKE_PREFIX_PATH=$MADARA_PATH/install ..
 cmake -D'CMAKE_INSTALL_PREFIX=/usr/local' -Dmadara_TESTS=$TESTS -Dmadara_SSL=$SSL -DCMAKE_PREFIX_PATH=$MADARA_PATH/install -DCMAKE_CXX_COMPILER=$CPP_COMPILER -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
-cmake --build . --config debug -j$(nproc)
-cmake --build . --config release
+cmake --build . --config debug -j $PROCESSES
+cmake --build . --config release -j $PROCESSES
 sudo cmake --build . --target install --config release
 sudo cmake --build . --target install --config debug
 
