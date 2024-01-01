@@ -23,6 +23,10 @@ do
   elif [ "$var" = "clean" ] || [ "$var" = "CLEAN" ]; then
     echo "  Cleaning build..."
     CLEAN=1
+  elif [ "$var" = "gcc" ] || [ "$var" = "g++" ]; then
+    echo "  Using g++ for compilation..."
+    C_COMPILER='gcc'
+    CPP_COMPILER='g++'
   elif [ "$var" = "mac" ] || [ "$var" = "MAC" ]; then
     echo "  Configuring for MacOS..."
     MAC=1
@@ -44,6 +48,7 @@ do
     echo "  clang           build using clang++ and clang"
     echo "  clean           run 'make clean' before builds (default)"
     echo "  docs            generate API documentation"
+    echo "  gcc             use gcc/g++"
     echo "  tests           build test executables"
     echo "  ssl             build with SSL support"
     echo ""
