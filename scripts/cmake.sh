@@ -2,7 +2,7 @@
 
 SCRIPT_PATH="$( cd -- "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
-MADARA_PATH=$SCRIPT_PATH/../..
+PROJECT_PATH=$SCRIPT_PATH/..
 
 C_COMPILER='gcc'
 CPP_COMPILER='g++'
@@ -66,10 +66,10 @@ else
 fi
 
 echo SCRIPT_PATH=$SCRIPT_PATH
-echo MADARA_PATH=$MADARA_PATH
+echo PROJECT_PATH=$PROJECT_PATH
 
 echo "Creating build and install directories..."
-cd $MADARA_PATH
+cd $PROJECT_PATH
 
 if [ $CLEAN -eq 1 ]; then
   echo "Cleaning build directory..."
@@ -99,8 +99,9 @@ if [ $PREREQS -eq 1 ]; then
 fi
 
 echo "Building with $PROCESSES threads..."
-echo cmake -DCMAKE_CXX_COMPILER=${CPP_COMPILER} -DCMAKE_C_COMPILER=${C_COMPILER} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -Dmadara_TESTS=${TESTS} -Dmadara_SSL=${SSL} -D'CMAKE_INSTALL_PREFIX=/usr/local' -DCMAKE_PREFIX_PATH=$MADARA_PATH/install ..
-cmake -D'CMAKE_INSTALL_PREFIX=/usr/local' -Dmadara_TESTS=$TESTS -Dmadara_SSL=$SSL -DCMAKE_PREFIX_PATH=$MADARA_PATH/install -DCMAKE_CXX_COMPILER=$CPP_COMPILER -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
+
+echo cmake -DCMAKE_CXX_COMPILER=${CPP_COMPILER} -DCMAKE_C_COMPILER=${C_COMPILER} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -Dmadara_TESTS=${TESTS} -Dmadara_SSL=${SSL} -D'CMAKE_INSTALL_PREFIX=/usr/local' -DCMAKE_PREFIX_PATH=$PROJECT_PATH/install ..
+cmake -D'CMAKE_INSTALL_PREFIX=/usr/local' -Dmadara_TESTS=$TESTS -Dmadara_SSL=$SSL -DCMAKE_PREFIX_PATH=$PROJECT_PATH/install -DCMAKE_CXX_COMPILER=$CPP_COMPILER -DCMAKE_C_COMPILER=$C_COMPILER -DCMAKE_BUILD_TYPE=$BUILD_TYPE ..
 cmake --build . --config debug -j $PROCESSES
 cmake --build . --config release -j $PROCESSES
 sudo cmake --build . --target install --config release
