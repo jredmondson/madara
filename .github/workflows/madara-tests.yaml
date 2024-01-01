@@ -115,7 +115,7 @@ jobs:
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest --build-config ${{ matrix.build_type }} -j $(nproc)
+        run: ctest --build-config ${{ matrix.build_type }} --output-on-failure -j $(nproc)
 
   macOS:
     
@@ -131,12 +131,12 @@ jobs:
             cpp_compiler: clang++
             build_type: [Release]
           # Disabling Mac 11 as the runner seems especially slow
-          # - job-name: 'Mac 11'
-          #   os: macos-11
-          #   os-version: '11'
-          #   c_compiler: clang
-          #   cpp_compiler: clang++
-          #   build_type: [Release]
+          - job-name: 'Mac 11'
+            os: macos-11
+            os-version: '11'
+            c_compiler: clang
+            cpp_compiler: clang++
+            build_type: [Release]
 
 
     name: ${{ matrix.job-name }}
@@ -174,4 +174,4 @@ jobs:
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: ctest --build-config ${{ matrix.build_type }} -j $(sysctl -n hw.ncpu)
+        run: ctest --build-config ${{ matrix.build_type }} --output-on-failure -j $(sysctl -n hw.ncpu)
