@@ -268,15 +268,15 @@ public:
       }
 
       // calculate bytes
-      size_t bytes = record.second.size();
-      if(record.second.is_integer_type())
-      {
-        bytes *= sizeof(int64_t);
-      }
-      else if(record.second.is_double_type())
-      {
-        bytes *= sizeof(double);
-      }
+      // size_t bytes = record.second.size();
+      // if(record.second.is_integer_type())
+      // {
+      //   bytes *= sizeof(int64_t);
+      // }
+      // else if(record.second.is_double_type())
+      // {
+      //   bytes *= sizeof(double);
+      // }
 
       // update bytes sent by originator
       var_orig_stats.bytes += record.second.size();
