@@ -5,6 +5,8 @@
 #include "madara/utility/Utility.h"
 #include "test.h"
 
+#include <sstream>
+
 namespace logger = madara::logger;
 namespace utility = madara::utility;
 
@@ -71,10 +73,13 @@ int main(int, char**)
   //              KnowledgeReferenceSettings (false));
 
   knowledge.print("Testing KnowledgeRecord status method, return value is: ");
+
   int record1Status = record1.status();
-  char str[16];
-  sprintf(str, "%d", record1Status);
-  knowledge.print(str);
+
+  std::stringstream buffer;
+  buffer << record1Status;
+
+  knowledge.print(buffer.str().c_str());
   knowledge.print("\n");
 
   // MADARA_debug_level = 10;
