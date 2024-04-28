@@ -132,24 +132,24 @@ if (not -d "$transports_path")
 
 # copy useful files to root
 
-copy "$script_dir/common/doxygen_help_gen.mpb", "$path/";
-copy "$script_dir/common/using_boost.mpb", "$path/";
-copy "$script_dir/common/using_madara.mpb", "$path/";
-copy "$script_dir/common/using_clang.mpb", "$path/";
-copy "$script_dir/common/using_zmq.mpb", "$path/";
-copy "$script_dir/common/VERSION.txt", "$path/";
-copy "$script_dir/common/workspace.mwc", "$path/";
-copy "$script_dir/linux/action.sh", "$path/";
-copy "$script_dir/windows/action.bat", "$path/";
+# copy "$script_dir/common/doxygen_help_gen.mpb", "$path/";
+# copy "$script_dir/common/using_boost.mpb", "$path/";
+# copy "$script_dir/common/using_madara.mpb", "$path/";
+# copy "$script_dir/common/using_clang.mpb", "$path/";
+# copy "$script_dir/common/using_zmq.mpb", "$path/";
+# copy "$script_dir/common/VERSION.txt", "$path/";
+# copy "$script_dir/common/workspace.mwc", "$path/";
+copy "$script_dir/linux/build.sh", "$path/";
+copy "$script_dir/windows/build.bat", "$path/";
 
-chmod 0755, "$path/action.sh";
+chmod 0755, "$path/build.sh";
 
 # copy useful files to docs
 
-copy "$script_dir/common/docs/Documentation.mpc", "$path/docs/";
-copy "$script_dir/common/docs/Doxyfile.dxy", "$path/docs/";
-copy "$script_dir/common/docs/get_version.pl", "$path/docs/";
-copy "$script_dir/common/docs/MainPage.md", "$path/docs/";
+# copy "$script_dir/common/docs/Documentation.mpc", "$path/docs/";
+# copy "$script_dir/common/docs/Doxyfile.dxy", "$path/docs/";
+# copy "$script_dir/common/docs/get_version.pl", "$path/docs/";
+# copy "$script_dir/common/docs/MainPage.md", "$path/docs/";
 
 # copy useful files to src
 
@@ -604,34 +604,27 @@ $contents =~
   close app_file;
 
   $contents = "
-project ($app) : using_madara {
-  exeout = bin
-  exename = $app
+cmake_minimum_required(VERSION 3.5)
+project(${app}_app)
 
-  macros +=  _USE_MATH_DEFINES
+message(\"CMAKE_SOURCE_DIR: \${CMAKE_SOURCE_DIR}\")
+set(CMAKE_CXX_FLAGS \"\${CMAKE_CXX_FLAGS} -g\")
+set(CMAKE_BUILD_TYPE debug)
 
-  Documentation_Files {
-    README.txt
-  }
+find_package(madara REQUIRED)
 
-  Header_Files {
-    src/
-    src/filters
-    src/threads
-    src/transports
-  }
+# Set the path to your project root directory
+set(PROJECT_ROOT \${CMAKE_SOURCE_DIR})
 
-  Source_Files {
-    src/$app.cpp
-    src/filters
-    src/threads
-    src/transports
-  }
-}
+include_directories(\${PROJECT_ROOT})
+
+add_executable($app \${PROJECT_ROOT}/src/$app.cpp)
+target_link_libraries($app madara)
+
 ";
 
-  open project_file, ">>$path/project.mpc" or
-    die "ERROR: Couldn't open $path/project.mpc\n"; 
+  open project_file, ">>$path/CMakeLists.txt" or
+    die "ERROR: Couldn't open $path/CMakeLists.txt\n"; 
     print project_file $contents; 
   close project_file;
 }
