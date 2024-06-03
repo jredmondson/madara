@@ -84,7 +84,7 @@ jobs:
 
     name: ${{ matrix.job-name }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Boost and SSL
         run: sudo apt-get install -y libboost-all-dev git libssl-dev
     
@@ -141,7 +141,7 @@ jobs:
 
     name: ${{ matrix.job-name }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Boost and OpenSSL
         run: brew install boost autoconf automake libtool git openssl
       - name: Force Link OpenSSL
