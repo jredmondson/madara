@@ -1,6 +1,7 @@
 #include "Threader.h"
 #include "madara/utility/Utility.h"
 #include "madara/exceptions/ThreadException.h"
+#include <ctype.h>
 
 #ifdef _MADARA_JAVA_
 
@@ -62,7 +63,7 @@ void madara::threads::Threader::resume(void)
 void madara::threads::Threader::run(
     const std::string& name, BaseThread* thread, bool paused)
 {
-  if (name != "" && thread != 0)
+  if (name != "" && isalpha(name[0]) && thread != 0)
   {
     std::unique_ptr<WorkerThread> worker(
         new WorkerThread(name, thread, control_, data_));
@@ -75,23 +76,40 @@ void madara::threads::Threader::run(
 
     (threads_[name] = std::move(worker))->run();
   }
-  else if (thread != 0 && name == "")
+  else if (thread != 0)
   {
     delete thread;
 
-    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-        "Threader::run: named thread has an empty name. Deleting new thread.");
+    std::string message;
 
-    throw exceptions::ThreadException(
-        "Threader::run: named thread has an empty name. Deleting new thread.");
+    if (name == "") {
+      message = "Threader::run: named thread has an empty name.";
+    } else if (!isalpha(name[0])) {
+      message = "Threader::run: named thread has an invalid name.";
+      message += " Names must start with a-zA-Z, not numbers.";
+    }
+    message += " Deleting new thread.";
+
+    madara_logger_ptr_log(logger::global_logger.get(),
+      logger::LOG_ERROR, message.c_str());
+
+    throw exceptions::ThreadException( message);
   }
   else
   {
-    madara_logger_ptr_log(logger::global_logger.get(), logger::LOG_ERROR,
-        "Threader::run: named thread has an empty name.");
+    std::string message;
 
-    throw exceptions::ThreadException(
-        "Threader::run: named thread has an empty name.");
+    if (name == "") {
+      message = "Threader::run: named thread has an empty name.";
+    } else if (!isalpha(name[0])) {
+      message = "Threader::run: named thread has an invalid name.";
+      message += " Names must start with a-zA-Z, not numbers.";
+    }
+
+    madara_logger_ptr_log(logger::global_logger.get(),
+      logger::LOG_ERROR, message.c_str());
+
+    throw exceptions::ThreadException( message);
   }
 }
 
