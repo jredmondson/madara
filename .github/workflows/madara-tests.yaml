@@ -143,9 +143,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install Boost and OpenSSL
-        run: brew install boost autoconf automake libtool git openssl
-      - name: Force Link OpenSSL
-        run: brew link --force openssl
+        run: brew install boost automake
     
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
